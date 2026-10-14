@@ -1,0 +1,6 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "design-system",
+  "homepage": "https://draekien.github.io/design-system/",
+  "include": ["packages/ui/registry.json"]
+}

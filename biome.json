@@ -205,6 +205,32 @@
   },
   "overrides": [
     {
+      "includes": ["packages/ui/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "react": {
+                    "allowImportNames": ["*"],
+                    "message": "Import React as a namespace: import * as React from \"react\". Biome's noUnresolvedImports cannot resolve named React imports such as Suspense."
+                  }
+                },
+                "patterns": [
+                  {
+                    "group": ["@workspace/ui", "@workspace/ui/**"],
+                    "message": "Inside packages/ui, import registry files as @/components/…, @/hooks/… or @/lib/…. shadcn add rewrites only @/ imports, so an @workspace/ui import breaks the installed file."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
       "includes": ["**/*.tsx"],
       "linter": {
         "rules": {

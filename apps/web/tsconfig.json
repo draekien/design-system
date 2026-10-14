@@ -4,7 +4,9 @@
   "compilerOptions": {
     "types": ["vite/client", "node"],
     "paths": {
-      "@workspace/ui/*": ["../../packages/ui/src/*"]
+      "@workspace/ui/*": ["../../packages/ui/src/*"],
+      "@workspace/fixtures/*": ["../../packages/fixtures/src/*"],
+      "@/*": ["../../packages/ui/src/*"]
     },
     "noUnusedLocals": true,
     "noUnusedParameters": true
