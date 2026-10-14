@@ -7,14 +7,20 @@ import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
 const isTest = process.env.VITEST === "true"
+const base = process.env.SITE_BASE_PATH || "/"
 
 export default defineConfig({
+  base,
   server: { port: 3000 },
   resolve: { tsconfigPaths: true },
   plugins: [
     !isTest && devtools(),
     !isTest && tailwindcss(),
-    !isTest && tanstackStart({ importProtection: { behavior: "error" } }),
+    !isTest &&
+      tanstackStart({
+        importProtection: { behavior: "error" },
+        prerender: { enabled: true, crawlLinks: true, autoSubfolderIndex: true },
+      }),
     viteReact(),
     babel({ presets: [reactCompilerPreset()] }),
   ],

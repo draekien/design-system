@@ -17,7 +17,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        // biome-ignore lint/suspicious/noUndeclaredEnvVars: Vite derives BASE_URL from base, which turbo hashes through SITE_BASE_PATH
+        href: `${import.meta.env.BASE_URL}favicon.svg`,
+      },
     ],
   }),
   shellComponent: RootDocument,
