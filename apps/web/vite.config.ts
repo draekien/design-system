@@ -19,7 +19,12 @@ export default defineConfig({
     !isTest &&
       tanstackStart({
         importProtection: { behavior: "error" },
-        prerender: { enabled: true, crawlLinks: true, autoSubfolderIndex: true },
+        prerender: {
+          enabled: true,
+          crawlLinks: true,
+          autoSubfolderIndex: true,
+          filter: ({ path }) => !path.includes("?"),
+        },
       }),
     viteReact(),
     babel({ presets: [reactCompilerPreset()] }),
