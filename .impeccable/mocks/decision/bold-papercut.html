@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Layered papercut — sketch</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { width:1440px; height:900px; overflow:hidden; background:#0f0f10; color:#fff; font-family:"Segoe UI",system-ui,sans-serif; }
+  nav { height:64px; display:flex; align-items:center; gap:32px; padding:0 64px; font-size:14px; color:#cfcfcf; }
+  nav b { color:#fff; margin-right:auto; font-size:16px; }
+  .gh { background:#2f54eb; color:#fff; padding:10px 16px; border-radius:999px; }
+  .roundel { position:absolute; left:560px; top:90px; width:780px; height:780px; }
+  .l { position:absolute; border-radius:50%; }
+  .l1 { inset:0; background:#2a2a2c; }
+  .l2 { inset:70px; background:#4a4a4d; }
+  .l3 { inset:140px; background:#8a8a8e; }
+  .l4 { inset:210px; background:#d4d4d6; }
+  .l5 { inset:280px; background:#fff; }
+  .lab { position:absolute; font:700 12px "Segoe UI"; letter-spacing:.14em; text-transform:uppercase; }
+  .row { position:absolute; left:250px; top:350px; width:280px; color:#111; background:#fff; font-size:14px; }
+  .row div { height:12px; background:#111; margin:8px 0; }
+  .row div.m { background:#bdbdc0; }
+  h1 { position:absolute; left:64px; top:150px; width:560px; font:800 84px/.95 "Segoe UI",sans-serif; letter-spacing:-.04em; }
+  p { position:absolute; left:64px; top:500px; width:440px; font-size:18px; line-height:1.55; color:#d8d8d8; }
+  .soon { position:absolute; left:64px; top:640px; font-size:14px; color:#bcbcbc; }
+</style>
+</head>
+<body>
+  <nav><b>design-system</b><span>Rules</span><span>Sources</span><span class="gh">Watch on GitHub</span></nav>
+  <h1>Each layer discloses one more thing.</h1>
+  <p>A record is a stack of cut layers: the row on top, then the hover card, the peek and the side panel beneath. Remove a layer and the one below is intact.</p>
+  <div class="soon">Docs and the first components coming soon</div>
+  <div class="roundel">
+    <div class="l l1"></div><div class="l l2"></div><div class="l l3"></div><div class="l l4"></div><div class="l l5"></div>
+    <span class="lab" style="left:340px;top:20px;color:#bbb;background:#2a2a2c">Side panel</span>
+    <span class="lab" style="left:340px;top:90px;color:#ddd;background:#4a4a4d">Peek</span>
+    <span class="lab" style="left:325px;top:160px;color:#111;background:#8a8a8e">Hover card</span>
+    <span class="lab" style="left:360px;top:230px;color:#111;background:#d4d4d6">Row</span>
+    <div class="row"><div></div><div class="m"></div><div class="m"></div></div>
+  </div>
+</body>
+</html>

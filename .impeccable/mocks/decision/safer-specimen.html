@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rule specimen — sketch</title>
+<style>
+  :root { --bg:#fafafa; --fg:#0a0a0a; --mute:#6b6b70; --line:#e6e6e8; --card:#fff; --acc:#2f54eb; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { width:1440px; height:900px; overflow:hidden; background:var(--bg); color:var(--fg); font-family:"Segoe UI",system-ui,sans-serif; }
+  nav { height:72px; display:flex; align-items:center; gap:36px; padding:0 80px; font-size:14px; color:var(--mute); }
+  nav b { color:var(--fg); font-size:17px; margin-right:16px; }
+  nav .gh { margin-left:auto; border:1px solid var(--line); background:#fff; color:var(--fg); border-radius:8px; padding:9px 14px; }
+  .left { position:absolute; left:80px; top:150px; width:560px; }
+  .kick { font-size:12px; letter-spacing:.14em; color:var(--mute); text-transform:uppercase; }
+  h1 { font:700 60px/1.04 "Segoe UI",system-ui,sans-serif; letter-spacing:-.035em; margin-top:18px; }
+  .lede { font-size:18px; line-height:1.6; color:#3a3a3f; margin-top:22px; }
+  .acts { display:flex; align-items:center; gap:18px; margin-top:32px; }
+  .btn { background:var(--acc); color:#fff; border-radius:8px; padding:13px 20px; font-weight:600; font-size:15px; }
+  .soon { font-size:14px; color:var(--mute); border:1px dashed #cfcfd4; border-radius:8px; padding:12px 16px; }
+  .right { position:absolute; left:720px; top:130px; width:640px; }
+  .seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; background:#fff; padding:3px; font-size:13px; }
+  .seg span { padding:7px 12px; border-radius:6px; color:var(--mute); }
+  .seg .on { background:var(--fg); color:#fff; }
+  .tbl { margin-top:14px; background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,.06); overflow:hidden; }
+  .row { display:grid; grid-template-columns:90px 1fr 130px 110px; padding:14px 20px; border-top:1px solid var(--line); font-size:14px; align-items:center; }
+  .row.h { border-top:none; color:var(--mute); font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+  .row.peek { background:#f4f5ff; box-shadow:inset 3px 0 0 var(--acc); }
+  .st { display:inline-flex; align-items:center; gap:7px; color:#3a3a3f; }
+  .st i { width:10px; height:10px; border-radius:50%; border:2px solid #0a0a0a; display:inline-block; }
+  .st i.half { background:linear-gradient(90deg,#0a0a0a 50%,transparent 50%); }
+  .st i.full { background:#0a0a0a; }
+  .rule { margin-top:18px; margin-left:120px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px 22px; box-shadow:0 12px 40px rgba(0,0,0,.06); }
+  .rule h3 { font-size:15px; } .rule p { font-size:14px; line-height:1.55; color:#3a3a3f; margin-top:8px; }
+  .rule q { display:block; font-size:13px; color:var(--mute); margin-top:12px; border-left:2px solid var(--line); padding-left:10px; }
+  .rule a { color:var(--acc); font-size:13px; display:inline-block; margin-top:12px; }
+  kbd { border:1px solid #cfcfd4; border-bottom-width:2px; border-radius:4px; padding:0 5px; font-size:12px; }
+</style>
+</head>
+<body>
+  <nav><b>design-system</b><span>Rules</span><span>Sources</span><span class="gh">GitHub</span></nav>
+  <div class="left">
+    <div class="kick">Open-source design system · shadcn registry</div>
+    <h1>Rule-driven components for data-dense interfaces.</h1>
+    <p class="lede">Components that decide what a data surface shows, what it hides and how hidden data is revealed. Built on Base UI, installed with the shadcn CLI, every rule cited to its source.</p>
+    <div class="acts"><span class="btn">Watch on GitHub</span><span class="soon">Docs and first components coming soon</span></div>
+  </div>
+  <div class="right">
+    <div class="seg"><span class="on">Loaded</span><span>Loading</span><span>Partial</span><span>Error</span><span>No permission</span></div>
+    <div class="tbl">
+      <div class="row h"><span>ID</span><span>Title</span><span>Status</span><span>Owner</span></div>
+      <div class="row"><span>REC-104</span><span>Quarterly access review</span><span class="st"><i class="half"></i>In review</span><span>M. Okafor</span></div>
+      <div class="row peek"><span>REC-103</span><span>Retention policy update</span><span class="st"><i class="full"></i>Approved</span><span>J. Lindqvist</span></div>
+      <div class="row"><span>REC-102</span><span>Vendor contract renewal</span><span class="st"><i></i>Draft</span><span>A. Rahman</span></div>
+      <div class="row"><span>REC-101</span><span>Incident follow-up</span><span class="st"><i class="full"></i>Approved</span><span>S. Duarte</span></div>
+    </div>
+    <div class="rule">
+      <h3>A row previews in place, by keyboard</h3>
+      <p>Press <kbd>Space</kbd> on a row to peek its detail without opening the record; arrow keys move the peek.</p>
+      <q>“Tap Space to toggle peek on or off” — Linear, Peek</q>
+      <a href="#">Source row →</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Card Catalogue — sketch</title>
+<style>
+  :root { --steel:#1c1d1f; --steel2:#2a2c2f; --steel3:#5c6064; --card:#fbfbfa; --rule:#c9cbcc; --ink:#141414; --red:#c8102e; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { width:1440px; height:900px; overflow:hidden; background:var(--steel); color:var(--ink); font-family:"Helvetica Neue",Arial,sans-serif; }
+  .bar { height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 48px; color:#d7d9da; font-size:13px; letter-spacing:.08em; text-transform:uppercase; border-bottom:1px solid #303236; }
+  .bar a { color:#d7d9da; text-decoration:none; margin-left:28px; }
+  .drawer { position:absolute; left:48px; right:48px; top:96px; height:780px; background:linear-gradient(#26282b,#1f2023); border:1px solid #3a3c40; border-radius:6px; box-shadow:inset 0 24px 40px rgba(0,0,0,.45); }
+  .holder { position:absolute; left:50%; top:-22px; transform:translateX(-50%); width:360px; height:52px; background:#8d9196; border-radius:4px; padding:6px; box-shadow:0 2px 0 #4a4d51; }
+  .holder div { background:var(--card); height:100%; display:flex; align-items:center; justify-content:center; font:600 13px "Courier New",monospace; letter-spacing:.12em; }
+  .guides { position:absolute; left:120px; right:120px; top:56px; height:60px; }
+  .tab { position:absolute; top:0; height:44px; width:210px; background:#e9eaea; border:1px solid var(--rule); border-bottom:none; border-radius:6px 6px 0 0; display:flex; align-items:center; padding:0 16px; font:600 13px "Helvetica Neue",Arial; letter-spacing:.06em; text-transform:uppercase; }
+  .card { position:absolute; left:80px; right:80px; top:100px; bottom:-40px; background:var(--card); border-radius:4px; box-shadow:0 -2px 0 rgba(0,0,0,.05),0 20px 50px rgba(0,0,0,.5); background-image:repeating-linear-gradient(to bottom,transparent 0 31px,#e4e6e7 31px 32px); padding:40px 72px; }
+  .card:before { content:""; position:absolute; left:0; right:0; top:104px; height:2px; background:#9da1a4; }
+  .hole { position:absolute; left:50%; bottom:70px; width:26px; height:26px; border-radius:50%; background:var(--steel2); transform:translateX(-50%); }
+  .call { font:13px "Courier New",monospace; line-height:32px; position:absolute; left:72px; top:40px; width:120px; }
+  .entry { margin-left:150px; }
+  .entry h1 { font:700 150px/1 "Helvetica Neue",Arial,sans-serif; letter-spacing:-.045em; margin-top:-8px; }
+  .entry p { font:15px/32px "Courier New",monospace; max-width:760px; margin-top:28px; }
+  .status { display:inline-block; margin-top:32px; border:2px solid var(--ink); padding:2px 12px; font:700 13px/26px "Courier New",monospace; letter-spacing:.14em; }
+  .tracings { margin-top:30px; font:13px/32px "Courier New",monospace; }
+  .cta { position:absolute; right:72px; top:150px; background:var(--red); color:#fff; font:600 16px "Helvetica Neue",Arial; padding:16px 26px; border-radius:3px; text-decoration:none; }
+</style>
+</head>
+<body>
+  <div class="bar"><span>design-system.wpei.me</span><span><a href="#">Rules</a><a href="#">Sources</a><a href="#">GitHub</a></span></div>
+  <div class="drawer">
+    <div class="holder"><div>DISCLOSURE · COMPOSITION</div></div>
+    <div class="guides">
+      <div class="tab" style="left:0">Disclosure</div>
+      <div class="tab" style="left:230px">Composition</div>
+      <div class="tab" style="left:460px">States</div>
+      <div class="tab" style="left:690px">Sources</div>
+    </div>
+    <div class="card">
+      <div class="call">DS<br>001<br>2026</div>
+      <div class="entry">
+        <h1>design-system</h1>
+        <p>Rules for what a data surface shows, what it hides, and how hidden data is revealed — encoded in how Base UI components compose, shipped as a shadcn registry.</p>
+        <div class="status">IN PROCESS — DOCS COMING SOON</div>
+        <div class="tracings">1. Disclosure &nbsp; 2. Composition &nbsp; 3. Loading, partial, error, no-permission &nbsp; I. Linear &nbsp; II. Primer &nbsp; III. Carbon</div>
+      </div>
+      <a class="cta" href="#">Watch on GitHub →</a>
+      <div class="hole"></div>
+    </div>
+  </div>
+</body>
+</html>

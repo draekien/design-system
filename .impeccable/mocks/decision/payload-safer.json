@@ -1,0 +1,59 @@
+{
+  "title": "Choose the visual world for design-system.wpei.me (revised from your reference)",
+  "question": "Three versions of your reference's product-UI landing page, each corrected for what is true today. Pick one, steer, or re-roll.",
+  "options": [
+    {
+      "id": "safer-specimen",
+      "label": "Rule specimen (light)",
+      "kicker": "FROM YOUR REFERENCE, ROW 1",
+      "lineage": "Linear and Geist product pages; your reference's top row",
+      "thesis": "A working record table you can switch between loaded, loading, partial, error and no-permission, with the rule behind each state cited beside it.",
+      "palette": ["#fafafa", "#ffffff", "#e6e6e8", "#6b6b70", "#0a0a0a", "#2f54eb"],
+      "materials": ["white panels on a near-white ground", "hairline borders", "soft single shadow", "neutral grotesk"],
+      "viewport": "Headline, purpose and Watch on GitHub on the left; on the right a state switcher over a record table and a rule card quoting its source (Linear Peek); 'Docs coming soon' is a status, not a link.",
+      "risk": "Closest to the familiar SaaS split hero; the live state switch is what keeps it from being any other registry.",
+      "html": ".impeccable/mocks/decision/safer-specimen.html",
+      "comp": ".impeccable/mocks/decision/safer-specimen.png"
+    },
+    {
+      "id": "safer-install",
+      "label": "Install panel (dark)",
+      "kicker": "FROM YOUR REFERENCE, ROW 2",
+      "lineage": "Vercel and shadcn/ui dark launch pages; your reference's middle row",
+      "thesis": "Leads with how the registry is installed, by a person or an agent, with a record detail panel and its composition rule below.",
+      "palette": ["#0b0b0d", "#131316", "#26262b", "#9a9aa3", "#f4f4f5", "#6b8cff"],
+      "materials": ["near-black ground", "terminal panel", "one light record panel", "hairline-bordered rule card"],
+      "viewport": "Headline left; right a terminal with the real command form (pnpm dlx shadcn@4.21.4 add) marked 'Available when the first item ships', a record detail panel and a Stripe Apps ContextView rule card.",
+      "risk": "The install command is the focal point while the registry has zero items, so the hero leads with something a visitor cannot run yet.",
+      "html": ".impeccable/mocks/decision/safer-install.html",
+      "comp": ".impeccable/mocks/decision/safer-install.png"
+    },
+    {
+      "id": "safer-layers",
+      "label": "Disclosure layers (light)",
+      "kicker": "FROM YOUR REFERENCE, ROW 3",
+      "lineage": "your reference's bottom row; Primer and Geist docs",
+      "thesis": "One record shown at three disclosure depths, row, hover card and side panel, numbered in order, with the rule areas and their sources beside it.",
+      "palette": ["#f6f6f7", "#ffffff", "#e4e4e7", "#6b6b70", "#0a0a0a", "#2f54eb"],
+      "materials": ["layered white panels", "numbered disclosure steps", "ruled source list"],
+      "viewport": "A wide headline across the top; below it a numbered row → hover card → side panel sequence; on the right the four rule areas, each linked to a real source (Geist, Stripe Apps, Primer, Carbon).",
+      "risk": "Static layers explain disclosure but do not let the visitor operate it unless the panels become live.",
+      "html": ".impeccable/mocks/decision/safer-layers.html",
+      "comp": ".impeccable/mocks/decision/safer-layers.png"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code" },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard (shadcn/ui, Geist, Base UI)",
+    "thesis": "A centred launch page at the craft of ui.shadcn.com, vercel.com/geist and base-ui.com.",
+    "palette": ["#09090b", "#fafafa", "#a1a1aa", "#27272a"],
+    "materials": ["zinc greys", "hairline borders", "neutral grotesk"],
+    "viewport": "A centred badge, headline, purpose line and GitHub button, with three rule-area cards below.",
+    "risk": "Indistinguishable from other shadcn registries by design.",
+    "html": ".impeccable/mocks/decision/canon.html",
+    "comp": ".impeccable/mocks/decision/canon.png"
+  },
+  "steer": true
+}

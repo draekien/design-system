@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Install panel — sketch</title>
+<style>
+  :root { --bg:#0b0b0d; --fg:#f4f4f5; --mute:#9a9aa3; --line:#26262b; --panel:#131316; --acc:#6b8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { width:1440px; height:900px; overflow:hidden; background:var(--bg); color:var(--fg); font-family:"Segoe UI",system-ui,sans-serif; }
+  nav { height:72px; display:flex; align-items:center; gap:36px; padding:0 80px; font-size:14px; color:var(--mute); border-bottom:1px solid var(--line); }
+  nav b { color:var(--fg); font-size:17px; margin-right:16px; }
+  .left { position:absolute; left:80px; top:170px; width:540px; }
+  .kick { font-size:12px; letter-spacing:.14em; color:var(--mute); text-transform:uppercase; }
+  h1 { font:700 58px/1.05 "Segoe UI",system-ui,sans-serif; letter-spacing:-.035em; margin-top:18px; }
+  .lede { font-size:18px; line-height:1.6; color:#c8c8ce; margin-top:22px; }
+  .acts { display:flex; gap:16px; align-items:center; margin-top:32px; }
+  .btn { background:var(--acc); color:#0b0b0d; border-radius:8px; padding:13px 20px; font-weight:700; font-size:15px; }
+  .soon { color:var(--mute); font-size:14px; }
+  .term { position:absolute; left:700px; top:140px; width:640px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px 22px 26px; font:14px/1.9 Consolas,"Cascadia Mono",monospace; }
+  .term .t { color:var(--mute); font-size:12px; margin-bottom:8px; }
+  .c { color:#9a9aa3; }
+  .pend { display:inline-block; margin-top:10px; border:1px solid var(--line); border-radius:6px; padding:2px 8px; color:var(--mute); font-size:12px; }
+  .detail { position:absolute; left:760px; top:430px; width:420px; background:#fafafa; color:#0a0a0a; border-radius:12px; padding:22px; box-shadow:0 30px 80px rgba(0,0,0,.6); }
+  .detail h4 { font-size:13px; color:#6b6b70; text-transform:uppercase; letter-spacing:.1em; }
+  .detail .n { font-size:20px; font-weight:700; margin-top:10px; }
+  .kv { display:grid; grid-template-columns:110px 1fr; gap:10px 14px; margin-top:16px; font-size:14px; }
+  .kv span:nth-child(odd) { color:#6b6b70; }
+  .rule { position:absolute; left:1110px; top:520px; width:280px; background:var(--panel); border:1px solid #3a4a8f; border-radius:12px; padding:18px; font-size:14px; line-height:1.55; }
+  .rule b { display:block; margin-bottom:8px; } .rule q { display:block; color:var(--mute); font-size:13px; margin-top:10px; }
+  .rule a { color:var(--acc); font-size:13px; display:inline-block; margin-top:10px; }
+</style>
+</head>
+<body>
+  <nav><b>design-system</b><span>Rules</span><span>Sources</span><span>GitHub</span></nav>
+  <div class="left">
+    <div class="kick">Disclosure · composition · cited rules</div>
+    <h1>The design system with rules, not just styles.</h1>
+    <p class="lede">It encodes how a data surface shows, hides and composes records. Install a component with the shadcn CLI or let your agent add it through the shadcn MCP server.</p>
+    <div class="acts"><span class="btn">Watch on GitHub</span><span class="soon">Docs coming soon</span></div>
+  </div>
+  <div class="term">
+    <div class="t">pnpm</div>
+    <div><span class="c"># Install from the GitHub registry</span></div>
+    <div>pnpm dlx shadcn@4.21.4 add &lt;registry item url&gt;</div>
+    <span class="pend">Available when the first item ships</span>
+  </div>
+  <div class="detail">
+    <h4>Record</h4>
+    <div class="n">Retention policy update</div>
+    <div class="kv"><span>Status</span><span>Approved</span><span>Owner</span><span>J. Lindqvist</span><span>Updated</span><span>2 days ago</span></div>
+  </div>
+  <div class="rule"><b>Detail opens beside the list</b>A record's detail opens in a side panel next to the content it qualifies.<q>“default to ContextView.” — Stripe Apps</q><a href="#">Source row →</a></div>
+</body>
+</html>

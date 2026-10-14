@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Passport data page — sketch</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { width:1440px; height:900px; overflow:hidden; background:#1b1b1c; font-family:"Segoe UI",system-ui,sans-serif; color:#151515; }
+  nav { height:64px; display:flex; align-items:center; gap:32px; padding:0 64px; font-size:14px; color:#d0d0d0; }
+  nav b { color:#fff; margin-right:auto; }
+  .spread { position:absolute; left:110px; right:110px; top:96px; bottom:40px; display:grid; grid-template-columns:1fr 1fr; gap:4px; }
+  .pg { background:#f3f3f1; background-image:repeating-radial-gradient(circle at 30% 40%,transparent 0 6px,rgba(0,0,0,.04) 6px 7px); padding:48px; position:relative; }
+  .kick { font:700 12px "Segoe UI"; letter-spacing:.18em; text-transform:uppercase; color:#555; }
+  h1 { font:800 64px/1 "Segoe UI",sans-serif; letter-spacing:-.03em; margin-top:18px; }
+  .pg p { font-size:17px; line-height:1.55; margin-top:20px; max-width:480px; }
+  .mrz { position:absolute; left:48px; right:48px; bottom:40px; font:20px/1.6 "OCR A Extended",Consolas,monospace; letter-spacing:.12em; }
+  .gh { display:inline-block; margin-top:28px; background:#2f54eb; color:#fff; padding:13px 20px; font-weight:600; }
+  .stamp { position:absolute; border:3px solid #151515; border-radius:50%; width:200px; height:130px; display:flex; flex-direction:column; align-items:center; justify-content:center; font:700 13px "Segoe UI"; letter-spacing:.12em; text-transform:uppercase; text-align:center; }
+  .stamp small { font-weight:400; font-size:11px; letter-spacing:.06em; text-transform:none; margin-top:4px; }
+</style>
+</head>
+<body>
+  <nav><b>design-system</b><span>Rules</span><span>Sources</span><span>GitHub</span></nav>
+  <div class="spread">
+    <div class="pg">
+      <div class="kick">Data page · holder: any record</div>
+      <h1>What each caller is cleared to see.</h1>
+      <p>Permission, loading, partial and error states change what a surface shows. These components stamp each state onto the record, and every stamp cites the rule that issued it.</p>
+      <span class="gh">Watch on GitHub</span>
+      <div class="mrz">P&lt;DS&lt;DESIGN&lt;SYSTEM&lt;&lt;DISCLOSURE&lt;COMPOSITION&lt;&lt;<br>BASEUI&lt;ONLY&lt;&lt;SHADCN&lt;REGISTRY&lt;&lt;DOCS&lt;IN&lt;PROGRESS</div>
+    </div>
+    <div class="pg">
+      <div class="stamp" style="left:70px;top:70px;transform:rotate(-8deg)">Loaded<small>all fields shown</small></div>
+      <div class="stamp" style="left:300px;top:110px;transform:rotate(6deg);border-style:dashed">Loading<small>footprint held</small></div>
+      <div class="stamp" style="left:120px;top:300px;transform:rotate(4deg)">Partial<small>3 of 5 fields</small></div>
+      <div class="stamp" style="left:360px;top:340px;transform:rotate(-5deg)">Error<small>what failed · how to fix</small></div>
+      <div class="stamp" style="left:220px;top:520px;transform:rotate(-2deg);border-width:5px">No access<small>Primer: role ladders</small></div>
+    </div>
+  </div>
+</body>
+</html>

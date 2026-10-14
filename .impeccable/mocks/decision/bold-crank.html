@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Crank procession — sketch</title>
+<style>
+  :root { --board:#dcdcd9; --paper:#ffffff; --ink:#161616; --shadow:rgba(20,20,20,.28); --mute:#5e5e5b; --acc:#c41e3a; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { width:1440px; height:900px; overflow:hidden; background:var(--board); color:var(--ink); font-family:"Segoe UI",system-ui,sans-serif; }
+  nav { height:64px; display:flex; align-items:center; gap:32px; padding:0 64px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; }
+  nav b { font-size:15px; margin-right:auto; letter-spacing:.06em; }
+  nav .gh { background:var(--acc); color:#fff; padding:10px 16px; border-radius:2px; letter-spacing:.06em; }
+  h1 { position:absolute; left:64px; top:96px; font:900 112px/.9 "Arial Black","Segoe UI Black",sans-serif; letter-spacing:-.03em; text-transform:uppercase; }
+  .lede { position:absolute; left:64px; top:330px; width:520px; font-size:18px; line-height:1.55; }
+  .count { position:absolute; left:64px; top:440px; font:12px Consolas,monospace; letter-spacing:.08em; color:var(--mute); }
+  .stage { position:absolute; left:0; right:0; top:500px; height:290px; }
+  .fig { position:absolute; bottom:70px; background:var(--paper); box-shadow:10px 12px 0 var(--shadow); padding:14px; font-size:13px; }
+  .fig .cap { position:absolute; left:0; bottom:-40px; background:var(--paper); padding:5px 10px; font:700 11px "Segoe UI",sans-serif; letter-spacing:.14em; text-transform:uppercase; box-shadow:4px 4px 0 var(--shadow); }
+  .fig .ln { height:10px; background:#e2e2e0; margin:8px 0; }
+  .fig .ln.d { background:var(--ink); }
+  .tab { position:absolute; top:-10px; left:16px; width:18px; height:10px; background:var(--paper); }
+  .active { outline:3px solid var(--ink); transform:translateY(-26px) rotate(-1.5deg); }
+  .crank { position:absolute; left:64px; right:64px; bottom:22px; height:4px; background:var(--ink); }
+  .knob { position:absolute; left:520px; bottom:6px; width:36px; height:36px; border-radius:50%; background:var(--acc); box-shadow:4px 4px 0 var(--shadow); }
+  .handle { position:absolute; left:550px; bottom:30px; width:54px; height:8px; background:var(--acc); transform:rotate(-40deg); transform-origin:left; }
+  .strip { position:absolute; right:64px; top:110px; width:520px; display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+  .strip div { background:var(--paper); height:120px; box-shadow:4px 5px 0 var(--shadow); padding:8px; font:700 10px "Segoe UI"; letter-spacing:.1em; text-transform:uppercase; }
+  .strip i { display:block; height:7px; margin-top:8px; background:#e2e2e0; }
+  .strip i.d { background:var(--ink); }
+</style>
+</head>
+<body>
+  <nav><b>design-system</b><span>Rules</span><span>Sources</span><span class="gh">Watch on GitHub</span></nav>
+  <h1>Turn the<br>crank on<br>your data.</h1>
+  <p class="lede">One record, walked through every way a surface can show it. These components decide what shows, what hides and how the rest is revealed, and each rule cites its source.</p>
+  <div class="count">0 REGISTRY ITEMS · DOCS IN PROGRESS · BASE UI ONLY</div>
+  <div class="strip">
+    <div>Loaded<i class="d"></i><i></i><i></i></div>
+    <div>Loading<i></i><i></i><i></i></div>
+    <div>Partial<i class="d"></i><i></i></div>
+    <div>Error<i class="d"></i></div>
+    <div>No access<i></i></div>
+  </div>
+  <div class="stage">
+    <div class="fig" style="left:64px;width:250px"><span class="tab"></span><div class="ln d"></div><div class="ln"></div><div class="ln"></div><span class="cap">1 Row</span></div>
+    <div class="fig" style="left:350px;width:220px"><span class="tab"></span><div class="ln d"></div><div class="ln"></div><span class="cap">2 Hover card</span></div>
+    <div class="fig active" style="left:610px;width:300px;height:190px"><span class="tab"></span><div class="ln d"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div><span class="cap">3 Peek · Space</span></div>
+    <div class="fig" style="left:950px;width:200px"><div class="ln"></div><div class="ln"></div><span class="cap">4 Loading</span></div>
+    <div class="fig" style="left:1190px;width:190px"><div class="ln d"></div><span class="cap">5 No access</span></div>
+    <div class="crank"></div><div class="knob"></div><div class="handle"></div>
+  </div>
+</body>
+</html>
