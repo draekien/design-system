@@ -17,7 +17,7 @@ Three working surfaces, all in this monorepo:
 | --- | --- | --- | --- |
 | Wireframes | `apps/lab` | The owner and agents | No; runs under `pnpm dev` only |
 | Production components | `packages/ui` | Registry consumers via `shadcn add`, and `apps/web` and `apps/lab` through the `@workspace/ui` package | Yes, through the GitHub registry |
-| Playground and docs | `apps/web` | Anyone | Yes, prerendered to GitHub Pages under `/design-system/` |
+| Playground and docs | `apps/web` | Anyone | Yes, prerendered to GitHub Pages at `https://design-system.wpei.me/` |
 
 Each component moves through the surfaces in this order:
 
@@ -51,7 +51,7 @@ design-system/
 - Source: `docs/references/shadcn-registry-getting-started.md` ("Option B: Using include"; included files may omit `name` and `homepage`; paths are relative to the declaring `registry.json`) and `docs/references/shadcn-registry-github.md` (the same path rule for GitHub registries).
 - Files in `packages/ui` import each other as `@/components/…`, `@/hooks/…` or `@/lib/…`, the form `shadcn add` rewrites to the consumer's aliases (source: `transformImport` in https://github.com/shadcn-ui/ui/blob/main/packages/registry/src/transformers/transform-import.ts; shadcn's own `apps/v4/registry/bases/base/ui/sidebar.tsx` imports `@/registry/...` the same way). `packages/ui/components.json` aliases use `@/`.
 - `packages/ui`, `apps/web` and `apps/lab` tsconfigs map `@/*` to `packages/ui/src/*`. Without the app mapping `tsc` fails with `TS2307` on an `@/` import inside `packages/ui`; verified 2026-10-14 with a throwaway component.
-- `homepage` is the Pages URL. <!-- unverified: the exact Pages URL is not confirmed until the first deploy -->
+- `homepage` is `https://design-system.wpei.me/`, the Pages custom domain. The DNS record `design-system.wpei.me` CNAME `draekien.github.io` exists (resolved 2026-10-14).
 - The scaffold's `button` and `skeleton` are not listed in `packages/ui/registry.json` until they are rebuilt to this system's rules; `PRODUCT.md` lists item naming as undecided.
 
 ### 2. `packages/fixtures`
@@ -76,8 +76,8 @@ design-system/
 
 ### 5. GitHub Pages deploy
 
-- Add a GitHub Actions workflow that runs `pnpm build --filter web` with `SITE_BASE_PATH=/design-system/` and uploads `apps/web/dist/client`.
-- `turbo.json` already lists `SITE_BASE_PATH` in the `build` task's `env`.
+- Add a GitHub Actions workflow that runs `pnpm build --filter web` and uploads `apps/web/dist/client`. The site is served from the root of the custom domain, so `SITE_BASE_PATH` is left unset and defaults to `/`.
+- Set the custom domain in the repository Pages settings (`PUT /repos/draekien/design-system/pages` with `cname`); a workflow-published site ignores a `CNAME` file (source: https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
 
 ### 6. Agent docs
 
@@ -90,4 +90,4 @@ design-system/
 - `pnpm build`, `pnpm check`, `pnpm typecheck` and `pnpm test` pass from the repository root.
 - `pnpm dlx shadcn@4.21.4 build` resolves the root `registry.json` include without errors. <!-- unverified: the build command and version are taken from the shadcn MCP pin in `AGENTS.md`, not checked against this registry -->
 - No route under `apps/web/src/routes/examples/` exists.
-- The Pages workflow publishes the prerendered site, and `/design-system/playground/<component>` loads with a `state` search param on the published site.
+- The Pages workflow publishes the prerendered site, and `https://design-system.wpei.me/playground/<component>` loads with a `state` search param on the published site.
