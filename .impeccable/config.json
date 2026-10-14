@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "apps/web/src/record-demo.tsx"
+        ],
+        "createdAt": "2026-10-14T13:34:36.311Z",
+        "reason": "agent decision: the only match is the Kbd keycap, whose 2px bottom border uses the neutral --border colour to draw key depth, not an accent"
+      }
+    ]
+  }
+}

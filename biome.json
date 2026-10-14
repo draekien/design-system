@@ -13,7 +13,8 @@
       "!.intent",
       "!.claude",
       "!.agents",
-      "!.codex"
+      "!.codex",
+      "!**/.impeccable"
     ]
   },
   "formatter": {
