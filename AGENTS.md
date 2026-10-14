@@ -41,8 +41,13 @@ Before editing files for a substantial task:
 # Project
 
 - Turborepo monorepo managed with pnpm. Apps in `apps/`, shared packages in `packages/`.
-- `apps/web`: TanStack Start on Vite, React, TypeScript, Vitest.
-- UI components come from `@workspace/ui` (`packages/ui`, shadcn).
+- `apps/web`: TanStack Start on Vite, React, TypeScript, Vitest. The docs site and the `/playground/<component>` routes, prerendered to GitHub Pages.
+- `apps/lab`: greyscale coded wireframes, one route per wireframe, served by `pnpm dev` on port 3001 and never deployed.
+- `packages/ui` is the registry source: every component in it is installable through `packages/ui/registry.json`, and both apps import it as `@workspace/ui`.
+- Inside `packages/ui`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/ui/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `"cn"`.
+- Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
+- `packages/fixtures` holds the sample records and states that lab and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
+- A component moves wireframe in `apps/lab`, then component in `packages/ui`, then playground route in `apps/web`.
 - Run tasks from the repo root: `pnpm build`, `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm dev`.
 - Run `pnpm typecheck`, never a global `tsc`.
 - Use `pnpm exec` and `pnpm dlx`, never `npx`.

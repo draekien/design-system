@@ -16,13 +16,13 @@ Three working surfaces, all in this monorepo:
 | Surface | Location | Audience | Published |
 | --- | --- | --- | --- |
 | Wireframes | `apps/lab` | The owner and agents | No; runs under `pnpm dev` only |
-| Production components | `packages/registry` | Registry consumers via `shadcn add` | Yes, through the GitHub registry |
+| Production components | `packages/ui` | Registry consumers via `shadcn add`, and `apps/web` and `apps/lab` through the `@workspace/ui` package | Yes, through the GitHub registry |
 | Playground and docs | `apps/web` | Anyone | Yes, prerendered to GitHub Pages under `/design-system/` |
 
 Each component moves through the surfaces in this order:
 
 1. Wireframe: a greyscale coded route in `apps/lab`, driven by fixtures from `packages/fixtures`, with every state switchable.
-2. Production: the component in `packages/registry`, built on Base UI, tested with Vitest and checked in a browser with `playwright-cli`.
+2. Production: the component in `packages/ui`, built on Base UI, tested with Vitest and checked in a browser with `playwright-cli`.
 3. Playground: a route in `apps/web` under `/playground/<component>` that renders the production component against the same fixtures.
 
 Wireframes are coded routes from the start. Text wireframes, static HTML wireframes and canvas tools (tldraw, Excalidraw) were considered and rejected.
@@ -36,22 +36,23 @@ design-system/
 │  └─ web/             TanStack Start, docs + /playground, prerendered to Pages
 ├─ packages/
 │  ├─ fixtures/        sample records and states, imported by apps/lab and apps/web
-│  ├─ registry/        production components and their registry.json
-│  └─ ui/              the docs site's own chrome (button, skeleton from the scaffold)
-└─ registry.json       registry metadata; include → packages/registry/registry.json
+│  └─ ui/              production components, their registry.json, imported by both apps
+└─ registry.json       registry metadata; include → packages/ui/registry.json
 ```
 
 ## Steps
 
-### 1. `packages/registry` and the root `registry.json`
+### 1. `packages/ui` as the registry and the root `registry.json`
 
-- Create `packages/registry` as a workspace package containing `registry.json` and `src/`.
-- Root `registry.json` defines `name` and `homepage` and lists `"include": ["packages/registry/registry.json"]`.
-- Items in `packages/registry/registry.json` give `files[].path` relative to `packages/registry/registry.json`.
+- `packages/ui` is the registry source. `apps/web` and `apps/lab` import its components through `@workspace/ui`, so every app renders the same files `shadcn add` installs.
+- Add `packages/ui/registry.json` holding the items.
+- Root `registry.json` defines `name` and `homepage` and lists `"include": ["packages/ui/registry.json"]`.
+- Items in `packages/ui/registry.json` give `files[].path` relative to `packages/ui/registry.json`, for example `src/components/record-row.tsx`.
 - Source: `docs/references/shadcn-registry-getting-started.md` ("Option B: Using include"; included files may omit `name` and `homepage`; paths are relative to the declaring `registry.json`) and `docs/references/shadcn-registry-github.md` (the same path rule for GitHub registries).
-- Imports inside `packages/registry` use the `@/registry` path, mapped to `packages/registry/src/*`, per the guideline in `docs/references/shadcn-registry-getting-started.md` ("Imports should always use the `@/registry` path"). <!-- unverified: whether `shadcn add` rewrites any other alias was not checked -->
+- Files in `packages/ui` import each other as `@/components/…`, `@/hooks/…` or `@/lib/…`, the form `shadcn add` rewrites to the consumer's aliases (source: `transformImport` in https://github.com/shadcn-ui/ui/blob/main/packages/registry/src/transformers/transform-import.ts; shadcn's own `apps/v4/registry/bases/base/ui/sidebar.tsx` imports `@/registry/...` the same way). `packages/ui/components.json` aliases use `@/`.
+- `packages/ui`, `apps/web` and `apps/lab` tsconfigs map `@/*` to `packages/ui/src/*`. Without the app mapping `tsc` fails with `TS2307` on an `@/` import inside `packages/ui`; verified 2026-10-14 with a throwaway component.
 - `homepage` is the Pages URL. <!-- unverified: the exact Pages URL is not confirmed until the first deploy -->
-- The style directory name under `src/` is decided when the first component is added; `PRODUCT.md` lists item naming as undecided.
+- The scaffold's `button` and `skeleton` are not listed in `packages/ui/registry.json` until they are rebuilt to this system's rules; `PRODUCT.md` lists item naming as undecided.
 
 ### 2. `packages/fixtures`
 
@@ -70,7 +71,7 @@ design-system/
 ### 4. `apps/web` playground
 
 - Delete the scaffold's `apps/web/src/routes/examples/` route; its server functions return 404 on static hosting.
-- Add `/playground/<component>` routes that render components from `packages/registry` against `packages/fixtures`.
+- Add `/playground/<component>` routes that render components from `@workspace/ui` against `packages/fixtures`.
 - The current state is selected by the `state` search param, which works on the prerendered static output.
 
 ### 5. GitHub Pages deploy
