@@ -1,0 +1,238 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/routeTree.gen.ts",
+      "!.biome",
+      "!.intent",
+      "!.claude",
+      "!.agents",
+      "!.codex"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf",
+    "trailingNewline": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "correctness": {
+        "noReactPropAssignments": "error"
+      },
+      "performance": {
+        "noJsxPropsBind": "off"
+      },
+      "style": {
+        "noInferrableTypes": "error",
+        "noNonNullAssertion": "error",
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "react": {
+                "allowImportNames": ["*"],
+                "message": "Import React as a namespace: import * as React from \"react\". Biome's noUnresolvedImports cannot resolve named React imports such as Suspense."
+              }
+            }
+          }
+        },
+        "useComponentExportOnlyModules": "error",
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "options": {
+            "style": "type"
+          }
+        },
+        "useFilenamingConvention": {
+          "level": "error",
+          "options": {
+            "filenameCases": ["kebab-case"]
+          }
+        },
+        "useReadonlyClassProperties": {
+          "level": "error",
+          "options": {
+            "checkAllProperties": true
+          }
+        },
+        "useThrowOnlyError": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noVar": "error"
+      },
+      "nursery": {
+        "noBaseToString": "error",
+        "noFloatingPromises": "error",
+        "noIdenticalTestTitle": "error",
+        "noImpliedEval": "error",
+        "noLoopFunc": "error",
+        "noMisusedPromises": "error",
+        "noReturnInFinally": "error",
+        "noUnmodifiedLoopCondition": "error",
+        "noUnnecessaryTemplateExpression": "error",
+        "noUnsafePlusOperands": "error",
+        "noUnsafeTypeAssertion": "error",
+        "noUselessTypeConversion": "error",
+        "useArraySome": "error",
+        "useAwaitThenable": "error",
+        "useConsistentTestIt": "error",
+        "useExhaustiveSwitchCases": {
+          "level": "error",
+          "options": {
+            "requireExplicitCase": true
+          }
+        },
+        "useExpect": "error",
+        "useIncludes": "error",
+        "useNullishCoalescing": "error",
+        "useReactCompiler": "error",
+        "useReduceTypeParameter": "error",
+        "useRegexpExec": "error",
+        "useRegexpTest": "error",
+        "useStringStartsEndsWith": "error",
+        "useTestHooksOnTop": "error"
+      }
+    },
+    "domains": {
+      "project": "all",
+      "react": "all",
+      "test": "all",
+      "turborepo": "all",
+      "types": "all"
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "trailingCommas": "es5",
+      "semicolons": "asNeeded"
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on",
+        "noDuplicateClasses": "on",
+        "useSortedProperties": "on"
+      }
+    }
+  },
+  "plugins": [
+    ".biome/no-derived-state-effect.grit",
+    ".biome/no-double-assertion.grit",
+    ".biome/no-fetch-in-effect.grit",
+    {
+      "path": ".biome/no-inline-query-key.grit",
+      "includes": ["**/*.{ts,tsx}", "!**/*.test.{ts,tsx}"]
+    },
+    ".biome/no-query-client-in-render.grit",
+    ".biome/effect-cleanup.grit",
+    ".biome/no-refetch-on-success.grit",
+    {
+      "path": ".biome/query-client-stale-time.grit",
+      "includes": ["**/*.{ts,tsx}", "!**/*.test.{ts,tsx}"]
+    },
+    {
+      "path": ".biome/no-try-around-jsx.grit",
+      "includes": ["**/*.tsx"]
+    },
+    {
+      "path": ".biome/handler-naming.grit",
+      "includes": ["**/*.tsx"]
+    },
+    {
+      "path": ".biome/no-default-props.grit",
+      "includes": ["**/*.tsx"]
+    },
+    {
+      "path": ".biome/no-impure-render.grit",
+      "includes": ["**/*.tsx"]
+    },
+    ".biome/catch-binding-unknown.grit",
+    ".biome/use-assert-never.grit",
+    {
+      "path": ".biome/no-direct-component-call.grit",
+      "includes": ["**/*.tsx"]
+    },
+    {
+      "path": ".biome/no-state-mutation.grit",
+      "includes": ["**/*.tsx"]
+    },
+    {
+      "path": ".biome/no-class-error-boundary.grit",
+      "includes": ["**/*.tsx"]
+    },
+    {
+      "path": ".biome/no-fetch-in-handler.grit",
+      "includes": ["**/*.tsx"]
+    },
+    ".biome/route-option-order.grit",
+    ".biome/zod-validators.grit",
+    {
+      "path": ".biome/use-cn-for-class-names.grit",
+      "includes": ["**/*.tsx"]
+    },
+    {
+      "path": ".biome/use-cva-for-variants.grit",
+      "includes": ["**/*.tsx"]
+    },
+    {
+      "path": ".biome/query-naming.grit",
+      "includes": ["**/*.queries.ts"]
+    },
+    {
+      "path": ".biome/mutation-naming.grit",
+      "includes": ["**/*.mutations.ts"]
+    }
+  ],
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDefaultExport": "error"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/src/routes/**/$*.tsx", "**/src/routes/**/*.$.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useFilenamingConvention": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/src/routes/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useComponentExportOnlyModules": "off"
+          }
+        }
+      }
+    }
+  ]
+}

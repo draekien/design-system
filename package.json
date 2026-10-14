@@ -1,0 +1,31 @@
+{
+  "name": "design-system",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.10.1",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "check": "turbo run check lint:comments lint:biome",
+    "lint:comments": "node scripts/check-comments.ts",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "dev": "turbo run dev",
+    "lint:biome": "biome check"
+  },
+  "intent": {
+    "skills": [
+      "*"
+    ]
+  },
+  "devDependencies": {
+    "@babel/parser": "8.0.7",
+    "@tanstack/intent": "0.5.5",
+    "turbo": "2.11.7",
+    "typescript": "7.0.2",
+    "@biomejs/biome": "2.5.15",
+    "lefthook": "2.2.1"
+  }
+}

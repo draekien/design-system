@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "hugeicons": {
+      "source": "hugeicons/hugeicons",
+      "sourceType": "github",
+      "skillPath": "skills/hugeicons/SKILL.md",
+      "computedHash": "4e65a89ca4417259b58c4e5c079d83fb977da214028334f504f18af820bbadcf"
+    },
+    "motion": {
+      "source": "motiondivision/ai-kit",
+      "sourceType": "github",
+      "skillPath": "plugins/motion/skills/motion/SKILL.md",
+      "computedHash": "040f71a51f1f21a256ec7379c533ff6a8afdca3e6ad29facc96f2707d566058b"
+    },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "2d7bf36e581289fdcc3ffc592c1ec1d7457572baa72ba0d440229ef34bd7f6dd"
+    },
+    "tanstack-data-loading": {
+      "source": "draekien/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frameworks/tanstack-data-loading/SKILL.md",
+      "computedHash": "47bbac04c5ab1ba68e2a45a3751770b7f500b38f352e17f445a0d6283b92094e"
+    },
+    "turborepo": {
+      "source": "vercel/turborepo",
+      "sourceType": "github",
+      "skillPath": "skills/turborepo/SKILL.md",
+      "computedHash": "9681d8dfeb5e6cdff767f1bcaba5d7ac55732a9d6c02ee120f44229f8ec25e7e"
+    }
+  }
+}
