@@ -3,6 +3,17 @@ name: Deploy docs to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - apps/web/**
+      - "!apps/web/.impeccable/**"
+      - packages/ui/**
+      - packages/fixtures/**
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - tsconfig.json
+      - turbo.json
+      - .github/workflows/pages.yml
   workflow_dispatch:
 
 permissions:
