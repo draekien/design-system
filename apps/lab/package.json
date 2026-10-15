@@ -13,6 +13,7 @@
     "@tanstack/react-start": "1.168.60",
     "@workspace/fixtures": "workspace:*",
     "@workspace/ui": "workspace:*",
+    "cn": "0.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "tailwindcss": "4.3.3"
