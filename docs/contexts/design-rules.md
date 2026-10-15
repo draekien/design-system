@@ -24,6 +24,30 @@ Every rule a component encodes cites its source row in the evidence; a rule with
 
 A row marked "Unverified" is not a source.
 
+## Ranking information
+
+Information takes one of five ranks, decided by what the caller came to the surface to decide rather than by what the server returns. This is this design system's own decision.
+
+| Rank | Holds | Shows | Component |
+| --- | --- | --- | --- |
+| 1 Identify | what the thing is: ID, glyph, name | always, at the start of the row or head | text |
+| 2 Read | the reading the surface exists for: state, a figure the caller compares | always, in its own slot | figure, dot and word, track |
+| 3 Explain | what a caller reads on some visits: purpose, breakdown, history, older entries | in place, one click away | expanded row, `Collapsible`, `Accordion`, "Show N more" |
+| 4 Enrich | more about one named entity or property — a person, a service, an organisation, a stage, a truncated value | an overlay on that entity's or property's own trigger | hover card |
+| 5 Elsewhere | everything about one record | the record's own surface | link |
+
+A surface shows ranks 1 and 2 for every item before it shows rank 3 for any.
+
+A collapsed group, section or row keeps its rank 1 and 2 on screen, as a collapsed catalogue group keeps its counts.
+
+Rank 3 never holds content the caller reads on most visits: collapsing that costs a click every visit.
+
+Name a component's parts for the rank they hold, never for a data field; a part takes any data ranked for it.
+
+A narrow surface truncates rank 1 and 2 values first, then abbreviates them, then hides the ones the caller marks hideable; a hidden value stays reachable at rank 3 or 5.
+
+Rank 3 may be a keyboard-only enhancement on desktop when rank 5 reaches the same content by mouse and touch.
+
 ## Rules adopted without a component yet
 
 Every error or refusal states what went wrong, then how the caller fixes it; apologise only when the product itself failed.

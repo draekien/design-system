@@ -19,6 +19,12 @@ export default defineConfig({
     !isTest &&
       tanstackStart({
         importProtection: { behavior: "error" },
+        pages: [
+          { path: "/playground/record-list" },
+          { path: "/playground/theme" },
+          { path: "/playground/rules" },
+          { path: "/canvas/record-list" },
+        ],
         prerender: {
           enabled: true,
           crawlLinks: true,
@@ -33,7 +39,12 @@ export default defineConfig({
     projects: [
       {
         extends: true,
-        test: { name: "unit", environment: "jsdom", setupFiles: ["./src/setup.ts"] },
+        test: {
+          name: "unit",
+          environment: "jsdom",
+          setupFiles: ["./src/setup.ts"],
+          css: { include: /globals\.css/ },
+        },
       },
     ],
   },

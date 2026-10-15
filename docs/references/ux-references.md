@@ -1,5 +1,5 @@
 Source: prior research by the repository owner, from the sites linked in each table
-Captured: 2026-10-06 (interaction patterns) and 2026-10-08 (disclosure and actions)
+Captured: 2026-10-06 (interaction patterns), 2026-10-08 (disclosure and actions) and 2026-10-16 (row anatomy)
 
 # UX references
 
@@ -51,6 +51,11 @@ This section is the evidence behind the design system's disclosure and action ru
 | [Stripe Apps design](https://docs.stripe.com/stripe-apps/design) | Detail opens beside the content it qualifies by default; a full-focus view is for long uninterrupted work | "default to `ContextView`." |
 | [Saga Interactive table](https://grafana.com/developers/saga/components/interactive-table) | An expanded row removes detail from the primary table | "The expanded row area should be used to declutter the primary presentation of data." |
 | [Saga Tooltip](https://grafana.com/developers/saga/components/tooltip) | A tooltip carries nothing task-critical, does not repeat a label, and shows on keyboard focus | "Do not house information critical to a user's task completion in the tooltip." |
+| [Primer DataTable](https://github.com/primer/design/blob/main/content/components/data-table.mdx) | On narrow screens drop the less important columns; wrap before truncating | "Remove less important columns" |
+| [Primer DataTable](https://github.com/primer/design/blob/main/content/components/data-table.mdx) | Numbers align for comparison | "Right-align numeric values and use the `tabular-num` font variant" |
+| [Saga Lists of objects](https://github.com/grafana/design-system/blob/main/docs/07-templates/lists-of-objects.mdx) | A list ranks its fields by typography and layout | "Lists allow you to use typography and layout to emphasize important fields and deemphasize supplemental data." |
+| [Saga List page](https://github.com/grafana/design-system/blob/main/docs/07-templates/list-page.mdx) | Each list item links to its own detail page | "Each item is a link to a new page where either detail or create view can be displayed." |
+| [Geist Entity](https://vercel.com/geist/entity) | A row leads with what identifies it, then its label, then metadata | "Lead with a scannable identifier, such as an Avatar or icon" |
 
 ### Ranking actions
 

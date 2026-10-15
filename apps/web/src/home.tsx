@@ -1,5 +1,6 @@
 import { GithubIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { Link } from "@tanstack/react-router"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { Mark } from "./mark.tsx"
 import { RecordDemo } from "./record-demo.tsx"
@@ -32,7 +33,7 @@ export function Home({ state }: { state: FixtureState }) {
             revealed. Built on Base UI, installed from a shadcn registry, and every rule cites the
             design system it came from.
           </p>
-          <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-4">
+          <div className="mt-9 flex flex-wrap items-start gap-x-5 gap-y-4">
             <a
               href={repositoryUrl}
               className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-5 font-semibold text-primary-foreground shadow-[0_1px_0_rgb(255_255_255/0.25)_inset,0_6px_16px_-6px_rgb(242_111_33/0.6)] transition-[background-color,box-shadow] hover:bg-[#e4621a] focus-visible:outline-2 focus-visible:outline-foreground focus-visible:outline-offset-3"
@@ -40,13 +41,20 @@ export function Home({ state }: { state: FixtureState }) {
               <HugeiconsIcon icon={GithubIcon} size={18} strokeWidth={1.75} aria-hidden="true" />
               Watch on GitHub
             </a>
-            <p className="flex items-center gap-2.5 text-muted-foreground text-sm">
-              <span
-                aria-hidden="true"
-                className="size-2 rounded-full border-[1.5px] border-muted-foreground border-dashed"
-              />
-              Docs and first components coming soon
-            </p>
+            <div className="flex flex-col items-end gap-3">
+              <Link
+                to="/playground"
+                className="inline-flex min-h-11 items-center rounded-lg border bg-background px-5 font-semibold transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-3"
+              >
+                Open the playground
+              </Link>
+              <Link
+                to="/playground/rules"
+                className="rounded-sm font-medium text-sm underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-3"
+              >
+                Read the rules
+              </Link>
+            </div>
           </div>
         </div>
 

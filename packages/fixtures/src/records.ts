@@ -13,8 +13,13 @@ export type SampleRecord = {
   updated: string
   /** The absolute time of the last update, for example `"15 Oct 2026, 09:12"`. */
   updatedAt: string
+  /** The time of the last update as an ISO 8601 string, measured from {@link fixtureNow}. */
+  updatedIso: string
   summary: string
 }
+
+/** The moment every fixture's relative times are measured from. */
+export const fixtureNow = "2026-10-15T11:12:00Z"
 
 /** Four synthetic records, newest first. */
 export const sampleRecords: readonly SampleRecord[] = [
@@ -27,6 +32,7 @@ export const sampleRecords: readonly SampleRecord[] = [
     team: "Security",
     updated: "2 hours ago",
     updatedAt: "15 Oct 2026, 09:12",
+    updatedIso: "2026-10-15T09:12:00Z",
     summary: "Confirms who holds admin roles on the billing and support workspaces.",
   },
   {
@@ -38,6 +44,7 @@ export const sampleRecords: readonly SampleRecord[] = [
     team: "Compliance",
     updated: "2 days ago",
     updatedAt: "13 Oct 2026, 16:40",
+    updatedIso: "2026-10-13T16:40:00Z",
     summary: "Shortens audit-log retention from 400 to 365 days for archived workspaces.",
   },
   {
@@ -49,6 +56,7 @@ export const sampleRecords: readonly SampleRecord[] = [
     team: "Procurement",
     updated: "5 days ago",
     updatedAt: "10 Oct 2026, 11:05",
+    updatedIso: "2026-10-10T11:05:00Z",
     summary: "Renews the error-tracking contract with a seat cap of 40.",
   },
   {
@@ -60,6 +68,7 @@ export const sampleRecords: readonly SampleRecord[] = [
     team: "Platform",
     updated: "1 week ago",
     updatedAt: "8 Oct 2026, 14:30",
+    updatedIso: "2026-10-08T14:30:00Z",
     summary: "Adds a timeout alert to the export queue after the 3 March outage.",
   },
 ]
