@@ -22,6 +22,7 @@ export default defineConfig({
         pages: [
           { path: "/playground/record-list" },
           { path: "/playground/theme" },
+          { path: "/playground/rules" },
           { path: "/canvas/record-list" },
         ],
         prerender: {

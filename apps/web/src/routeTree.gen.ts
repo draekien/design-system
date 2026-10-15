@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlaygroundRouteRouteImport } from './routes/playground/route'
 import { Route as CanvasRecordListRouteImport } from './routes/canvas/record-list'
+import { Route as PlaygroundIndexRouteImport } from './routes/playground/index'
 import { Route as PlaygroundRecordListRouteImport } from './routes/playground/record-list'
+import { Route as PlaygroundRulesRouteImport } from './routes/playground/rules'
 import { Route as PlaygroundThemeRouteImport } from './routes/playground/theme'
 
 const IndexRoute = IndexRouteImport.update({
@@ -30,9 +32,19 @@ const CanvasRecordListRoute = CanvasRecordListRouteImport.update({
   path: '/canvas/record-list',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlaygroundIndexRoute = PlaygroundIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PlaygroundRouteRoute,
+} as any)
 const PlaygroundRecordListRoute = PlaygroundRecordListRouteImport.update({
   id: '/record-list',
   path: '/record-list',
+  getParentRoute: () => PlaygroundRouteRoute,
+} as any)
+const PlaygroundRulesRoute = PlaygroundRulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
   getParentRoute: () => PlaygroundRouteRoute,
 } as any)
 const PlaygroundThemeRoute = PlaygroundThemeRouteImport.update({
@@ -46,14 +58,17 @@ export interface FileRoutesByFullPath {
   '/playground': typeof PlaygroundRouteRouteWithChildren
   '/canvas/record-list': typeof CanvasRecordListRoute
   '/playground/record-list': typeof PlaygroundRecordListRoute
+  '/playground/rules': typeof PlaygroundRulesRoute
   '/playground/theme': typeof PlaygroundThemeRoute
+  '/playground/': typeof PlaygroundIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/playground': typeof PlaygroundRouteRouteWithChildren
   '/canvas/record-list': typeof CanvasRecordListRoute
   '/playground/record-list': typeof PlaygroundRecordListRoute
+  '/playground/rules': typeof PlaygroundRulesRoute
   '/playground/theme': typeof PlaygroundThemeRoute
+  '/playground': typeof PlaygroundIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,7 +76,9 @@ export interface FileRoutesById {
   '/playground': typeof PlaygroundRouteRouteWithChildren
   '/canvas/record-list': typeof CanvasRecordListRoute
   '/playground/record-list': typeof PlaygroundRecordListRoute
+  '/playground/rules': typeof PlaygroundRulesRoute
   '/playground/theme': typeof PlaygroundThemeRoute
+  '/playground/': typeof PlaygroundIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -70,21 +87,26 @@ export interface FileRouteTypes {
     | '/playground'
     | '/canvas/record-list'
     | '/playground/record-list'
+    | '/playground/rules'
     | '/playground/theme'
+    | '/playground/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/playground'
     | '/canvas/record-list'
     | '/playground/record-list'
+    | '/playground/rules'
     | '/playground/theme'
+    | '/playground'
   id:
     | '__root__'
     | '/'
     | '/playground'
     | '/canvas/record-list'
     | '/playground/record-list'
+    | '/playground/rules'
     | '/playground/theme'
+    | '/playground/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,11 +138,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CanvasRecordListRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/playground/': {
+      id: '/playground/'
+      path: '/'
+      fullPath: '/playground/'
+      preLoaderRoute: typeof PlaygroundIndexRouteImport
+      parentRoute: typeof PlaygroundRouteRoute
+    }
     '/playground/record-list': {
       id: '/playground/record-list'
       path: '/record-list'
       fullPath: '/playground/record-list'
       preLoaderRoute: typeof PlaygroundRecordListRouteImport
+      parentRoute: typeof PlaygroundRouteRoute
+    }
+    '/playground/rules': {
+      id: '/playground/rules'
+      path: '/rules'
+      fullPath: '/playground/rules'
+      preLoaderRoute: typeof PlaygroundRulesRouteImport
       parentRoute: typeof PlaygroundRouteRoute
     }
     '/playground/theme': {
@@ -135,12 +171,16 @@ declare module '@tanstack/react-router' {
 
 interface PlaygroundRouteRouteChildren {
   PlaygroundRecordListRoute: typeof PlaygroundRecordListRoute
+  PlaygroundRulesRoute: typeof PlaygroundRulesRoute
   PlaygroundThemeRoute: typeof PlaygroundThemeRoute
+  PlaygroundIndexRoute: typeof PlaygroundIndexRoute
 }
 
 const PlaygroundRouteRouteChildren: PlaygroundRouteRouteChildren = {
   PlaygroundRecordListRoute: PlaygroundRecordListRoute,
+  PlaygroundRulesRoute: PlaygroundRulesRoute,
   PlaygroundThemeRoute: PlaygroundThemeRoute,
+  PlaygroundIndexRoute: PlaygroundIndexRoute,
 }
 
 const PlaygroundRouteRouteWithChildren = PlaygroundRouteRoute._addFileChildren(

@@ -38,6 +38,14 @@ function PlaygroundLayout() {
           aria-label="Playground"
           className="flex gap-x-6 overflow-x-auto px-3 pb-3 lg:flex-col lg:gap-y-6 lg:px-3 lg:pt-4"
         >
+          <div className="flex shrink-0 items-center gap-1 lg:flex-col lg:items-stretch">
+            <Link to="/playground" activeOptions={{ exact: true }} className={navLink}>
+              Overview
+            </Link>
+            <Link to="/playground/rules" className={navLink}>
+              Rules
+            </Link>
+          </div>
           <NavGroup label="Components">
             <Link to="/playground/record-list" className={navLink}>
               Record list
