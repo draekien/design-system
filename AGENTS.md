@@ -44,6 +44,7 @@ Before editing files for a substantial task:
 - `apps/web`: TanStack Start on Vite, React, TypeScript, Vitest. The docs site and the `/playground/<component>` routes, prerendered to GitHub Pages.
 - `apps/lab`: greyscale coded wireframes, one route per wireframe, served by `pnpm dev` on port 3001 and never deployed.
 - `packages/ui` is the registry source: every component in it is installable through `packages/ui/registry.json`, and both apps import it as `@workspace/ui`.
+- Name a registry item in flat kebab-case for its role, never an `@shadcn` item name (`pnpm dlx shadcn@4.21.4 view @shadcn/<name>` fails when the name is free); item name, file name and main export match.
 - Inside `packages/ui`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/ui/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `"cn"`.
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that lab and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
