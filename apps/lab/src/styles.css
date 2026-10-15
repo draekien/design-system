@@ -1,0 +1,19 @@
+@import "@workspace/ui/globals.css";
+
+@custom-variant hover {
+  @media (hover: hover) {
+    &:hover:where(:not([data-pointer="coarse"] *)) {
+      @slot;
+    }
+  }
+}
+
+@custom-variant pointer-coarse {
+  @media (pointer: coarse) {
+    @slot;
+  }
+
+  &:where([data-pointer="coarse"] *) {
+    @slot;
+  }
+}

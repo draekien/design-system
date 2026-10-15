@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RecordListRouteImport } from './routes/record-list'
+import { Route as RecordsRecordIdRouteImport } from './routes/records/$recordId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const RecordListRoute = RecordListRouteImport.update({
   path: '/record-list',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecordsRecordIdRoute = RecordsRecordIdRouteImport.update({
+  id: '/records/$recordId',
+  path: '/records/$recordId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/record-list': typeof RecordListRoute
+  '/records/$recordId': typeof RecordsRecordIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/record-list': typeof RecordListRoute
+  '/records/$recordId': typeof RecordsRecordIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/record-list': typeof RecordListRoute
+  '/records/$recordId': typeof RecordsRecordIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/record-list'
+  fullPaths: '/' | '/record-list' | '/records/$recordId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/record-list'
-  id: '__root__' | '/' | '/record-list'
+  to: '/' | '/record-list' | '/records/$recordId'
+  id: '__root__' | '/' | '/record-list' | '/records/$recordId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RecordListRoute: typeof RecordListRoute
+  RecordsRecordIdRoute: typeof RecordsRecordIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecordListRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/records/$recordId': {
+      id: '/records/$recordId'
+      path: '/records/$recordId'
+      fullPath: '/records/$recordId'
+      preLoaderRoute: typeof RecordsRecordIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RecordListRoute: RecordListRoute,
+  RecordsRecordIdRoute: RecordsRecordIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

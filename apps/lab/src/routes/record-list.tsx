@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { fixtureStateSearch } from "@workspace/fixtures/state.ts"
-import { RecordListWireframe } from "../record-list.tsx"
+import { RecordListCanvas } from "../record-list.tsx"
+import { recordListRules } from "../record-list-rules.ts"
+import { RuleNotes } from "../rule-notes.tsx"
 
 export const Route = createFileRoute("/record-list")({
-  validateSearch: fixtureStateSearch,
   component: RecordListRoute,
 })
 
 function RecordListRoute() {
-  const { state } = Route.useSearch()
-  return <RecordListWireframe state={state} />
+  const { embed, state, view } = Route.useSearch()
+  return embed ? (
+    <RecordListCanvas state={state} view={view} />
+  ) : (
+    <RuleNotes rules={recordListRules} />
+  )
 }
