@@ -49,6 +49,9 @@ Before editing files for a substantial task:
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that lab and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
 - A component moves wireframe in `apps/lab`, then component in `packages/ui`, then playground route in `apps/web`.
+- Every wireframe and playground page shows its rules table and two views of the component: the interactive lockup and an exploded view, each part drawn separately with its name as the label, nested under the part that contains it, hover cards and panels drawn open, following the `state` search param. On a playground page each part is the real `packages/ui` export.
+- A lab route renders its canvas (`view` selects lockup or exploded) when the `embed` search param is true, and its rules table otherwise; the lab shell loads the canvas in an iframe sized by the `width` param.
+- Lab wireframes style hover and touch with `hover:` and `pointer-coarse:`; `apps/lab/src/styles.css` redefines both so the `pointer=coarse` param simulates a coarse pointer.
 - Run tasks from the repo root: `pnpm build`, `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm dev`.
 - Run `pnpm typecheck`, never a global `tsc`.
 - Use `pnpm exec` and `pnpm dlx`, never `npx`.
