@@ -1,4 +1,24 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "items": []
+  "items": [
+    {
+      "name": "record-list",
+      "type": "registry:ui",
+      "title": "Record list",
+      "description": "A list of record rows with one tab stop, arrow-key focus, keyboard peek and keyboard selection.",
+      "dependencies": ["@base-ui/react@1.8.0", "cn@0.4.0"],
+      "files": [{ "path": "src/components/record-list.tsx", "type": "registry:ui" }],
+      "docs": "Install record-row too: RecordList holds RecordRow children. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection, Esc closes peek and then clears the selection. RecordList renders no peek: read peekValue with onPeekValueChange and render the record's detail beside the list at wide widths and under the row at narrow ones. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/record-list"
+    },
+    {
+      "name": "record-row",
+      "type": "registry:ui",
+      "title": "Record row",
+      "description": "A 44px record row with fixed slots for selection, ID, status, title, owner and updated, hover cards, and a loading row that keeps the slot widths.",
+      "dependencies": ["@base-ui/react@1.8.0", "cn@0.4.0"],
+      "registryDependencies": ["draekien/design-system/record-list"],
+      "files": [{ "path": "src/components/record-row.tsx", "type": "registry:ui" }],
+      "docs": "Compose RecordRowSelect, then RecordRowLink holding RecordRowId, RecordRowStatus, RecordRowTitle, RecordRowOwner and RecordRowUpdated. Pass your router's link to RecordRowLink through render. Show only what the task needs in the row; put the rest in peek and the record page. A hover card (RecordRowCard) is mouse-only, so every field in it must also appear in peek and on the record page. While loading, render RecordRowLoading with the same slots. When a field fails to load or is withheld, put RecordRowFieldStatus in its slot and state why, and how to fix it, outside the row. Playground: https://design-system.wpei.me/playground/record-list"
+    }
+  ]
 }

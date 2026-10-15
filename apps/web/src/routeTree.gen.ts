@@ -10,33 +10,87 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlaygroundRouteRouteImport } from './routes/playground/route'
+import { Route as CanvasRecordListRouteImport } from './routes/canvas/record-list'
+import { Route as PlaygroundRecordListRouteImport } from './routes/playground/record-list'
+import { Route as PlaygroundThemeRouteImport } from './routes/playground/theme'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlaygroundRouteRoute = PlaygroundRouteRouteImport.update({
+  id: '/playground',
+  path: '/playground',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CanvasRecordListRoute = CanvasRecordListRouteImport.update({
+  id: '/canvas/record-list',
+  path: '/canvas/record-list',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlaygroundRecordListRoute = PlaygroundRecordListRouteImport.update({
+  id: '/record-list',
+  path: '/record-list',
+  getParentRoute: () => PlaygroundRouteRoute,
+} as any)
+const PlaygroundThemeRoute = PlaygroundThemeRouteImport.update({
+  id: '/theme',
+  path: '/theme',
+  getParentRoute: () => PlaygroundRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/playground': typeof PlaygroundRouteRouteWithChildren
+  '/canvas/record-list': typeof CanvasRecordListRoute
+  '/playground/record-list': typeof PlaygroundRecordListRoute
+  '/playground/theme': typeof PlaygroundThemeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/playground': typeof PlaygroundRouteRouteWithChildren
+  '/canvas/record-list': typeof CanvasRecordListRoute
+  '/playground/record-list': typeof PlaygroundRecordListRoute
+  '/playground/theme': typeof PlaygroundThemeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/playground': typeof PlaygroundRouteRouteWithChildren
+  '/canvas/record-list': typeof CanvasRecordListRoute
+  '/playground/record-list': typeof PlaygroundRecordListRoute
+  '/playground/theme': typeof PlaygroundThemeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/playground'
+    | '/canvas/record-list'
+    | '/playground/record-list'
+    | '/playground/theme'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/playground'
+    | '/canvas/record-list'
+    | '/playground/record-list'
+    | '/playground/theme'
+  id:
+    | '__root__'
+    | '/'
+    | '/playground'
+    | '/canvas/record-list'
+    | '/playground/record-list'
+    | '/playground/theme'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PlaygroundRouteRoute: typeof PlaygroundRouteRouteWithChildren
+  CanvasRecordListRoute: typeof CanvasRecordListRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +102,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/playground': {
+      id: '/playground'
+      path: '/playground'
+      fullPath: '/playground'
+      preLoaderRoute: typeof PlaygroundRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/canvas/record-list': {
+      id: '/canvas/record-list'
+      path: '/canvas/record-list'
+      fullPath: '/canvas/record-list'
+      preLoaderRoute: typeof CanvasRecordListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/playground/record-list': {
+      id: '/playground/record-list'
+      path: '/record-list'
+      fullPath: '/playground/record-list'
+      preLoaderRoute: typeof PlaygroundRecordListRouteImport
+      parentRoute: typeof PlaygroundRouteRoute
+    }
+    '/playground/theme': {
+      id: '/playground/theme'
+      path: '/theme'
+      fullPath: '/playground/theme'
+      preLoaderRoute: typeof PlaygroundThemeRouteImport
+      parentRoute: typeof PlaygroundRouteRoute
+    }
   }
 }
 
+interface PlaygroundRouteRouteChildren {
+  PlaygroundRecordListRoute: typeof PlaygroundRecordListRoute
+  PlaygroundThemeRoute: typeof PlaygroundThemeRoute
+}
+
+const PlaygroundRouteRouteChildren: PlaygroundRouteRouteChildren = {
+  PlaygroundRecordListRoute: PlaygroundRecordListRoute,
+  PlaygroundThemeRoute: PlaygroundThemeRoute,
+}
+
+const PlaygroundRouteRouteWithChildren = PlaygroundRouteRoute._addFileChildren(
+  PlaygroundRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PlaygroundRouteRoute: PlaygroundRouteRouteWithChildren,
+  CanvasRecordListRoute: CanvasRecordListRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

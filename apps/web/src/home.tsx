@@ -1,5 +1,6 @@
 import { GithubIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { Link } from "@tanstack/react-router"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { Mark } from "./mark.tsx"
 import { RecordDemo } from "./record-demo.tsx"
@@ -40,12 +41,18 @@ export function Home({ state }: { state: FixtureState }) {
               <HugeiconsIcon icon={GithubIcon} size={18} strokeWidth={1.75} aria-hidden="true" />
               Watch on GitHub
             </a>
+            <Link
+              to="/playground/record-list"
+              className="inline-flex min-h-11 items-center rounded-lg border bg-background px-5 font-semibold transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-3"
+            >
+              Try the record list
+            </Link>
             <p className="flex items-center gap-2.5 text-muted-foreground text-sm">
               <span
                 aria-hidden="true"
                 className="size-2 rounded-full border-[1.5px] border-muted-foreground border-dashed"
               />
-              Docs and first components coming soon
+              Docs coming soon
             </p>
           </div>
         </div>

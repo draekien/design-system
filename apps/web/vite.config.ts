@@ -19,6 +19,11 @@ export default defineConfig({
     !isTest &&
       tanstackStart({
         importProtection: { behavior: "error" },
+        pages: [
+          { path: "/playground/record-list" },
+          { path: "/playground/theme" },
+          { path: "/canvas/record-list" },
+        ],
         prerender: {
           enabled: true,
           crawlLinks: true,
