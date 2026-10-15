@@ -42,10 +42,10 @@ export function Home({ state }: { state: FixtureState }) {
               Watch on GitHub
             </a>
             <Link
-              to="/playground/record-list"
+              to="/playground"
               className="inline-flex min-h-11 items-center rounded-lg border bg-background px-5 font-semibold transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-3"
             >
-              Try the record list
+              Open the playground
             </Link>
             <p className="flex items-center gap-2.5 text-muted-foreground text-sm">
               <span
