@@ -1,7 +1,7 @@
 ---
 title: Dev tooling for wireframes, production components and the playground
 date: 2026-10-14
-status: active
+status: done
 supersedes:
 ---
 
@@ -88,6 +88,16 @@ design-system/
 
 - `pnpm dev` serves `apps/web` on port `3000` and `apps/lab` on port `3001`.
 - `pnpm build`, `pnpm check`, `pnpm typecheck` and `pnpm test` pass from the repository root.
-- `pnpm dlx shadcn@4.21.4 build` resolves the root `registry.json` include without errors. <!-- unverified: the build command and version are taken from the shadcn MCP pin in `AGENTS.md`, not checked against this registry -->
+- `pnpm dlx shadcn@4.21.4 build` resolves the root `registry.json` include without errors.
 - No route under `apps/web/src/routes/examples/` exists.
 - The Pages workflow publishes the prerendered site, and `https://design-system.wpei.me/playground/<component>` loads with a `state` search param on the published site.
+
+## Outcome
+
+Verified 2026-10-15 against commit `2c2de88`:
+
+- `pnpm build`, `pnpm check`, `pnpm typecheck` and `pnpm test` pass from the repository root.
+- `pnpm dlx shadcn@4.21.4 build --output <dir>` exits 0 and writes a flattened `registry.json` with `"items": []` and no `include`.
+- `apps/web/vite.config.ts` sets port `3000`; `apps/lab/vite.config.ts` sets port `3001`.
+- `https://design-system.wpei.me/` returns 200, published by the `pages.yml` run for `2c2de88`.
+- Not met: no `/playground/<component>` route exists because no component is in `packages/ui/registry.json` yet. The first component adds its playground route, following the order in `AGENTS.md`.

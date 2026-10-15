@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-The docs site is scaffolded with `@draekien/create-d9-app` (`pnpm create @draekien/d9-app`): TanStack Start on Vite, Tailwind CSS 4, shadcn on Base UI with Hugeicons, Vitest, Biome, pnpm. The scaffold does not prerender its app for static hosting; configuring the GitHub Pages output is undecided.
+The docs site is scaffolded with `@draekien/create-d9-app` (`pnpm create @draekien/d9-app`): TanStack Start on Vite, Tailwind CSS 4, shadcn on Base UI with Hugeicons, Vitest, Biome, pnpm. `apps/web` prerenders every route to static HTML, and `.github/workflows/pages.yml` publishes it to GitHub Pages at `https://design-system.wpei.me/`.
 
 ## Users
 
@@ -28,7 +28,7 @@ The rules live in how the components compose, built on Base UI's composition API
 - The registry is `registry.json` at the repository root, installed from GitHub; GitHub Pages hosts only the docs site (docs/adr/0002-serve-the-registry-from-the-github-repository.md).
 - Each registry item carries its usage guidance in its `docs` field, and the docs site carries the full guidelines.
 - Rule precedence: Linear first; Primer, Carbon, Geist, Stripe Apps and Saga only where Linear has no answer. Hover cards may hold links, following Linear over Primer.
-- Undecided: the component list, item naming, and the docs site's static build configuration.
+- Undecided: the component list and item naming.
 
 ## Brand Commitments
 
