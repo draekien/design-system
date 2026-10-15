@@ -1,6 +1,5 @@
 import { Checkbox } from "@base-ui/react/checkbox"
 import { mergeProps } from "@base-ui/react/merge-props"
-import { PreviewCard } from "@base-ui/react/preview-card"
 import { useRender } from "@base-ui/react/use-render"
 import { cn } from "cn"
 import * as React from "react"
@@ -11,7 +10,7 @@ type RecordRowContextValue =
   | {
       kind: "record"
       value: string
-      titleId: string
+      nameId: string
       isSelected: boolean
       isPeeked: boolean
     }
@@ -27,20 +26,22 @@ function useRecordRow(part: string): RecordRowContextValue {
   return context
 }
 
-const rowClass = "group/record-row flex h-11 items-center gap-1 border-b px-2"
+/**
+ * How a part behaves when the list is narrow. `"keep"` always draws it in full. `"abbreviate"`
+ * swaps it for its short form when the list is narrower than 768px. `"hide"` abbreviates it below
+ * 768px and removes it below 640px; a hidden value must still appear in peek and on the item's page.
+ */
+export type RecordRowNarrow = "keep" | "abbreviate" | "hide"
 
-const slotClass = {
-  select: "flex size-6 shrink-0 items-center justify-center pointer-coarse:size-11",
-  link: "flex h-full min-w-0 flex-1 items-center gap-3 px-1",
-  id: "hidden w-16 shrink-0 truncate text-muted-foreground text-xs tabular-nums @min-[40rem]:block",
-  status: "flex size-6 shrink-0 items-center justify-center",
-  title:
-    "min-w-0 flex-1 truncate font-medium text-sm decoration-2 decoration-ring underline-offset-3 group-focus-visible/record-row-link:underline",
-  owner:
-    "flex w-6 shrink-0 items-center text-sm has-data-[slot=record-row-field-status]:w-20 @min-[40rem]:w-36 @min-[40rem]:has-data-[slot=record-row-field-status]:w-36",
-  updated:
-    "hidden w-20 shrink-0 justify-end text-muted-foreground text-xs tabular-nums @min-[48rem]:flex",
+const narrowClass: Readonly<Record<RecordRowNarrow, string>> = {
+  keep: "",
+  abbreviate:
+    "@max-[48rem]:**:data-[abbreviation=long]:sr-only @max-[48rem]:**:data-[abbreviation=short]:inline",
+  hide: "@max-[48rem]:**:data-[abbreviation=long]:sr-only @max-[48rem]:**:data-[abbreviation=short]:inline @max-[40rem]:hidden",
 }
+
+const rowClass =
+  "group/record-row col-span-full grid min-h-11 grid-cols-subgrid items-center border-b px-2"
 
 function Bar({ className }: { className: string }) {
   return (
@@ -50,14 +51,16 @@ function Bar({ className }: { className: string }) {
 
 /** Props for {@link RecordRow}. */
 export type RecordRowProps = useRender.ComponentProps<"li"> & {
-  /** The record's unique value. `RecordList` selection and peek refer to rows by this value. */
+  /** The item's unique value. `RecordList` selection and peek refer to rows by this value. */
   value: string
 }
 
 /**
- * One record in a `RecordList`. Compose its slots in this order: `RecordRowSelect`, then
- * `RecordRowLink` holding `RecordRowId`, `RecordRowStatus`, `RecordRowTitle`, `RecordRowOwner`
- * and `RecordRowUpdated`. Each slot has a fixed width so columns align down the list.
+ * One item in a `RecordList`. Its parts are named for the rank of the information they hold:
+ * `RecordRowIdentify` (rank 1: what the item is), one `RecordRowRead` per reading the list exists
+ * for (rank 2), and `RecordRowLink` to the item's own page (rank 5). Rank 3 is peek, rendered
+ * beside the list from `RecordList`'s `peekValue`; rank 4 is a `field-card` on a rank 1 or 2 value.
+ * Columns line up down the list whatever the values are.
  */
 export function RecordRow({
   value,
@@ -66,7 +69,7 @@ export function RecordRow({
   ...props
 }: RecordRowProps): React.ReactElement {
   const list = useRecordList()
-  const titleId = React.useId()
+  const nameId = React.useId()
   const isSelected = list.selectedValues.includes(value)
   const isPeeked = list.peekValue === value
 
@@ -87,16 +90,15 @@ export function RecordRow({
   })
 
   return (
-    <RecordRowContext.Provider value={{ kind: "record", value, titleId, isSelected, isPeeked }}>
+    <RecordRowContext.Provider value={{ kind: "record", value, nameId, isSelected, isPeeked }}>
       {element}
     </RecordRowContext.Provider>
   )
 }
 
 /**
- * A placeholder row shown while records load. Compose the same slots as `RecordRow`; each slot
- * draws a bar at its own width and ignores its children, so the loading row matches the rows
- * that replace it.
+ * A placeholder row shown while items load. Compose the same parts as `RecordRow`; each part draws
+ * a bar and ignores its children, so the loading row has the columns of the rows that replace it.
  */
 export function RecordRowLoading({
   render,
@@ -120,10 +122,13 @@ export type RecordRowSelectProps = Omit<
   "checked" | "defaultChecked" | "onCheckedChange" | "children"
 >
 
+const selectClass =
+  "col-start-1 flex size-6 shrink-0 items-center justify-center pointer-coarse:size-11"
+
 /**
  * The row's selection checkbox. It is 24×24px, 44×44px on a coarse pointer, and is drawn only on
  * a hovered, focused or selected row, and always on a coarse pointer. It is not a tab stop: X on
- * the focused row toggles it. Its accessible name is "Select" followed by the row's title.
+ * the focused row toggles it. Its accessible name is "Select" followed by the row's name.
  */
 export function RecordRowSelect({ className, ...props }: RecordRowSelectProps): React.ReactElement {
   const row = useRecordRow("RecordRowSelect")
@@ -131,7 +136,7 @@ export function RecordRowSelect({ className, ...props }: RecordRowSelectProps): 
   const labelId = React.useId()
 
   if (row.kind === "loading") {
-    return <span data-slot="record-row-select" className={slotClass.select} />
+    return <span data-slot="record-row-select" className={selectClass} />
   }
 
   return (
@@ -140,9 +145,9 @@ export function RecordRowSelect({ className, ...props }: RecordRowSelectProps): 
       tabIndex={-1}
       checked={row.isSelected}
       onCheckedChange={() => list.onToggleSelected(row.value)}
-      aria-labelledby={`${labelId} ${row.titleId}`}
+      aria-labelledby={`${labelId} ${row.nameId}`}
       className={cn(
-        slotClass.select,
+        selectClass,
         "group/select invisible cursor-pointer rounded-md outline-none data-checked:visible pointer-coarse:visible group-hover/record-row:visible group-has-[[data-slot=record-row-link]:focus-visible]/record-row:visible",
         className
       )}
@@ -169,9 +174,12 @@ export function RecordRowSelect({ className, ...props }: RecordRowSelectProps): 
   )
 }
 
+const linkClass = "col-[2/-1] grid h-full min-h-11 grid-cols-subgrid items-center pl-1"
+
 /**
- * The link to the record's page, holding every slot after `RecordRowSelect`. Pass your router's
- * link through `render`. It is the row's one focus target and handles the `RecordList` keys.
+ * The link to the item's own page (rank 5), holding `RecordRowIdentify` and the `RecordRowRead`s.
+ * Pass your router's link through `render`. It is the row's one focus target and handles the
+ * `RecordList` keys.
  */
 export function RecordRowLink({
   render,
@@ -190,7 +198,7 @@ export function RecordRowLink({
     props: isRecord
       ? mergeProps<"a">(
           {
-            className: cn(slotClass.link, "group/record-row-link outline-none", className),
+            className: cn(linkClass, "group/record-row-link outline-none", className),
             tabIndex: list.activeValue === row.value ? 0 : -1,
             "aria-expanded": row.isPeeked,
             "aria-keyshortcuts": "Space X ArrowUp ArrowDown Home End Escape",
@@ -205,18 +213,25 @@ export function RecordRowLink({
           },
           props
         )
-      : { className: cn(slotClass.link, className), children },
+      : { className: cn(linkClass, className), children },
   })
 }
 
-type SlotPartProps = useRender.ComponentProps<"span">
+/** Props for a row part. */
+export type RecordRowPartProps = useRender.ComponentProps<"span">
 
-function useSlotPart(
+/** Props for a row part whose narrow behaviour the caller chooses. */
+export type RecordRowNarrowPartProps = RecordRowPartProps & {
+  /** How the part behaves when the list is narrow. Defaults to `"keep"`. */
+  narrow?: RecordRowNarrow
+}
+
+function usePart(
   part: string,
   slot: string,
-  slotClassName: string,
+  partClassName: string,
   placeholder: React.ReactNode,
-  { render, className, children, ...props }: SlotPartProps
+  { render, className, children, ...props }: RecordRowPartProps
 ) {
   const row = useRecordRow(part)
   const isRecord = row.kind === "record"
@@ -225,197 +240,90 @@ function useSlotPart(
     render: isRecord ? render : <span />,
     state: { slot },
     props: mergeProps<"span">(
-      { className: cn(slotClassName, className) },
+      { className: cn(partClassName, className) },
       isRecord ? { ...props, children } : { children: placeholder }
     ),
   })
 }
 
-/** The record's identifier, 64px wide, in muted tabular figures. Hidden when the list is narrower than 640px. */
-export function RecordRowId(props: SlotPartProps): React.ReactElement {
-  return useSlotPart(
-    "RecordRowId",
-    "record-row-id",
-    slotClass.id,
-    <Bar className="w-full" />,
+/**
+ * Rank 1: what the item is. Holds an optional `RecordRowKey` and `RecordRowGlyph`, then one
+ * `RecordRowName`, at the start of the row.
+ */
+export function RecordRowIdentify({ children, ...props }: RecordRowPartProps): React.ReactElement {
+  return usePart(
+    "RecordRowIdentify",
+    "record-row-identify",
+    "col-[1/4] grid min-w-0 grid-cols-subgrid items-center",
+    children,
+    { ...props, children }
+  )
+}
+
+/** The item's key, such as `REC-104`, in muted tabular figures. */
+export function RecordRowKey({
+  narrow = "keep",
+  ...props
+}: RecordRowNarrowPartProps): React.ReactElement {
+  return usePart(
+    "RecordRowKey",
+    "record-row-key",
+    cn("col-start-1 truncate pr-3 text-muted-foreground text-xs tabular-nums", narrowClass[narrow]),
+    <Bar className="w-12" />,
     props
   )
 }
 
-/** Props for {@link RecordRowStatus}. */
-export type RecordRowStatusProps = SlotPartProps & {
-  /** The status read by screen readers, for example `"In review"`. The children are drawn and hidden from screen readers. */
-  label: string
-}
-
-/** A 24×24px status glyph. Wrap the glyph in a `RecordRowCard` to show more about the status on hover. */
-export function RecordRowStatus({
-  label,
-  children,
+/**
+ * A 24×24px glyph drawn between the key and the name, such as a status dot or the item's kind.
+ * Only the glyph is drawn: a word inside it, such as a `StatusMarkLabel`, is read by screen
+ * readers only, so pair every glyph with its word.
+ */
+export function RecordRowGlyph({
+  narrow = "keep",
   ...props
-}: RecordRowStatusProps): React.ReactElement {
-  return useSlotPart(
-    "RecordRowStatus",
-    "record-row-status",
-    slotClass.status,
+}: RecordRowNarrowPartProps): React.ReactElement {
+  return usePart(
+    "RecordRowGlyph",
+    "record-row-glyph",
+    cn(
+      "col-start-2 mr-2 flex size-6 items-center justify-center **:data-[abbreviation=long]:sr-only",
+      narrowClass[narrow]
+    ),
     <span className="size-2.5 rounded-full bg-muted" />,
-    {
-      ...props,
-      children: (
-        <>
-          <span aria-hidden="true" className="contents">
-            {children}
-          </span>
-          <span className="sr-only">{label}</span>
-        </>
-      ),
-    }
+    props
   )
 }
 
-/** The record's title. Fills the width left over by the other slots and truncates. */
-export function RecordRowTitle(props: SlotPartProps): React.ReactElement {
-  const row = useRecordRow("RecordRowTitle")
-  const id = row.kind === "record" ? row.titleId : undefined
-  return useSlotPart(
-    "RecordRowTitle",
-    "record-row-title",
-    slotClass.title,
+/**
+ * The item's name. It fills the width the other columns leave and truncates; it is never hidden.
+ * The row's focus underline is drawn under it.
+ */
+export function RecordRowName(props: RecordRowPartProps): React.ReactElement {
+  const row = useRecordRow("RecordRowName")
+  return usePart(
+    "RecordRowName",
+    "record-row-name",
+    "col-start-3 min-w-0 truncate font-medium text-sm decoration-2 decoration-ring underline-offset-3 group-focus-visible/record-row-link:underline",
     <Bar className="w-2/3" />,
-    {
-      ...props,
-      id,
-    }
+    { ...props, id: row.kind === "record" ? row.nameId : undefined }
   )
 }
 
 /**
- * The record's owner, 24px wide (initials only) when the list is narrower than 640px and 144px
- * from 640px. Holds a `RecordRowPerson`, or a `RecordRowFieldStatus` when the owner failed to
- * load or is withheld.
+ * Rank 2: one reading the list exists for, such as a state or a figure the caller compares. Each
+ * `RecordRowRead` is its own column, and the row holds at most eight. Hold one content item in it:
+ * a `person-mark`, `figure`, `track`, `relative-time`, `status-mark` or `field-state`.
  */
-export function RecordRowOwner(props: SlotPartProps): React.ReactElement {
-  return useSlotPart(
-    "RecordRowOwner",
-    "record-row-owner",
-    slotClass.owner,
-    <Bar className="w-full" />,
+export function RecordRowRead({
+  narrow = "keep",
+  ...props
+}: RecordRowNarrowPartProps): React.ReactElement {
+  return usePart(
+    "RecordRowRead",
+    "record-row-read",
+    cn("flex min-w-0 items-center pl-4 text-sm", narrowClass[narrow]),
+    <Bar className="w-16" />,
     props
-  )
-}
-
-/** When the record was last updated, 80px wide and right-aligned. Hidden when the list is narrower than 768px. */
-export function RecordRowUpdated(props: SlotPartProps): React.ReactElement {
-  return useSlotPart(
-    "RecordRowUpdated",
-    "record-row-updated",
-    slotClass.updated,
-    <Bar className="w-full" />,
-    props
-  )
-}
-
-function initialsOf(name: string) {
-  const parts = name.trim().split(/\s+/)
-  const first = parts[0]?.[0] ?? ""
-  const last = parts.length > 1 ? (parts.at(-1)?.[0] ?? "") : ""
-  return `${first}${last}`.toUpperCase()
-}
-
-/** A person's initials in a 24×24px circle, then their name when the list is 640px or wider. */
-export function RecordRowPerson({
-  name,
-  className,
-  ...props
-}: React.ComponentProps<"span"> & { name: string }): React.ReactElement {
-  return (
-    <span
-      data-slot="record-row-person"
-      className={cn("flex min-w-0 items-center gap-2", className)}
-      {...props}
-    >
-      <span
-        aria-hidden="true"
-        className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted font-medium text-[0.625rem] text-muted-foreground"
-      >
-        {initialsOf(name)}
-      </span>
-      <span className="sr-only truncate @min-[40rem]:not-sr-only">{name}</span>
-    </span>
-  )
-}
-
-const fieldStatusLabel = { unavailable: "Unavailable", hidden: "Hidden" } as const
-
-/**
- * Stands in for a field value the row cannot show. `"unavailable"` when the field failed to load;
- * `"hidden"` when the viewer's role cannot see it. State why, and how to get access, outside the row.
- */
-export function RecordRowFieldStatus({
-  status,
-  className,
-  ...props
-}: React.ComponentProps<"span"> & { status: keyof typeof fieldStatusLabel }): React.ReactElement {
-  return (
-    <span
-      data-slot="record-row-field-status"
-      className={cn("truncate text-muted-foreground text-xs @min-[40rem]:text-sm", className)}
-      {...props}
-    >
-      {fieldStatusLabel[status]}
-    </span>
-  )
-}
-
-/** A hover card on a row slot. Opens 300ms after the pointer enters its trigger and closes as soon as it leaves. */
-export function RecordRowCard(props: PreviewCard.Root.Props): React.ReactElement {
-  return <PreviewCard.Root {...props} />
-}
-
-/**
- * The part of a slot that opens its `RecordRowCard` on hover. It is not focusable; peek and the
- * record page are the keyboard and touch routes to the same fields.
- */
-export function RecordRowCardTrigger({
-  className,
-  ...props
-}: PreviewCard.Trigger.Props): React.ReactElement {
-  return (
-    <PreviewCard.Trigger
-      data-slot="record-row-card-trigger"
-      delay={300}
-      closeDelay={0}
-      render={<span />}
-      className={cn("flex min-h-6 min-w-6 max-w-full items-center justify-center gap-2", className)}
-      {...props}
-    />
-  )
-}
-
-/** Props for {@link RecordRowCardContent}. */
-export type RecordRowCardContentProps = PreviewCard.Popup.Props &
-  Pick<PreviewCard.Positioner.Props, "align" | "side" | "sideOffset">
-
-/** The card drawn below its trigger. Keep it to fields the row does not show; it may hold links. */
-export function RecordRowCardContent({
-  align = "start",
-  side = "bottom",
-  sideOffset = 6,
-  className,
-  ...props
-}: RecordRowCardContentProps): React.ReactElement {
-  return (
-    <PreviewCard.Portal>
-      <PreviewCard.Positioner align={align} side={side} sideOffset={sideOffset} className="z-50">
-        <PreviewCard.Popup
-          data-slot="record-row-card-content"
-          className={cn(
-            "w-60 origin-(--transform-origin) rounded-lg border bg-popover p-3 text-popover-foreground text-xs shadow-[0_1px_2px_rgb(0_0_0/0.05),0_10px_28px_-8px_rgb(0_0_0/0.18)] transition-[opacity,scale] duration-150 ease-out data-ending-style:opacity-0 data-ending-style:duration-0 data-starting-style:scale-[0.97] data-starting-style:opacity-0 motion-reduce:transition-none",
-            className
-          )}
-          {...props}
-        />
-      </PreviewCard.Positioner>
-    </PreviewCard.Portal>
   )
 }

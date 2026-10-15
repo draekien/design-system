@@ -1,7 +1,8 @@
 import { base, en, Faker } from "@faker-js/faker"
-import type { RecordStatus, SampleRecord } from "@workspace/fixtures/records.ts"
+import type { InvoiceStatus, SampleInvoice } from "@workspace/fixtures/invoices.ts"
+import { fixtureNow, type RecordStatus, type SampleRecord } from "@workspace/fixtures/records.ts"
 
-const referenceTime = Date.UTC(2026, 9, 15, 9, 30)
+const referenceTime = Date.parse(fixtureNow)
 
 const statuses: ReadonlyArray<RecordStatus> = ["draft", "in-review", "approved"]
 
@@ -53,6 +54,50 @@ export function randomRecords(seed: number, count: number): ReadonlyArray<Sample
     team: faker.commerce.department(),
     updated: relativeTime(minutes),
     updatedAt: absoluteTime.format(referenceTime - minutes * 60_000),
+    updatedIso: new Date(referenceTime - minutes * 60_000).toISOString(),
     summary: `${sentenceCase(faker.company.catchPhrase())}.`,
   }))
+}
+
+const invoiceStatuses: ReadonlyArray<InvoiceStatus> = ["draft", "sent", "paid"]
+
+const dueDate = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+})
+
+function paidShare(status: InvoiceStatus, share: number) {
+  switch (status) {
+    case "draft":
+      return 0
+    case "sent":
+      return share
+    case "paid":
+      return 1
+  }
+}
+
+export function randomInvoices(seed: number, count: number): ReadonlyArray<SampleInvoice> {
+  const faker = new Faker({ locale: [en, base], seed })
+  const dayOffsets = Array.from({ length: count }, () =>
+    faker.number.int({ min: -20, max: 40 })
+  ).sort((a, b) => a - b)
+
+  return dayOffsets.map((days, index) => {
+    const status = faker.helpers.arrayElement(invoiceStatuses)
+    const due = referenceTime + days * 24 * 60 * 60_000
+    return {
+      id: `INV-${3000 + count - index}`,
+      customer: faker.company.name(),
+      status,
+      amount: faker.number.float({ min: 400, max: 90_000, fractionDigits: 2 }),
+      paid: paidShare(status, faker.number.int({ min: 1, max: 9 }) / 10),
+      contact: faker.person.fullName(),
+      dueIso: new Date(due).toISOString(),
+      dueAt: dueDate.format(due),
+      summary: `${sentenceCase(faker.commerce.productDescription())}`,
+    }
+  })
 }

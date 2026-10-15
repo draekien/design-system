@@ -7,18 +7,126 @@
       "title": "Record list",
       "description": "A list of record rows with one tab stop, arrow-key focus, keyboard peek and keyboard selection.",
       "dependencies": ["@base-ui/react@1.8.0", "cn@0.4.0"],
-      "files": [{ "path": "src/components/record-list.tsx", "type": "registry:ui" }],
-      "docs": "Install record-row too: RecordList holds RecordRow children. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection, Esc closes peek and then clears the selection. RecordList renders no peek: read peekValue with onPeekValueChange and render the record's detail beside the list at wide widths and under the row at narrow ones. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/record-list"
+      "files": [
+        {
+          "path": "src/components/record-list.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Install record-row too: RecordList holds RecordRow children. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection, Esc closes peek and then clears the selection. RecordList renders no peek: read peekValue with onPeekValueChange and render the item's rank 3 detail beside the list at wide widths and under the row at narrow ones. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/record-list"
     },
     {
       "name": "record-row",
       "type": "registry:ui",
       "title": "Record row",
-      "description": "A 44px record row with fixed slots for selection, ID, status, title, owner and updated, hover cards, and a loading row that keeps the slot widths.",
+      "description": "A 44px row whose parts are named for the rank of what they hold, so any data lines up, reads and narrows by rank.",
       "dependencies": ["@base-ui/react@1.8.0", "cn@0.4.0"],
       "registryDependencies": ["draekien/design-system/record-list"],
-      "files": [{ "path": "src/components/record-row.tsx", "type": "registry:ui" }],
-      "docs": "Compose RecordRowSelect, then RecordRowLink holding RecordRowId, RecordRowStatus, RecordRowTitle, RecordRowOwner and RecordRowUpdated. Pass your router's link to RecordRowLink through render. Show only what the task needs in the row; put the rest in peek and the record page. A hover card (RecordRowCard) is mouse-only, so every field in it must also appear in peek and on the record page. While loading, render RecordRowLoading with the same slots. When a field fails to load or is withheld, put RecordRowFieldStatus in its slot and state why, and how to fix it, outside the row. Playground: https://design-system.wpei.me/playground/record-list"
+      "files": [
+        {
+          "path": "src/components/record-row.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Rank each value, then compose: RecordRowSelect, then RecordRowLink holding RecordRowIdentify (rank 1: an optional RecordRowKey, an optional RecordRowGlyph such as a status-mark drawn as its dot only, then RecordRowName) and one RecordRowRead per rank 2 reading, at most eight. Hold a person-mark, figure, track, relative-time, status-mark or field-state in each Read. Rank 3 is peek, rendered from RecordList's peekValue; rank 4 is a field-card on a rank 1 or 2 value; rank 5 is the item's page, reached through RecordRowLink's render. Columns line up down the list. When the list narrows the name truncates; set narrow=\"abbreviate\" to switch a part to its short form below 768px, or narrow=\"hide\" to drop it below 640px, and keep a hidden value in peek and on the item's page. While loading, render RecordRowLoading with the same parts. Playground: https://design-system.wpei.me/playground/record-list"
+    },
+    {
+      "name": "status-mark",
+      "type": "registry:ui",
+      "title": "Status mark",
+      "description": "A state drawn as a shape-coded dot and its word, for a rank 2 Read.",
+      "dependencies": ["cn@0.4.0"],
+      "files": [
+        {
+          "path": "src/components/status-mark.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Compose StatusMarkDot (fill none, half or full) then StatusMarkLabel. The dot tells states apart by shape, not colour. In a RecordRowGlyph, and in an abbreviated RecordRowRead, only the dot is drawn and the word is read by screen readers. Playground: https://design-system.wpei.me/playground/record-list"
+    },
+    {
+      "name": "person-mark",
+      "type": "registry:ui",
+      "title": "Person mark",
+      "description": "A person's initials in a 24px circle, then their name.",
+      "dependencies": ["cn@0.4.0"],
+      "files": [
+        {
+          "path": "src/components/person-mark.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Pass name; the initials come from its first and last words. In an abbreviated RecordRowRead only the initials are drawn and the name is read by screen readers. Wrap it in a field-card to show more about the person. Playground: https://design-system.wpei.me/playground/record-list"
+    },
+    {
+      "name": "figure",
+      "type": "registry:ui",
+      "title": "Figure",
+      "description": "A number the caller compares down a list, in tabular figures, with a compact short form.",
+      "dependencies": ["cn@0.4.0"],
+      "files": [
+        {
+          "path": "src/components/figure.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Pass value and Intl.NumberFormat options in format, and a locale so server and browser render the same text. It sits at the end of its column. In an abbreviated RecordRowRead it switches to compact notation, such as $13K. Playground: https://design-system.wpei.me/playground/record-list"
+    },
+    {
+      "name": "track",
+      "type": "registry:ui",
+      "title": "Track",
+      "description": "A measurement within a known range, drawn as a bar and its value, on Base UI Meter.",
+      "dependencies": ["@base-ui/react@1.8.0", "cn@0.4.0"],
+      "files": [
+        {
+          "path": "src/components/track.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Pass value, min and max, a format and an aria-label. In an abbreviated RecordRowRead the bar is dropped and the value stays. Playground: https://design-system.wpei.me/playground/record-list"
+    },
+    {
+      "name": "relative-time",
+      "type": "registry:ui",
+      "title": "Relative time",
+      "description": "A moment stated relative to now, with a narrow short form.",
+      "dependencies": ["cn@0.4.0"],
+      "files": [
+        {
+          "path": "src/components/relative-time.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Pass dateTime and now as ISO 8601 strings; passing now keeps server and browser output the same. In an abbreviated RecordRowRead it switches to the narrow form, such as 2h ago. Playground: https://design-system.wpei.me/playground/record-list"
+    },
+    {
+      "name": "field-state",
+      "type": "registry:ui",
+      "title": "Field state",
+      "description": "Stands in for a value that failed to load or that the viewer's role cannot see.",
+      "dependencies": ["cn@0.4.0"],
+      "files": [
+        {
+          "path": "src/components/field-state.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Pass state unavailable or hidden. State why, and how to get access, once outside the fields it replaces, such as in the list footer. Playground: https://design-system.wpei.me/playground/record-list"
+    },
+    {
+      "name": "field-card",
+      "type": "registry:ui",
+      "title": "Field card",
+      "description": "Rank 4: a hover card on a rank 1 or 2 value with more about that entity or property.",
+      "dependencies": ["@base-ui/react@1.8.0", "cn@0.4.0"],
+      "files": [
+        {
+          "path": "src/components/field-card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Compose FieldCard, FieldCardTrigger around the value, then FieldCardContent. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links. Playground: https://design-system.wpei.me/playground/record-list"
     }
   ]
 }

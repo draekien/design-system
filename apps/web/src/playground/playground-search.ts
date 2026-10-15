@@ -17,14 +17,21 @@ export const canvasDataSources = ["sample", "random"] as const
 
 export const canvasCounts = [4, 25, 200] as const
 
+export const canvasDatasets = ["records", "invoices"] as const
+
+export type CanvasDataset = (typeof canvasDatasets)[number]
+
 export const recordListParts = [
   "select",
-  "id",
+  "key",
   "status",
   "status-card",
   "owner",
   "owner-card",
   "updated",
+  "amount",
+  "paid",
+  "due",
 ] as const
 
 export type RecordListPart = (typeof recordListParts)[number]
@@ -36,6 +43,7 @@ const pointer = z.enum(canvasPointers).default("fine").catch("fine")
 export const canvasPointerSearch = z.object({ pointer })
 
 export const canvasSearch = fixtureStateSearch.extend({
+  dataset: z.enum(canvasDatasets).default("records").catch("records"),
   view: z.enum(canvasViews).default("lockup").catch("lockup"),
   data: z.enum(canvasDataSources).default("sample").catch("sample"),
   seed: z.number().int().min(0).max(maxSeed).default(1).catch(1),

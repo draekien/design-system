@@ -58,6 +58,8 @@ function rowLinks(root: HTMLElement | null): ReadonlyArray<HTMLElement> {
  * tab stop; ↑ ↓ Home End move focus between rows; Space toggles peek on the focused row and an
  * open peek follows focus; X toggles selection; Esc closes peek, then clears the selection.
  * Peek renders nothing itself: read `peekValue` and render the record's detail beside the list.
+ * The list is a grid that its rows share, so their columns line up. Give any other child, such as an
+ * inline peek, `col-span-full`.
  */
 export function RecordList({
   selectedValues: selectedValuesProp,
@@ -172,7 +174,15 @@ export function RecordList({
     render,
     ref: ref === undefined ? rootRef : [ref, rootRef],
     state: { slot: "record-list" },
-    props: mergeProps<"ul">({ className: cn("@container flex flex-col", className) }, props),
+    props: mergeProps<"ul">(
+      {
+        className: cn(
+          "@container grid grid-cols-[auto_auto_auto_minmax(0,1fr)_repeat(8,auto)]",
+          className
+        ),
+      },
+      props
+    ),
   })
 
   return <RecordListContext.Provider value={context}>{element}</RecordListContext.Provider>

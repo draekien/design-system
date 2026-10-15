@@ -4,10 +4,11 @@ import { describe, expect, it, vi } from "vitest"
 import { RecordList } from "@/components/record-list.tsx"
 import {
   RecordRow,
+  RecordRowIdentify,
   RecordRowLink,
   RecordRowLoading,
+  RecordRowName,
   RecordRowSelect,
-  RecordRowTitle,
 } from "@/components/record-row.tsx"
 
 const records = [
@@ -31,7 +32,9 @@ function renderList(defaultSelectedValues: ReadonlyArray<string> = []) {
           <RecordRow key={record.id} value={record.id}>
             <RecordRowSelect />
             <RecordRowLink href={`/records/${record.id}`}>
-              <RecordRowTitle>{record.title}</RecordRowTitle>
+              <RecordRowIdentify>
+                <RecordRowName>{record.title}</RecordRowName>
+              </RecordRowIdentify>
             </RecordRowLink>
           </RecordRow>
         ))}
@@ -169,7 +172,9 @@ describe("RecordList", () => {
         <RecordRowLoading>
           <RecordRowSelect />
           <RecordRowLink href="/records/REC-104">
-            <RecordRowTitle>Quarterly access review</RecordRowTitle>
+            <RecordRowIdentify>
+              <RecordRowName>Quarterly access review</RecordRowName>
+            </RecordRowIdentify>
           </RecordRowLink>
         </RecordRowLoading>
       </RecordList>

@@ -14,6 +14,7 @@ import { fixtureStates } from "@workspace/fixtures/state.ts"
 import { cn } from "cn"
 import * as React from "react"
 import { CanvasFrame, type CanvasMessageSearch } from "./canvas-frame.tsx"
+import { datasetParts, invoicesDataset, recordsDataset } from "./datasets.tsx"
 import { ControlGroup, CopyButton, Segmented } from "./playground-controls.tsx"
 import {
   type CanvasWidth,
@@ -54,20 +55,9 @@ const widthLabel: Readonly<Record<CanvasWidth, string>> = {
   base: "390 · phone",
 }
 
-const partLabel: Readonly<Record<RecordListPart, string>> = {
-  select: "RecordRowSelect",
-  id: "RecordRowId",
-  status: "RecordRowStatus",
-  "status-card": "Status hover card",
-  owner: "RecordRowOwner",
-  "owner-card": "Owner hover card",
-  updated: "RecordRowUpdated",
-}
+const datasets = { records: recordsDataset, invoices: invoicesDataset } as const
 
-const partParent: Partial<Record<RecordListPart, RecordListPart>> = {
-  "status-card": "status",
-  "owner-card": "owner",
-}
+const datasetLabel = { records: "Records", invoices: "Invoices" } as const
 
 function useSetSearch() {
   const navigate = route.useNavigate()
@@ -90,10 +80,12 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
           Record list
         </h1>
         <p className="mt-2 max-w-2xl text-pretty text-muted-foreground leading-relaxed">
-          Rows that open a record, peek at it by keyboard and select with X. Two registry items:{" "}
+          Rows for any data: rank each value, and the row decides where it goes, how it reads and
+          what it does when the list is narrow.{" "}
           <code className="font-mono text-[0.875em] text-foreground">record-list</code> holds the
           keyboard model,{" "}
-          <code className="font-mono text-[0.875em] text-foreground">record-row</code> the slots.
+          <code className="font-mono text-[0.875em] text-foreground">record-row</code> the ranked
+          parts.
         </p>
         <div className="mt-5 flex max-w-2xl items-center gap-2 rounded-lg border bg-card py-1 pr-1 pl-3.5 shadow-[0_1px_2px_rgb(0_0_0/0.04)]">
           <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap py-1.5 font-mono text-[0.8125rem]">
@@ -149,7 +141,7 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
         <CanvasControls search={search} hidden={hidden} />
       </aside>
 
-      <DocsTabs hidden={hidden} />
+      <DocsTabs search={search} hidden={hidden} />
     </div>
   )
 }
@@ -273,6 +265,9 @@ function CanvasControls({
   hidden: ReadonlySet<RecordListPart>
 }) {
   const setSearch = useSetSearch()
+  const dataset = datasets[search.dataset]
+  const parts =
+    search.dataset === "invoices" ? datasetParts(invoicesDataset) : datasetParts(recordsDataset)
 
   function togglePart(part: RecordListPart) {
     setSearch({
@@ -314,10 +309,23 @@ function CanvasControls({
         label="Data"
         hint={
           search.data === "random"
-            ? "The same seed always generates the same records, so a copied link shows what you see."
-            : "Four fixed records from packages/fixtures."
+            ? `The same seed always generates the same ${dataset.noun}, so a copied link shows what you see.`
+            : dataset.sampleHint
         }
       >
+        <Segmented label="Dataset" className="self-start">
+          {(["records", "invoices"] as const).map((name) => (
+            <button
+              key={name}
+              type="button"
+              aria-pressed={search.dataset === name}
+              onClick={() => setSearch({ dataset: name })}
+              className={segmentItem}
+            >
+              {datasetLabel[name]}
+            </button>
+          ))}
+        </Segmented>
         <Segmented label="Data source" className="self-start">
           <button
             type="button"
@@ -341,11 +349,10 @@ function CanvasControls({
 
       <ControlGroup
         label="Parts"
-        hint="RecordRowLink and RecordRowTitle are required. The Code tab follows these choices."
+        hint="RecordRowLink, RecordRowIdentify and RecordRowName are required. The Code tab follows these choices."
       >
         <div className="flex flex-col gap-0.5">
-          {recordListParts.map((part) => {
-            const parent = partParent[part]
+          {parts.map(({ part, label, parent }) => {
             const isParentHidden = parent !== undefined && hidden.has(parent)
             return (
               <label
@@ -368,7 +375,7 @@ function CanvasControls({
                     parent === undefined && "font-mono text-[0.8125rem] tracking-tight"
                   )}
                 >
-                  {partLabel[part]}
+                  {label}
                 </span>
               </label>
             )
@@ -445,8 +452,18 @@ function RandomDataControls({ search }: { search: PlaygroundSearch }) {
   )
 }
 
-function DocsTabs({ hidden }: { hidden: ReadonlySet<RecordListPart> }) {
-  const code = recordListCode(hidden)
+function DocsTabs({
+  search,
+  hidden,
+}: {
+  search: PlaygroundSearch
+  hidden: ReadonlySet<RecordListPart>
+}) {
+  const dataset = datasets[search.dataset]
+  const code =
+    search.dataset === "invoices"
+      ? recordListCode(invoicesDataset, hidden)
+      : recordListCode(recordsDataset, hidden)
   const tab = cn(
     "relative -mb-px inline-flex min-h-10 items-center border-transparent border-b-2 px-2 font-medium text-muted-foreground text-sm transition-colors hover:text-foreground data-active:border-foreground data-active:text-foreground",
     focusRing
@@ -465,7 +482,7 @@ function DocsTabs({ hidden }: { hidden: ReadonlySet<RecordListPart> }) {
       <Tabs.Panel value="code" className={cn("pt-4", focusRing)}>
         <div className="overflow-hidden rounded-xl border bg-card">
           <div className="flex items-center justify-between border-b py-1 pr-1 pl-4">
-            <p className="font-mono text-muted-foreground text-xs">records.tsx</p>
+            <p className="font-mono text-muted-foreground text-xs">{dataset.noun}.tsx</p>
             <CopyButton text={code} label="Copy code" />
           </div>
           <pre className="max-h-[32rem] overflow-auto p-4 font-mono text-[0.8125rem] leading-relaxed">

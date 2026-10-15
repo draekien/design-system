@@ -2,12 +2,22 @@ import type { Rule } from "./rule-notes.tsx"
 
 export const recordListRules: ReadonlyArray<Rule> = [
   {
-    rule: "A row shows ID, status, title, owner and updated; the summary, team and time in status wait for peek and the record page.",
-    source: "Linear issue list (screenshots, 2026-10-08)",
+    rule: "Every value takes one of five ranks, decided by what the caller came to decide: 1 Identify (key, glyph, name) at the start of the row; 2 Read (a state or a figure the caller compares) in its own column; 3 Explain in peek; 4 Enrich in a hover card on a rank 1 or 2 value; 5 Elsewhere on the item's own page.",
+    source:
+      "This design system's own decision (Geist Entity leads with the identifier; Saga Lists of objects ranks fields by typography)",
   },
   {
-    rule: "The row is a link to the record page; Enter or a click opens it. The record page shows every field peek shows.",
+    rule: "A list shows ranks 1 and 2 for every item before it shows rank 3 for any; rank 3 never holds what the caller reads on most visits.",
     source: "This design system's own decision",
+  },
+  {
+    rule: "Each Read is its own column and lines up down the list whatever its value; a figure is right-aligned in tabular figures.",
+    source:
+      "Primer DataTable (tabular-num for numbers); column alignment is this design system's own decision",
+  },
+  {
+    rule: "The row is a link to the item's page; Enter or a click opens it. The item's page shows every field peek shows.",
+    source: "Saga List page",
   },
   {
     rule: "The list is one tab stop. ↑ ↓ Home End move focus between rows; Space toggles peek on the focused row and an open peek follows focus; Esc closes peek. Peek is keyboard-only because the row link reaches the same fields by mouse and touch.",
@@ -27,7 +37,7 @@ export const recordListRules: ReadonlyArray<Rule> = [
     source: "This design system's own decision",
   },
   {
-    rule: "Status and owner open a hover card on hover; peek and the record page are the keyboard and touch routes to the same fields.",
+    rule: "A rank 4 hover card sits on the value it describes and opens on hover; peek and the item's page are the keyboard and touch routes to the same fields.",
     source: "Linear issue list (screenshots, 2026-10-08); Primer designer checklist",
   },
   {
@@ -39,15 +49,16 @@ export const recordListRules: ReadonlyArray<Rule> = [
     source: "Primer designer checklist; 44px is this design system's own decision",
   },
   {
-    rule: "When the list is narrower than 640px the row hides the ID and shows the owner's initials only; narrower than 768px it hides updated.",
+    rule: "When the list narrows, the name truncates first; below 768px a part marked abbreviate switches to its short form (a dot without its word, initials, $13K, 2h ago); below 640px a part marked hide drops out. A hidden value stays in peek and on the item's page.",
+    source:
+      "Primer DataTable (remove less important columns); the order and widths are this design system's own decision",
+  },
+  {
+    rule: "Loading rows compose the same parts as the rows they replace, so they keep the row height and every column.",
     source: "This design system's own decision",
   },
   {
-    rule: "Loading rows compose the same slots as the rows they replace, so they keep the row height and every slot width.",
-    source: "This design system's own decision",
-  },
-  {
-    rule: "A field that fails says Unavailable in its slot; the rest of the row stays readable.",
+    rule: "A value that fails to load says Unavailable in its column; the rest of the row stays readable.",
     source: "This design system's own decision",
   },
   {
@@ -55,11 +66,11 @@ export const recordListRules: ReadonlyArray<Rule> = [
     source: "Writing helpful error messages (Google Developers)",
   },
   {
-    rule: "A withheld field says Hidden, and the footer names the role that can see it.",
+    rule: "A withheld value says Hidden, and the footer names the role that can see it.",
     source: "This design system's own decision",
   },
   {
-    rule: "The accent colour marks only what can be acted on: the checked checkbox and the focused row's title underline.",
+    rule: "The accent colour marks only what can be acted on: the checked checkbox and the focused row's name underline.",
     source: "This design system's own decision",
   },
 ]
