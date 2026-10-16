@@ -13,6 +13,10 @@ export const canvasWidths = ["fill", "xl", "lg", "md", "sm", "base"] as const
 
 export type CanvasWidth = (typeof canvasWidths)[number]
 
+export const sectionTabs = ["preview", "code"] as const
+
+export type SectionTab = (typeof sectionTabs)[number]
+
 export const canvasDataSources = ["sample", "random"] as const
 
 export const canvasCounts = [4, 25, 200] as const
@@ -24,6 +28,7 @@ export type CanvasDataset = (typeof canvasDatasets)[number]
 export const recordListParts = [
   "select",
   "key",
+  "description",
   "status",
   "status-card",
   "owner",
@@ -58,11 +63,19 @@ export type CanvasOptions = z.output<typeof canvasSearch>
 
 const width = z.enum(canvasWidths).default("fill").catch("fill")
 
+const tab = z.enum(sectionTabs).default("preview").catch("preview")
+
+export const componentSearch = z.object({ tab })
+
+export type ComponentSearch = z.output<typeof componentSearch>
+
 export const playgroundSearch = canvasSearch.omit({ view: true }).extend({
   pointer,
   width,
   statesPointer: pointer,
   statesWidth: width,
+  lockupTab: tab,
+  statesTab: tab,
 })
 
 export type PlaygroundSearch = z.output<typeof playgroundSearch>

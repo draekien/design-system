@@ -1,22 +1,17 @@
 import { ArrowRight02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Link } from "@tanstack/react-router"
-import registry from "@workspace/ui/registry.json" with { type: "json" }
 import { cn } from "cn"
 import * as React from "react"
 import { CanvasFrame } from "./canvas-frame.tsx"
 import { CopyButton } from "./playground-controls.tsx"
 import { playgroundSearch } from "./playground-search.ts"
 import { focusRing } from "./playground-styles.ts"
+import { installCommand, registryItems } from "./registry-items.ts"
+import { ItemPageLink } from "./related-items.tsx"
 import { usePlaygroundTheme } from "./theme-store.ts"
 
 const previewSearch = playgroundSearch.parse({})
-
-const playgroundItems = new Set(["record-list", "record-row"])
-
-function installCommand(name: string): string {
-  return `pnpm dlx shadcn@latest add draekien/design-system/${name}`
-}
 
 export function PlaygroundIndex(): React.ReactElement {
   const theme = usePlaygroundTheme()
@@ -38,7 +33,7 @@ export function PlaygroundIndex(): React.ReactElement {
 
       <section aria-labelledby={componentsId} className="flex flex-col gap-4">
         <h2 id={componentsId} className="font-semibold text-lg tracking-tight">
-          Components
+          Lockups
         </h2>
         <div className="grid overflow-hidden rounded-xl border bg-card lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
           <div className="flex flex-col gap-4 p-6">
@@ -49,8 +44,8 @@ export function PlaygroundIndex(): React.ReactElement {
               narrows the same way.
             </p>
             <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-sm">
-              <dt className="text-muted-foreground">Items</dt>
-              <dd className="font-mono text-xs leading-5">record-list, record-row</dd>
+              <dt className="text-muted-foreground">Item</dt>
+              <dd className="font-mono text-xs leading-5">record-list (installs record-row)</dd>
               <dt className="text-muted-foreground">States</dt>
               <dd>Loaded, loading, partial, error, no permission</dd>
               <dt className="text-muted-foreground">Data</dt>
@@ -106,7 +101,7 @@ export function PlaygroundIndex(): React.ReactElement {
           </p>
         </div>
         <ul className="divide-y rounded-xl border bg-card text-sm">
-          {registry.items.map((item) => (
+          {registryItems.map((item) => (
             <li
               key={item.name}
               className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1 px-4 py-3 sm:grid-cols-[11rem_minmax(0,1fr)_auto]"
@@ -124,17 +119,15 @@ export function PlaygroundIndex(): React.ReactElement {
               />
               <div className="col-span-full text-muted-foreground sm:col-span-1">
                 <p className="max-w-prose text-pretty">{item.description}</p>
-                {playgroundItems.has(item.name) ? (
-                  <Link
-                    to="/playground/record-list"
-                    className={cn(
-                      "mt-1 inline-block rounded-sm font-medium text-foreground text-xs underline decoration-border underline-offset-3 hover:decoration-foreground",
-                      focusRing
-                    )}
-                  >
-                    Try it in the record list
-                  </Link>
-                ) : null}
+                <ItemPageLink
+                  item={item}
+                  className={cn(
+                    "mt-1 inline-block rounded-sm font-medium text-foreground text-xs underline decoration-border underline-offset-3 hover:decoration-foreground",
+                    focusRing
+                  )}
+                >
+                  Open {item.title}
+                </ItemPageLink>
               </div>
             </li>
           ))}

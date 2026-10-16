@@ -1,12 +1,13 @@
-import { Tabs } from "@base-ui/react/tabs"
 import {
   ArrowDown01Icon,
+  CodeIcon,
   ComputerIcon,
   Cursor01Icon,
   DiceIcon,
   Moon02Icon,
   Sun03Icon,
   TouchInteraction01Icon,
+  ViewIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { getRouteApi, Link } from "@tanstack/react-router"
@@ -14,8 +15,9 @@ import { fixtureStates } from "@workspace/fixtures/state.ts"
 import { cn } from "cn"
 import * as React from "react"
 import { CanvasFrame, type CanvasMessageSearch } from "./canvas-frame.tsx"
+import { CodeBlock } from "./code-block.tsx"
 import { datasetParts, invoicesDataset, recordsDataset } from "./datasets.tsx"
-import { ControlGroup, CopyButton, Segmented } from "./playground-controls.tsx"
+import { ControlGroup, InstallCommand, Segmented } from "./playground-controls.tsx"
 import {
   type CanvasPointer,
   type CanvasWidth,
@@ -25,17 +27,25 @@ import {
   type PlaygroundSearch,
   type RecordListPart,
   recordListParts,
+  type SectionTab,
 } from "./playground-search.ts"
 import { focusRing, segmentItem } from "./playground-styles.ts"
 import { RecordListConstellation } from "./record-list-canvas.tsx"
-import { recordListCode } from "./record-list-code.ts"
+import { recordListCode, recordListStatesCode } from "./record-list-code.ts"
 import { recordListRules } from "./record-list-rules.ts"
+import { builtFrom, installCommand, requireRegistryItem } from "./registry-items.ts"
+import { RelatedItems } from "./related-items.tsx"
 import { RuleNotes } from "./rule-notes.tsx"
 import { savePlaygroundTheme, usePlaygroundTheme } from "./theme-store.ts"
 
 const route = getRouteApi("/playground/record-list")
 
-const installCommand = "pnpm dlx shadcn@latest add draekien/design-system/record-row"
+const lockup = requireRegistryItem("record-list")
+
+const builtFromItems = builtFrom(lockup).map(({ item, installs }) => ({
+  item,
+  tag: installs === "with" ? "Installs with record-list" : "Install separately",
+}))
 
 const stateLabel = {
   loaded: "Loaded",
@@ -71,6 +81,15 @@ function useSetSearch() {
 export function RecordListPage({ search }: { search: PlaygroundSearch }): React.ReactElement {
   const setSearch = useSetSearch()
   const hidden = new Set(search.hide)
+  const dataset = datasets[search.dataset]
+  const lockupCode =
+    search.dataset === "invoices"
+      ? recordListCode(invoicesDataset, hidden)
+      : recordListCode(recordsDataset, hidden)
+  const statesCode =
+    search.dataset === "invoices"
+      ? recordListStatesCode(invoicesDataset, hidden, search.state)
+      : recordListStatesCode(recordsDataset, hidden, search.state)
 
   function handleCanvasNavigate({ view: _view, ...next }: CanvasMessageSearch) {
     setSearch(next)
@@ -94,15 +113,7 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
           <code className="font-mono text-[0.875em] text-foreground">record-row</code> the ranked
           parts.
         </p>
-        <div className="mt-5 flex max-w-2xl items-center gap-2 rounded-lg border bg-card py-1 pr-1 pl-3.5 shadow-[0_1px_2px_rgb(0_0_0/0.04)]">
-          <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap py-1.5 font-mono text-[0.8125rem]">
-            <span aria-hidden="true" className="select-none text-muted-foreground">
-              ${" "}
-            </span>
-            {installCommand}
-          </code>
-          <CopyButton text={installCommand} label="Copy" />
-        </div>
+        <InstallCommand command={installCommand(lockup.name)} className="mt-5 max-w-2xl" />
       </header>
 
       <div className="flex min-w-0 flex-col gap-12 xl:col-start-1 xl:row-start-2">
@@ -114,21 +125,31 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
           <div className={frameSurface}>
             <CanvasToolbar
               label="Lockup frame"
+              tab={search.lockupTab}
               width={search.width}
               pointer={search.pointer}
+              onTabChange={(next) => setSearch({ lockupTab: next })}
               onWidthChange={(next) => setSearch({ width: next })}
               onPointerChange={(next) => setSearch({ pointer: next })}
             />
-            <div className={cn(frameGround(search.width), "h-[clamp(28rem,68vh,46rem)]")}>
-              <CanvasFrame
-                to="/canvas/record-list"
-                view="lockup"
-                title="Record list lockup"
-                search={search}
-                onCanvasNavigate={handleCanvasNavigate}
-                className={frameClass(search.width)}
+            {search.lockupTab === "code" ? (
+              <CodeBlock
+                code={lockupCode}
+                fileName={`${dataset.noun}.tsx`}
+                className="h-[clamp(28rem,68vh,46rem)]"
               />
-            </div>
+            ) : (
+              <div className={cn(frameGround(search.width), "h-[clamp(28rem,68vh,46rem)]")}>
+                <CanvasFrame
+                  to="/canvas/record-list"
+                  view="lockup"
+                  title="Record list lockup"
+                  search={search}
+                  onCanvasNavigate={handleCanvasNavigate}
+                  className={frameClass(search.width)}
+                />
+              </div>
+            )}
           </div>
         </ViewSection>
 
@@ -140,21 +161,35 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
           <div className={frameSurface}>
             <CanvasToolbar
               label="States frame"
+              tab={search.statesTab}
               width={search.statesWidth}
               pointer={search.statesPointer}
+              onTabChange={(next) => setSearch({ statesTab: next })}
               onWidthChange={(next) => setSearch({ statesWidth: next })}
               onPointerChange={(next) => setSearch({ statesPointer: next })}
             />
-            <div className={cn(frameGround(search.statesWidth), "h-[clamp(28rem,80vh,56rem)]")}>
-              <CanvasFrame
-                to="/canvas/record-list"
-                view="states"
-                title="Record list states"
-                search={{ ...search, width: search.statesWidth, pointer: search.statesPointer }}
-                onCanvasNavigate={handleStatesNavigate}
-                className={frameClass(search.statesWidth)}
+            {search.statesTab === "code" ? (
+              <CodeBlock
+                code={statesCode}
+                fileName={
+                  search.state === "loading"
+                    ? `${dataset.noun}-loading.tsx`
+                    : `${dataset.item}-row-states.tsx`
+                }
+                className="h-[clamp(28rem,80vh,56rem)]"
               />
-            </div>
+            ) : (
+              <div className={cn(frameGround(search.statesWidth), "h-[clamp(28rem,80vh,56rem)]")}>
+                <CanvasFrame
+                  to="/canvas/record-list"
+                  view="states"
+                  title="Record list states"
+                  search={{ ...search, width: search.statesWidth, pointer: search.statesPointer }}
+                  onCanvasNavigate={handleStatesNavigate}
+                  className={frameClass(search.statesWidth)}
+                />
+              </div>
+            )}
           </div>
         </ViewSection>
 
@@ -170,6 +205,22 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
             <RecordListConstellation options={search} />
           </div>
         </ViewSection>
+
+        <ViewSection
+          id={sectionId.builtFrom}
+          title="Built from"
+          description="The registry items the lockup is composed from. Open one to see it on its own."
+        >
+          <RelatedItems label="Built from" items={builtFromItems} />
+        </ViewSection>
+
+        <ViewSection
+          id={sectionId.rules}
+          title="Rules"
+          description="The disclosure and composition rules the lockup encodes, each with its source."
+        >
+          <RuleNotes rules={recordListRules} />
+        </ViewSection>
       </div>
 
       <aside
@@ -179,8 +230,6 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
         <PageNav />
         <CanvasControls search={search} hidden={hidden} />
       </aside>
-
-      <DocsTabs search={search} hidden={hidden} />
     </div>
   )
 }
@@ -204,14 +253,16 @@ const sectionId = {
   lockup: "lockup",
   states: "states",
   constellation: "constellation",
-  code: "code",
+  builtFrom: "built-from",
+  rules: "rules",
 } as const
 
 const pageSections = [
   { id: sectionId.lockup, label: "Lockup" },
   { id: sectionId.states, label: "States" },
   { id: sectionId.constellation, label: "Constellation" },
-  { id: sectionId.code, label: "Code and rules" },
+  { id: sectionId.builtFrom, label: "Built from" },
+  { id: sectionId.rules, label: "Rules" },
 ] as const
 
 function PageNav() {
@@ -267,14 +318,18 @@ function ViewSection({
 
 function CanvasToolbar({
   label,
+  tab,
   width,
   pointer,
+  onTabChange,
   onWidthChange,
   onPointerChange,
 }: {
   label: string
+  tab: SectionTab
   width: CanvasWidth
   pointer: CanvasPointer
+  onTabChange: (tab: SectionTab) => void
   onWidthChange: (width: CanvasWidth) => void
   onPointerChange: (pointer: CanvasPointer) => void
 }) {
@@ -285,76 +340,100 @@ function CanvasToolbar({
   return (
     <div
       role="toolbar"
-      aria-label={`${label} size and input`}
-      className="flex flex-wrap items-center gap-2 border-b bg-background/60 px-3 py-2"
+      aria-label={`${label} view, size and input`}
+      className="flex min-h-[3.0625rem] flex-wrap items-center gap-2 border-b bg-background/60 px-3 py-2"
     >
-      <label htmlFor={widthId} className="sr-only">
-        Canvas width
-      </label>
-      <div className="relative inline-flex items-center">
-        <HugeiconsIcon
-          icon={ComputerIcon}
-          size={15}
-          strokeWidth={1.75}
-          aria-hidden="true"
-          className="pointer-events-none absolute left-2.5 text-muted-foreground"
-        />
-        <select
-          id={widthId}
-          value={width}
-          onChange={(event) => {
-            const width = canvasWidths.find((option) => option === event.target.value)
-            if (width !== undefined) {
-              onWidthChange(width)
-            }
-          }}
-          className={cn(
-            "min-h-8 appearance-none rounded-lg border bg-background py-1 pr-8 pl-8 font-medium text-xs tabular-nums hover:bg-muted",
-            focusRing
-          )}
-        >
-          {canvasWidths.map((width) => (
-            <option key={width} value={width}>
-              {widthLabel[width]}
-            </option>
-          ))}
-        </select>
-        <HugeiconsIcon
-          icon={ArrowDown01Icon}
-          size={14}
-          strokeWidth={1.75}
-          aria-hidden="true"
-          className="pointer-events-none absolute right-2.5 text-muted-foreground"
-        />
-      </div>
+      {tab === "preview" && (
+        <>
+          <label htmlFor={widthId} className="sr-only">
+            Canvas width
+          </label>
+          <div className="relative inline-flex items-center">
+            <HugeiconsIcon
+              icon={ComputerIcon}
+              size={15}
+              strokeWidth={1.75}
+              aria-hidden="true"
+              className="pointer-events-none absolute left-2.5 text-muted-foreground"
+            />
+            <select
+              id={widthId}
+              value={width}
+              onChange={(event) => {
+                const width = canvasWidths.find((option) => option === event.target.value)
+                if (width !== undefined) {
+                  onWidthChange(width)
+                }
+              }}
+              className={cn(
+                "min-h-8 appearance-none rounded-lg border bg-background py-1 pr-8 pl-8 font-medium text-xs tabular-nums hover:bg-muted",
+                focusRing
+              )}
+            >
+              {canvasWidths.map((width) => (
+                <option key={width} value={width}>
+                  {widthLabel[width]}
+                </option>
+              ))}
+            </select>
+            <HugeiconsIcon
+              icon={ArrowDown01Icon}
+              size={14}
+              strokeWidth={1.75}
+              aria-hidden="true"
+              className="pointer-events-none absolute right-2.5 text-muted-foreground"
+            />
+          </div>
 
-      <Segmented label="Pointer">
-        <button
-          type="button"
-          aria-pressed={pointer === "fine"}
-          onClick={() => onPointerChange("fine")}
-          className={segmentItem}
-        >
-          <HugeiconsIcon icon={Cursor01Icon} size={14} strokeWidth={1.75} aria-hidden="true" />
-          Mouse
-        </button>
-        <button
-          type="button"
-          aria-pressed={pointer === "coarse"}
-          onClick={() => onPointerChange("coarse")}
-          className={segmentItem}
-        >
-          <HugeiconsIcon
-            icon={TouchInteraction01Icon}
-            size={14}
-            strokeWidth={1.75}
-            aria-hidden="true"
-          />
-          Touch
-        </button>
-      </Segmented>
+          <Segmented label="Pointer">
+            <button
+              type="button"
+              aria-pressed={pointer === "fine"}
+              onClick={() => onPointerChange("fine")}
+              className={segmentItem}
+            >
+              <HugeiconsIcon icon={Cursor01Icon} size={14} strokeWidth={1.75} aria-hidden="true" />
+              Mouse
+            </button>
+            <button
+              type="button"
+              aria-pressed={pointer === "coarse"}
+              onClick={() => onPointerChange("coarse")}
+              className={segmentItem}
+            >
+              <HugeiconsIcon
+                icon={TouchInteraction01Icon}
+                size={14}
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
+              Touch
+            </button>
+          </Segmented>
+        </>
+      )}
 
       <div className="ml-auto flex items-center gap-1">
+        <Segmented label="View" className="mr-1">
+          <button
+            type="button"
+            aria-pressed={tab === "preview"}
+            onClick={() => onTabChange("preview")}
+            className={segmentItem}
+          >
+            <HugeiconsIcon icon={ViewIcon} size={14} strokeWidth={1.75} aria-hidden="true" />
+            Preview
+          </button>
+          <button
+            type="button"
+            aria-pressed={tab === "code"}
+            onClick={() => onTabChange("code")}
+            className={segmentItem}
+          >
+            <HugeiconsIcon icon={CodeIcon} size={14} strokeWidth={1.75} aria-hidden="true" />
+            Code
+          </button>
+        </Segmented>
         {theme.css === "" ? null : (
           <Link
             to="/playground/theme"
@@ -479,7 +558,7 @@ function CanvasControls({
 
       <ControlGroup
         label="Parts"
-        hint="RecordRowLink, RecordRowIdentify and RecordRowName are required. The Code tab follows these choices."
+        hint="RecordRowLink, RecordRowIdentify and RecordRowName are required. The code follows these choices."
       >
         <div className="flex flex-col gap-0.5">
           {parts.map(({ part, label, parent }) => {
@@ -579,54 +658,5 @@ function RandomDataControls({ search }: { search: PlaygroundSearch }) {
         </Segmented>
       </div>
     </div>
-  )
-}
-
-function DocsTabs({
-  search,
-  hidden,
-}: {
-  search: PlaygroundSearch
-  hidden: ReadonlySet<RecordListPart>
-}) {
-  const dataset = datasets[search.dataset]
-  const code =
-    search.dataset === "invoices"
-      ? recordListCode(invoicesDataset, hidden)
-      : recordListCode(recordsDataset, hidden)
-  const tab = cn(
-    "relative -mb-px inline-flex min-h-10 items-center border-transparent border-b-2 px-2 font-medium text-muted-foreground text-sm transition-colors hover:text-foreground data-active:border-foreground data-active:text-foreground",
-    focusRing
-  )
-
-  return (
-    <Tabs.Root
-      id={sectionId.code}
-      defaultValue="code"
-      className="min-w-0 scroll-mt-8 xl:col-start-1 xl:row-start-3"
-    >
-      <Tabs.List className="flex gap-1 border-b">
-        <Tabs.Tab value="code" className={tab}>
-          Code
-        </Tabs.Tab>
-        <Tabs.Tab value="rules" className={tab}>
-          Rules
-        </Tabs.Tab>
-      </Tabs.List>
-      <Tabs.Panel value="code" className={cn("pt-4", focusRing)}>
-        <div className="overflow-hidden rounded-xl border bg-card">
-          <div className="flex items-center justify-between border-b py-1 pr-1 pl-4">
-            <p className="font-mono text-muted-foreground text-xs">{dataset.noun}.tsx</p>
-            <CopyButton text={code} label="Copy code" />
-          </div>
-          <pre className="max-h-[32rem] overflow-auto p-4 font-mono text-[0.8125rem] leading-relaxed">
-            <code>{code}</code>
-          </pre>
-        </div>
-      </Tabs.Panel>
-      <Tabs.Panel value="rules" className={cn("pt-2", focusRing)}>
-        <RuleNotes rules={recordListRules} />
-      </Tabs.Panel>
-    </Tabs.Root>
   )
 }

@@ -7,13 +7,14 @@
       "title": "Record list",
       "description": "A list of record rows with one tab stop, arrow-key focus, keyboard peek and keyboard selection.",
       "dependencies": ["@base-ui/react@1.8.0", "cn@0.4.0"],
+      "registryDependencies": ["draekien/design-system/record-row"],
       "files": [
         {
           "path": "src/components/record-list.tsx",
           "type": "registry:ui"
         }
       ],
-      "docs": "Install record-row too: RecordList holds RecordRow children. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection, Esc closes peek and then clears the selection. RecordList renders no peek: read peekValue with onPeekValueChange and render the item's rank 3 detail beside the list at wide widths and under the row at narrow ones. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "RecordList holds RecordRow children; installing record-list installs record-row. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection on a row that has a RecordRowSelect, Esc closes peek and then clears the selection. RecordList renders no peek: read peekValue with onPeekValueChange and render a read-only preview of the item's page beside the list or in a drawer at wide widths, and under the row or in a bottom drawer at narrow ones; it holds nothing that page lacks. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/record-list"
     },
     {
       "name": "record-row",
@@ -28,7 +29,7 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Rank each value, then compose: RecordRowSelect, then RecordRowLink holding RecordRowIdentify (rank 1: an optional RecordRowKey, an optional RecordRowGlyph such as a status-mark drawn as its dot only, then RecordRowName) and one RecordRowRead per rank 2 reading, at most eight. Hold a person-mark, figure, track, relative-time, status-mark or field-state in each Read. Rank 3 is peek, rendered from RecordList's peekValue; rank 4 is a field-card on a rank 1 or 2 value; rank 5 is the item's page, reached through RecordRowLink's render. Columns line up down the list. When the list narrows the name truncates; set narrow=\"abbreviate\" to switch a part to its short form below 768px, or narrow=\"hide\" to drop it below 640px, and keep a hidden value in peek and on the item's page. While loading, render RecordRowLoading with the same parts. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Rank each value, then compose: an optional RecordRowSelect (a row without one cannot be selected), then RecordRowLink holding RecordRowIdentify (rank 1: an optional RecordRowKey, an optional RecordRowGlyph such as a status-mark drawn as its dot only, then RecordRowName, then an optional one-line RecordRowDescription) and one RecordRowRead per rank 2 reading, at most eight, then an optional RecordRowPeek, a button that toggles peek on the row so a click on RecordRowLink can open the item's page. Hold a person-mark, figure, track, relative-time, status-mark or field-state in each Read. Rank 4 is a field-card on a rank 1 or 2 value; rank 5 is the item's page, reached through RecordRowLink's render, and peek, rendered from RecordList's peekValue, previews part of it read-only. Columns line up down the list. When the list narrows the description truncates, then the name; below 640px the description is hidden; set narrow=\"abbreviate\" to switch a part to its short form below 768px, or narrow=\"hide\" to drop it below 640px, and keep a hidden value in peek and on the item's page. While loading, render RecordRowLoading with the same parts. Playground: https://design-system.wpei.me/playground/record-list"
     },
     {
       "name": "status-mark",

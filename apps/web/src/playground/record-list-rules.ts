@@ -2,12 +2,16 @@ import type { Rule } from "./rule-notes.tsx"
 
 export const recordListRules: ReadonlyArray<Rule> = [
   {
-    rule: "Every value takes one of five ranks, decided by what the caller came to decide: 1 Identify (key, glyph, name) at the start of the row; 2 Read (a state or a figure the caller compares) in its own column; 3 Explain in peek; 4 Enrich in a hover card on a rank 1 or 2 value; 5 Elsewhere on the item's own page.",
+    rule: "Every value takes one of five ranks, decided by what the caller came to decide: 1 Identify (key, glyph, name, a one-line description) at the start of the row; 2 Read (a state or a figure the caller compares) in its own column; 4 Enrich in a hover card on a rank 1 or 2 value; 5 Elsewhere on the item's own page, which peek previews read-only.",
     source:
       "This design system's own decision (Geist Entity leads with the identifier; Saga Lists of objects ranks fields by typography)",
   },
   {
     rule: "A list shows ranks 1 and 2 for every item before it shows rank 3 for any; rank 3 never holds what the caller reads on most visits.",
+    source: "This design system's own decision",
+  },
+  {
+    rule: "A description is one muted line after the name; it truncates before the name and hides below 640px.",
     source: "This design system's own decision",
   },
   {
@@ -20,20 +24,28 @@ export const recordListRules: ReadonlyArray<Rule> = [
     source: "Saga List page",
   },
   {
-    rule: "The list is one tab stop. ↑ ↓ Home End move focus between rows; Space toggles peek on the focused row and an open peek follows focus; Esc closes peek. Peek is keyboard-only because the row link reaches the same fields by mouse and touch.",
+    rule: "The list is one tab stop. ↑ ↓ Home End move focus between rows; Space toggles peek on the focused row and an open peek follows focus; Esc closes peek. Peek previews part of the item's page and holds nothing that page lacks.",
     source: "Linear Peek",
   },
   {
-    rule: "Peek opens beside the list at lg and wider, and under the peeked row below lg.",
+    rule: "A row with a peek button opens peek from it on hover, focus or a coarse pointer, so a click on the row opens the item's page.",
+    source: "This design system's own decision (Linear Peek previews without leaving the list)",
+  },
+  {
+    rule: "A drawer that shows peek returns focus to the row that opened it.",
+    source: "This design system's own decision",
+  },
+  {
+    rule: "Peek opens beside the list or in a drawer from the side at lg and wider, and under the peeked row or in a drawer from the bottom below lg.",
     source:
       "This design system's own decision (Linear Peek previews in place; Stripe Apps design puts detail beside the content it qualifies)",
   },
   {
-    rule: "Every row reserves a checkbox slot; the checkbox is drawn on a hovered, focused or selected row, and always on a coarse pointer.",
+    rule: "A row is selectable only when it has a checkbox; the checkbox is drawn on a hovered, focused or selected row, and always on a coarse pointer.",
     source: "Linear select issues; Linear issue list (screenshots, 2026-10-08)",
   },
   {
-    rule: "X toggles selection on the focused row; Esc clears the selection when peek is closed; the footer counts the selection and offers Clear selection.",
+    rule: "X toggles selection on the focused row when it has a checkbox; Esc clears the selection when peek is closed; the footer counts the selection and offers Clear selection.",
     source: "This design system's own decision",
   },
   {
@@ -49,7 +61,7 @@ export const recordListRules: ReadonlyArray<Rule> = [
     source: "Primer designer checklist; 44px is this design system's own decision",
   },
   {
-    rule: "When the list narrows, the name truncates first; below 768px a part marked abbreviate switches to its short form (a dot without its word, initials, $13K, 2h ago); below 640px a part marked hide drops out. A hidden value stays in peek and on the item's page.",
+    rule: "When the list narrows, the description truncates first, then the name; below 768px a part marked abbreviate switches to its short form (a dot without its word, initials, $13K, 2h ago); below 640px the description and every part marked hide drop out. A hidden value stays in peek and on the item's page.",
     source:
       "Primer DataTable (remove less important columns); the order and widths are this design system's own decision",
   },

@@ -30,11 +30,11 @@ Information takes one of five ranks, decided by what the caller came to the surf
 
 | Rank | Holds | Shows | Component |
 | --- | --- | --- | --- |
-| 1 Identify | what the thing is: ID, glyph, name | always, at the start of the row or head | text |
+| 1 Identify | what the thing is: ID, glyph, name, a one-line description | always, at the start of the row or head | text |
 | 2 Read | the reading the surface exists for: state, a figure the caller compares | always, in its own slot | figure, dot and word, track |
 | 3 Explain | what a caller reads on some visits: purpose, breakdown, history, older entries | in place, one click away | expanded row, `Collapsible`, `Accordion`, "Show N more" |
 | 4 Enrich | more about one named entity or property — a person, a service, an organisation, a stage, a truncated value | an overlay on that entity's or property's own trigger | hover card |
-| 5 Elsewhere | everything about one record | the record's own surface | link |
+| 5 Elsewhere | everything about one record | the record's own surface; peek previews it read-only without leaving | link, peek |
 
 A surface shows ranks 1 and 2 for every item before it shows rank 3 for any.
 
@@ -46,12 +46,22 @@ Name a component's parts for the rank they hold, never for a data field; a part 
 
 A narrow surface truncates rank 1 and 2 values first, then abbreviates them, then hides the ones the caller marks hideable; a hidden value stays reachable at rank 3 or 5.
 
-Rank 3 may be a keyboard-only enhancement on desktop when rank 5 reaches the same content by mouse and touch.
+Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks.
+
+A row offers peek by pointer through its own peek button, so a click on the row opens rank 5.
+
+A drawer that shows peek returns focus to the row that opened it.
+
+A description in rank 1 is one line after the name; it truncates and hides before the name does.
+
+A row is selectable only when it draws a selection checkbox.
 
 ## Rules adopted without a component yet
 
 Every error or refusal states what went wrong, then how the caller fixes it; apologise only when the product itself failed.
 
 Draw surfaces monochrome plus one accent colour; the accent marks only what can be acted on.
+
+Syntax highlighting in a code block is the one exception to monochrome.
 
 Every mouse interaction has a keyboard route; every hit area is at least 24×24px.

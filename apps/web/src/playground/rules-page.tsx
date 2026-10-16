@@ -164,8 +164,8 @@ function RankedRow() {
             aria-hidden="true"
             className="col-span-full grid grid-cols-subgrid border-b bg-muted/40 px-2 font-medium text-muted-foreground text-xs"
           >
-            <span className="col-[2/5] py-1.5 pl-1">1 Identify</span>
-            <span className="col-[5/-1] py-1.5 pl-1">2 Read</span>
+            <span className="col-[2/6] py-1.5 pl-1">1 Identify</span>
+            <span className="col-[6/-1] py-1.5 pl-1">2 Read</span>
           </li>
           <RecordRow value={exampleRecord.id}>
             <RecordRowLink href="#rank-5" onClick={(event) => event.preventDefault()}>
@@ -193,8 +193,8 @@ function RankedRow() {
       </div>
       <figcaption className="grid gap-x-6 gap-y-1 text-pretty text-muted-foreground text-sm sm:grid-cols-3">
         <p>
-          <span className="font-medium text-foreground">3 Explain</span> stays off the row; peek
-          shows it beside the list or under the row when the caller asks.
+          <span className="font-medium text-foreground">1 Identify</span> ends in a one-line
+          description that truncates before the name.
         </p>
         <p>
           <span className="font-medium text-foreground">4 Enrich</span> opens in a hover card on the
@@ -202,7 +202,7 @@ function RankedRow() {
         </p>
         <p>
           <span className="font-medium text-foreground">5 Elsewhere</span> is the record's own page,
-          which the row links to.
+          which the row links to and peek previews.
         </p>
       </figcaption>
     </figure>

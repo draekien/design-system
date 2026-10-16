@@ -4,10 +4,12 @@ import { describe, expect, it, vi } from "vitest"
 import { RecordList } from "@/components/record-list.tsx"
 import {
   RecordRow,
+  RecordRowDescription,
   RecordRowIdentify,
   RecordRowLink,
   RecordRowLoading,
   RecordRowName,
+  RecordRowPeek,
   RecordRowSelect,
 } from "@/components/record-row.tsx"
 
@@ -41,6 +43,30 @@ function renderList(defaultSelectedValues: ReadonlyArray<string> = []) {
       </RecordList>
       <button type="button">After the list</button>
     </>
+  )
+  return { onPeekValueChange, onSelectedValuesChange }
+}
+
+function renderPeekList() {
+  const onPeekValueChange = vi.fn()
+  const onSelectedValuesChange = vi.fn()
+  render(
+    <RecordList
+      aria-label="Records"
+      onPeekValueChange={onPeekValueChange}
+      onSelectedValuesChange={onSelectedValuesChange}
+    >
+      {records.map((record) => (
+        <RecordRow key={record.id} value={record.id}>
+          <RecordRowLink href={`/records/${record.id}`}>
+            <RecordRowIdentify>
+              <RecordRowName>{record.title}</RecordRowName>
+            </RecordRowIdentify>
+          </RecordRowLink>
+          <RecordRowPeek />
+        </RecordRow>
+      ))}
+    </RecordList>
   )
   return { onPeekValueChange, onSelectedValuesChange }
 }
@@ -166,6 +192,42 @@ describe("RecordList", () => {
     expect(onSelectedValuesChange).not.toHaveBeenCalled()
   })
 
+  it("does not select a row that has no checkbox", async () => {
+    const user = userEvent.setup()
+    const { onSelectedValuesChange } = renderPeekList()
+    await user.tab()
+
+    await user.keyboard("x")
+
+    expect(onSelectedValuesChange).not.toHaveBeenCalled()
+    expect(screen.queryByRole("link", { name: /, selected/ })).toBeNull()
+  })
+
+  it("toggles peek from the row's peek button and moves focus to that row", async () => {
+    const user = userEvent.setup()
+    const { onPeekValueChange } = renderPeekList()
+    const peek = screen.getByRole("button", { name: "Peek Retention policy update" })
+
+    await user.click(peek)
+    expect(onPeekValueChange).toHaveBeenLastCalledWith("REC-103")
+    expect(peek.getAttribute("aria-expanded")).toBe("true")
+    expect(document.activeElement).toBe(link("Retention policy update"))
+
+    await user.click(peek)
+    expect(onPeekValueChange).toHaveBeenLastCalledWith(null)
+    expect(peek.getAttribute("aria-expanded")).toBe("false")
+  })
+
+  it("moves peek to another row when that row's peek button is pressed", async () => {
+    const user = userEvent.setup()
+    const { onPeekValueChange } = renderPeekList()
+
+    await user.click(screen.getByRole("button", { name: "Peek Quarterly access review" }))
+    await user.click(screen.getByRole("button", { name: "Peek Vendor contract renewal" }))
+
+    expect(onPeekValueChange).toHaveBeenLastCalledWith("REC-102")
+  })
+
   it("renders loading rows with no links, checkboxes or record text", () => {
     render(
       <RecordList aria-label="Records, loading" aria-busy="true">
@@ -174,6 +236,7 @@ describe("RecordList", () => {
           <RecordRowLink href="/records/REC-104">
             <RecordRowIdentify>
               <RecordRowName>Quarterly access review</RecordRowName>
+              <RecordRowDescription>Confirm who can open finance records</RecordRowDescription>
             </RecordRowIdentify>
           </RecordRowLink>
         </RecordRowLoading>
@@ -183,6 +246,7 @@ describe("RecordList", () => {
     expect(screen.queryByRole("link")).toBeNull()
     expect(screen.queryByRole("checkbox")).toBeNull()
     expect(screen.queryByText("Quarterly access review")).toBeNull()
+    expect(screen.queryByText("Confirm who can open finance records")).toBeNull()
   })
 
   it("throws a named error when a row is rendered outside a list", () => {

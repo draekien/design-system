@@ -65,6 +65,7 @@ export type Dataset<TItem> = {
   name: (item: TItem) => string
   nameField: string
   summary: (item: TItem) => string
+  summaryField: string
   glyph?: ReadDefinition<TItem>
   reads: ReadonlyArray<ReadDefinition<TItem>>
   fields: (item: TItem, state: RowState) => ReadonlyArray<Field>
@@ -79,6 +80,7 @@ export function datasetParts<TItem>(dataset: Dataset<TItem>): ReadonlyArray<Data
   return [
     { part: "select", label: "RecordRowSelect" },
     { part: "key", label: "RecordRowKey" },
+    { part: "description", label: "RecordRowDescription" },
     ...[...(dataset.glyph === undefined ? [] : [dataset.glyph]), ...dataset.reads].flatMap(
       (read) => [
         { part: read.part, label: `${read.label} · ${read.content}` },
@@ -194,6 +196,7 @@ export const recordsDataset: Dataset<SampleRecord> = {
   name: (record) => record.title,
   nameField: "title",
   summary: (record) => record.summary,
+  summaryField: "summary",
   glyph: {
     part: "status",
     card: "status-card",
@@ -318,6 +321,7 @@ export const invoicesDataset: Dataset<SampleInvoice> = {
   name: (invoice) => invoice.customer,
   nameField: "customer",
   summary: (invoice) => invoice.summary,
+  summaryField: "summary",
   glyph: {
     part: "status",
     label: "Status",

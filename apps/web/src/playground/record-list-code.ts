@@ -1,7 +1,8 @@
+import type { FixtureState } from "@workspace/fixtures/state.ts"
 import type { Dataset, Hidden } from "./datasets.tsx"
 import { isPartShown } from "./datasets.tsx"
 
-const componentModule: Readonly<Record<string, string>> = {
+export const componentModule: Readonly<Record<string, string>> = {
   FieldCard: "field-card",
   FieldCardContent: "field-card",
   FieldCardTrigger: "field-card",
@@ -34,7 +35,14 @@ function importLines(module: string, names: ReadonlyArray<string>) {
       ]
 }
 
-export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): string {
+type RowCode = {
+  parts: ReadonlyArray<string>
+  contentModules: ReadonlyMap<string, ReadonlyArray<string>>
+  row: ReadonlyArray<string>
+  loadingRow: ReadonlyArray<string>
+}
+
+function rowCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden, key: boolean): RowCode {
   const item = dataset.item
   const reads = dataset.reads.filter((read) => !hidden.has(read.part))
   const glyph =
@@ -42,13 +50,14 @@ export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): 
   const withCard = (read: (typeof reads)[number]) =>
     read.card !== undefined && isPartShown(hidden, read.card, read.part)
 
-  const rowParts = [
+  const parts = [
     "RecordRow",
     "RecordRowIdentify",
     "RecordRowLink",
     "RecordRowName",
     ...(hidden.has("select") ? [] : ["RecordRowSelect"]),
     ...(hidden.has("key") ? [] : ["RecordRowKey"]),
+    ...(hidden.has("description") ? [] : ["RecordRowDescription"]),
     ...(glyph === undefined ? [] : ["RecordRowGlyph"]),
     ...(reads.length > 0 ? ["RecordRowRead"] : []),
   ]
@@ -80,29 +89,61 @@ export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): 
   ])
 
   const row = [
-    `<RecordRow key={${item}.id} value={${item}.id}>`,
+    key ? `<RecordRow key={${item}.id} value={${item}.id}>` : `<RecordRow value={${item}.id}>`,
     ...(hidden.has("select") ? [] : ["  <RecordRowSelect />"]),
     `  <RecordRowLink render={<Link to="/${dataset.noun}/$id" params={{ id: ${item}.id }} />}>`,
     "    <RecordRowIdentify>",
     ...indent(keyLine, 2),
     ...indent(glyphLines, 3),
     `      <RecordRowName>{${item}.${dataset.nameField}}</RecordRowName>`,
+    ...(hidden.has("description")
+      ? []
+      : [`      <RecordRowDescription>{${item}.${dataset.summaryField}}</RecordRowDescription>`]),
     "    </RecordRowIdentify>",
     ...indent(readLines, 2),
     "  </RecordRowLink>",
     "</RecordRow>",
   ]
 
-  const list = `${dataset.noun.charAt(0).toUpperCase()}${dataset.noun.slice(1)}`
+  const loadingRow = [
+    "<RecordRowLoading>",
+    ...(hidden.has("select") ? [] : ["  <RecordRowSelect />"]),
+    "  <RecordRowLink>",
+    "    <RecordRowIdentify>",
+    ...(hidden.has("key") ? [] : [`      <RecordRowKey narrow="${dataset.keyNarrow}" />`]),
+    ...(glyph === undefined ? [] : ["      <RecordRowGlyph />"]),
+    "      <RecordRowName />",
+    ...(hidden.has("description") ? [] : ["      <RecordRowDescription />"]),
+    "    </RecordRowIdentify>",
+    ...reads.map((read) => `    <RecordRowRead narrow="${read.narrow}" />`),
+    "  </RecordRowLink>",
+    "</RecordRowLoading>",
+  ]
+
+  return { parts, contentModules, row, loadingRow }
+}
+
+function contentImports(contentModules: RowCode["contentModules"]) {
+  return [...contentModules.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .flatMap(([module, names]) => importLines(module, names))
+}
+
+function capitalise(text: string) {
+  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`
+}
+
+export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): string {
+  const item = dataset.item
+  const { parts, contentModules, row } = rowCode(dataset, hidden, true)
+  const list = capitalise(dataset.noun)
 
   return [
     'import { Link } from "@tanstack/react-router"',
     'import * as React from "react"',
-    ...[...contentModules.entries()]
-      .sort(([a], [b]) => a.localeCompare(b))
-      .flatMap(([module, names]) => importLines(module, names)),
+    ...contentImports(contentModules),
     'import { RecordList } from "@/components/record-list"',
-    ...importLines("record-row", rowParts),
+    ...importLines("record-row", parts),
     "",
     `export function ${list}({ ${dataset.noun}, now }: ${list}Props) {`,
     "  const [peekValue, setPeekValue] = React.useState<string | null>(null)",
@@ -120,6 +161,83 @@ export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): 
     ...indent(row, 4),
     "      ))}",
     "    </RecordList>",
+    "  )",
+    "}",
+    "",
+  ].join("\n")
+}
+
+const narrowWidths = [
+  { label: "768px and wider", width: "w-[52rem]" },
+  { label: "640–768px", width: "w-[44rem]" },
+  { label: "narrower than 640px", width: "w-[34rem]" },
+] as const
+
+export function recordListStatesCode<TItem>(
+  dataset: Dataset<TItem>,
+  hidden: Hidden,
+  state: FixtureState
+): string {
+  const { parts, contentModules, row, loadingRow } = rowCode(dataset, hidden, false)
+  const noun = capitalise(dataset.noun)
+  const item = dataset.item
+
+  if (state === "loading") {
+    return [
+      'import { RecordList } from "@/components/record-list"',
+      ...importLines(
+        "record-row",
+        parts.filter((part) => part !== "RecordRow").concat("RecordRowLoading")
+      ),
+      "",
+      `export function ${noun}Loading() {`,
+      "  return (",
+      `    <RecordList aria-label="${noun}, loading" aria-busy="true">`,
+      ...indent(loadingRow, 3),
+      "    </RecordList>",
+      "  )",
+      "}",
+      "",
+    ].join("\n")
+  }
+
+  const label = `${capitalise(item)} row`
+  const list = (name: string, props: ReadonlyArray<string>) =>
+    props.length === 0
+      ? [`<RecordList aria-label="${label}, ${name}">{row}</RecordList>`]
+      : [
+          `<RecordList aria-label="${label}, ${name}" ${props.join(" ")}>`,
+          "  {row}",
+          "</RecordList>",
+        ]
+
+  return [
+    'import { Link } from "@tanstack/react-router"',
+    ...contentImports(contentModules),
+    'import { RecordList } from "@/components/record-list"',
+    ...importLines("record-row", parts),
+    "",
+    `export function ${capitalise(item)}RowStates({ ${item}, now }: ${capitalise(item)}RowStatesProps) {`,
+    "  const row = (",
+    ...indent(row, 2),
+    "  )",
+    "",
+    "  return (",
+    "    <>",
+    ...indent(
+      [
+        ...list("at rest", []),
+        ...list("selected", [`defaultSelectedValues={[${item}.id]}`]),
+        ...list("peeked", [`defaultPeekValue={${item}.id}`]),
+        ...narrowWidths.flatMap((narrow) => [
+          `<div className="${narrow.width}">`,
+          ...indent(list(narrow.label, []), 1),
+          "</div>",
+        ]),
+      ],
+      3
+    ),
+    "    </>",
     "  )",
     "}",
     "",

@@ -10,9 +10,9 @@ export const ranks: ReadonlyArray<Rank> = [
   {
     rank: 1,
     name: "Identify",
-    holds: "What the thing is: its key, glyph and name.",
+    holds: "What the thing is: its key, glyph, name and a one-line description.",
     shows: "Always, at the start of the row or head.",
-    drawnAs: "Text, a status glyph",
+    drawnAs: "Text, a status glyph, a muted description",
   },
   {
     rank: 2,
@@ -26,7 +26,7 @@ export const ranks: ReadonlyArray<Rank> = [
     name: "Explain",
     holds: "What the caller reads on some visits: purpose, breakdown, history, older entries.",
     shows: "In place, one click or key press away.",
-    drawnAs: "Peek, an expanded row, a collapsible section, “Show N more”",
+    drawnAs: "An expanded row, a collapsible section, “Show N more”",
   },
   {
     rank: 4,
@@ -40,8 +40,8 @@ export const ranks: ReadonlyArray<Rank> = [
     rank: 5,
     name: "Elsewhere",
     holds: "Everything about one record.",
-    shows: "On the record's own page.",
-    drawnAs: "The row's link",
+    shows: "On the record's own page; peek previews part of it read-only without leaving.",
+    drawnAs: "The row's link, peek",
   },
 ]
 
@@ -52,7 +52,11 @@ export const rankingRules: ReadonlyArray<string> = [
   "Rank 3 never holds content the caller reads on most visits: collapsing that costs a click on every visit.",
   "A component's parts are named for the rank they hold, never for a data field, so a part takes any data ranked for it.",
   "A narrow surface truncates rank 1 and 2 values first, then abbreviates them, then hides the ones marked hideable; a hidden value stays reachable at rank 3 or 5.",
-  "Rank 3 may be a keyboard-only enhancement on desktop when rank 5 reaches the same content by mouse and touch.",
+  "Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks.",
+  "A row offers peek by pointer through its own peek button, so a click on the row opens rank 5.",
+  "A drawer that shows peek returns focus to the row that opened it.",
+  "A description in rank 1 is one line after the name; it truncates and hides before the name does.",
+  "A row is selectable only when it draws a selection checkbox.",
 ]
 
 export const sourceRules: ReadonlyArray<string> = [

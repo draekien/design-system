@@ -34,6 +34,8 @@ function canvasSearchOf(
     width: _width,
     statesWidth: _statesWidth,
     statesPointer: _statesPointer,
+    lockupTab: _lockupTab,
+    statesTab: _statesTab,
     ...search
   }: PlaygroundSearch,
   view: CanvasView
@@ -100,6 +102,7 @@ export function CanvasFrame({
       ref={frameRef}
       title={title}
       src={src}
+      suppressHydrationWarning
       className={cn("shrink-0 bg-background", widthClass[search.width], className)}
     />
   )

@@ -3,6 +3,7 @@ import { cn } from "cn"
 import type * as React from "react"
 import { Mark } from "../../mark.tsx"
 import { focusRing } from "../../playground/playground-styles.ts"
+import { componentItems } from "../../playground/registry-items.ts"
 
 export const Route = createFileRoute("/playground")({
   component: PlaygroundLayout,
@@ -46,10 +47,22 @@ function PlaygroundLayout() {
               Rules
             </Link>
           </div>
-          <NavGroup label="Components">
+          <NavGroup label="Lockups">
             <Link to="/playground/record-list" className={navLink}>
               Record list
             </Link>
+          </NavGroup>
+          <NavGroup label="Components">
+            {componentItems.map((item) => (
+              <Link
+                key={item.name}
+                to="/playground/$component"
+                params={{ component: item.name }}
+                className={navLink}
+              >
+                {item.title}
+              </Link>
+            ))}
           </NavGroup>
           <NavGroup label="Settings">
             <Link to="/playground/theme" className={navLink}>

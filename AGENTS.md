@@ -60,12 +60,14 @@ Before editing files for a substantial task:
 - Inside `packages/ui`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/ui/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `"cn"`.
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that lab and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
-- A component moves wireframe in `apps/lab`, then component in `packages/ui`, then playground route in `apps/web`.
-- Every wireframe and playground page shows its rules table, the interactive lockup and a constellation, following the `state` search param. On a playground page each part is the real `packages/ui` export.
+- A lockup moves wireframe in `apps/lab`, then component in `packages/ui`, then playground route in `apps/web`.
+- Every wireframe and lockup page shows its rules table, the interactive lockup and a constellation, following the `state` search param. On a playground page each part is the real `packages/ui` export.
 - A constellation draws the component at rest in the centre, one satellite per information rank around it holding that rank's parts with hover cards and panels drawn open, a connector from each part to the centre part that shows or reveals it, and a numbered parts list nesting each part under the part that contains it.
 - A constellation draws always-shown ranks with solid satellites and connectors above the centre, and revealed ranks with dashed satellites below it whose dashed connectors, labelled with the revealing gesture, appear on hover or focus.
-- A playground page shows a States view: the component's interaction states and narrow widths, one specimen each.
+- A lockup page shows a States view: the component's interaction states and narrow widths, one specimen each.
 - A playground page stacks the lockup, the States view and the constellation in that order; the lockup and the States view each render in their own canvas iframe with its own width and pointer controls, the constellation in the page.
+- The lockup and the States view each have a Preview/Code toggle in their toolbar.
+- A component page shows its install command, description, a specimen with a Code toggle, its registry `docs`, and its dependents.
 - A lab route renders its canvas (`view` selects lockup or constellation) when the `embed` search param is true, and its rules table otherwise; the lab shell loads the canvas in an iframe sized by the `width` param.
 - Lab wireframes style hover and touch with `hover:` and `pointer-coarse:`; `apps/lab/src/styles.css` redefines both so the `pointer=coarse` param simulates a coarse pointer.
 - Run tasks from the repo root: `pnpm build`, `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm dev`.
