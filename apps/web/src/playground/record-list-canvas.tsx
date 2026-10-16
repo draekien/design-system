@@ -871,7 +871,7 @@ function rowDrawing<TItem>({
         depth: 5,
         note: `Rank 4: ${glyph.label.toLowerCase()} detail, opened 300ms after the pointer enters`,
         specimen: (
-          <CardSpecimen align="start">
+          <CardSpecimen>
             {(container) => (
               <PartRow dataset={dataset} item={item}>
                 <RecordRowGlyph>
@@ -919,10 +919,10 @@ function rowDrawing<TItem>({
         depth: 4,
         note: `Rank 4: ${read.label.toLowerCase()} detail, opened 300ms after the pointer enters`,
         specimen: (
-          <CardSpecimen align="end">
+          <CardSpecimen>
             {(container) => (
               <PartRow dataset={dataset} item={item}>
-                <RecordRowRead className="pl-0">
+                <RecordRowRead className="col-span-full justify-end pl-0">
                   {read.render(item, {
                     state,
                     withCard: true,
@@ -1051,15 +1051,13 @@ function rowDrawing<TItem>({
 }
 
 function CardSpecimen({
-  align,
   children,
 }: {
-  align: "start" | "end"
   children: (container: HTMLElement | null) => React.ReactNode
 }) {
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null)
   return (
-    <div ref={setContainer} className={cn("relative flex pb-24", align === "end" && "justify-end")}>
+    <div ref={setContainer} className="relative pb-24">
       {children(container)}
     </div>
   )

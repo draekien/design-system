@@ -41,7 +41,8 @@ export type FieldCardContentProps = PreviewCard.Popup.Props &
 
 /**
  * The card drawn below its trigger. It may hold links. It renders into `<body>` unless `container`
- * names another element, such as a scaled or panned canvas the card must move with.
+ * names another element, such as a scaled or panned canvas the card must move with. A click inside
+ * it does not reach the trigger's ancestors, so it never activates the row link around the trigger.
  */
 export function FieldCardContent({
   align = "start",
@@ -50,6 +51,7 @@ export function FieldCardContent({
   collisionAvoidance,
   container,
   className,
+  onClick,
   ...props
 }: FieldCardContentProps): React.ReactElement {
   return (
@@ -67,6 +69,10 @@ export function FieldCardContent({
             "w-60 origin-(--transform-origin) rounded-lg border bg-popover p-3 text-popover-foreground text-xs shadow-[0_1px_2px_rgb(0_0_0/0.05),0_10px_28px_-8px_rgb(0_0_0/0.18)] transition-[opacity,scale] duration-150 ease-out data-ending-style:opacity-0 data-ending-style:duration-0 data-starting-style:scale-[0.97] data-starting-style:opacity-0 motion-reduce:transition-none",
             className
           )}
+          onClick={(event) => {
+            event.stopPropagation()
+            onClick?.(event)
+          }}
           {...props}
         />
       </PreviewCard.Positioner>
