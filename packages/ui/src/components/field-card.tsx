@@ -25,7 +25,10 @@ export function FieldCardTrigger({
       delay={300}
       closeDelay={0}
       render={<span />}
-      className={cn("inline-flex min-h-6 min-w-6 max-w-full items-center", className)}
+      className={cn(
+        "inline-flex min-h-6 min-w-6 max-w-full items-center justify-center",
+        className
+      )}
       {...props}
     />
   )
