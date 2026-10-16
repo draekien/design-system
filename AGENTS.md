@@ -12,6 +12,18 @@ It is not affiliated with any employer.
 
 Build on Base UI primitives only; never add or import Radix (`@radix-ui/*`).
 
+## Decisions
+
+- Take the option you would recommend and proceed; do not stop to ask which option the user prefers. This overrides "Ask rather than guess" for every decision not listed below.
+- Ask the user before creating, amending, superseding or deprecating an ADR in `docs/adr/`.
+- Ask the user before adding, changing or removing a rule in `docs/contexts/design-rules.md`, any `AGENTS.md` or `CLAUDE.md`, or `.claude/rules/`.
+- Ask the user before any choice that departs from an accepted ADR or from a rule in those files.
+- Ask the user before renaming or removing a published registry item, or changing its props.
+- Ask the user before adding a runtime dependency to a registry item.
+- Ask the user before changing how `registry.json` is published.
+- When a plan is complete, end with a decision summary and wait for the user's go-ahead before implementing: one table row per decision with the columns Decision, Chosen, Rule it follows, and Rejected (why); at most eight rows; one line per cell; readable in one minute.
+- In the decision summary, write "none" in Rule it follows when no rule or ADR covers the decision, rather than naming a rule loosely.
+
 ## Contexts
 
 Read docs/contexts/design-rules.md before designing, building or changing a component, its composition or its usage docs, and before writing user-facing copy in a component or example.
