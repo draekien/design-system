@@ -17,6 +17,7 @@ import {
 import { cn } from "cn"
 import * as React from "react"
 import { flushSync } from "react-dom"
+import { Constellation, type ConstellationGroup, type ConstellationPart } from "./constellation.tsx"
 import {
   type Dataset,
   type Hidden,
@@ -26,7 +27,6 @@ import {
   type RowState,
   recordsDataset,
 } from "./datasets.tsx"
-import { ExplodedPart } from "./exploded-part.tsx"
 import type { CanvasOptions } from "./playground-search.ts"
 
 type ListState = Exclude<FixtureState, "error">
@@ -36,6 +36,42 @@ const listSurface =
 
 const textLink =
   "inline-flex min-h-6 items-center rounded-sm font-medium underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-ring"
+
+/** The record list constellation, drawn in the docs page rather than in a canvas frame. */
+export function RecordListConstellation({
+  options,
+}: {
+  options: Omit<CanvasOptions, "view">
+}): React.ReactElement {
+  const hidden = React.useMemo(() => new Set(options.hide), [options.hide])
+  return options.dataset === "invoices" ? (
+    <DatasetConstellation dataset={invoicesDataset} options={options} hidden={hidden} />
+  ) : (
+    <DatasetConstellation dataset={recordsDataset} options={options} hidden={hidden} />
+  )
+}
+
+function DatasetConstellation<TItem>({
+  dataset,
+  options,
+  hidden,
+}: {
+  dataset: Dataset<TItem>
+  options: Omit<CanvasOptions, "view">
+  hidden: Hidden
+}) {
+  const { items: load } = dataset
+  const items = React.useMemo(() => load(options), [load, options])
+  return (
+    <ConstellationView
+      key={`${dataset.id}-${options.state}`}
+      dataset={dataset}
+      state={options.state}
+      items={items}
+      hidden={hidden}
+    />
+  )
+}
 
 export function RecordListCanvas({ options }: { options: CanvasOptions }): React.ReactElement {
   const hidden = React.useMemo(() => new Set(options.hide), [options.hide])
@@ -63,26 +99,22 @@ function DatasetCanvas<TItem>({
   const { items: load } = dataset
   const items = React.useMemo(() => load(options), [load, options])
 
-  if (options.state === "error") {
-    return options.view === "lockup" ? (
-      <ErrorMessage dataset={dataset} />
-    ) : (
-      <ExplodedPart name="ErrorMessage" note="Playground part; replaces the list and peek">
+  switch (options.view) {
+    case "states":
+      return <StatesView dataset={dataset} state={options.state} items={items} hidden={hidden} />
+    case "lockup":
+      return options.state === "error" ? (
         <ErrorMessage dataset={dataset} />
-      </ExplodedPart>
-    )
+      ) : (
+        <PlaygroundRecordList
+          key={`${dataset.id}-${options.state}`}
+          dataset={dataset}
+          state={options.state}
+          items={items}
+          hidden={hidden}
+        />
+      )
   }
-  return options.view === "lockup" ? (
-    <PlaygroundRecordList
-      key={`${dataset.id}-${options.state}`}
-      dataset={dataset}
-      state={options.state}
-      items={items}
-      hidden={hidden}
-    />
-  ) : (
-    <ExplodedView dataset={dataset} state={options.state} items={items} hidden={hidden} />
-  )
 }
 
 function PlaygroundRecordList<TItem>({
@@ -187,7 +219,7 @@ function PlaygroundRecordList<TItem>({
         <aside
           id={panelPeekId}
           aria-label="Peek"
-          className="hidden rounded-xl border bg-card p-4 text-card-foreground text-sm lg:block"
+          className="hidden rounded-xl border bg-card p-4 text-card-foreground text-sm lg:sticky lg:top-6 lg:block lg:max-h-[calc(100svh-3rem)] lg:overflow-y-auto"
         >
           <PeekPanelBody dataset={dataset} item={peeked} state={state} onOpen={setOpenValue} />
         </aside>
@@ -217,6 +249,8 @@ function RowParts<TItem>({
   nameClassName,
   selectClassName,
   cardOpen,
+  cardContainer,
+  anchors,
   onOpen,
 }: {
   dataset: Dataset<TItem>
@@ -227,14 +261,20 @@ function RowParts<TItem>({
   nameClassName?: string
   selectClassName?: string
   cardOpen?: boolean
+  cardContainer?: HTMLElement | null
+  anchors?: RowAnchors
   onOpen?: (value: string) => void
 }) {
   const value = dataset.value(item)
+  const context = { state, cardOpen, cardContainer }
   return (
     <>
-      {!hidden.has("select") && <RecordRowSelect className={selectClassName} />}
+      {!hidden.has("select") && (
+        <RecordRowSelect className={selectClassName} data-anchor={anchors?.get("select")} />
+      )}
       <RecordRowLink
         href={`#${value}`}
+        data-anchor={anchors?.get("link")}
         aria-controls={peekIds === "" ? undefined : peekIds}
         onClick={(event) => {
           if (onOpen !== undefined) {
@@ -243,24 +283,27 @@ function RowParts<TItem>({
           }
         }}
       >
-        <RecordRowIdentify>
+        <RecordRowIdentify data-anchor={anchors?.get("identify")}>
           {!hidden.has("key") && (
-            <RecordRowKey narrow={dataset.keyNarrow}>{dataset.key(item)}</RecordRowKey>
+            <RecordRowKey narrow={dataset.keyNarrow} data-anchor={anchors?.get("key")}>
+              {dataset.key(item)}
+            </RecordRowKey>
           )}
           {dataset.glyph !== undefined && !hidden.has(dataset.glyph.part) && (
-            <RecordRowGlyph>
+            <RecordRowGlyph data-anchor={anchors?.get(dataset.glyph.part)}>
               {dataset.glyph.render(item, {
-                state,
-                cardOpen,
+                ...context,
                 withCard: hasCard(dataset.glyph, hidden),
               })}
             </RecordRowGlyph>
           )}
-          <RecordRowName className={nameClassName}>{dataset.name(item)}</RecordRowName>
+          <RecordRowName className={nameClassName} data-anchor={anchors?.get("name")}>
+            {dataset.name(item)}
+          </RecordRowName>
         </RecordRowIdentify>
         {shownReads(dataset, hidden).map((read) => (
-          <RecordRowRead key={read.part} narrow={read.narrow}>
-            {read.render(item, { state, cardOpen, withCard: hasCard(read, hidden) })}
+          <RecordRowRead key={read.part} narrow={read.narrow} data-anchor={anchors?.get(read.part)}>
+            {read.render(item, { ...context, withCard: hasCard(read, hidden) })}
           </RecordRowRead>
         ))}
       </RecordRowLink>
@@ -274,6 +317,7 @@ function ListFooter<TItem>({
   count,
   hintId,
   selectedCount,
+  anchor,
   onClearSelection,
 }: {
   dataset: Dataset<TItem>
@@ -281,10 +325,14 @@ function ListFooter<TItem>({
   count: number
   hintId: string
   selectedCount: number
+  anchor?: number
   onClearSelection: () => void
 }) {
   return (
-    <div className="flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1.5 px-3 py-2.5 text-muted-foreground text-xs">
+    <div
+      data-anchor={anchor}
+      className="flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1.5 px-3 py-2.5 text-muted-foreground text-xs"
+    >
       <FooterMessage dataset={dataset} state={state} count={count} />
       {selectedCount > 0 && (
         <span className="flex items-center gap-2 text-foreground">
@@ -472,10 +520,17 @@ function ItemFields<TItem>({
   )
 }
 
-function ErrorMessage<TItem>({ dataset }: { dataset: Dataset<TItem> }) {
+function ErrorMessage<TItem>({
+  dataset,
+  anchors,
+}: {
+  dataset: Dataset<TItem>
+  anchors?: { message: number; retry: number }
+}) {
   return (
     <section
       role="alert"
+      data-anchor={anchors?.message}
       className={cn(
         listSurface,
         "flex min-h-56 flex-col items-center justify-center px-6 text-center"
@@ -488,6 +543,7 @@ function ErrorMessage<TItem>({ dataset }: { dataset: Dataset<TItem> }) {
       <Link
         to="."
         search={(previous) => ({ ...previous, state: "loaded" })}
+        data-anchor={anchors?.retry}
         className="mt-5 inline-flex min-h-9 items-center rounded-lg border bg-background px-4 font-medium text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
       >
         Retry
@@ -543,146 +599,584 @@ const narrowNote = {
   hide: 'narrow="hide": short form below 768px, removed below 640px',
 } as const
 
-function ExplodedView<TItem>({
+type RowAnchors = ReadonlyMap<string, number>
+
+type Drawing = {
+  parts: ReadonlyArray<ConstellationPart>
+  groups: ReadonlyArray<ConstellationGroup>
+  centre: React.ReactNode
+}
+
+function partNumbers() {
+  const parts: Array<ConstellationPart> = []
+  const slots = new Map<string, number>()
+  function add(slot: string, part: Omit<ConstellationPart, "n">) {
+    const n = parts.length + 1
+    parts.push({ n, ...part })
+    slots.set(slot, n)
+  }
+  function link(slot: string, anchorSlot = slot) {
+    const part = slots.get(slot)
+    const anchor = slots.get(anchorSlot)
+    return part === undefined || anchor === undefined ? [] : [{ part, anchor }]
+  }
+  return { parts, slots, add, link }
+}
+
+function ConstellationView<TItem>({
   dataset,
   state,
   items,
   hidden,
 }: {
   dataset: Dataset<TItem>
-  state: ListState
+  state: FixtureState
+  items: ReadonlyArray<TItem>
+  hidden: Hidden
+}) {
+  const [stage, setStage] = React.useState<HTMLDivElement | null>(null)
+  const [selectedValues, setSelectedValues] = React.useState<ReadonlyArray<string>>([])
+  const centreHintId = React.useId()
+  const specimenHintId = React.useId()
+  const item = items[0]
+  if (item === undefined) {
+    throw new Error(
+      `The ${dataset.item} set is empty; the constellation needs one ${dataset.item}.`
+    )
+  }
+
+  function drawing(): Drawing {
+    switch (state) {
+      case "error":
+        return errorDrawing(dataset)
+      case "loading":
+        return loadingDrawing({ dataset, item, count: items.length, hidden, hintId: centreHintId })
+      case "loaded":
+      case "partial":
+      case "no-permission":
+        return rowDrawing({
+          dataset,
+          item,
+          state,
+          count: items.length,
+          hidden,
+          stage,
+          hintIds: { centre: centreHintId, specimen: specimenHintId },
+          selectedValues,
+          onSelectedValuesChange: setSelectedValues,
+        })
+    }
+  }
+
+  return (
+    <Constellation
+      label={`${capitalise(dataset.item)} row constellation`}
+      stage={stage}
+      onStageChange={setStage}
+      {...drawing()}
+    />
+  )
+}
+
+function errorDrawing<TItem>(dataset: Dataset<TItem>): Drawing {
+  const { parts, add, link } = partNumbers()
+  add("message", {
+    name: "ErrorMessage",
+    depth: 0,
+    note: "Playground part: replaces the list and peek when the request fails",
+  })
+  add("retry", { name: "Retry", depth: 1, note: "Loads the list again" })
+  return {
+    parts,
+    groups: [
+      {
+        title: "Recover",
+        rank: null,
+        reveal: "always",
+        summary: "States what went wrong, then how to fix it",
+        links: link("retry"),
+      },
+    ],
+    centre: (
+      <div className="w-[36rem]">
+        <ErrorMessage dataset={dataset} anchors={{ message: 1, retry: 2 }} />
+      </div>
+    ),
+  }
+}
+
+function loadingDrawing<TItem>({
+  dataset,
+  item,
+  count,
+  hidden,
+  hintId,
+}: {
+  dataset: Dataset<TItem>
+  item: TItem
+  count: number
+  hidden: Hidden
+  hintId: string
+}): Drawing {
+  const { parts, slots, add, link } = partNumbers()
+  add("list", {
+    name: "RecordList",
+    depth: 0,
+    note: "aria-busy; one RecordRowLoading per expected item",
+  })
+  add("row", {
+    name: "RecordRowLoading",
+    depth: 1,
+    note: "Same parts as RecordRow; each part draws a bar in its own column",
+    specimen: (
+      <RecordList aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
+        <RecordRowLoading className="border-b-0 px-0">
+          <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
+        </RecordRowLoading>
+      </RecordList>
+    ),
+  })
+  add("footer", {
+    name: "ListFooter",
+    depth: 1,
+    note: "Playground part: says how many items are loading",
+    specimen: (
+      <p className="py-1 text-muted-foreground text-xs">
+        Loading {count} {dataset.noun}…
+      </p>
+    ),
+  })
+  return {
+    parts,
+    groups: [
+      {
+        title: "Placeholder",
+        rank: null,
+        reveal: "always",
+        summary: `Each part draws a bar at its loaded width, so the row does not move when the ${dataset.noun} arrive`,
+        links: link("row"),
+      },
+      {
+        title: "Status",
+        rank: null,
+        reveal: "always",
+        summary: `The footer says how many ${dataset.noun} are loading`,
+        links: link("footer"),
+      },
+    ],
+    centre: (
+      <div data-anchor={slots.get("list")} className={cn(listSurface, "w-[52rem]")}>
+        <RecordList aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
+          <RecordRowLoading data-anchor={slots.get("row")}>
+            <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
+          </RecordRowLoading>
+        </RecordList>
+        <ListFooter
+          dataset={dataset}
+          state="loading"
+          count={count}
+          hintId={hintId}
+          selectedCount={0}
+          anchor={slots.get("footer")}
+          onClearSelection={handleSpecimenChange}
+        />
+      </div>
+    ),
+  }
+}
+
+function rowDrawing<TItem>({
+  dataset,
+  item,
+  state,
+  count,
+  hidden,
+  stage,
+  hintIds,
+  selectedValues,
+  onSelectedValuesChange,
+}: {
+  dataset: Dataset<TItem>
+  item: TItem
+  state: RowState
+  count: number
+  hidden: Hidden
+  stage: HTMLDivElement | null
+  hintIds: { centre: string; specimen: string }
+  selectedValues: ReadonlyArray<string>
+  onSelectedValuesChange: (values: ReadonlyArray<string>) => void
+}): Drawing {
+  const { parts, slots, add, link } = partNumbers()
+  const value = dataset.value(item)
+  const reads = shownReads(dataset, hidden)
+  const glyph =
+    dataset.glyph !== undefined && !hidden.has(dataset.glyph.part) ? dataset.glyph : undefined
+  const carded = [...(glyph === undefined ? [] : [glyph]), ...reads].filter(
+    (read) => hasCard(read, hidden) && (read.cardStates?.includes(state) ?? true)
+  )
+  const cardOf = (read: ReadDefinition<TItem>) => (carded.includes(read) ? read.card : undefined)
+
+  add("list", { name: "RecordList", depth: 0, note: "One tab stop; ↑ ↓ Home End, Space, X, Esc" })
+  add("row", {
+    name: "RecordRow",
+    depth: 1,
+    note: "One item: the select slot, then the link holding ranks 1 and 2",
+  })
+  if (!hidden.has("select")) {
+    add("select", {
+      name: "RecordRowSelect",
+      depth: 2,
+      note: "24×24, 44×44 on a coarse pointer; not a tab stop",
+      specimen: (
+        <PartRow dataset={dataset} item={item} selected>
+          <RecordRowSelect className="visible" />
+        </PartRow>
+      ),
+    })
+  }
+  add("link", {
+    name: "RecordRowLink",
+    depth: 2,
+    note: "Rank 5: the row's one focus target; render your router's link through render",
+    specimen: <ItemPageHead dataset={dataset} item={item} />,
+  })
+  add("identify", { name: "RecordRowIdentify", depth: 3, note: "Rank 1: what the item is" })
+  if (!hidden.has("key")) {
+    add("key", {
+      name: "RecordRowKey",
+      depth: 4,
+      note: narrowNote[dataset.keyNarrow],
+      specimen: (
+        <PartRow dataset={dataset} item={item}>
+          <RecordRowKey>{dataset.key(item)}</RecordRowKey>
+        </PartRow>
+      ),
+    })
+  }
+  if (glyph !== undefined) {
+    add(glyph.part, {
+      name: "RecordRowGlyph",
+      depth: 4,
+      note: `${glyph.label}, a ${glyph.content}: 24×24, the word read by screen readers only`,
+      specimen: (
+        <PartRow dataset={dataset} item={item}>
+          <RecordRowGlyph>{glyph.render(item, { state, withCard: false })}</RecordRowGlyph>
+        </PartRow>
+      ),
+    })
+    const card = cardOf(glyph)
+    if (card !== undefined) {
+      add(card, {
+        name: "FieldCard",
+        depth: 5,
+        note: `Rank 4: ${glyph.label.toLowerCase()} detail, opened 300ms after the pointer enters`,
+        specimen: (
+          <CardSpecimen align="start">
+            {(container) => (
+              <PartRow dataset={dataset} item={item}>
+                <RecordRowGlyph>
+                  {glyph.render(item, {
+                    state,
+                    withCard: true,
+                    cardOpen: true,
+                    cardContainer: container,
+                  })}
+                </RecordRowGlyph>
+              </PartRow>
+            )}
+          </CardSpecimen>
+        ),
+      })
+    }
+  }
+  add("name", {
+    name: "RecordRowName",
+    depth: 4,
+    note: "Fills the remaining width; truncates",
+    specimen: (
+      <PartRow dataset={dataset} item={item}>
+        <RecordRowName>{dataset.name(item)}</RecordRowName>
+      </PartRow>
+    ),
+  })
+  for (const read of reads) {
+    add(read.part, {
+      name: "RecordRowRead",
+      depth: 3,
+      note: `Rank 2: ${read.label}, a ${read.content}; ${narrowNote[read.narrow]}`,
+      specimen: (
+        <PartRow dataset={dataset} item={item}>
+          <RecordRowRead className="pl-0">
+            {read.render(item, { state, withCard: false })}
+          </RecordRowRead>
+        </PartRow>
+      ),
+    })
+    const card = cardOf(read)
+    if (card !== undefined) {
+      add(card, {
+        name: "FieldCard",
+        depth: 4,
+        note: `Rank 4: ${read.label.toLowerCase()} detail, opened 300ms after the pointer enters`,
+        specimen: (
+          <CardSpecimen align="end">
+            {(container) => (
+              <PartRow dataset={dataset} item={item}>
+                <RecordRowRead className="pl-0">
+                  {read.render(item, {
+                    state,
+                    withCard: true,
+                    cardOpen: true,
+                    cardContainer: container,
+                  })}
+                </RecordRowRead>
+              </PartRow>
+            )}
+          </CardSpecimen>
+        ),
+      })
+    }
+  }
+  add("footer", {
+    name: "ListFooter",
+    depth: 1,
+    note: "Playground part: the count, the selection and the key hints",
+    specimen: (
+      <ListFooter
+        dataset={dataset}
+        state={state}
+        count={count}
+        hintId={hintIds.specimen}
+        selectedCount={1}
+        onClearSelection={handleSpecimenChange}
+      />
+    ),
+  })
+  add("peek", {
+    name: "Peek",
+    depth: 0,
+    note: "Playground part: follows peekValue; beside the list at lg, under the row below",
+    specimen: (
+      <div className="py-1 text-sm">
+        <PeekContent dataset={dataset} item={item} state={state} onOpen={handleSpecimenChange} />
+      </div>
+    ),
+  })
+
+  const groups: Array<ConstellationGroup> = [
+    {
+      title: "Identify",
+      rank: 1,
+      reveal: "always",
+      summary: `What the ${dataset.item} is, at the start of every row`,
+      links: [...link("key"), ...(glyph === undefined ? [] : link(glyph.part)), ...link("name")],
+    },
+    {
+      title: "Read",
+      rank: 2,
+      reveal: "always",
+      summary: "What the list is scanned for, each value in its own column",
+      links: reads.flatMap((read) => link(read.part)),
+    },
+    {
+      title: "Explain",
+      rank: 3,
+      reveal: "revealed",
+      gesture: "Space",
+      summary: "Peek shows the summary and every field without leaving the list",
+      links: link("peek", "link"),
+    },
+    {
+      title: "Enrich",
+      rank: 4,
+      reveal: "revealed",
+      gesture: "Hover 300ms",
+      summary:
+        "A hover card on the value it describes; peek holds the same fields for keyboard and touch",
+      links: carded.flatMap((read) => (read.card === undefined ? [] : link(read.card, read.part))),
+    },
+    {
+      title: "Elsewhere",
+      rank: 5,
+      reveal: "revealed",
+      gesture: "Enter or click",
+      summary: `The link opens the ${dataset.item}'s page, which holds every field`,
+      links: link("link"),
+    },
+    {
+      title: "Act",
+      rank: null,
+      reveal: "revealed",
+      gesture: "Hover, focus or X",
+      summary: "Selects the row; the footer counts the selection and clears it",
+      links: [...link("select"), ...link("footer")],
+    },
+  ]
+
+  return {
+    parts,
+    groups: groups.filter((group) => group.links.length > 0),
+    centre: (
+      <div data-anchor={slots.get("list")} className={cn(listSurface, "w-[52rem]")}>
+        <RecordList
+          aria-label={capitalise(dataset.noun)}
+          aria-describedby={hintIds.centre}
+          selectedValues={selectedValues}
+          onSelectedValuesChange={onSelectedValuesChange}
+        >
+          <RecordRow value={value} data-anchor={slots.get("row")}>
+            <RowParts
+              dataset={dataset}
+              item={item}
+              state={state}
+              hidden={hidden}
+              anchors={slots}
+              cardContainer={stage}
+              onOpen={handleSpecimenChange}
+            />
+          </RecordRow>
+        </RecordList>
+        <ListFooter
+          dataset={dataset}
+          state={state}
+          count={count}
+          hintId={hintIds.centre}
+          selectedCount={selectedValues.length}
+          anchor={slots.get("footer")}
+          onClearSelection={() => onSelectedValuesChange([])}
+        />
+      </div>
+    ),
+  }
+}
+
+function CardSpecimen({
+  align,
+  children,
+}: {
+  align: "start" | "end"
+  children: (container: HTMLElement | null) => React.ReactNode
+}) {
+  const [container, setContainer] = React.useState<HTMLDivElement | null>(null)
+  return (
+    <div ref={setContainer} className={cn("relative flex pb-24", align === "end" && "justify-end")}>
+      {children(container)}
+    </div>
+  )
+}
+
+function ItemPageHead<TItem>({ dataset, item }: { dataset: Dataset<TItem>; item: TItem }) {
+  return (
+    <div className="flex flex-col gap-1 py-1">
+      <span className="inline-flex items-center gap-1 font-medium text-[0.6875rem] text-muted-foreground">
+        <HugeiconsIcon icon={ArrowLeft01Icon} size={12} strokeWidth={1.75} aria-hidden="true" />
+        Back to {dataset.noun}
+      </span>
+      <span className="mt-1 text-muted-foreground tabular-nums">{dataset.key(item)}</span>
+      <span className="text-balance font-semibold text-sm">{dataset.name(item)}</span>
+    </div>
+  )
+}
+
+function StatesView<TItem>({
+  dataset,
+  state,
+  items,
+  hidden,
+}: {
+  dataset: Dataset<TItem>
+  state: FixtureState
   items: ReadonlyArray<TItem>
   hidden: Hidden
 }) {
   const item = items[0]
   if (item === undefined) {
-    throw new Error(
-      `The ${dataset.item} set is empty; the exploded view needs one ${dataset.item}.`
-    )
+    throw new Error(`The ${dataset.item} set is empty; the states view needs one ${dataset.item}.`)
   }
-  if (state === "loading") {
-    return (
-      <ExplodedPart name="RecordList" note="aria-busy; one RecordRowLoading per expected item">
-        <ExplodedPart
-          name="RecordRowLoading"
-          note="Same parts as RecordRow; each part draws a bar in its own column"
+  switch (state) {
+    case "error":
+      return <ErrorMessage dataset={dataset} />
+    case "loading":
+      return (
+        <StatesSection
+          title="Loading"
+          description="One RecordRowLoading per expected item; each part draws a bar in its own column"
         >
           <div className={listSurface}>
             <RecordList aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
-              <RecordRowLoading>
+              <RecordRowLoading className="border-b-0">
                 <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
               </RecordRowLoading>
             </RecordList>
           </div>
-        </ExplodedPart>
-      </ExplodedPart>
-    )
-  }
-  return (
-    <ExplodedPart name="RecordList" note="One tab stop; ↑ ↓ Home End, Space, X, Esc">
-      <ExplodedPart name="RecordRow" note="Rank 5 link holding rank 1 Identify and rank 2 Reads">
-        <div className="grid gap-3">
-          {rowSpecimens.map((specimen) => (
-            <Specimen
-              key={specimen.label}
-              dataset={dataset}
-              item={item}
-              state={state}
-              hidden={hidden}
-              specimen={specimen}
-            />
-          ))}
-        </div>
-        <ExplodedPart name="Narrow widths" note="Truncate, then abbreviate, then hide">
-          <div className="grid gap-3 overflow-x-auto">
-            {narrowSpecimens.map((specimen) => (
-              <div
-                key={specimen.label}
-                className={cn("flex shrink-0 flex-col gap-1.5", specimen.width)}
-              >
-                <p className="text-muted-foreground text-xs">{specimen.label}</p>
-                <div className={listSurface}>
-                  <RecordList aria-label={`${capitalise(dataset.item)} row, ${specimen.label}`}>
-                    <RecordRow value={dataset.value(item)} className="border-b-0">
-                      <RowParts dataset={dataset} item={item} state={state} hidden={hidden} />
-                    </RecordRow>
-                  </RecordList>
-                </div>
-              </div>
-            ))}
-          </div>
-        </ExplodedPart>
-        <div className="grid gap-3">
-          {!hidden.has("select") && (
-            <ExplodedPart
-              name="RecordRowSelect"
-              note="24×24, 44×44 on a coarse pointer; not a tab stop"
-            >
-              <PartRow dataset={dataset} item={item} selected>
-                <RecordRowSelect className="visible" />
-              </PartRow>
-            </ExplodedPart>
-          )}
-          <ExplodedPart
-            name="RecordRowLink"
-            note="Rank 5: the row's one focus target; render your router's link through render"
+        </StatesSection>
+      )
+    case "loaded":
+    case "partial":
+    case "no-permission":
+      return (
+        <div className="flex flex-col gap-12">
+          <StatesSection
+            title="Row states"
+            description="One row at rest and in each state the list draws on it"
           >
-            <ExplodedPart name="RecordRowIdentify" note="Rank 1: what the item is">
-              <div className="grid gap-3 sm:grid-cols-2">
-                {!hidden.has("key") && (
-                  <ExplodedPart name="RecordRowKey" note={narrowNote[dataset.keyNarrow]}>
-                    <PartRow dataset={dataset} item={item}>
-                      <RecordRowKey>{dataset.key(item)}</RecordRowKey>
-                    </PartRow>
-                  </ExplodedPart>
-                )}
-                {dataset.glyph !== undefined && !hidden.has(dataset.glyph.part) && (
-                  <ExplodedPart
-                    name="RecordRowGlyph"
-                    note={`${dataset.glyph.label}, a ${dataset.glyph.content}: 24×24, the word read by screen readers only${hasCard(dataset.glyph, hidden) ? "; rank 4 FieldCard drawn open" : ""}`}
-                    className={hasCard(dataset.glyph, hidden) ? "pb-24" : undefined}
-                  >
-                    <PartRow dataset={dataset} item={item}>
-                      <RecordRowGlyph>
-                        {dataset.glyph.render(item, {
-                          state,
-                          cardOpen: true,
-                          withCard: hasCard(dataset.glyph, hidden),
-                        })}
-                      </RecordRowGlyph>
-                    </PartRow>
-                  </ExplodedPart>
-                )}
-                <ExplodedPart name="RecordRowName" note="Fills the remaining width; truncates">
-                  <PartRow dataset={dataset} item={item}>
-                    <RecordRowName>{dataset.name(item)}</RecordRowName>
-                  </PartRow>
-                </ExplodedPart>
-              </div>
-            </ExplodedPart>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {shownReads(dataset, hidden).map((read) => {
-                const card = hasCard(read, hidden)
-                return (
-                  <ExplodedPart
-                    key={read.part}
-                    name="RecordRowRead"
-                    note={`Rank 2: ${read.label}, a ${read.content}; ${narrowNote[read.narrow]}${card ? "; rank 4 FieldCard drawn open" : ""}`}
-                    className={card && state === "loaded" ? "pb-24" : undefined}
-                  >
-                    <PartRow dataset={dataset} item={item}>
-                      <RecordRowRead className="pl-0">
-                        {read.render(item, { state, cardOpen: true, withCard: card })}
-                      </RecordRowRead>
-                    </PartRow>
-                  </ExplodedPart>
-                )
-              })}
+            <div className="grid gap-4">
+              {rowSpecimens.map((specimen) => (
+                <Specimen
+                  key={specimen.label}
+                  dataset={dataset}
+                  item={item}
+                  state={state}
+                  hidden={hidden}
+                  specimen={specimen}
+                />
+              ))}
             </div>
-          </ExplodedPart>
+          </StatesSection>
+          <StatesSection title="Narrow widths" description="Truncate, then abbreviate, then hide">
+            <div className="grid gap-4 overflow-x-auto pb-1">
+              {narrowSpecimens.map((specimen) => (
+                <div
+                  key={specimen.label}
+                  className={cn("flex shrink-0 flex-col gap-1.5", specimen.width)}
+                >
+                  <p className="text-muted-foreground text-xs">{specimen.label}</p>
+                  <div className={listSurface}>
+                    <RecordList aria-label={`${capitalise(dataset.item)} row, ${specimen.label}`}>
+                      <RecordRow value={dataset.value(item)} className="border-b-0">
+                        <RowParts dataset={dataset} item={item} state={state} hidden={hidden} />
+                      </RecordRow>
+                    </RecordList>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </StatesSection>
         </div>
-      </ExplodedPart>
-    </ExplodedPart>
+      )
+  }
+}
+
+function StatesSection({
+  title,
+  description,
+  children,
+}: {
+  title: string
+  description: string
+  children: React.ReactNode
+}) {
+  const headingId = React.useId()
+  return (
+    <section aria-labelledby={headingId} className="flex flex-col gap-4">
+      <header>
+        <h2 id={headingId} className="font-semibold text-base tracking-tight">
+          {title}
+        </h2>
+        <p className="mt-1 text-pretty text-muted-foreground text-sm">{description}</p>
+      </header>
+      {children}
+    </section>
   )
 }
 

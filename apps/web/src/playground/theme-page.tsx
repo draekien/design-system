@@ -258,6 +258,7 @@ export function ThemePage(): React.ReactElement {
         <div className="flex h-[30rem] overflow-hidden rounded-xl border bg-muted/50 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[16px_16px] p-3">
           <CanvasFrame
             to="/canvas/record-list"
+            view="lockup"
             title="Record list preview"
             search={previewSearch}
             className="h-full w-full rounded-lg border"

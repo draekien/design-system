@@ -5,12 +5,12 @@ import { cn } from "cn"
 import * as React from "react"
 import {
   Anchor,
+  ConstellationDrawing,
   type DrawingGroup,
   type DrawingPart,
   type DrawingPlane,
-  ExplodedDrawing,
   Part,
-} from "./exploded-drawing.tsx"
+} from "./constellation-drawing.tsx"
 import type { CanvasView } from "./lab-search.ts"
 
 type ListState = Exclude<FixtureState, "error">
@@ -50,7 +50,7 @@ const cardSurface =
 
 const rowKeyShortcuts = "Space X ArrowUp ArrowDown Home End Escape"
 
-/** The record list wireframe, drawn as the composed lockup or as its exploded parts. */
+/** The record list wireframe, drawn as the composed lockup or as its constellation of parts. */
 export function RecordListCanvas({
   state,
   view,
@@ -61,7 +61,7 @@ export function RecordListCanvas({
   return (
     <main className="p-4 sm:p-6">
       <h1 className="sr-only">Record list</h1>
-      {view === "lockup" ? <Lockup state={state} /> : <ExplodedView state={state} />}
+      {view === "lockup" ? <Lockup state={state} /> : <ConstellationView state={state} />}
     </main>
   )
 }
@@ -703,11 +703,11 @@ const drawingStateLabel: Readonly<Record<FixtureState, string>> = {
   "no-permission": "No permission",
 }
 
-function ExplodedView({ state }: { state: FixtureState }) {
+function ConstellationView({ state }: { state: FixtureState }) {
   const peekId = React.useId()
   const drawing = recordListDrawing(state, peekId)
   return (
-    <ExplodedDrawing
+    <ConstellationDrawing
       key={state}
       assembly="RecordList"
       state={drawingStateLabel[state]}
@@ -1139,7 +1139,7 @@ function rowParts(
 function rowDrawing(state: RowState, peekId: string): Drawing {
   const record = sampleRecords[0]
   if (record === undefined) {
-    throw new Error("sampleRecords is empty; the exploded view needs one record.")
+    throw new Error("sampleRecords is empty; the constellation needs one record.")
   }
   const isLoaded = state === "loaded"
   const updatedN = isLoaded ? 13 : 10

@@ -36,19 +36,24 @@ export function FieldCardTrigger({
 
 /** Props for {@link FieldCardContent}. */
 export type FieldCardContentProps = PreviewCard.Popup.Props &
-  Pick<PreviewCard.Positioner.Props, "align" | "side" | "sideOffset" | "collisionAvoidance">
+  Pick<PreviewCard.Positioner.Props, "align" | "side" | "sideOffset" | "collisionAvoidance"> &
+  Pick<PreviewCard.Portal.Props, "container">
 
-/** The card drawn below its trigger. It may hold links. */
+/**
+ * The card drawn below its trigger. It may hold links. It renders into `<body>` unless `container`
+ * names another element, such as a scaled or panned canvas the card must move with.
+ */
 export function FieldCardContent({
   align = "start",
   side = "bottom",
   sideOffset = 6,
   collisionAvoidance,
+  container,
   className,
   ...props
 }: FieldCardContentProps): React.ReactElement {
   return (
-    <PreviewCard.Portal>
+    <PreviewCard.Portal container={container}>
       <PreviewCard.Positioner
         align={align}
         side={side}

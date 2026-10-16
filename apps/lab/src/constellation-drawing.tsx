@@ -2,7 +2,7 @@ import { cn } from "cn"
 import * as React from "react"
 
 /**
- * One row of an exploded drawing's parts list, listed in tree order. `depth` is the part's
+ * One row of a constellation drawing's parts list, listed in tree order. `depth` is the part's
  * nesting level. `specimen` is the part rendered on its own, drawn in its constellation group.
  */
 export type DrawingPart = {
@@ -14,7 +14,7 @@ export type DrawingPart = {
   readonly specimen: React.ReactNode
 }
 
-/** One plane of an exploded drawing: every part at one nesting depth, at its assembled position. */
+/** One plane of the stack form: every part at one nesting depth, at its assembled position. */
 export type DrawingPlane = {
   readonly name: string
   readonly content: React.ReactNode
@@ -83,10 +83,11 @@ const drawingFormLabel: Readonly<Record<DrawingForm, string>> = {
 }
 
 /**
- * An exploded drawing beside its parts list, drawn as a stack (planes along the explode axis)
- * or as a constellation (the assembled `centre`, with each group's parts joined to where they sit).
+ * A drawing of a component beside its parts list, drawn as a constellation (the assembled
+ * `centre`, with each group's parts joined to where they sit) or as a stack (planes along the
+ * explode axis).
  */
-export function ExplodedDrawing({
+export function ConstellationDrawing({
   assembly,
   state,
   parts,
@@ -103,7 +104,7 @@ export function ExplodedDrawing({
 }): React.ReactElement {
   const [activeN, setActiveN] = React.useState<number | null>(null)
   const [explode, setExplode] = React.useState(1)
-  const [form, setForm] = React.useState<DrawingForm>("stack")
+  const [form, setForm] = React.useState<DrawingForm>("constellation")
   const explodeId = React.useId()
 
   return (

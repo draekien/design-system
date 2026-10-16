@@ -75,6 +75,7 @@ export function PlaygroundIndex(): React.ReactElement {
           <div className="flex h-80 border-t bg-muted/50 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[16px_16px] p-3 lg:h-auto lg:min-h-80 lg:border-t-0 lg:border-l">
             <CanvasFrame
               to="/canvas/record-list"
+              view="lockup"
               title="Record list preview"
               search={previewSearch}
               className="h-full w-full rounded-lg border"

@@ -76,7 +76,7 @@ const pointerLabel: Readonly<Record<CanvasPointer, string>> = {
   coarse: "Coarse · touch",
 }
 
-const viewLabel = { lockup: "Lockup", exploded: "Exploded view" } as const
+const viewLabel = { lockup: "Lockup", constellation: "Constellation" } as const
 
 function RootLayout() {
   const { embed, pointer } = Route.useSearch()

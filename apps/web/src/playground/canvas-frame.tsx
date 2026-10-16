@@ -4,6 +4,7 @@ import * as React from "react"
 import { z } from "zod"
 import {
   type CanvasPointer,
+  type CanvasView,
   type CanvasWidth,
   canvasPointerSearch,
   canvasSearch,
@@ -28,8 +29,16 @@ function readMessage(event: MessageEvent, type: z.output<typeof canvasMessage>["
   return parsed.success && parsed.data.type === type ? parsed.data.search : null
 }
 
-function canvasSearchOf({ width: _width, ...search }: PlaygroundSearch): CanvasMessageSearch {
-  return search
+function canvasSearchOf(
+  {
+    width: _width,
+    statesWidth: _statesWidth,
+    statesPointer: _statesPointer,
+    ...search
+  }: PlaygroundSearch,
+  view: CanvasView
+): CanvasMessageSearch {
+  return { ...search, view }
 }
 
 const widthClass: Readonly<Record<CanvasWidth, string>> = {
@@ -43,12 +52,14 @@ const widthClass: Readonly<Record<CanvasWidth, string>> = {
 
 export function CanvasFrame({
   to,
+  view,
   search,
   title,
   className,
   onCanvasNavigate,
 }: {
   to: "/canvas/record-list"
+  view: CanvasView
   search: PlaygroundSearch
   title: string
   className?: string
@@ -56,7 +67,7 @@ export function CanvasFrame({
 }): React.ReactElement {
   const router = useRouter()
   const frameRef = React.useRef<HTMLIFrameElement>(null)
-  const canvas = canvasSearchOf(search)
+  const canvas = canvasSearchOf(search, view)
   const [src] = React.useState(() => router.buildLocation({ to, search: canvas }).href)
   const message = JSON.stringify(canvas)
 
@@ -106,10 +117,6 @@ export function CanvasDocument({
   const theme = usePlaygroundTheme()
   const hydrated = useHydrated()
   const message = JSON.stringify(search)
-
-  React.useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme.mode === "dark")
-  }, [theme.mode])
 
   React.useEffect(() => {
     if (hydrated && window.parent !== window) {

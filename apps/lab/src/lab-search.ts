@@ -9,7 +9,7 @@ export const canvasPointers = ["fine", "coarse"] as const
 
 export type CanvasPointer = (typeof canvasPointers)[number]
 
-export const canvasViews = ["lockup", "exploded"] as const
+export const canvasViews = ["lockup", "constellation"] as const
 
 export type CanvasView = (typeof canvasViews)[number]
 
