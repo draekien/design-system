@@ -17,9 +17,9 @@ import { CanvasFrame, type CanvasMessageSearch } from "./canvas-frame.tsx"
 import { datasetParts, invoicesDataset, recordsDataset } from "./datasets.tsx"
 import { ControlGroup, CopyButton, Segmented } from "./playground-controls.tsx"
 import {
+  type CanvasPointer,
   type CanvasWidth,
   canvasCounts,
-  canvasViews,
   canvasWidths,
   maxSeed,
   type PlaygroundSearch,
@@ -27,6 +27,7 @@ import {
   recordListParts,
 } from "./playground-search.ts"
 import { focusRing, segmentItem } from "./playground-styles.ts"
+import { RecordListConstellation } from "./record-list-canvas.tsx"
 import { recordListCode } from "./record-list-code.ts"
 import { recordListRules } from "./record-list-rules.ts"
 import { RuleNotes } from "./rule-notes.tsx"
@@ -44,8 +45,6 @@ const stateLabel = {
   "no-permission": "No permission",
 } as const
 
-const viewLabel = { lockup: "Lockup", exploded: "Exploded view" } as const
-
 const widthLabel: Readonly<Record<CanvasWidth, string>> = {
   fill: "Fill",
   xl: "1280 · xl",
@@ -62,14 +61,22 @@ const datasetLabel = { records: "Records", invoices: "Invoices" } as const
 function useSetSearch() {
   const navigate = route.useNavigate()
   return (patch: Partial<PlaygroundSearch>) =>
-    void navigate({ search: (previous) => ({ ...previous, ...patch }), replace: true })
+    void navigate({
+      search: (previous) => ({ ...previous, ...patch }),
+      replace: true,
+      resetScroll: false,
+    })
 }
 
 export function RecordListPage({ search }: { search: PlaygroundSearch }): React.ReactElement {
   const setSearch = useSetSearch()
   const hidden = new Set(search.hide)
 
-  function handleCanvasNavigate(next: CanvasMessageSearch) {
+  function handleCanvasNavigate({ view: _view, ...next }: CanvasMessageSearch) {
+    setSearch(next)
+  }
+
+  function handleStatesNavigate({ view: _view, pointer: _pointer, ...next }: CanvasMessageSearch) {
     setSearch(next)
   }
 
@@ -98,46 +105,78 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
         </div>
       </header>
 
-      <section
-        aria-label="Canvas"
-        className="overflow-hidden rounded-xl border bg-card shadow-[0_1px_2px_rgb(0_0_0/0.04),0_16px_40px_-20px_rgb(0_0_0/0.14)] xl:col-start-1 xl:row-start-2"
-      >
-        <CanvasToolbar search={search} />
-        <fieldset className="flex gap-1 border-b px-3">
-          <legend className="sr-only">Canvas view</legend>
-          {canvasViews.map((view) => (
-            <button
-              key={view}
-              type="button"
-              aria-pressed={search.view === view}
-              onClick={() => setSearch({ view })}
-              className={cn(
-                "relative -mb-px inline-flex min-h-10 items-center border-transparent border-b-2 px-2 font-medium text-muted-foreground text-sm transition-colors hover:text-foreground aria-pressed:border-foreground aria-pressed:text-foreground",
-                focusRing
-              )}
-            >
-              {viewLabel[view]}
-            </button>
-          ))}
-        </fieldset>
-        <div className="flex h-[clamp(28rem,68vh,46rem)] overflow-auto bg-muted/50 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[16px_16px] p-3 sm:p-5">
-          <CanvasFrame
-            to="/canvas/record-list"
-            title="Record list canvas"
-            search={search}
-            onCanvasNavigate={handleCanvasNavigate}
-            className={cn(
-              "mx-auto h-full rounded-lg border shadow-[0_1px_2px_rgb(0_0_0/0.04)]",
-              search.width === "fill" && "w-full"
-            )}
-          />
-        </div>
-      </section>
+      <div className="flex min-w-0 flex-col gap-12 xl:col-start-1 xl:row-start-2">
+        <ViewSection
+          id={sectionId.lockup}
+          title="Lockup"
+          description="The list as an app renders it, at the width and pointer you pick."
+        >
+          <div className={frameSurface}>
+            <CanvasToolbar
+              label="Lockup frame"
+              width={search.width}
+              pointer={search.pointer}
+              onWidthChange={(next) => setSearch({ width: next })}
+              onPointerChange={(next) => setSearch({ pointer: next })}
+            />
+            <div className={cn(frameGround(search.width), "h-[clamp(28rem,68vh,46rem)]")}>
+              <CanvasFrame
+                to="/canvas/record-list"
+                view="lockup"
+                title="Record list lockup"
+                search={search}
+                onCanvasNavigate={handleCanvasNavigate}
+                className={frameClass(search.width)}
+              />
+            </div>
+          </div>
+        </ViewSection>
+
+        <ViewSection
+          id={sectionId.states}
+          title="States"
+          description="One row in each interaction state, then at each narrow width."
+        >
+          <div className={frameSurface}>
+            <CanvasToolbar
+              label="States frame"
+              width={search.statesWidth}
+              pointer={search.statesPointer}
+              onWidthChange={(next) => setSearch({ statesWidth: next })}
+              onPointerChange={(next) => setSearch({ statesPointer: next })}
+            />
+            <div className={cn(frameGround(search.statesWidth), "h-[clamp(28rem,80vh,56rem)]")}>
+              <CanvasFrame
+                to="/canvas/record-list"
+                view="states"
+                title="Record list states"
+                search={{ ...search, width: search.statesWidth, pointer: search.statesPointer }}
+                onCanvasNavigate={handleStatesNavigate}
+                className={frameClass(search.statesWidth)}
+              />
+            </div>
+          </div>
+        </ViewSection>
+
+        <ViewSection
+          id={sectionId.constellation}
+          title="Constellation"
+          description="How the row encodes the rules: each part sits with its information rank and connects to where it shows or is revealed in the row."
+        >
+          <div
+            data-pointer={search.pointer}
+            className={cn(frameSurface, "h-[clamp(32rem,80vh,52rem)]")}
+          >
+            <RecordListConstellation options={search} />
+          </div>
+        </ViewSection>
+      </div>
 
       <aside
         aria-label="Canvas controls"
         className="flex flex-col gap-7 xl:sticky xl:top-8 xl:col-start-2 xl:row-span-3 xl:row-start-1 xl:self-start"
       >
+        <PageNav />
         <CanvasControls search={search} hidden={hidden} />
       </aside>
 
@@ -146,8 +185,99 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
   )
 }
 
-function CanvasToolbar({ search }: { search: PlaygroundSearch }) {
-  const setSearch = useSetSearch()
+const frameSurface =
+  "overflow-hidden rounded-xl border bg-card shadow-[0_1px_2px_rgb(0_0_0/0.04),0_16px_40px_-20px_rgb(0_0_0/0.14)]"
+
+function frameGround(width: CanvasWidth): string {
+  return width === "fill"
+    ? "flex overflow-auto"
+    : "flex overflow-auto bg-muted/50 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[16px_16px] p-3 sm:p-5"
+}
+
+function frameClass(width: CanvasWidth): string {
+  return width === "fill"
+    ? "h-full w-full"
+    : "mx-auto h-full rounded-lg border shadow-[0_1px_2px_rgb(0_0_0/0.04)]"
+}
+
+const sectionId = {
+  lockup: "lockup",
+  states: "states",
+  constellation: "constellation",
+  code: "code",
+} as const
+
+const pageSections = [
+  { id: sectionId.lockup, label: "Lockup" },
+  { id: sectionId.states, label: "States" },
+  { id: sectionId.constellation, label: "Constellation" },
+  { id: sectionId.code, label: "Code and rules" },
+] as const
+
+function PageNav() {
+  return (
+    <nav aria-label="On this page" className="flex flex-col gap-2.5 max-xl:hidden">
+      <h2 className="font-medium text-muted-foreground text-xs">On this page</h2>
+      <ul className="flex flex-col gap-0.5">
+        {pageSections.map((section) => (
+          <li key={section.id}>
+            <Link
+              to="."
+              search={true}
+              hash={section.id}
+              resetScroll={false}
+              className={cn(
+                "flex min-h-8 items-center rounded-md px-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground",
+                focusRing
+              )}
+            >
+              {section.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+function ViewSection({
+  id,
+  title,
+  description,
+  children,
+}: {
+  id: string
+  title: string
+  description: string
+  children: React.ReactNode
+}) {
+  const headingId = React.useId()
+  return (
+    <section id={id} aria-labelledby={headingId} className="flex scroll-mt-8 flex-col gap-3">
+      <header>
+        <h2 id={headingId} className="font-semibold text-lg tracking-tight">
+          {title}
+        </h2>
+        <p className="mt-0.5 max-w-2xl text-pretty text-muted-foreground text-sm">{description}</p>
+      </header>
+      {children}
+    </section>
+  )
+}
+
+function CanvasToolbar({
+  label,
+  width,
+  pointer,
+  onWidthChange,
+  onPointerChange,
+}: {
+  label: string
+  width: CanvasWidth
+  pointer: CanvasPointer
+  onWidthChange: (width: CanvasWidth) => void
+  onPointerChange: (pointer: CanvasPointer) => void
+}) {
   const theme = usePlaygroundTheme()
   const widthId = React.useId()
   const nextMode = theme.mode === "dark" ? "light" : "dark"
@@ -155,7 +285,7 @@ function CanvasToolbar({ search }: { search: PlaygroundSearch }) {
   return (
     <div
       role="toolbar"
-      aria-label="Canvas size and input"
+      aria-label={`${label} size and input`}
       className="flex flex-wrap items-center gap-2 border-b bg-background/60 px-3 py-2"
     >
       <label htmlFor={widthId} className="sr-only">
@@ -171,11 +301,11 @@ function CanvasToolbar({ search }: { search: PlaygroundSearch }) {
         />
         <select
           id={widthId}
-          value={search.width}
+          value={width}
           onChange={(event) => {
             const width = canvasWidths.find((option) => option === event.target.value)
             if (width !== undefined) {
-              setSearch({ width })
+              onWidthChange(width)
             }
           }}
           className={cn(
@@ -201,8 +331,8 @@ function CanvasToolbar({ search }: { search: PlaygroundSearch }) {
       <Segmented label="Pointer">
         <button
           type="button"
-          aria-pressed={search.pointer === "fine"}
-          onClick={() => setSearch({ pointer: "fine" })}
+          aria-pressed={pointer === "fine"}
+          onClick={() => onPointerChange("fine")}
           className={segmentItem}
         >
           <HugeiconsIcon icon={Cursor01Icon} size={14} strokeWidth={1.75} aria-hidden="true" />
@@ -210,8 +340,8 @@ function CanvasToolbar({ search }: { search: PlaygroundSearch }) {
         </button>
         <button
           type="button"
-          aria-pressed={search.pointer === "coarse"}
-          onClick={() => setSearch({ pointer: "coarse" })}
+          aria-pressed={pointer === "coarse"}
+          onClick={() => onPointerChange("coarse")}
           className={segmentItem}
         >
           <HugeiconsIcon
@@ -239,7 +369,7 @@ function CanvasToolbar({ search }: { search: PlaygroundSearch }) {
         <button
           type="button"
           onClick={() => savePlaygroundTheme({ ...theme, mode: nextMode })}
-          aria-label={`Switch the canvas to the ${nextMode} theme`}
+          aria-label={`Switch the site to the ${nextMode} theme`}
           className={cn(
             "inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
             focusRing
@@ -470,7 +600,11 @@ function DocsTabs({
   )
 
   return (
-    <Tabs.Root defaultValue="code" className="min-w-0 xl:col-start-1 xl:row-start-3">
+    <Tabs.Root
+      id={sectionId.code}
+      defaultValue="code"
+      className="min-w-0 scroll-mt-8 xl:col-start-1 xl:row-start-3"
+    >
       <Tabs.List className="flex gap-1 border-b">
         <Tabs.Tab value="code" className={tab}>
           Code

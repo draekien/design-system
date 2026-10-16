@@ -32,11 +32,17 @@ export type RowState = Exclude<FixtureState, "error" | "loading">
 
 export type Hidden = ReadonlySet<RecordListPart>
 
-export type ReadContext = { state: RowState; cardOpen?: boolean; withCard: boolean }
+export type ReadContext = {
+  state: RowState
+  cardOpen?: boolean
+  withCard: boolean
+  cardContainer?: HTMLElement | null
+}
 
 export type ReadDefinition<TItem> = {
   part: RecordListPart
   card?: RecordListPart
+  cardStates?: ReadonlyArray<RowState>
   label: string
   narrow: RecordRowNarrow
   content: string
@@ -53,7 +59,7 @@ export type Dataset<TItem> = {
   item: string
   sampleHint: string
   keyNarrow: RecordRowNarrow
-  items: (options: CanvasOptions) => ReadonlyArray<TItem>
+  items: (options: Pick<CanvasOptions, "data" | "seed" | "count">) => ReadonlyArray<TItem>
   value: (item: TItem) => string
   key: (item: TItem) => string
   name: (item: TItem) => string
@@ -122,6 +128,7 @@ function withCard(
       <FieldCardTrigger>{trigger}</FieldCardTrigger>
       <FieldCardContent
         align={align}
+        container={context.cardContainer}
         collisionAvoidance={context.cardOpen === true ? { side: "none" } : undefined}
       >
         {card}
@@ -226,6 +233,7 @@ export const recordsDataset: Dataset<SampleRecord> = {
     {
       part: "owner",
       card: "owner-card",
+      cardStates: ["loaded"],
       label: "Owner",
       narrow: "abbreviate",
       content: "PersonMark",

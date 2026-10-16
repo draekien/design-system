@@ -1,7 +1,7 @@
 import { fixtureStateSearch } from "@workspace/fixtures/state.ts"
 import { z } from "zod"
 
-export const canvasViews = ["lockup", "exploded"] as const
+export const canvasViews = ["lockup", "states"] as const
 
 export type CanvasView = (typeof canvasViews)[number]
 
@@ -56,9 +56,13 @@ export const canvasSearch = fixtureStateSearch.extend({
 
 export type CanvasOptions = z.output<typeof canvasSearch>
 
-export const playgroundSearch = canvasSearch.extend({
+const width = z.enum(canvasWidths).default("fill").catch("fill")
+
+export const playgroundSearch = canvasSearch.omit({ view: true }).extend({
   pointer,
-  width: z.enum(canvasWidths).default("fill").catch("fill"),
+  width,
+  statesPointer: pointer,
+  statesWidth: width,
 })
 
 export type PlaygroundSearch = z.output<typeof playgroundSearch>

@@ -21,7 +21,7 @@ function RecordListCanvasRoute() {
   const options = hydrated ? current : defaults
 
   function handleFrameNavigate(next: CanvasMessageSearch) {
-    void navigate({ search: next, replace: true })
+    void navigate({ search: next, replace: true, resetScroll: false })
   }
 
   return (

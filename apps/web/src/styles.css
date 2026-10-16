@@ -17,3 +17,19 @@
     @slot;
   }
 }
+
+[data-pointer="coarse"] [data-slot="field-card-trigger"] {
+  pointer-events: none;
+}
+
+@keyframes constellation-edge {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes constellation-fade {
+  from {
+    opacity: 0;
+  }
+}

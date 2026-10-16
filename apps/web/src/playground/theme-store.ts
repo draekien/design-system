@@ -14,6 +14,9 @@ export type PlaygroundTheme = z.output<typeof themeSchema>
 
 export const defaultPlaygroundTheme: PlaygroundTheme = { mode: "light", css: "" }
 
+/** Sets the stored mode on `<html>` before first paint; run once from the document head. */
+export const themeModeScript = `try{document.documentElement.classList.toggle("dark",JSON.parse(localStorage.getItem(${JSON.stringify(storageKey)})??"{}").mode==="dark")}catch{}`
+
 function subscribe(onChange: () => void) {
   window.addEventListener("storage", onChange)
   window.addEventListener(changeEvent, onChange)

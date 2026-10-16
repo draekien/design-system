@@ -126,7 +126,7 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Compose FieldCard, FieldCardTrigger around the value, then FieldCardContent. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Compose FieldCard, FieldCardTrigger around the value, then FieldCardContent. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links. The card renders into the body; pass FieldCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/record-list"
     }
   ]
 }
