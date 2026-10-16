@@ -3,7 +3,14 @@ import { type RecordStatus, type SampleRecord, sampleRecords } from "@workspace/
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { cn } from "cn"
 import * as React from "react"
-import { ExplodedPart } from "./exploded-part.tsx"
+import {
+  Anchor,
+  type DrawingGroup,
+  type DrawingPart,
+  type DrawingPlane,
+  ExplodedDrawing,
+  Part,
+} from "./exploded-drawing.tsx"
 import type { CanvasView } from "./lab-search.ts"
 
 type ListState = Exclude<FixtureState, "error">
@@ -688,164 +695,244 @@ function RecordPageBody({ record, state }: { record: SampleRecord; state: Fixtur
   }
 }
 
-function ExplodedView({ state }: { state: FixtureState }) {
-  switch (state) {
-    case "error":
-      return (
-        <ExplodedPart name="ErrorMessage" note="Replaces RecordList and PeekPanel">
-          <ErrorMessage subject="The records" />
-        </ExplodedPart>
-      )
-    case "loading":
-      return <ExplodedLoadingList />
-    case "loaded":
-    case "partial":
-    case "no-permission":
-      return <ExplodedRecordList state={state} />
-  }
+const drawingStateLabel: Readonly<Record<FixtureState, string>> = {
+  loaded: "Loaded",
+  loading: "Loading",
+  partial: "Partial",
+  error: "Error",
+  "no-permission": "No permission",
 }
 
-function ExplodedLoadingList() {
+function ExplodedView({ state }: { state: FixtureState }) {
   const peekId = React.useId()
+  const drawing = recordListDrawing(state, peekId)
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-3 lg:grid-cols-[minmax(0,1fr)_20rem]">
-      <ExplodedPart name="RecordList" note="One LoadingRow per expected record, then ListFooter">
-        <ExplodedPart
-          name="LoadingRow"
-          note="44px high; a bar in each RecordRow slot, at the slot's width"
-        >
-          <ul className="rounded-md border">
-            <LoadingRow />
-          </ul>
-        </ExplodedPart>
-        <ExplodedPart name="ListFooter" note="States how many records are loading">
-          <ListFooter
-            state="loading"
-            hintId={peekId}
-            selectedCount={0}
-            onClearSelection={() => undefined}
-          />
-        </ExplodedPart>
-      </ExplodedPart>
-      <ExplodedPart name="PeekPanel" note="Says peek is available once the records load">
-        <PeekPanel id={peekId} record={null} state="loading" className="block" />
-      </ExplodedPart>
-    </div>
+    <ExplodedDrawing
+      key={state}
+      assembly="RecordList"
+      state={drawingStateLabel[state]}
+      parts={drawing.parts}
+      planes={drawing.planes}
+      groups={drawing.groups}
+      centre={drawing.centre}
+    />
   )
 }
 
-const rowSpecimens: ReadonlyArray<{
-  label: string
-  look: RowLook
-  isSelected: boolean
-  isPeeked: boolean
-}> = [
-  { label: "At rest", look: "rest", isSelected: false, isPeeked: false },
-  { label: "Hovered", look: "hover", isSelected: false, isPeeked: false },
-  { label: "Focused", look: "focus", isSelected: false, isPeeked: false },
-  { label: "Selected", look: "rest", isSelected: true, isPeeked: false },
-  { label: "Peeked", look: "focus", isSelected: false, isPeeked: true },
-]
+type Drawing = {
+  readonly parts: ReadonlyArray<DrawingPart>
+  readonly planes: ReadonlyArray<DrawingPlane>
+  readonly groups: ReadonlyArray<DrawingGroup>
+  readonly centre: React.ReactNode
+}
 
-function ExplodedRecordList({ state }: { state: RowState }) {
-  const peekId = React.useId()
-  const hintId = React.useId()
-  const record = sampleRecords[0]
-  if (record === undefined) {
-    throw new Error("sampleRecords is empty; the exploded view needs one record.")
+const listWidth = "w-[32rem]"
+
+function recordListDrawing(state: FixtureState, peekId: string): Drawing {
+  switch (state) {
+    case "error":
+      return errorDrawing
+    case "loading":
+      return loadingDrawing(peekId)
+    case "loaded":
+    case "partial":
+    case "no-permission":
+      return rowDrawing(state, peekId)
   }
+}
 
+const errorDrawing: Drawing = {
+  parts: [
+    {
+      n: 1,
+      name: "ErrorMessage",
+      depth: 0,
+      qty: 1,
+      note: "Replaces RecordList and PeekPanel",
+      specimen: (
+        <div className={listWidth}>
+          <ErrorMessage subject="The records" />
+        </div>
+      ),
+    },
+  ],
+  planes: [
+    {
+      name: "Message",
+      content: (
+        <Part n={1} className={cn(listWidth, "bg-background")}>
+          <ErrorMessage subject="The records" />
+        </Part>
+      ),
+    },
+  ],
+  groups: [],
+  centre: (
+    <Anchor n={1} className={listWidth}>
+      <ErrorMessage subject="The records" />
+    </Anchor>
+  ),
+}
+
+function LoadingFooter() {
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-3 lg:grid-cols-[minmax(0,1fr)_20rem]">
-      <ExplodedPart name="RecordList" note="List of RecordRow, then ListFooter">
-        <ExplodedPart name="RecordRow" note="44px high; selection slot plus RecordLink">
-          <div className="grid gap-2">
-            {rowSpecimens.map((specimen) => (
-              <div key={specimen.label} className="flex flex-col gap-1">
-                <p className="text-muted-foreground text-xs">{specimen.label}</p>
-                <ul className="rounded-md border">
-                  <RecordRow
-                    record={record}
-                    state={state}
-                    look={specimen.look}
-                    peekIds={peekId}
-                    isActive={false}
-                    isPeeked={specimen.isPeeked}
-                    isSelected={specimen.isSelected}
-                    linkRef={() => undefined}
-                    onFocus={() => undefined}
-                    onKeyDown={() => undefined}
-                    onToggleSelected={() => undefined}
-                  />
+    <ListFooter
+      state="loading"
+      hintId="hint-loading"
+      selectedCount={0}
+      onClearSelection={() => undefined}
+    />
+  )
+}
+
+function loadingDrawing(peekId: string): Drawing {
+  return {
+    parts: [
+      {
+        n: 1,
+        name: "RecordList",
+        depth: 0,
+        qty: 1,
+        note: "One LoadingRow per expected record, then ListFooter",
+        specimen: (
+          <div className={cn(listWidth, "rounded-md border")}>
+            <ul>
+              <LoadingRow />
+            </ul>
+            <LoadingFooter />
+          </div>
+        ),
+      },
+      {
+        n: 2,
+        name: "LoadingRow",
+        depth: 1,
+        qty: sampleRecords.length,
+        note: "44px high; a bar in each RecordRow slot, at the slot's width",
+        specimen: (
+          <ul className={cn(listWidth, "rounded-md border")}>
+            <LoadingRow />
+          </ul>
+        ),
+      },
+      {
+        n: 3,
+        name: "ListFooter",
+        depth: 1,
+        qty: 1,
+        note: "States how many records are loading",
+        specimen: (
+          <div className={listWidth}>
+            <LoadingFooter />
+          </div>
+        ),
+      },
+      {
+        n: 4,
+        name: "PeekPanel",
+        depth: 0,
+        qty: 1,
+        note: "Says peek is available once the records load",
+        specimen: <PeekPanel id={peekId} record={null} state="loading" className="block w-64" />,
+      },
+    ],
+    groups: [
+      {
+        title: "Placeholder",
+        rank: null,
+        summary:
+          "Bars hold each slot at its loaded width, so rows do not shift when records arrive",
+        reveal: "always",
+        links: [{ part: 2, anchor: 2 }],
+      },
+      {
+        title: "Status",
+        rank: null,
+        summary: "The footer counts the records still loading",
+        reveal: "always",
+        links: [{ part: 3, anchor: 3 }],
+      },
+      {
+        title: "Explain",
+        rank: 3,
+        summary: "Peek says it waits until the records load",
+        reveal: "revealed",
+        gesture: "Space",
+        links: [{ part: 4, anchor: 2 }],
+      },
+    ],
+    centre: (
+      <Anchor n={1} className={cn(listWidth, "rounded-md border")}>
+        <Anchor n={2} className="rounded-none">
+          <ul>
+            <LoadingRow />
+          </ul>
+        </Anchor>
+        <Anchor n={3} className="rounded-none">
+          <LoadingFooter />
+        </Anchor>
+      </Anchor>
+    ),
+    planes: [
+      {
+        name: "List",
+        content: (
+          <ListPlane
+            inner={
+              <div className="invisible">
+                <ul>
+                  <LoadingRow />
                 </ul>
+                <LoadingFooter />
               </div>
-            ))}
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <ExplodedPart
-              name="SelectSlot"
-              note="24×24, 44×44 on a coarse pointer; checkbox drawn on hover, focus or selection"
-            >
-              <span className="flex gap-3">
-                <SelectSlot
-                  label="Select, unchecked"
-                  isSelected={false}
-                  isRevealed
-                  onToggleSelected={() => undefined}
-                />
-                <SelectSlot
-                  label="Select, checked"
-                  isSelected
-                  isRevealed
-                  onToggleSelected={() => undefined}
-                />
-              </span>
-            </ExplodedPart>
-            <ExplodedPart
-              name="RecordLink"
-              note="Links to the record page; the row's one tab stop; Space, ↑ ↓, Home, End, X, Esc, Enter"
-            >
-              <ExplodedPart name="RecordId" note="64px wide; hidden below sm">
-                <RecordId record={record} />
-              </ExplodedPart>
-              <ExplodedPart name="StatusChip" note="24×24; opens StatusCard on hover">
-                <StatusChip record={record} />
-                <ExplodedPart name="StatusCard" note="Hover card: time in status">
-                  <span className={cardSurface}>
-                    <StatusCard record={record} />
-                  </span>
-                </ExplodedPart>
-              </ExplodedPart>
-              <ExplodedPart name="RecordTitle" note="Fills the remaining width; truncates">
-                <RecordTitle record={record} />
-              </ExplodedPart>
-              <ExplodedPart name="OwnerSlot" note={ownerSlotNote[state]}>
-                <ExplodedOwner record={record} state={state} />
-              </ExplodedPart>
-              <ExplodedPart name="RecordUpdated" note="80px wide; hidden below md">
-                <RecordUpdated record={record} />
-              </ExplodedPart>
-            </ExplodedPart>
-          </div>
-        </ExplodedPart>
-        <ExplodedPart
-          name="ListFooter"
-          note="State message, selection count with Clear selection, key hints"
-        >
-          <ListFooter
-            state={state}
-            hintId={hintId}
-            selectedCount={1}
-            onClearSelection={() => undefined}
+            }
+            peek={<PeekPanel id={peekId} record={null} state="loading" className="block" />}
+            peekN={4}
           />
-        </ExplodedPart>
-      </ExplodedPart>
-      <ExplodedPart
-        name="PeekPanel"
-        note="Beside RecordList at lg and wider; under the peeked row below lg"
+        ),
+      },
+      {
+        name: "Rows",
+        content: (
+          <div className={cn(listWidth, "p-px")}>
+            <Part n={2}>
+              <ul>
+                <LoadingRow />
+              </ul>
+            </Part>
+            <Part n={3}>
+              <LoadingFooter />
+            </Part>
+          </div>
+        ),
+      },
+    ],
+  }
+}
+
+function ListPlane({
+  inner,
+  peek,
+  peekN,
+}: {
+  inner: React.ReactNode
+  peek: React.ReactNode
+  peekN: number
+}) {
+  return (
+    <div className="flex items-start gap-10">
+      <Part
+        n={1}
+        className={cn(
+          listWidth,
+          "shrink-0 rounded-md border border-muted-foreground/60 bg-background"
+        )}
       >
-        <PeekPanel id={peekId} record={record} state={state} className="block" />
-      </ExplodedPart>
+        {inner}
+      </Part>
+      <Part n={peekN} className="w-80 shrink-0 rounded-md bg-background">
+        {peek}
+      </Part>
     </div>
   )
 }
@@ -856,21 +943,534 @@ const ownerSlotNote: Readonly<Record<RowState, string>> = {
   "no-permission": "Reads Hidden when the owner is withheld",
 }
 
-function ExplodedOwner({ record, state }: { record: SampleRecord; state: RowState }) {
-  if (state !== "loaded") {
-    return <OwnerSlot record={record} state={state} />
-  }
-  return (
-    <ExplodedPart name="OwnerChip" note="Opens OwnerCard on hover">
-      <OwnerChip record={record} />
-      <ExplodedPart name="Initials" note="24×24; first letter of each name">
-        <Initials name={record.owner} />
-      </ExplodedPart>
-      <ExplodedPart name="OwnerCard" note="Hover card: name and role">
+function rowParts(
+  state: RowState,
+  updatedN: number,
+  record: SampleRecord,
+  peekId: string,
+  footer: React.ReactNode
+): ReadonlyArray<DrawingPart> {
+  const row = (
+    <RecordRow
+      record={record}
+      state={state}
+      look="rest"
+      peekIds={peekId}
+      isActive={false}
+      isPeeked={false}
+      isSelected
+      linkRef={() => undefined}
+      onFocus={() => undefined}
+      onKeyDown={() => undefined}
+      onToggleSelected={() => undefined}
+    />
+  )
+  const owner: ReadonlyArray<DrawingPart> =
+    state === "loaded"
+      ? [
+          {
+            n: 9,
+            name: "OwnerSlot",
+            depth: 3,
+            qty: 1,
+            note: ownerSlotNote[state],
+            specimen: <OwnerSlot record={record} state={state} />,
+          },
+          {
+            n: 10,
+            name: "OwnerChip",
+            depth: 4,
+            qty: 1,
+            note: "Opens OwnerCard on hover",
+            specimen: <OwnerChip record={record} />,
+          },
+          {
+            n: 11,
+            name: "Initials",
+            depth: 5,
+            qty: 1,
+            note: "24×24; first letter of each name",
+            specimen: <Initials name={record.owner} />,
+          },
+          {
+            n: 12,
+            name: "OwnerCard",
+            depth: 5,
+            qty: 1,
+            note: "Hover card: name and role",
+            specimen: (
+              <span className={cardSurface}>
+                <OwnerCard record={record} />
+              </span>
+            ),
+          },
+        ]
+      : [
+          {
+            n: 9,
+            name: "OwnerSlot",
+            depth: 3,
+            qty: 1,
+            note: ownerSlotNote[state],
+            specimen: <OwnerSlot record={record} state={state} />,
+          },
+        ]
+  return [
+    {
+      n: 1,
+      name: "RecordList",
+      depth: 0,
+      qty: 1,
+      note: "List of RecordRow, then ListFooter",
+      specimen: (
+        <div className={cn(listWidth, "rounded-md border")}>
+          <ul>{row}</ul>
+          {footer}
+        </div>
+      ),
+    },
+    {
+      n: 2,
+      name: "RecordRow",
+      depth: 1,
+      qty: sampleRecords.length,
+      note: "44px high; selection slot plus RecordLink",
+      specimen: <ul className={cn(listWidth, "rounded-md border")}>{row}</ul>,
+    },
+    {
+      n: 3,
+      name: "SelectSlot",
+      depth: 2,
+      qty: 1,
+      note: "24×24, 44×44 on a coarse pointer; checkbox drawn on hover, focus or selection",
+      specimen: (
+        <SelectSlot
+          label="Select, checked"
+          isSelected
+          isRevealed
+          onToggleSelected={() => undefined}
+        />
+      ),
+    },
+    {
+      n: 4,
+      name: "RecordLink",
+      depth: 2,
+      qty: 1,
+      note: "Links to the record page; the row's one tab stop; Space, ↑ ↓, Home, End, X, Esc, Enter",
+      specimen: (
+        <div className="flex h-11 w-[29rem] items-center gap-3 rounded-sm px-1 outline-2 outline-foreground -outline-offset-2 [mask-image:linear-gradient(to_right,black_10rem,transparent_16rem)]">
+          <RecordId record={record} />
+          <StatusChip record={record} />
+          <RecordTitle record={record} />
+          <OwnerSlot record={record} state={state} />
+          <RecordUpdated record={record} />
+        </div>
+      ),
+    },
+    {
+      n: 5,
+      name: "RecordId",
+      depth: 3,
+      qty: 1,
+      note: "64px wide; hidden below sm",
+      specimen: <span className="text-muted-foreground text-xs tabular-nums">{record.id}</span>,
+    },
+    {
+      n: 6,
+      name: "StatusChip",
+      depth: 3,
+      qty: 1,
+      note: "24×24; opens StatusCard on hover",
+      specimen: <StatusChip record={record} />,
+    },
+    {
+      n: 7,
+      name: "StatusCard",
+      depth: 4,
+      qty: 1,
+      note: "Hover card: time in status",
+      specimen: (
         <span className={cardSurface}>
-          <OwnerCard record={record} />
+          <StatusCard record={record} />
         </span>
-      </ExplodedPart>
-    </ExplodedPart>
+      ),
+    },
+    {
+      n: 8,
+      name: "RecordTitle",
+      depth: 3,
+      qty: 1,
+      note: "Fills the remaining width; truncates",
+      specimen: (
+        <div className="flex w-48">
+          <RecordTitle record={record} />
+        </div>
+      ),
+    },
+    ...owner,
+    {
+      n: updatedN,
+      name: "RecordUpdated",
+      depth: 3,
+      qty: 1,
+      note: "80px wide; hidden below md",
+      specimen: <span className="text-muted-foreground text-xs">{record.updated}</span>,
+    },
+    {
+      n: updatedN + 1,
+      name: "ListFooter",
+      depth: 1,
+      qty: 1,
+      note: "State message, selection count with Clear selection, key hints",
+      specimen: <div className="w-[32rem] max-w-full">{footer}</div>,
+    },
+    {
+      n: updatedN + 2,
+      name: "PeekPanel",
+      depth: 0,
+      qty: 1,
+      note: "Beside RecordList at lg and wider; under the peeked row below lg",
+      specimen: <PeekPanel id={peekId} record={record} state={state} className="block w-64" />,
+    },
+  ]
+}
+
+function rowDrawing(state: RowState, peekId: string): Drawing {
+  const record = sampleRecords[0]
+  if (record === undefined) {
+    throw new Error("sampleRecords is empty; the exploded view needs one record.")
+  }
+  const isLoaded = state === "loaded"
+  const updatedN = isLoaded ? 13 : 10
+  const footer = (
+    <ListFooter
+      state={state}
+      hintId="hint-drawing"
+      selectedCount={1}
+      onClearSelection={() => undefined}
+    />
+  )
+
+  const planes: Array<DrawingPlane> = [
+    {
+      name: "List",
+      content: (
+        <ListPlane
+          inner={
+            <div className="invisible">
+              <div className="h-11 border-b" />
+              {footer}
+            </div>
+          }
+          peek={<PeekPanel id={peekId} record={record} state={state} className="block" />}
+          peekN={updatedN + 2}
+        />
+      ),
+    },
+    {
+      name: "Rows",
+      content: (
+        <div className={cn(listWidth, "p-px")}>
+          <Part n={2}>
+            <div className="h-11 rounded-sm border border-muted-foreground/60 bg-muted/60" />
+          </Part>
+          <Part n={updatedN + 1}>{footer}</Part>
+        </div>
+      ),
+    },
+    {
+      name: "Row parts",
+      content: (
+        <RowSeats
+          state={state}
+          select={
+            <Part n={3}>
+              <SelectSlot
+                label="Select, checked"
+                isSelected
+                isRevealed
+                onToggleSelected={() => undefined}
+              />
+            </Part>
+          }
+          link={
+            <Part n={4} className="absolute inset-0">
+              <div className="size-full rounded-sm outline-2 outline-foreground -outline-offset-2" />
+            </Part>
+          }
+        />
+      ),
+    },
+    {
+      name: "Slots",
+      content: (
+        <RowSeats
+          state={state}
+          id={
+            <Part n={5}>
+              <RecordId record={record} />
+            </Part>
+          }
+          status={
+            <Part n={6}>
+              <StatusChip record={record} />
+            </Part>
+          }
+          title={
+            <Part n={8} className="flex min-w-0 flex-1">
+              <RecordTitle record={record} />
+            </Part>
+          }
+          owner={
+            isLoaded ? (
+              <Part
+                n={9}
+                anchor="bottom"
+                className="h-6 w-full rounded-sm border border-muted-foreground border-dashed"
+              />
+            ) : (
+              <Part n={9} className="flex w-full">
+                <OwnerSlot record={record} state={state} />
+              </Part>
+            )
+          }
+          updated={
+            <Part n={updatedN} className="flex w-full justify-end">
+              <RecordUpdated record={record} />
+            </Part>
+          }
+        />
+      ),
+    },
+    {
+      name: "Slot parts",
+      content: (
+        <RowSeats
+          state={state}
+          status={
+            <Part n={7} className="absolute top-full left-0 pt-1">
+              <span className={cardSurface}>
+                <StatusCard record={record} />
+              </span>
+            </Part>
+          }
+          owner={
+            isLoaded ? (
+              <Part n={10} anchor="bottom" className="flex min-h-6 min-w-0 items-center gap-2">
+                <span className="size-6 shrink-0 rounded-full border border-muted-foreground border-dashed" />
+                <span className="sr-only truncate sm:not-sr-only">{record.owner}</span>
+              </Part>
+            ) : null
+          }
+        />
+      ),
+    },
+  ]
+
+  if (isLoaded) {
+    planes.push({
+      name: "Chip parts",
+      content: (
+        <RowSeats
+          state={state}
+          owner={
+            <div className="relative flex">
+              <span className="invisible">
+                <OwnerChip record={record} />
+              </span>
+              <Part n={11} className="absolute top-0 left-0">
+                <Initials name={record.owner} />
+              </Part>
+              <Part n={12} className="absolute top-full right-0 pt-1">
+                <span className={cardSurface}>
+                  <OwnerCard record={record} />
+                </span>
+              </Part>
+            </div>
+          }
+        />
+      ),
+    })
+  }
+
+  const footerN = updatedN + 1
+  const peekN = updatedN + 2
+  const groups: ReadonlyArray<DrawingGroup> = [
+    {
+      title: "Identify",
+      rank: 1,
+      summary: "What the record is: its ID and title",
+      reveal: "always",
+      links: [
+        { part: 5, anchor: 5 },
+        { part: 8, anchor: 8 },
+      ],
+    },
+    {
+      title: "Read",
+      rank: 2,
+      summary: "What the list is scanned for: status, owner and last update",
+      reveal: "always",
+      links: [
+        { part: 6, anchor: 6 },
+        { part: 9, anchor: 9 },
+        { part: updatedN, anchor: updatedN },
+      ],
+    },
+    {
+      title: "Explain",
+      rank: 3,
+      summary: "Peek on the focused row: summary, team and time in status",
+      reveal: "revealed",
+      gesture: "Space",
+      links: [{ part: peekN, anchor: 2 }],
+    },
+    {
+      title: "Enrich",
+      rank: 4,
+      summary: isLoaded
+        ? "Hover cards on status and owner"
+        : "The status hover card; the owner has none while it is withheld or failed",
+      reveal: "revealed",
+      gesture: "Hover 300ms",
+      links: isLoaded
+        ? [
+            { part: 7, anchor: 6 },
+            { part: 12, anchor: 10 },
+          ]
+        : [{ part: 7, anchor: 6 }],
+    },
+    {
+      title: "Elsewhere",
+      rank: 5,
+      summary: "The row link opens the record page, which shows every field peek shows",
+      reveal: "revealed",
+      gesture: "Enter or click",
+      links: [{ part: 4, anchor: 4 }],
+    },
+    {
+      title: "Act",
+      rank: null,
+      summary: "Selection: the checkbox in its reserved slot, and the footer's count",
+      reveal: "revealed",
+      gesture: "Hover, focus or X",
+      links: [
+        { part: 3, anchor: 3 },
+        { part: footerN, anchor: footerN },
+      ],
+    },
+  ]
+  const centre = (
+    <Anchor n={1} className={cn(listWidth, "rounded-md border")}>
+      <Anchor n={2} className="rounded-none border-b">
+        <RowSeats
+          state={state}
+          select={
+            <Anchor
+              n={3}
+              className="outline-1 outline-muted-foreground/60 outline-dashed -outline-offset-2"
+            >
+              <SelectSlot
+                label="Select"
+                isSelected={false}
+                isRevealed={false}
+                onToggleSelected={() => undefined}
+              />
+            </Anchor>
+          }
+          link={<Anchor n={4} className="absolute inset-0" />}
+          id={
+            <Anchor n={5}>
+              <RecordId record={record} />
+            </Anchor>
+          }
+          status={
+            <Anchor n={6}>
+              <StatusChip record={record} />
+            </Anchor>
+          }
+          title={
+            <Anchor n={8} className="flex min-w-0 flex-1">
+              <RecordTitle record={record} />
+            </Anchor>
+          }
+          owner={
+            <Anchor n={9} className="flex w-full">
+              {isLoaded ? (
+                <HoverCard
+                  align="end"
+                  trigger={
+                    <Anchor n={10} className="flex min-h-6 min-w-0 items-center gap-2">
+                      <Anchor n={11} className="rounded-full">
+                        <Initials name={record.owner} />
+                      </Anchor>
+                      <span className="sr-only truncate sm:not-sr-only">{record.owner}</span>
+                    </Anchor>
+                  }
+                >
+                  <OwnerCard record={record} />
+                </HoverCard>
+              ) : (
+                <OwnerSlot record={record} state={state} />
+              )}
+            </Anchor>
+          }
+          updated={
+            <Anchor n={updatedN} className="flex w-full justify-end">
+              <RecordUpdated record={record} />
+            </Anchor>
+          }
+        />
+      </Anchor>
+      <Anchor n={footerN} className="rounded-none">
+        <ListFooter
+          state={state}
+          hintId="hint-centre"
+          selectedCount={0}
+          onClearSelection={() => undefined}
+        />
+      </Anchor>
+    </Anchor>
+  )
+
+  return { parts: rowParts(state, updatedN, record, peekId, footer), planes, groups, centre }
+}
+
+function RowSeats({
+  state,
+  select,
+  link,
+  id,
+  status,
+  title,
+  owner,
+  updated,
+}: {
+  state: RowState
+  select?: React.ReactNode
+  link?: React.ReactNode
+  id?: React.ReactNode
+  status?: React.ReactNode
+  title?: React.ReactNode
+  owner?: React.ReactNode
+  updated?: React.ReactNode
+}) {
+  return (
+    <div className={cn(listWidth, "p-px")}>
+      <div className="flex h-11 items-center gap-1 px-2">
+        <div className={cn(slot.select, "relative")}>{select}</div>
+        <div className="relative flex h-full min-w-0 flex-1 items-center gap-3 px-1">
+          {link}
+          <div className={cn(slot.id, "relative")}>{id}</div>
+          <div className={cn(slot.status, "relative")}>{status}</div>
+          <div className={cn(slot.title, "relative flex")}>{title}</div>
+          <div className={cn("relative flex shrink-0 items-center", ownerSlotWidth[state])}>
+            {owner}
+          </div>
+          <div className={cn(slot.updated, "relative")}>{updated}</div>
+        </div>
+      </div>
+    </div>
   )
 }

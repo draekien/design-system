@@ -8,6 +8,24 @@
   }
 }
 
+@keyframes explode-plane {
+  from {
+    translate: 0 0 0;
+  }
+}
+
+@keyframes explode-line {
+  from {
+    scale: 1 1 0;
+  }
+}
+
+@keyframes constellation-edge {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
 @custom-variant pointer-coarse {
   @media (pointer: coarse) {
     @slot;
