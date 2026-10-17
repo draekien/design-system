@@ -22,7 +22,10 @@
       "title": "Record row",
       "description": "A 44px row whose parts are named for the rank of what they hold, so any data lines up, reads and narrows by rank.",
       "dependencies": ["@base-ui/react@1.8.0", "cn@0.4.0"],
-      "registryDependencies": ["draekien/design-system/record-list"],
+      "registryDependencies": [
+        "draekien/design-system/record-list",
+        "draekien/design-system/composition-tokens"
+      ],
       "files": [
         {
           "path": "src/components/record-row.tsx",
@@ -43,7 +46,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Compose StatusMarkDot (fill none, half or full) then StatusMarkLabel. The dot tells states apart by shape, not colour. In a RecordRowGlyph, and in an abbreviated RecordRowRead, only the dot is drawn and the word is read by screen readers. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Compose StatusMarkDot (fill none, half or full) then StatusMarkLabel. The dot tells states apart by shape, not colour. In a RecordRowGlyph, and in an abbreviated RecordRowRead, only the dot is drawn and the word is read by screen readers. Playground: https://design-system.wpei.me/playground/record-list",
+      "registryDependencies": ["draekien/design-system/composition-tokens"]
     },
     {
       "name": "person-mark",
@@ -57,7 +61,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Pass name; the initials come from its first and last words. In an abbreviated RecordRowRead only the initials are drawn and the name is read by screen readers. Wrap it in a field-card to show more about the person. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Pass name; the initials come from its first and last words. In an abbreviated RecordRowRead only the initials are drawn and the name is read by screen readers. Wrap it in a field-card to show more about the person. Playground: https://design-system.wpei.me/playground/record-list",
+      "registryDependencies": ["draekien/design-system/composition-tokens"]
     },
     {
       "name": "figure",
@@ -85,7 +90,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Pass value, min and max, a format and an aria-label. In an abbreviated RecordRowRead the bar is dropped and the value stays. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Pass value, min and max, a format and an aria-label. In an abbreviated RecordRowRead the bar is dropped and the value stays. Playground: https://design-system.wpei.me/playground/record-list",
+      "registryDependencies": ["draekien/design-system/composition-tokens"]
     },
     {
       "name": "relative-time",
@@ -127,7 +133,38 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Compose FieldCard, FieldCardTrigger around the value, then FieldCardContent. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links. The card renders into the body; pass FieldCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Compose FieldCard, FieldCardTrigger around the value, then FieldCardContent. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links. The card renders into the body; pass FieldCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/record-list",
+      "registryDependencies": ["draekien/design-system/composition-tokens"]
+    },
+    {
+      "name": "composition-tokens",
+      "type": "registry:theme",
+      "title": "Composition tokens",
+      "description": "The gaps between components and the container radius that every other item composes with.",
+      "cssVars": {
+        "theme": {
+          "spacing-run": "0px",
+          "spacing-related": "0.5rem",
+          "spacing-section": "1.5rem"
+        }
+      },
+      "css": {
+        "@utility rounded-container": {
+          "border-radius": "min(var(--content-radius, calc(var(--radius) * 0.6)) + var(--container-padding, 0px), var(--radius) * 100)",
+          ":where(& > *)": {
+            "--content-radius": "initial",
+            "--container-padding": "initial"
+          }
+        },
+        "@utility container-p-*": {
+          "--container-padding": "--spacing(--value(number))",
+          "padding": "var(--container-padding)",
+          ":where(& > *)": {
+            "--container-padding": "initial"
+          }
+        }
+      },
+      "docs": "A container sets the gap between its children by how they relate: gap-run (0) for the same component in a run, gap-related (0.5rem) for parts of one record or control, gap-section (1.5rem) for separate sections. A radius builds outward from the floor, --radius-sm: a container takes its padding from container-p-<n>, sets --content-radius when its content is rounder than the floor, and rounded-container gives it the content's radius plus that padding. Set --radius to 0rem to make every radius 0. Playground: https://design-system.wpei.me/playground/rules"
     }
   ]
 }

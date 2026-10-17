@@ -12,7 +12,7 @@ export function StatusMark({
   return (
     <span
       data-slot="status-mark"
-      className={cn("inline-flex min-w-0 items-center gap-2", className)}
+      className={cn("inline-flex min-w-0 items-center gap-related", className)}
       {...props}
     />
   )

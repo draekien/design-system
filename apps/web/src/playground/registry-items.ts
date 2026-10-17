@@ -61,8 +61,16 @@ export function builtFrom(lockup: RegistryItem): ReadonlyArray<ItemPart> {
   ]
 }
 
+function dependsOn(item: RegistryItem, name: string, seen: Set<string>): boolean {
+  return builtFrom(item).some((part) => {
+    if (seen.has(part.item.name)) {
+      return false
+    }
+    seen.add(part.item.name)
+    return part.item.name === name || dependsOn(part.item, name, seen)
+  })
+}
+
 export function usedIn(component: RegistryItem): ReadonlyArray<RegistryItem> {
-  return lockupItems.filter((lockup) =>
-    builtFrom(lockup).some((part) => part.item.name === component.name)
-  )
+  return lockupItems.filter((lockup) => dependsOn(lockup, component.name, new Set([lockup.name])))
 }

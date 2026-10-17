@@ -66,7 +66,7 @@ export function FieldCardContent({
         <PreviewCard.Popup
           data-slot="field-card-content"
           className={cn(
-            "w-60 origin-(--transform-origin) rounded-lg border bg-popover p-3 text-popover-foreground text-xs shadow-[0_1px_2px_rgb(0_0_0/0.05),0_10px_28px_-8px_rgb(0_0_0/0.18)] transition-[opacity,scale] duration-150 ease-out data-ending-style:opacity-0 data-ending-style:duration-0 data-starting-style:scale-[0.97] data-starting-style:opacity-0 motion-reduce:transition-none",
+            "w-60 origin-(--transform-origin) rounded-container border bg-popover container-p-3 text-popover-foreground text-xs shadow-[0_1px_2px_rgb(0_0_0/0.05),0_10px_28px_-8px_rgb(0_0_0/0.18)] transition-[opacity,scale] duration-150 ease-out data-ending-style:opacity-0 data-ending-style:duration-0 data-starting-style:scale-[0.97] data-starting-style:opacity-0 motion-reduce:transition-none",
             className
           )}
           onClick={(event) => {

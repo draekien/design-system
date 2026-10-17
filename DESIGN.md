@@ -28,6 +28,11 @@ typography:
     fontSize: "0.75rem"
     fontWeight: 500
     lineHeight: 1.33
+  micro:
+    fontFamily: "Mona Sans Variable, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.625rem"
+    fontWeight: 500
+    lineHeight: 1
 rounded:
   floor: "6px"
   card: "18px"
@@ -91,8 +96,8 @@ The system is defined by the relationships between components, not by the compon
 | Placement | A record table where the caller compares down a column, a record list where they scan for one record | `docs/contexts/design-rules.md` |
 | Nesting | Groups do not nest; records nest one level deep | `docs/contexts/design-rules.md`, `RecordList` |
 | Adjacency | A selection bar holds at most two actions, then a ⋯ menu | `docs/contexts/design-rules.md` |
-| Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px | `docs/contexts/design-rules.md`; tokens not yet in `globals.css` |
-| Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; not yet in components |
+| Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px | `docs/contexts/design-rules.md`, `composition-tokens` (`gap-run`, `gap-related`, `gap-section`) |
+| Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`, `composition-tokens` (`rounded-container`) |
 
 The palette is monochrome with a single orange that marks only what can be acted on. Density is high: 44px rows, 12–14px type, hairline borders and no decorative fills, so a list of hundreds of records stays scannable. Depth is flat; only layers that float above the page (hover cards, menus, peek panels) cast a shadow.
 
@@ -137,6 +142,7 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 - **Title** (600, 0.875rem): section headings and hover card titles.
 - **Body** (400–500, 0.875rem): row values; a row's name is 500.
 - **Label** (500, 0.75rem): buttons, column headers, footers, hover card bodies and key hints.
+- **Micro** (500, 0.625rem): initials in a person mark and the extra-small button only.
 
 ### Named Rules
 **The Tabular Figures Rule.** Every number compared down a column (amounts, percentages, counts, widths) uses tabular figures, so digits align.
@@ -161,12 +167,10 @@ Surfaces are flat and separated by Hairline borders and Paper/Sheet contrast. Sh
 
 A radius builds outward from a floor. A leaf control (checkbox, button, input) takes the floor, `{rounded.floor}` (`--radius-sm`, 6px). A container's radius is its content's radius plus its padding: a field card with 12px padding around a leaf control is `{rounded.card}` (18px), and a panel with 16px padding around a card is `{rounded.panel}` (34px). A container with no padding between it and its content, such as a row, is square.
 
-Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and turns off nesting. Circles are reserved for status dots and initials.
+Every radius derives from `--radius`, so `--radius: 0rem` makes every radius 0 and turns off nesting. Circles are reserved for status dots and initials.
 
 ### Named Rules
-**The Outward Radius Rule.** A container sets `--container-radius` and `--container-padding` on itself; the container around it computes its own radius with `calc(var(--container-radius) + var(--container-padding))`.
-
-**Not yet in code.** The button is still `rounded-md` (8px), the field card `rounded-lg` (10px), and the selection checkbox `rounded-[0.3125rem]`; moving them to the floor and the outward rule is a follow-up lockup change.
+**The Outward Radius Rule.** A container takes its padding from `container-p-<n>`, which also sets `--container-padding`, and sets `--content-radius` when its content is rounder than the floor; `rounded-container` gives it `calc(var(--content-radius) + var(--container-padding))`, and 0 when `--radius` is 0. The field card uses `container-p-3`, so its 12px padding and its radius come from one value.
 
 ## Components
 
@@ -198,7 +202,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 ### Do:
 - **Do** take every colour, radius and font from the tokens in `packages/ui/src/styles/globals.css`.
 - **Do** derive a container's radius from its content's radius plus its padding.
-- **Do** let the container set the gap between its children from `--gap-run`, `--gap-related` or `--gap-section`.
+- **Do** let the container set the gap between its children from `gap-run`, `gap-related` or `gap-section`.
 - **Do** keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer.
 - **Do** give every hit area at least 24×24px, and 44×44px on a coarse pointer.
 - **Do** use tabular figures for any number compared down a column.

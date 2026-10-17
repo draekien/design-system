@@ -4,27 +4,88 @@
   "title": "Design System: design-system",
   "extensions": {
     "colorMeta": {
-      "signal-orange": { "role": "primary", "displayName": "Signal Orange", "canonical": "oklch(0.6895 0.181 45.98)" },
-      "signal-ring": { "role": "primary", "displayName": "Signal Ring", "canonical": "oklch(0.64 0.2 40)" },
-      "alert-red": { "role": "destructive", "displayName": "Alert Red", "canonical": "oklch(0.577 0.245 27.325)" },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "oklch(0.145 0 0)" },
-      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "oklch(0.985 0 0)" },
-      "sheet": { "role": "neutral", "displayName": "Sheet", "canonical": "oklch(1 0 0)" },
-      "quiet-grey": { "role": "neutral", "displayName": "Quiet Grey", "canonical": "oklch(0.967 0.001 286.375)" },
-      "slate-ink": { "role": "neutral", "displayName": "Slate Ink", "canonical": "oklch(0.21 0.006 285.885)" },
-      "muted-ink": { "role": "neutral", "displayName": "Muted Ink", "canonical": "oklch(0.49 0.012 286)" },
-      "hairline": { "role": "neutral", "displayName": "Hairline", "canonical": "oklch(0.925 0.003 286)" }
+      "signal-orange": {
+        "role": "primary",
+        "displayName": "Signal Orange",
+        "canonical": "oklch(0.6895 0.181 45.98)"
+      },
+      "signal-ring": {
+        "role": "primary",
+        "displayName": "Signal Ring",
+        "canonical": "oklch(0.64 0.2 40)"
+      },
+      "alert-red": {
+        "role": "destructive",
+        "displayName": "Alert Red",
+        "canonical": "oklch(0.577 0.245 27.325)"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(0.145 0 0)"
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "oklch(0.985 0 0)"
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Sheet",
+        "canonical": "oklch(1 0 0)"
+      },
+      "quiet-grey": {
+        "role": "neutral",
+        "displayName": "Quiet Grey",
+        "canonical": "oklch(0.967 0.001 286.375)"
+      },
+      "slate-ink": {
+        "role": "neutral",
+        "displayName": "Slate Ink",
+        "canonical": "oklch(0.21 0.006 285.885)"
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "oklch(0.49 0.012 286)"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(0.925 0.003 286)"
+      }
     },
     "typographyMeta": {
-      "title": { "displayName": "Title", "purpose": "Section headings and hover card titles." },
-      "body": { "displayName": "Body", "purpose": "Row values; a row's name is weight 500." },
-      "label": { "displayName": "Label", "purpose": "Buttons, column headers, footers, hover card bodies and key hints." }
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section headings and hover card titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Row values; a row's name is weight 500."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, column headers, footers, hover card bodies and key hints."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Initials in a person mark and the extra-small button only."
+      }
     },
     "shadows": [
-      { "name": "floating-layer", "value": "0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18)", "purpose": "Hover cards, menus and peek panels; nothing in the page flow casts a shadow." }
+      {
+        "name": "floating-layer",
+        "value": "0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18)",
+        "purpose": "Hover cards, menus and peek panels; nothing in the page flow casts a shadow."
+      }
     ],
     "motion": [
-      { "name": "popup-open", "value": "150ms ease-out, from scale 0.97 and opacity 0", "purpose": "Field card opening; closing is instant and reduced motion disables it." }
+      {
+        "name": "popup-open",
+        "value": "150ms ease-out, from scale 0.97 and opacity 0",
+        "purpose": "Field card opening; closing is instant and reduced motion disables it."
+      }
     ],
     "breakpoints": []
   },
@@ -86,20 +147,40 @@
       "One accent, used only on actionable elements and the focus ring.",
       "44px rows with 24×24px hit areas that grow to 44×44px on a coarse pointer.",
       "State shown by shape and word, never by colour alone.",
-      "A radius builds outward from a 6px floor; --radius: 0 makes every radius 0.",
+      "A radius builds outward from a 6px floor; --radius: 0rem makes every radius 0.",
       "The container sets the gap between its children: run 0, related 8px, section 24px."
     ],
     "rules": [
-      { "name": "The Act-Only Accent Rule", "body": "Signal Orange appears only on something the caller can act on, or on the focus ring.", "section": "colors" },
-      { "name": "The No-Colour-Alone Rule", "body": "A state is carried by a shape and a word, so it reads in greyscale.", "section": "colors" },
-      { "name": "The Tabular Figures Rule", "body": "Every number compared down a column uses tabular figures.", "section": "typography" },
-      { "name": "The Flat-At-Rest Rule", "body": "Nothing on the page casts a shadow at rest; a shadow means the layer floats and will close.", "section": "elevation" },
-      { "name": "The Outward Radius Rule", "body": "A container's radius is its content's radius plus its padding, from the --radius-sm floor.", "section": "shapes" }
+      {
+        "name": "The Act-Only Accent Rule",
+        "body": "Signal Orange appears only on something the caller can act on, or on the focus ring.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Colour-Alone Rule",
+        "body": "A state is carried by a shape and a word, so it reads in greyscale.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Every number compared down a column uses tabular figures.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-At-Rest Rule",
+        "body": "Nothing on the page casts a shadow at rest; a shadow means the layer floats and will close.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Outward Radius Rule",
+        "body": "A container's radius is its content's radius plus its padding, from the --radius-sm floor.",
+        "section": "shapes"
+      }
     ],
     "dos": [
       "Do take every colour, radius and font from the tokens in packages/ui/src/styles/globals.css.",
       "Do derive a container's radius from its content's radius plus its padding.",
-      "Do let the container set the gap between its children from --gap-run, --gap-related or --gap-section.",
+      "Do let the container set the gap between its children from gap-run, gap-related or gap-section.",
       "Do keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer."
     ],
     "donts": [
