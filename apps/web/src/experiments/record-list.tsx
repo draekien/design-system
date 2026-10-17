@@ -4,13 +4,13 @@ import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { cn } from "cn"
 import * as React from "react"
 import {
-  Anchor,
-  ConstellationDrawing,
-  type DrawingGroup,
-  type DrawingPart,
-} from "./constellation-drawing.tsx"
-import { Bar, ErrorMessage, Kbd } from "./lab-parts.tsx"
-import type { CanvasView } from "./lab-search.ts"
+  Constellation,
+  type ConstellationGroup,
+  type ConstellationPart,
+} from "../playground/constellation.tsx"
+import { clipSpecimen } from "./clip-specimen.tsx"
+import type { ExperimentView } from "./experiment-search.ts"
+import { Bar, ErrorMessage, Kbd } from "./wireframe-parts.tsx"
 
 type ListState = Exclude<FixtureState, "error">
 
@@ -55,10 +55,10 @@ export function RecordListCanvas({
   view,
 }: {
   state: FixtureState
-  view: CanvasView
+  view: ExperimentView
 }): React.ReactElement {
   return (
-    <main className="p-4 sm:p-6">
+    <main className={view === "lockup" ? "p-4 sm:p-6" : "h-svh"}>
       <h1 className="sr-only">Record list</h1>
       {view === "lockup" ? <Lockup state={state} /> : <ConstellationView state={state} />}
     </main>
@@ -261,7 +261,7 @@ function RecordRow({
         onToggleSelected={onToggleSelected}
       />
       <Link
-        to="/records/$recordId"
+        to="/canvas/experiments/records/$recordId"
         params={{ recordId: record.id }}
         ref={linkRef}
         tabIndex={isActive ? 0 : -1}
@@ -522,7 +522,7 @@ function FooterMessage({ state }: { state: ListState }) {
         <span className="flex flex-wrap items-center gap-x-3">
           Owners could not load: the directory service did not respond.
           <Link
-            to="/record-list"
+            to="/canvas/experiments/record-list"
             search={{ state: "loaded" }}
             className="inline-flex min-h-6 items-center font-medium text-foreground underline underline-offset-4"
           >
@@ -582,7 +582,7 @@ function PeekContent({ record, state }: { record: SampleRecord; state: RowState 
       <p className="mt-2 max-w-prose text-pretty text-sm">{record.summary}</p>
       <RecordFields record={record} state={state} />
       <Link
-        to="/records/$recordId"
+        to="/canvas/experiments/records/$recordId"
         params={{ recordId: record.id }}
         className="mt-3 inline-flex min-h-6 items-center font-medium text-xs underline underline-offset-4"
       >
@@ -635,7 +635,7 @@ export function RecordPage({
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-4 p-4 sm:p-6">
       <Link
-        to="/record-list"
+        to="/canvas/experiments/record-list"
         className="inline-flex min-h-6 items-center self-start text-muted-foreground text-sm underline underline-offset-4"
       >
         Back to records
@@ -669,23 +669,17 @@ function RecordPageBody({ record, state }: { record: SampleRecord; state: Fixtur
   }
 }
 
-const drawingStateLabel: Readonly<Record<FixtureState, string>> = {
-  loaded: "Loaded",
-  loading: "Loading",
-  partial: "Partial",
-  error: "Error",
-  "no-permission": "No permission",
-}
-
 function ConstellationView({ state }: { state: FixtureState }) {
+  const [stage, setStage] = React.useState<HTMLDivElement | null>(null)
   const peekId = React.useId()
   const drawing = recordListDrawing(state, peekId)
   return (
-    <ConstellationDrawing
+    <Constellation
       key={state}
-      assembly="RecordList"
-      state={drawingStateLabel[state]}
-      parts={drawing.parts}
+      label="Record list constellation"
+      stage={stage}
+      onStageChange={setStage}
+      parts={drawing.parts.map(clipSpecimen)}
       groups={drawing.groups}
       centre={drawing.centre}
     />
@@ -693,8 +687,8 @@ function ConstellationView({ state }: { state: FixtureState }) {
 }
 
 type Drawing = {
-  readonly parts: ReadonlyArray<DrawingPart>
-  readonly groups: ReadonlyArray<DrawingGroup>
+  parts: ReadonlyArray<ConstellationPart>
+  groups: ReadonlyArray<ConstellationGroup>
   readonly centre: React.ReactNode
 }
 
@@ -719,7 +713,6 @@ const errorDrawing: Drawing = {
       n: 1,
       name: "ErrorMessage",
       depth: 0,
-      qty: 1,
       note: "Replaces RecordList and PeekPanel",
       specimen: (
         <div className={listWidth}>
@@ -730,9 +723,9 @@ const errorDrawing: Drawing = {
   ],
   groups: [],
   centre: (
-    <Anchor n={1} className={listWidth}>
+    <div data-anchor={1} className={listWidth}>
       <ErrorMessage subject="The records" />
-    </Anchor>
+    </div>
   ),
 }
 
@@ -754,7 +747,6 @@ function loadingDrawing(peekId: string): Drawing {
         n: 1,
         name: "RecordList",
         depth: 0,
-        qty: 1,
         note: "One LoadingRow per expected record, then ListFooter",
         specimen: (
           <div className={cn(listWidth, "rounded-md border")}>
@@ -769,7 +761,6 @@ function loadingDrawing(peekId: string): Drawing {
         n: 2,
         name: "LoadingRow",
         depth: 1,
-        qty: sampleRecords.length,
         note: "44px high; a bar in each RecordRow slot, at the slot's width",
         specimen: (
           <ul className={cn(listWidth, "rounded-md border")}>
@@ -781,7 +772,6 @@ function loadingDrawing(peekId: string): Drawing {
         n: 3,
         name: "ListFooter",
         depth: 1,
-        qty: 1,
         note: "States how many records are loading",
         specimen: (
           <div className={listWidth}>
@@ -793,7 +783,6 @@ function loadingDrawing(peekId: string): Drawing {
         n: 4,
         name: "PeekPanel",
         depth: 0,
-        qty: 1,
         note: "Says peek is available once the records load",
         specimen: <PeekPanel id={peekId} record={null} state="loading" className="block w-64" />,
       },
@@ -824,16 +813,16 @@ function loadingDrawing(peekId: string): Drawing {
       },
     ],
     centre: (
-      <Anchor n={1} className={cn(listWidth, "rounded-md border")}>
-        <Anchor n={2} className="rounded-none">
+      <div data-anchor={1} className={cn(listWidth, "rounded-md border")}>
+        <div data-anchor={2}>
           <ul>
             <LoadingRow />
           </ul>
-        </Anchor>
-        <Anchor n={3} className="rounded-none">
+        </div>
+        <div data-anchor={3}>
           <LoadingFooter />
-        </Anchor>
-      </Anchor>
+        </div>
+      </div>
     ),
   }
 }
@@ -850,7 +839,7 @@ function rowParts(
   record: SampleRecord,
   peekId: string,
   footer: React.ReactNode
-): ReadonlyArray<DrawingPart> {
+): ReadonlyArray<ConstellationPart> {
   const row = (
     <RecordRow
       record={record}
@@ -866,14 +855,13 @@ function rowParts(
       onToggleSelected={() => undefined}
     />
   )
-  const owner: ReadonlyArray<DrawingPart> =
+  const owner: ReadonlyArray<ConstellationPart> =
     state === "loaded"
       ? [
           {
             n: 9,
             name: "OwnerSlot",
             depth: 3,
-            qty: 1,
             note: ownerSlotNote[state],
             specimen: <OwnerSlot record={record} state={state} />,
           },
@@ -881,7 +869,6 @@ function rowParts(
             n: 10,
             name: "OwnerChip",
             depth: 4,
-            qty: 1,
             note: "Opens OwnerCard on hover",
             specimen: <OwnerChip record={record} />,
           },
@@ -889,7 +876,6 @@ function rowParts(
             n: 11,
             name: "Initials",
             depth: 5,
-            qty: 1,
             note: "24×24; first letter of each name",
             specimen: <Initials name={record.owner} />,
           },
@@ -897,7 +883,6 @@ function rowParts(
             n: 12,
             name: "OwnerCard",
             depth: 5,
-            qty: 1,
             note: "Hover card: name and role",
             specimen: (
               <span className={cardSurface}>
@@ -911,7 +896,6 @@ function rowParts(
             n: 9,
             name: "OwnerSlot",
             depth: 3,
-            qty: 1,
             note: ownerSlotNote[state],
             specimen: <OwnerSlot record={record} state={state} />,
           },
@@ -921,7 +905,6 @@ function rowParts(
       n: 1,
       name: "RecordList",
       depth: 0,
-      qty: 1,
       note: "List of RecordRow, then ListFooter",
       specimen: (
         <div className={cn(listWidth, "rounded-md border")}>
@@ -934,7 +917,6 @@ function rowParts(
       n: 2,
       name: "RecordRow",
       depth: 1,
-      qty: sampleRecords.length,
       note: "44px high; selection slot plus RecordLink",
       specimen: <ul className={cn(listWidth, "rounded-md border")}>{row}</ul>,
     },
@@ -942,7 +924,6 @@ function rowParts(
       n: 3,
       name: "SelectSlot",
       depth: 2,
-      qty: 1,
       note: "24×24, 44×44 on a coarse pointer; checkbox drawn on hover, focus or selection",
       specimen: (
         <SelectSlot
@@ -957,7 +938,6 @@ function rowParts(
       n: 4,
       name: "RecordLink",
       depth: 2,
-      qty: 1,
       note: "Links to the record page; the row's one tab stop; Space, ↑ ↓, Home, End, X, Esc, Enter",
       specimen: (
         <div className="flex h-11 w-[29rem] items-center gap-3 rounded-sm px-1 outline-2 outline-foreground -outline-offset-2 [mask-image:linear-gradient(to_right,black_10rem,transparent_16rem)]">
@@ -973,7 +953,6 @@ function rowParts(
       n: 5,
       name: "RecordId",
       depth: 3,
-      qty: 1,
       note: "64px wide; hidden below sm",
       specimen: <span className="text-muted-foreground text-xs tabular-nums">{record.id}</span>,
     },
@@ -981,7 +960,6 @@ function rowParts(
       n: 6,
       name: "StatusChip",
       depth: 3,
-      qty: 1,
       note: "24×24; opens StatusCard on hover",
       specimen: <StatusChip record={record} />,
     },
@@ -989,7 +967,6 @@ function rowParts(
       n: 7,
       name: "StatusCard",
       depth: 4,
-      qty: 1,
       note: "Hover card: time in status",
       specimen: (
         <span className={cardSurface}>
@@ -1001,7 +978,6 @@ function rowParts(
       n: 8,
       name: "RecordTitle",
       depth: 3,
-      qty: 1,
       note: "The title, then a muted one-line summary that truncates first and hides below sm",
       specimen: (
         <div className="flex w-48">
@@ -1014,7 +990,6 @@ function rowParts(
       n: updatedN,
       name: "RecordUpdated",
       depth: 3,
-      qty: 1,
       note: "80px wide; hidden below md",
       specimen: <span className="text-muted-foreground text-xs">{record.updated}</span>,
     },
@@ -1022,7 +997,6 @@ function rowParts(
       n: updatedN + 1,
       name: "ListFooter",
       depth: 1,
-      qty: 1,
       note: "State message, selection count with Clear selection, key hints",
       specimen: <div className="w-[32rem] max-w-full">{footer}</div>,
     },
@@ -1030,7 +1004,6 @@ function rowParts(
       n: updatedN + 2,
       name: "PeekPanel",
       depth: 0,
-      qty: 1,
       note: "Beside RecordList at lg and wider; under the peeked row below lg",
       specimen: <PeekPanel id={peekId} record={record} state={state} className="block w-64" />,
     },
@@ -1055,7 +1028,7 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
 
   const footerN = updatedN + 1
   const peekN = updatedN + 2
-  const groups: ReadonlyArray<DrawingGroup> = [
+  const groups: ReadonlyArray<ConstellationGroup> = [
     {
       title: "Identify",
       rank: 1,
@@ -1117,13 +1090,13 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
     },
   ]
   const centre = (
-    <Anchor n={1} className={cn(listWidth, "rounded-md border")}>
-      <Anchor n={2} className="rounded-none border-b">
+    <div data-anchor={1} className={cn(listWidth, "rounded-md border")}>
+      <div data-anchor={2} className="border-b">
         <RowSeats
           state={state}
           select={
-            <Anchor
-              n={3}
+            <div
+              data-anchor={3}
               className="outline-1 outline-muted-foreground/60 outline-dashed -outline-offset-2"
             >
               <SelectSlot
@@ -1132,36 +1105,36 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
                 isRevealed={false}
                 onToggleSelected={() => undefined}
               />
-            </Anchor>
+            </div>
           }
-          link={<Anchor n={4} className="absolute inset-0" />}
+          link={<div data-anchor={4} className="absolute inset-0" />}
           id={
-            <Anchor n={5}>
+            <div data-anchor={5}>
               <RecordId record={record} />
-            </Anchor>
+            </div>
           }
           status={
-            <Anchor n={6}>
+            <div data-anchor={6}>
               <StatusChip record={record} />
-            </Anchor>
+            </div>
           }
           title={
-            <Anchor n={8} className="flex min-w-0 flex-1">
+            <div data-anchor={8} className="flex min-w-0 flex-1">
               <RecordTitle record={record} />
-            </Anchor>
+            </div>
           }
           owner={
-            <Anchor n={9} className="flex w-full">
+            <div data-anchor={9} className="flex w-full">
               {isLoaded ? (
                 <HoverCard
                   align="end"
                   trigger={
-                    <Anchor n={10} className="flex min-h-6 min-w-0 items-center gap-2">
-                      <Anchor n={11} className="rounded-full">
+                    <div data-anchor={10} className="flex min-h-6 min-w-0 items-center gap-2">
+                      <div data-anchor={11} className="rounded-full">
                         <Initials name={record.owner} />
-                      </Anchor>
+                      </div>
                       <span className="sr-only truncate sm:not-sr-only">{record.owner}</span>
-                    </Anchor>
+                    </div>
                   }
                 >
                   <OwnerCard record={record} />
@@ -1169,24 +1142,24 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
               ) : (
                 <OwnerSlot record={record} state={state} />
               )}
-            </Anchor>
+            </div>
           }
           updated={
-            <Anchor n={updatedN} className="flex w-full justify-end">
+            <div data-anchor={updatedN} className="flex w-full justify-end">
               <RecordUpdated record={record} />
-            </Anchor>
+            </div>
           }
         />
-      </Anchor>
-      <Anchor n={footerN} className="rounded-none">
+      </div>
+      <div data-anchor={footerN}>
         <ListFooter
           state={state}
           hintId="hint-centre"
           selectedCount={0}
           onClearSelection={() => undefined}
         />
-      </Anchor>
-    </Anchor>
+      </div>
+    </div>
   )
 
   return { parts: rowParts(state, updatedN, record, peekId, footer), groups, centre }

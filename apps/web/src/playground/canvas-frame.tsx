@@ -16,16 +16,17 @@ const canvasMessageSearch = canvasSearch.extend(canvasPointerSearch.shape)
 
 export type CanvasMessageSearch = z.output<typeof canvasMessageSearch>
 
-const canvasMessage = z.object({
-  type: z.enum(["playground:navigate", "playground:canvas"]),
-  search: canvasMessageSearch,
-})
+const messageType = z.enum(["playground:navigate", "playground:canvas"])
 
-function readMessage(event: MessageEvent, type: z.output<typeof canvasMessage>["type"]) {
+function readMessage<TSearch>(
+  event: MessageEvent,
+  type: z.output<typeof messageType>,
+  schema: z.ZodType<TSearch>
+): TSearch | null {
   if (event.origin !== window.location.origin) {
     return null
   }
-  const parsed = canvasMessage.safeParse(event.data)
+  const parsed = z.object({ type: messageType, search: schema }).safeParse(event.data)
   return parsed.success && parsed.data.type === type ? parsed.data.search : null
 }
 
@@ -68,10 +69,44 @@ export function CanvasFrame({
   onCanvasNavigate?: (search: CanvasMessageSearch) => void
 }): React.ReactElement {
   const router = useRouter()
-  const frameRef = React.useRef<HTMLIFrameElement>(null)
   const canvas = canvasSearchOf(search, view)
   const [src] = React.useState(() => router.buildLocation({ to, search: canvas }).href)
-  const message = JSON.stringify(canvas)
+  return (
+    <SearchFrame
+      src={src}
+      search={canvas}
+      schema={canvasMessageSearch}
+      width={search.width}
+      title={title}
+      className={className}
+      onCanvasNavigate={onCanvasNavigate}
+    />
+  )
+}
+
+/**
+ * An iframe that loads `src` once, then keeps the canvas in step with `search` by message, and
+ * reports the canvas's own search changes through `onCanvasNavigate`. `schema` parses both ways.
+ */
+export function SearchFrame<TSearch>({
+  src,
+  search,
+  schema,
+  width,
+  title,
+  className,
+  onCanvasNavigate,
+}: {
+  src: string
+  search: TSearch
+  schema: z.ZodType<TSearch>
+  width: CanvasWidth
+  title: string
+  className?: string
+  onCanvasNavigate?: (search: TSearch) => void
+}): React.ReactElement {
+  const frameRef = React.useRef<HTMLIFrameElement>(null)
+  const message = JSON.stringify(search)
 
   React.useEffect(() => {
     frameRef.current?.contentWindow?.postMessage(
@@ -88,14 +123,14 @@ export function CanvasFrame({
       if (event.source !== frameRef.current?.contentWindow) {
         return
       }
-      const next = readMessage(event, "playground:canvas")
+      const next = readMessage(event, "playground:canvas", schema)
       if (next !== null) {
         onCanvasNavigate?.(next)
       }
     }
     window.addEventListener("message", handleMessage)
     return () => window.removeEventListener("message", handleMessage)
-  }, [onCanvasNavigate])
+  }, [onCanvasNavigate, schema])
 
   return (
     <iframe
@@ -103,18 +138,24 @@ export function CanvasFrame({
       title={title}
       src={src}
       suppressHydrationWarning
-      className={cn("shrink-0 bg-background", widthClass[search.width], className)}
+      className={cn("shrink-0 bg-background", widthClass[width], className)}
     />
   )
 }
 
-export function CanvasDocument({
+/**
+ * The document inside a canvas iframe: reports `search` to the parent page, applies the parent's
+ * navigation through `onFrameNavigate`, and draws the coarse pointer and the playground theme.
+ */
+export function CanvasDocument<TNavigate>({
   search,
+  schema,
   onFrameNavigate,
   children,
 }: {
-  search: CanvasMessageSearch
-  onFrameNavigate: (search: CanvasMessageSearch) => void
+  search: { pointer: CanvasPointer }
+  schema: z.ZodType<TNavigate>
+  onFrameNavigate: (search: TNavigate) => void
   children: React.ReactNode
 }): React.ReactElement {
   const theme = usePlaygroundTheme()
@@ -135,17 +176,17 @@ export function CanvasDocument({
       if (event.source !== window.parent) {
         return
       }
-      const next = readMessage(event, "playground:navigate")
+      const next = readMessage(event, "playground:navigate", schema)
       if (next !== null) {
         onFrameNavigate(next)
       }
     }
     window.addEventListener("message", handleMessage)
     return () => window.removeEventListener("message", handleMessage)
-  }, [onFrameNavigate])
+  }, [onFrameNavigate, schema])
 
   return (
-    <div data-pointer={search.pointer satisfies CanvasPointer} className="min-h-svh">
+    <div data-pointer={search.pointer} className="min-h-svh">
       {theme.css === "" ? null : <style>{theme.css}</style>}
       {children}
     </div>

@@ -1,14 +1,13 @@
-import { sampleInvoiceLines, sampleInvoices } from "@workspace/fixtures/invoices.ts"
+import { sampleInvoiceLines } from "@workspace/fixtures/invoices.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { cn } from "cn"
 import * as React from "react"
 import {
-  Anchor,
-  ConstellationDrawing,
-  type DrawingGroup,
-  type DrawingPart,
-} from "./constellation-drawing.tsx"
-import { ErrorMessage } from "./lab-parts.tsx"
+  Constellation,
+  type ConstellationGroup,
+  type ConstellationPart,
+} from "../playground/constellation.tsx"
+import { clipSpecimen } from "./clip-specimen.tsx"
 import {
   Chevron,
   ColumnHeader,
@@ -48,36 +47,31 @@ import {
   statusGroups,
   statusLabel,
 } from "./record-table-model.ts"
+import { ErrorMessage } from "./wireframe-parts.tsx"
 
 const tableWidth = "w-[36rem]"
 
 const drawingSort: Sort = { column: "amount", direction: "descending" }
 
-const stateLabel: Readonly<Record<FixtureState, string>> = {
-  loaded: "Loaded",
-  loading: "Loading",
-  partial: "Partial",
-  error: "Error",
-  "no-permission": "No permission",
-}
-
 type Drawing = {
-  readonly parts: ReadonlyArray<DrawingPart>
-  readonly groups: ReadonlyArray<DrawingGroup>
+  parts: ReadonlyArray<ConstellationPart>
+  groups: ReadonlyArray<ConstellationGroup>
   readonly centre: React.ReactNode
 }
 
 /** The record table drawn as its constellation: the table at rest with its parts around it. */
 export function RecordTableConstellation({ state }: { state: FixtureState }): React.ReactElement {
+  const [stage, setStage] = React.useState<HTMLDivElement | null>(null)
   const peekId = React.useId()
   const drawing = tableDrawing(state, peekId)
   return (
     <DivTable>
-      <ConstellationDrawing
+      <Constellation
         key={state}
-        assembly="RecordTable"
-        state={stateLabel[state]}
-        parts={drawing.parts}
+        label="Record table constellation"
+        stage={stage}
+        onStageChange={setStage}
+        parts={drawing.parts.map(clipSpecimen)}
         groups={drawing.groups}
         centre={drawing.centre}
       />
@@ -104,7 +98,6 @@ const errorDrawing: Drawing = {
       n: 1,
       name: "ErrorMessage",
       depth: 0,
-      qty: 1,
       note: "Replaces RecordTable and PeekPanel",
       specimen: (
         <div className={tableWidth}>
@@ -115,9 +108,9 @@ const errorDrawing: Drawing = {
   ],
   groups: [],
   centre: (
-    <Anchor n={1} className={tableWidth}>
+    <div data-anchor={1} className={tableWidth}>
       <ErrorMessage subject="The invoices" />
-    </Anchor>
+    </div>
   ),
 }
 
@@ -132,7 +125,6 @@ function loadingDrawing(peekId: string): Drawing {
         n: 1,
         name: "RecordTable",
         depth: 0,
-        qty: 1,
         note: "The head row, a LoadingGroupRow and its LoadingRows per status, then TableFooter; PeekPanel beside it at lg",
         specimen: (
           <div className={cn(tableWidth, "rounded-md border")}>
@@ -149,7 +141,6 @@ function loadingDrawing(peekId: string): Drawing {
         n: 2,
         name: "HeadRow",
         depth: 1,
-        qty: 1,
         note: "Column names; sorting is off until the invoices load",
         specimen: <div className={cn(tableWidth, gridClass)}>{head}</div>,
       },
@@ -157,7 +148,6 @@ function loadingDrawing(peekId: string): Drawing {
         n: 3,
         name: "LoadingRow",
         depth: 1,
-        qty: sampleInvoices.length,
         note: "A 36px group bar, then 44px rows with a bar in each column at the width of its values",
         specimen: (
           <div className={cn(tableWidth, gridClass)}>
@@ -170,7 +160,6 @@ function loadingDrawing(peekId: string): Drawing {
         n: 4,
         name: "TableFooter",
         depth: 1,
-        qty: 1,
         note: "States how many invoices are loading",
         specimen: <div className={tableWidth}>{footer}</div>,
       },
@@ -178,7 +167,6 @@ function loadingDrawing(peekId: string): Drawing {
         n: 5,
         name: "PeekPanel",
         depth: 0,
-        qty: 1,
         note: "Says peek is available once the invoices load",
         specimen: (
           <PeekPanel
@@ -223,20 +211,18 @@ function loadingDrawing(peekId: string): Drawing {
       },
     ],
     centre: (
-      <Anchor n={1} className={cn(tableWidth, "rounded-md border")}>
+      <div data-anchor={1} className={cn(tableWidth, "rounded-md border")}>
         <div className={gridClass}>
-          <Anchor n={2} className="col-span-full grid grid-cols-subgrid rounded-none">
+          <div data-anchor={2} className="col-span-full grid grid-cols-subgrid">
             {head}
-          </Anchor>
-          <Anchor n={3} className="col-span-full grid grid-cols-subgrid rounded-none">
+          </div>
+          <div data-anchor={3} className="col-span-full grid grid-cols-subgrid">
             <LoadingGroupRow />
             <LoadingRow />
-          </Anchor>
+          </div>
         </div>
-        <Anchor n={4} className="rounded-none">
-          {footer}
-        </Anchor>
-      </Anchor>
+        <div data-anchor={4}>{footer}</div>
+      </div>
     ),
   }
 }
@@ -262,11 +248,9 @@ type PartKey =
   | "bar"
   | "menu"
 
-type PartSpec = Omit<DrawingPart, "n"> & { readonly key: PartKey }
+type PartSpec = Omit<ConstellationPart, "n"> & { key: PartKey }
 
 const selectionKeys: ReadonlySet<PartKey> = new Set(["groupSelect", "rowSelect", "bar", "menu"])
-
-const rowKeys: ReadonlySet<PartKey> = new Set(["head", "group", "invoice", "footer"])
 
 type Wrap = (key: PartKey, className: string, node: React.ReactNode) => React.ReactNode
 
@@ -469,7 +453,6 @@ function partSpecs(
       key: "table",
       name: "RecordTable",
       depth: 0,
-      qty: 1,
       note: "Treegrid: HeadRow, then a GroupHeaderRow per status with its InvoiceRows; then TableFooter",
       specimen: <SpecimenTable state={state} footer={footer} />,
     },
@@ -477,7 +460,6 @@ function partSpecs(
       key: "head",
       name: "HeadRow",
       depth: 1,
-      qty: 1,
       note: "36px high; one ColumnHeader per column",
       specimen: (
         <div className={cn(tableWidth, gridClass)}>
@@ -494,7 +476,6 @@ function partSpecs(
       key: "column",
       name: "ColumnHeader",
       depth: 2,
-      qty: 5,
       note: "Sort button; the arrow shows on the sorted column, and on hover or focus",
       specimen: (
         <div className="flex text-muted-foreground text-xs">
@@ -506,7 +487,6 @@ function partSpecs(
       key: "group",
       name: "GroupHeaderRow",
       depth: 1,
-      qty: statusGroups(drawingSort).length,
       note: "36px high; aria-level 1; kept with its count and sum when collapsed",
       specimen: (
         <div className={cn(tableWidth, gridClass)}>
@@ -525,7 +505,6 @@ function partSpecs(
       key: "groupToggle",
       name: "GroupToggle",
       depth: 2,
-      qty: 1,
       note: "Chevron; a click anywhere on the header, Enter, ← or → collapses and expands",
       specimen: (
         <span className="flex size-6 items-center justify-center text-muted-foreground">
@@ -537,7 +516,6 @@ function partSpecs(
       key: "groupSelect",
       name: "GroupSelect",
       depth: 2,
-      qty: 1,
       note: "Selects every invoice in the group; mixed while only some are",
       specimen: (
         <span className="group/row flex">
@@ -554,7 +532,6 @@ function partSpecs(
       key: "groupName",
       name: "GroupName",
       depth: 2,
-      qty: 1,
       note: "The status, then the invoice count",
       specimen: (
         <span className="flex items-baseline gap-2">
@@ -569,7 +546,6 @@ function partSpecs(
       key: "groupSum",
       name: "GroupSum",
       depth: 2,
-      qty: 1,
       note: "The group's amount total, under the Amount column",
       specimen: <span className="text-sm tabular-nums">{formatAmount(groupSum(group))}</span>,
     },
@@ -577,7 +553,6 @@ function partSpecs(
       key: "invoice",
       name: "InvoiceRow",
       depth: 1,
-      qty: sampleInvoices.length,
       note: "44px high; aria-level 2; the focus target; a click opens the invoice page",
       specimen: (
         <div className={cn(tableWidth, gridClass)}>
@@ -600,7 +575,6 @@ function partSpecs(
       key: "rowSelect",
       name: "RowSelect",
       depth: 2,
-      qty: 1,
       note: "24×24, 44×44 on a coarse pointer; drawn on hover, focus or selection; X or Shift+Space",
       specimen: (
         <span className="group/row flex">
@@ -617,7 +591,6 @@ function partSpecs(
       key: "expand",
       name: "ExpandButton",
       depth: 2,
-      qty: 1,
       note: "Chevron and line count; drawn only on an invoice with lines",
       specimen: (
         <ExpandButton count={linesOf(invoice).length} isExpanded={false} onClick={handleIgnore} />
@@ -627,7 +600,6 @@ function partSpecs(
       key: "link",
       name: "InvoiceLink",
       depth: 2,
-      qty: 1,
       note: "The customer, inside a link that covers the row; opens ContactCard on hover",
       specimen: <span className="font-medium text-sm">{invoice.customer}</span>,
     },
@@ -635,7 +607,6 @@ function partSpecs(
       key: "contact",
       name: "ContactCard",
       depth: 3,
-      qty: 1,
       note: "Hover card: the billing contact",
       specimen: (
         <span className={cardSurface}>
@@ -647,7 +618,6 @@ function partSpecs(
       key: "reads",
       name: "Reads",
       depth: 2,
-      qty: 3,
       note: "Amount and Paid % right-aligned in tabular figures; Due says Overdue in medium weight. Paid % hides below md; below sm Due moves under the customer",
       specimen: (
         <span className="flex gap-4 text-sm tabular-nums">
@@ -661,7 +631,6 @@ function partSpecs(
       key: "line",
       name: state === "partial" ? "LinesErrorRow" : "LineRow",
       depth: 1,
-      qty: state === "partial" ? 1 : sampleInvoiceLines.length,
       note: partNotes.line[state],
       specimen: (
         <div className={cn(tableWidth, gridClass)}>
@@ -677,7 +646,6 @@ function partSpecs(
       key: "footer",
       name: "TableFooter",
       depth: 1,
-      qty: 1,
       note: partNotes.footer[state],
       specimen: <div className={tableWidth}>{footer}</div>,
     },
@@ -685,7 +653,6 @@ function partSpecs(
       key: "peek",
       name: "PeekPanel",
       depth: 0,
-      qty: 1,
       note: "Beside the table at lg and wider; under the peeked row below lg",
       specimen: (
         <PeekPanel
@@ -701,7 +668,6 @@ function partSpecs(
       key: "bar",
       name: "SelectionBar",
       depth: 0,
-      qty: 1,
       note: "Fixed to the bottom while any invoice is selected; Esc clears",
       specimen: (
         <SelectionBarBody
@@ -716,7 +682,6 @@ function partSpecs(
       key: "menu",
       name: "SelectionMenu",
       depth: 1,
-      qty: 1,
       note: "Base UI Menu: arrow keys, typeahead, Esc returns focus. Void last after a divider, and asks to confirm",
       specimen: <SelectionMenuDrawing />,
     },
@@ -755,15 +720,15 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
     return value
   }
   const has = (key: PartKey) => numbers.has(key)
-  const parts: ReadonlyArray<DrawingPart> = specs.map(({ key: _key, ...spec }, index) => ({
+  const parts: ReadonlyArray<ConstellationPart> = specs.map(({ key: _key, ...spec }, index) => ({
     ...spec,
     n: index + 1,
   }))
 
   const anchorWrap: Wrap = (key, className, node) => (
-    <Anchor n={n(key)} className={cn(className, rowKeys.has(key) && "rounded-none")}>
+    <div data-anchor={n(key)} className={className}>
       {node}
-    </Anchor>
+    </div>
   )
 
   const actLinks = has("rowSelect")
@@ -775,7 +740,7 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
       ]
     : []
 
-  const groups: ReadonlyArray<DrawingGroup> = [
+  const groups: ReadonlyArray<ConstellationGroup> = [
     {
       title: "Identify",
       rank: 1,
@@ -856,9 +821,9 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
   ]
 
   const centre = (
-    <Anchor n={n("table")} className={cn(tableWidth, "rounded-md border")}>
+    <div data-anchor={n("table")} className={cn(tableWidth, "rounded-md border")}>
       <DrawnTable state={state} footer={footer} wrap={anchorWrap} />
-    </Anchor>
+    </div>
   )
 
   return { parts, groups, centre }

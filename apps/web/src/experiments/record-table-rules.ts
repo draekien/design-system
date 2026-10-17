@@ -1,4 +1,4 @@
-import type { Rule } from "./rule-notes.tsx"
+import type { Rule } from "../playground/rule-notes.tsx"
 
 export const recordTableRules: ReadonlyArray<Rule> = [
   {

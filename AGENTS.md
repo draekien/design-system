@@ -54,13 +54,13 @@ Before editing files for a substantial task:
 
 - Turborepo monorepo managed with pnpm. Apps in `apps/`, shared packages in `packages/`.
 - `apps/web`: TanStack Start on Vite, React, TypeScript, Vitest. The docs site and the `/playground/<component>` routes, prerendered to GitHub Pages.
-- `apps/lab`: greyscale coded wireframes, one route per wireframe, served by `pnpm dev` on port 3001 and never deployed.
-- `packages/ui` is the registry source: every component in it is installable through `packages/ui/registry.json`, and both apps import it as `@workspace/ui`.
+- `apps/web/src/experiments`: greyscale coded wireframes, one `/playground/experiments/<name>` page each, listed in the playground sidebar under Experiments and deployed with the site.
+- `packages/ui` is the registry source: every component in it is installable through `packages/ui/registry.json`, and `apps/web` imports it as `@workspace/ui`.
 - Name a registry item in flat kebab-case for its role, never an `@shadcn` item name (`pnpm dlx shadcn@4.21.4 view @shadcn/<name>` fails when the name is free); item name, file name and main export match.
 - Inside `packages/ui`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/ui/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `"cn"`.
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
-- `packages/fixtures` holds the sample records and states that lab and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
-- A lockup moves wireframe in `apps/lab`, then component in `packages/ui`, then playground route in `apps/web`.
+- `packages/fixtures` holds the sample records and states that experiment and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
+- A lockup moves wireframe in experiments, then component in `packages/ui`, then playground lockup route.
 - Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `packages/ui`.
 - Run `/simplify` and then `/code-review` on every change before committing it.
 - Show screenshots of every changed surface in a task's completion summary.
@@ -71,8 +71,7 @@ Before editing files for a substantial task:
 - A playground page stacks the lockup, the States view and the constellation in that order; the lockup and the States view each render in their own canvas iframe with its own width and pointer controls, the constellation in the page.
 - The lockup and the States view each have a Preview/Code toggle in their toolbar.
 - A component page shows its install command, description, a specimen with a Code toggle, its registry `docs`, and its dependents.
-- A lab route renders its canvas (`view` selects lockup or constellation) when the `embed` search param is true, and its rules table otherwise; the lab shell loads the canvas in an iframe sized by the `width` param.
-- Lab wireframes style hover and touch with `hover:` and `pointer-coarse:`; `apps/lab/src/styles.css` redefines both so the `pointer=coarse` param simulates a coarse pointer.
+- An experiment page shows its rules table and loads its canvas through `canvas-frame.tsx`; `view` selects lockup or constellation.
 - Run tasks from the repo root: `pnpm build`, `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm dev`.
 - Run `pnpm typecheck`, never a global `tsc`.
 - Use `pnpm exec` and `pnpm dlx`, never `npx`.

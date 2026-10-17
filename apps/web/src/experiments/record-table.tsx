@@ -10,7 +10,6 @@ import {
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { cn } from "cn"
 import * as React from "react"
-import { Bar, ErrorMessage, Kbd } from "./lab-parts.tsx"
 import {
   type Column,
   cardSurface,
@@ -40,6 +39,7 @@ import {
   type TableSearch,
   type TableState,
 } from "./record-table-model.ts"
+import { Bar, ErrorMessage, Kbd } from "./wireframe-parts.tsx"
 
 type VisibleRow =
   | { kind: "group"; key: string; group: StatusGroup }
@@ -146,8 +146,8 @@ function toggled(set: ReadonlySet<string>, key: string): ReadonlySet<string> {
 }
 
 function useInvoiceTable(state: RowState) {
-  const search = useSearch({ from: "/record-table" })
-  const navigate = useNavigate({ from: "/record-table" })
+  const search = useSearch({ from: "/canvas/experiments/record-table" })
+  const navigate = useNavigate({ from: "/canvas/experiments/record-table" })
   const sort: Sort = { column: search.sort, direction: search.direction }
   const collapsedGroups: ReadonlySet<string> = new Set(search.collapsed)
   const expandedInvoices: ReadonlySet<string> = new Set(search.expanded)
@@ -916,7 +916,8 @@ export function InvoiceRow({
       </CellElement>
       <CellElement className={cn(seatClass.customer, "items-center")}>
         <Link
-          to="/invoices/$invoiceId"
+          from="/canvas/experiments/record-table"
+          to="/canvas/experiments/invoices/$invoiceId"
           params={{ invoiceId: invoice.id }}
           search={(previous) => ({ ...previous, focus: invoice.id })}
           ref={linkRef}
@@ -1609,7 +1610,8 @@ export function PeekContent({
       <p className="mt-2 max-w-prose text-pretty text-sm">{invoice.summary}</p>
       <InvoiceFields invoice={invoice} />
       <Link
-        to="/invoices/$invoiceId"
+        from="/canvas/experiments/record-table"
+        to="/canvas/experiments/invoices/$invoiceId"
         params={{ invoiceId: invoice.id }}
         search={(previous) => ({ ...previous, state, focus: invoice.id })}
         className="mt-3 inline-flex min-h-6 items-center font-medium text-xs underline underline-offset-4"
@@ -1650,7 +1652,8 @@ export function InvoicePage({
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-4 p-4 sm:p-6">
       <Link
-        to="/record-table"
+        from="/canvas/experiments/invoices/$invoiceId"
+        to="/canvas/experiments/record-table"
         search={(previous) => previous}
         className="inline-flex min-h-6 items-center self-start text-muted-foreground text-sm underline underline-offset-4"
       >
