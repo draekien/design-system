@@ -61,6 +61,9 @@ Before editing files for a substantial task:
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that lab and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
 - A lockup moves wireframe in `apps/lab`, then component in `packages/ui`, then playground route in `apps/web`.
+- Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `packages/ui`.
+- Run `/simplify` and then `/code-review` on every change before committing it.
+- Show screenshots of every changed surface in a task's completion summary.
 - Every wireframe and lockup page shows its rules table, the interactive lockup and a constellation, following the `state` search param. On a playground page each part is the real `packages/ui` export.
 - A constellation draws the component at rest in the centre, one satellite per information rank around it holding that rank's parts with hover cards and panels drawn open, a connector from each part to the centre part that shows or reveals it, and a numbered parts list nesting each part under the part that contains it.
 - A constellation draws always-shown ranks with solid satellites and connectors above the centre, and revealed ranks with dashed satellites below it whose dashed connectors, labelled with the revealing gesture, appear on hover or focus.
