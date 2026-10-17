@@ -8,9 +8,8 @@ import {
   ConstellationDrawing,
   type DrawingGroup,
   type DrawingPart,
-  type DrawingPlane,
-  Part,
 } from "./constellation-drawing.tsx"
+import { Bar, ErrorMessage, Kbd } from "./lab-parts.tsx"
 import type { CanvasView } from "./lab-search.ts"
 
 type ListState = Exclude<FixtureState, "error">
@@ -272,8 +271,8 @@ function RecordRow({
         onFocus={onFocus}
         onKeyDown={onKeyDown}
         className={cn(
-          "flex h-full min-w-0 flex-1 items-center gap-3 rounded-sm px-1 outline-none focus-visible:outline-2 focus-visible:outline-foreground focus-visible:-outline-offset-2",
-          look === "focus" && "outline-2 outline-foreground -outline-offset-2"
+          "flex h-full min-w-0 flex-1 items-center gap-3 rounded-sm px-1 focus-ring focus-visible:-outline-offset-2",
+          look === "focus" && "focus-look -outline-offset-2"
         )}
       >
         <RecordId record={record} />
@@ -476,10 +475,6 @@ function LoadingRow() {
   )
 }
 
-function Bar({ className }: { className: string }) {
-  return <span className={cn("block h-2.5 rounded-full bg-muted", className)} />
-}
-
 function ListFooter({
   state,
   hintId,
@@ -629,35 +624,6 @@ function FieldOwner({ record, state }: { record: SampleRecord; state: RowState }
   }
 }
 
-function ErrorMessage({ subject }: { subject: string }) {
-  return (
-    <section
-      role="alert"
-      className="flex min-h-52 flex-col items-center justify-center rounded-md border px-6 text-center"
-    >
-      <p className="font-medium">{subject} could not load.</p>
-      <p className="mt-1 max-w-sm text-muted-foreground text-sm">
-        The request timed out after 10 seconds. Retry, or check your connection and reload the page.
-      </p>
-      <Link
-        to="."
-        search={(previous) => ({ ...previous, state: "loaded" })}
-        className="mt-4 inline-flex min-h-9 items-center rounded-md border px-4 font-medium text-sm hover:bg-muted"
-      >
-        Retry
-      </Link>
-    </section>
-  )
-}
-
-function Kbd({ children }: { children: React.ReactNode }) {
-  return (
-    <kbd className="inline-flex min-w-5 items-center justify-center rounded border px-1 font-sans text-[0.6875rem] text-foreground">
-      {children}
-    </kbd>
-  )
-}
-
 /** The record page that a record row links to. */
 export function RecordPage({
   record,
@@ -720,7 +686,6 @@ function ConstellationView({ state }: { state: FixtureState }) {
       assembly="RecordList"
       state={drawingStateLabel[state]}
       parts={drawing.parts}
-      planes={drawing.planes}
       groups={drawing.groups}
       centre={drawing.centre}
     />
@@ -729,7 +694,6 @@ function ConstellationView({ state }: { state: FixtureState }) {
 
 type Drawing = {
   readonly parts: ReadonlyArray<DrawingPart>
-  readonly planes: ReadonlyArray<DrawingPlane>
   readonly groups: ReadonlyArray<DrawingGroup>
   readonly centre: React.ReactNode
 }
@@ -761,16 +725,6 @@ const errorDrawing: Drawing = {
         <div className={listWidth}>
           <ErrorMessage subject="The records" />
         </div>
-      ),
-    },
-  ],
-  planes: [
-    {
-      name: "Message",
-      content: (
-        <Part n={1} className={cn(listWidth, "bg-background")}>
-          <ErrorMessage subject="The records" />
-        </Part>
       ),
     },
   ],
@@ -881,68 +835,7 @@ function loadingDrawing(peekId: string): Drawing {
         </Anchor>
       </Anchor>
     ),
-    planes: [
-      {
-        name: "List",
-        content: (
-          <ListPlane
-            inner={
-              <div className="invisible">
-                <ul>
-                  <LoadingRow />
-                </ul>
-                <LoadingFooter />
-              </div>
-            }
-            peek={<PeekPanel id={peekId} record={null} state="loading" className="block" />}
-            peekN={4}
-          />
-        ),
-      },
-      {
-        name: "Rows",
-        content: (
-          <div className={cn(listWidth, "p-px")}>
-            <Part n={2}>
-              <ul>
-                <LoadingRow />
-              </ul>
-            </Part>
-            <Part n={3}>
-              <LoadingFooter />
-            </Part>
-          </div>
-        ),
-      },
-    ],
   }
-}
-
-function ListPlane({
-  inner,
-  peek,
-  peekN,
-}: {
-  inner: React.ReactNode
-  peek: React.ReactNode
-  peekN: number
-}) {
-  return (
-    <div className="flex items-start gap-10">
-      <Part
-        n={1}
-        className={cn(
-          listWidth,
-          "shrink-0 rounded-md border border-muted-foreground/60 bg-background"
-        )}
-      >
-        {inner}
-      </Part>
-      <Part n={peekN} className="w-80 shrink-0 rounded-md bg-background">
-        {peek}
-      </Part>
-    </div>
-  )
 }
 
 const ownerSlotNote: Readonly<Record<RowState, string>> = {
@@ -1160,148 +1053,6 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
     />
   )
 
-  const planes: Array<DrawingPlane> = [
-    {
-      name: "List",
-      content: (
-        <ListPlane
-          inner={
-            <div className="invisible">
-              <div className="h-11 border-b" />
-              {footer}
-            </div>
-          }
-          peek={<PeekPanel id={peekId} record={record} state={state} className="block" />}
-          peekN={updatedN + 2}
-        />
-      ),
-    },
-    {
-      name: "Rows",
-      content: (
-        <div className={cn(listWidth, "p-px")}>
-          <Part n={2}>
-            <div className="h-11 rounded-sm border border-muted-foreground/60 bg-muted/60" />
-          </Part>
-          <Part n={updatedN + 1}>{footer}</Part>
-        </div>
-      ),
-    },
-    {
-      name: "Row parts",
-      content: (
-        <RowSeats
-          state={state}
-          select={
-            <Part n={3}>
-              <SelectSlot
-                label="Select, checked"
-                isSelected
-                isRevealed
-                onToggleSelected={() => undefined}
-              />
-            </Part>
-          }
-          link={
-            <Part n={4} className="absolute inset-0">
-              <div className="size-full rounded-sm outline-2 outline-foreground -outline-offset-2" />
-            </Part>
-          }
-        />
-      ),
-    },
-    {
-      name: "Slots",
-      content: (
-        <RowSeats
-          state={state}
-          id={
-            <Part n={5}>
-              <RecordId record={record} />
-            </Part>
-          }
-          status={
-            <Part n={6}>
-              <StatusChip record={record} />
-            </Part>
-          }
-          title={
-            <Part n={8} className="flex min-w-0 flex-1">
-              <RecordTitle record={record} />
-            </Part>
-          }
-          owner={
-            isLoaded ? (
-              <Part
-                n={9}
-                anchor="bottom"
-                className="h-6 w-full rounded-sm border border-muted-foreground border-dashed"
-              />
-            ) : (
-              <Part n={9} className="flex w-full">
-                <OwnerSlot record={record} state={state} />
-              </Part>
-            )
-          }
-          updated={
-            <Part n={updatedN} className="flex w-full justify-end">
-              <RecordUpdated record={record} />
-            </Part>
-          }
-        />
-      ),
-    },
-    {
-      name: "Slot parts",
-      content: (
-        <RowSeats
-          state={state}
-          status={
-            <Part n={7} className="absolute top-full left-0 pt-1">
-              <span className={cardSurface}>
-                <StatusCard record={record} />
-              </span>
-            </Part>
-          }
-          owner={
-            isLoaded ? (
-              <Part n={10} anchor="bottom" className="flex min-h-6 min-w-0 items-center gap-2">
-                <span className="size-6 shrink-0 rounded-full border border-muted-foreground border-dashed" />
-                <span className="sr-only truncate sm:not-sr-only">{record.owner}</span>
-              </Part>
-            ) : null
-          }
-        />
-      ),
-    },
-  ]
-
-  if (isLoaded) {
-    planes.push({
-      name: "Chip parts",
-      content: (
-        <RowSeats
-          state={state}
-          owner={
-            <div className="relative flex">
-              <span className="invisible">
-                <OwnerChip record={record} />
-              </span>
-              <Part n={11} className="absolute top-0 left-0">
-                <Initials name={record.owner} />
-              </Part>
-              <Part n={12} className="absolute top-full right-0 pt-1">
-                <span className={cardSurface}>
-                  <OwnerCard record={record} />
-                </span>
-              </Part>
-            </div>
-          }
-        />
-      ),
-    })
-  }
-
   const footerN = updatedN + 1
   const peekN = updatedN + 2
   const groups: ReadonlyArray<DrawingGroup> = [
@@ -1438,7 +1189,7 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
     </Anchor>
   )
 
-  return { parts: rowParts(state, updatedN, record, peekId, footer), planes, groups, centre }
+  return { parts: rowParts(state, updatedN, record, peekId, footer), groups, centre }
 }
 
 function RowSeats({

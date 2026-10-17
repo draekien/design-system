@@ -108,7 +108,7 @@ function isLabNavigate(data: unknown): data is { type: "lab:navigate"; href: str
   )
 }
 
-function useCanvasNavigation(width: CanvasWidth) {
+function useCanvasNavigation(width: CanvasWidth, onCanvasNavigate: () => void) {
   const navigate = useNavigate()
 
   React.useEffect(() => {
@@ -124,11 +124,12 @@ function useCanvasNavigation(width: CanvasWidth) {
       }
       url.searchParams.set("embed", "false")
       url.searchParams.set("width", width)
+      onCanvasNavigate()
       void navigate({ href: `${url.pathname}${url.search}`, replace: true })
     }
     window.addEventListener("message", onMessage)
     return () => window.removeEventListener("message", onMessage)
-  }, [navigate, width])
+  }, [navigate, width, onCanvasNavigate])
 }
 
 function canvasSource(href: string) {
@@ -141,7 +142,20 @@ function canvasSource(href: string) {
 function LabShell() {
   const search = Route.useSearch()
   const href = useLocation({ select: (location) => location.href })
-  useCanvasNavigation(search.width)
+  const [src, setSrc] = React.useState(() => canvasSource(href))
+  const isCanvasNavigation = React.useRef<boolean>(false)
+  const handleCanvasNavigate = React.useCallback(() => {
+    isCanvasNavigation.current = true
+  }, [])
+  useCanvasNavigation(search.width, handleCanvasNavigate)
+
+  React.useEffect(() => {
+    if (isCanvasNavigation.current) {
+      isCanvasNavigation.current = false
+      return
+    }
+    setSrc(canvasSource(href))
+  }, [href])
 
   return (
     <div className="grid h-screen grid-cols-[14rem_minmax(0,1fr)_16rem] overflow-hidden">
@@ -158,7 +172,7 @@ function LabShell() {
           <div className="flex min-h-0 flex-1 justify-center overflow-auto bg-muted/50 p-4">
             <iframe
               title="Wireframe canvas"
-              src={canvasSource(href)}
+              src={src}
               className={cn(
                 "h-full shrink-0 rounded-md border bg-background",
                 widthClass[search.width]
@@ -186,6 +200,12 @@ function WireframeNav() {
         className="flex min-h-8 items-center rounded px-2 text-muted-foreground hover:text-foreground data-[status=active]:bg-muted data-[status=active]:text-foreground"
       >
         Record list
+      </Link>
+      <Link
+        to="/record-table"
+        className="flex min-h-8 items-center rounded px-2 text-muted-foreground hover:text-foreground data-[status=active]:bg-muted data-[status=active]:text-foreground"
+      >
+        Record table
       </Link>
     </nav>
   )

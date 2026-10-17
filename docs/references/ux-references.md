@@ -85,6 +85,21 @@ This section is the evidence behind the design system's disclosure and action ru
 | [Stripe Accordion](https://docs.stripe.com/stripe-apps/components/accordion) | An item shows two actions and overflows the rest | "If there are more than 2 actions, use an overflow menu to show the rest." |
 | [Saga Interactive table](https://grafana.com/developers/saga/components/interactive-table) | Batch controls sit in the table's header and are not repeated in an expanded row | "Don't duplicate batch editing controls in the expanded row section." |
 
+### Tree grids
+
+Captured 2026-10-17 from the W3C pages linked in each row.
+
+| Source | Rule | Quote |
+| --- | --- | --- |
+| [WAI-ARIA APG treegrid](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/) | → expands a collapsed row; ← collapses an expanded row | "If focus is on a collapsed row, expands the row." |
+| WAI-ARIA APG treegrid | ↑ ↓ Home End move focus between rows | "If focus is on a row, moves focus one row down." |
+| WAI-ARIA APG treegrid | Only a row that shows or hides child rows carries `aria-expanded` | "Rows that do not control display of child rows do not have the aria-expanded attribute" |
+| WAI-ARIA APG treegrid | Shift+Space checks a row's selection checkbox | "If the treegrid includes a column with checkboxes for selecting rows, this key can serve as a shortcut for checking the box" |
+| WAI-ARIA APG treegrid | A multi-select treegrid sets `aria-multiselectable`, and every selectable row sets `aria-selected` | "All selected rows or cells have aria-selected set to true." |
+| [ARIA 1.2 aria-level](https://www.w3.org/TR/wai-aria-1.2/#aria-level) | A treegrid sets the level on the row, not the cell | "In the case of a treegrid, aria-level is supported on elements with the role row, not elements with role gridcell." |
+| [ARIA 1.2 aria-sort](https://www.w3.org/TR/wai-aria-1.2/#aria-sort) | The sorted column's header carries `aria-sort`, on one header at a time | "authors SHOULD apply aria-sort to only one header at a time." |
+| [ARIA 1.2 columnheader](https://www.w3.org/TR/wai-aria-1.2/#columnheader) | A header cell is owned by a row | "Authors MUST ensure elements with role columnheader are contained in, or owned by, an element with the role row." |
+
 ## Error-message copy
 
 Every refusal answers two questions, in this order: what went wrong, and how the caller fixes it.

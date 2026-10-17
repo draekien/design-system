@@ -56,6 +56,40 @@ A description in rank 1 is one line after the name; it truncates and hides befor
 
 A row is selectable only when it draws a selection checkbox.
 
+## Grouping and nesting
+
+A group header holds the group's name, its record count and its column sums; a collapsed group keeps all three on screen.
+
+An empty group is hidden.
+
+Groups do not nest, and records nest one level deep: a record's child records are rank 3, collapsed by default, and drawn under it in its columns.
+
+A parent row's expand control shows its child count beside the chevron.
+
+Sorting orders records within their group and child records within their parent; it never moves a record out of either.
+
+← collapses an expanded group or parent and moves focus from a child row to its parent; → expands a collapsed one and moves focus from an expanded one to its first row.
+
+## Selecting records
+
+A group's checkbox selects every selectable record in the group, and shows mixed while only some are.
+
+A parent's checkbox selects the parent only.
+
+X and Shift+Space toggle selection on the focused row; Esc clears the selection once peek is closed.
+
+While any record is selected, a selection bar fixed to the bottom of the viewport shows the count, at most two actions, a ⋯ menu holding the rest with destructive actions last after a divider, and Clear.
+
+## Tables
+
+Use a record table when the caller compares values down a column, and a record list when the caller scans for one record.
+
+Every table column has a header naming it; a sortable header is a button, and one column is sorted at a time.
+
+Numeric columns right-align in tabular figures.
+
+A narrow table hides a column together with its header.
+
 ## Rules adopted without a component yet
 
 Every error or refusal states what went wrong, then how the caller fixes it; apologise only when the product itself failed.

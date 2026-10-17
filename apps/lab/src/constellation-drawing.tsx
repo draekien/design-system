@@ -14,12 +14,6 @@ export type DrawingPart = {
   readonly specimen: React.ReactNode
 }
 
-/** One plane of the stack form: every part at one nesting depth, at its assembled position. */
-export type DrawingPlane = {
-  readonly name: string
-  readonly content: React.ReactNode
-}
-
 /** One part of a group, joined to the part in the centre it sits in or is revealed from. */
 export type DrawingLink = {
   readonly part: number
@@ -38,10 +32,6 @@ export type DrawingGroup = {
   readonly summary: string
   readonly links: ReadonlyArray<DrawingLink>
 } & ({ readonly reveal: "always" } | { readonly reveal: "revealed"; readonly gesture: string })
-
-const tilt = 55
-const turn = -35
-const planeGap = 7
 
 type Highlight = {
   readonly activeN: number | null
@@ -69,43 +59,24 @@ function anchorsLitBy(
   return new Set([activeN, ...linked])
 }
 
-const PlaneContext = React.createContext(0)
-
-const anchorClass = { top: "top-0", bottom: "top-full" } as const
-
-const drawingForms = ["stack", "constellation"] as const
-
-type DrawingForm = (typeof drawingForms)[number]
-
-const drawingFormLabel: Readonly<Record<DrawingForm, string>> = {
-  stack: "Stack",
-  constellation: "Constellation",
-}
-
 /**
- * A drawing of a component beside its parts list, drawn as a constellation (the assembled
- * `centre`, with each group's parts joined to where they sit) or as a stack (planes along the
- * explode axis).
+ * A drawing of a component beside its parts list: the assembled `centre`, with each group's parts
+ * joined to where they sit.
  */
 export function ConstellationDrawing({
   assembly,
   state,
   parts,
-  planes,
   groups,
   centre,
 }: {
   assembly: string
   state: string
   parts: ReadonlyArray<DrawingPart>
-  planes: ReadonlyArray<DrawingPlane>
   groups: ReadonlyArray<DrawingGroup>
   centre: React.ReactNode
 }): React.ReactElement {
   const [activeN, setActiveN] = React.useState<number | null>(null)
-  const [explode, setExplode] = React.useState(1)
-  const [form, setForm] = React.useState<DrawingForm>("constellation")
-  const explodeId = React.useId()
 
   return (
     <HighlightContext
@@ -117,90 +88,12 @@ export function ConstellationDrawing({
             aria-label="Drawing"
             className="@container flex min-w-0 flex-col gap-3 @3xl:sticky @3xl:top-4"
           >
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs">
-              <fieldset className="flex items-center gap-1">
-                <legend className="sr-only">Drawing form</legend>
-                {drawingForms.map((option) => (
-                  <label
-                    key={option}
-                    className={cn(
-                      "flex min-h-6 cursor-pointer items-center rounded-sm border px-2 has-focus-visible:outline-2 has-focus-visible:outline-foreground",
-                      form === option && "border-foreground bg-foreground text-background"
-                    )}
-                  >
-                    <input
-                      type="radio"
-                      name={`${explodeId}-form`}
-                      value={option}
-                      checked={form === option}
-                      onChange={() => setForm(option)}
-                      className="sr-only"
-                    />
-                    {drawingFormLabel[option]}
-                  </label>
-                ))}
-              </fieldset>
-              {form === "stack" && (
-                <div className="flex items-center gap-3">
-                  <label htmlFor={explodeId} className="font-medium">
-                    Explode
-                  </label>
-                  <input
-                    id={explodeId}
-                    type="range"
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    value={explode}
-                    onChange={(event) => setExplode(event.currentTarget.valueAsNumber)}
-                    className="h-6 w-40 accent-foreground"
-                  />
-                </div>
-              )}
-            </div>
-            {form === "stack" ? (
-              <Stage explode={explode} planes={planes} />
-            ) : (
-              <Constellation parts={parts} groups={groups} centre={centre} />
-            )}
+            <Constellation parts={parts} groups={groups} centre={centre} />
           </section>
           <PartsList assembly={assembly} state={state} parts={parts} />
         </div>
       </div>
     </HighlightContext>
-  )
-}
-
-function Stage({ explode, planes }: { explode: number; planes: ReadonlyArray<DrawingPlane> }) {
-  const stageStyle: React.CSSProperties & Record<"--explode", number> = {
-    "--explode": explode,
-    transform: `rotateX(${tilt}deg) rotateZ(${turn}deg)`,
-  }
-  return (
-    <PanViewport label="Stack drawing">
-      <div
-        className="flex justify-center-safe px-4 pb-36 [zoom:0.4] @lg:[zoom:0.5] @2xl:[zoom:0.75] @4xl:[zoom:0.8] @5xl:[zoom:1]"
-        style={{
-          paddingTop: `calc(${planes.length - 1} * ${planeGap}rem * ${explode} * 0.82 + 6rem)`,
-        }}
-      >
-        <div
-          className="grid transform-3d [--gap:calc(var(--explode)*7rem)] [&_*]:transform-3d"
-          style={stageStyle}
-        >
-          {planes.map((plane, index) => (
-            <PlaneContext key={plane.name} value={index}>
-              <div
-                className="animate-[explode-plane_1100ms_cubic-bezier(0.16,1,0.3,1)] [grid-area:1/1] motion-reduce:animate-none"
-                style={{ translate: `0 0 calc(${index} * var(--gap))` }}
-              >
-                {plane.content}
-              </div>
-            </PlaneContext>
-          ))}
-        </div>
-      </div>
-    </PanViewport>
   )
 }
 
@@ -262,71 +155,12 @@ function PanViewport({
       onPointerCancel={handlePanEnd}
       onAuxClick={(event) => event.preventDefault()}
       className={cn(
-        "overflow-x-auto rounded-md border bg-[radial-gradient(var(--color-border)_1px,transparent_1px)] bg-size-[1rem_1rem] outline-none focus-visible:outline-2 focus-visible:outline-foreground",
+        "overflow-x-auto rounded-md border bg-[radial-gradient(var(--color-border)_1px,transparent_1px)] bg-size-[1rem_1rem] focus-ring",
         drag !== null && "cursor-grabbing select-none"
       )}
     >
       {children}
     </section>
-  )
-}
-
-/** One part drawn on its plane, carrying its balloon and its assembly line to the plane below. */
-export function Part({
-  n,
-  anchor = "top",
-  className,
-  children,
-}: {
-  n: number
-  anchor?: "top" | "bottom"
-  className?: string
-  children?: React.ReactNode
-}): React.ReactElement {
-  const plane = React.useContext(PlaneContext)
-  const { activeN, onActivate } = React.useContext(HighlightContext)
-  const isActive = activeN === n
-
-  return (
-    <div
-      onPointerEnter={() => onActivate(n)}
-      onPointerLeave={() => onActivate(null)}
-      className={cn(
-        "relative",
-        className,
-        isActive && "outline-2 outline-foreground outline-offset-2"
-      )}
-    >
-      {children}
-      {plane > 0 && (
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 left-1/2 h-(--gap) w-0 origin-top animate-[explode-line_1100ms_cubic-bezier(0.16,1,0.3,1)] border-muted-foreground border-l border-dashed [transform:rotateX(-90deg)] motion-reduce:animate-none"
-        />
-      )}
-      <span
-        aria-hidden="true"
-        className={cn(
-          "pointer-events-none absolute left-0 size-1.5 -translate-1/2 rounded-full bg-foreground",
-          anchorClass[anchor]
-        )}
-      />
-      <span
-        aria-hidden="true"
-        className={cn(
-          "pointer-events-none absolute left-0 h-7 w-px origin-top bg-foreground [transform:rotateX(90deg)]",
-          anchorClass[anchor]
-        )}
-      />
-      <Balloon
-        n={n}
-        isActive={isActive}
-        className={cn("pointer-events-none absolute left-0 origin-top-left", anchorClass[anchor])}
-        style={{
-          transform: `translateZ(1.75rem) rotateZ(${-turn}deg) rotateX(${-tilt}deg) translate(-50%, -100%)`,
-        }}
-      />
-    </div>
   )
 }
 
@@ -699,25 +533,13 @@ export function Anchor({
   )
 }
 
-function Balloon({
-  n,
-  isActive,
-  className,
-  style,
-}: {
-  n: number
-  isActive: boolean
-  className?: string
-  style?: React.CSSProperties
-}) {
+function Balloon({ n, isActive }: { n: number; isActive: boolean }) {
   return (
     <span
       aria-hidden="true"
-      style={style}
       className={cn(
         "flex size-6 items-center justify-center rounded-full border border-foreground bg-background font-medium text-[0.6875rem] tabular-nums",
-        isActive && "bg-foreground text-background",
-        className
+        isActive && "bg-foreground text-background"
       )}
     >
       {n}
@@ -771,7 +593,7 @@ function PartsList({
                     onFocus={() => onActivate(part.n)}
                     onBlur={() => onActivate(null)}
                     style={{ paddingLeft: `${part.depth * 0.75}rem` }}
-                    className="flex min-h-6 w-full flex-col items-start rounded-sm text-left outline-none focus-visible:outline-2 focus-visible:outline-foreground"
+                    className="flex min-h-6 w-full flex-col items-start rounded-sm text-left focus-ring"
                   >
                     <code className="font-medium text-foreground">{part.name}</code>
                     <span className="text-muted-foreground">{part.note}</span>

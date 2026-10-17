@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RecordListRouteImport } from './routes/record-list'
+import { Route as RecordTableRouteImport } from './routes/record-table'
+import { Route as InvoicesInvoiceIdRouteImport } from './routes/invoices/$invoiceId'
 import { Route as RecordsRecordIdRouteImport } from './routes/records/$recordId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +25,16 @@ const RecordListRoute = RecordListRouteImport.update({
   path: '/record-list',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecordTableRoute = RecordTableRouteImport.update({
+  id: '/record-table',
+  path: '/record-table',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvoicesInvoiceIdRoute = InvoicesInvoiceIdRouteImport.update({
+  id: '/invoices/$invoiceId',
+  path: '/invoices/$invoiceId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RecordsRecordIdRoute = RecordsRecordIdRouteImport.update({
   id: '/records/$recordId',
   path: '/records/$recordId',
@@ -32,30 +44,54 @@ const RecordsRecordIdRoute = RecordsRecordIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/record-list': typeof RecordListRoute
+  '/record-table': typeof RecordTableRoute
+  '/invoices/$invoiceId': typeof InvoicesInvoiceIdRoute
   '/records/$recordId': typeof RecordsRecordIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/record-list': typeof RecordListRoute
+  '/record-table': typeof RecordTableRoute
+  '/invoices/$invoiceId': typeof InvoicesInvoiceIdRoute
   '/records/$recordId': typeof RecordsRecordIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/record-list': typeof RecordListRoute
+  '/record-table': typeof RecordTableRoute
+  '/invoices/$invoiceId': typeof InvoicesInvoiceIdRoute
   '/records/$recordId': typeof RecordsRecordIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/record-list' | '/records/$recordId'
+  fullPaths:
+    | '/'
+    | '/record-list'
+    | '/record-table'
+    | '/invoices/$invoiceId'
+    | '/records/$recordId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/record-list' | '/records/$recordId'
-  id: '__root__' | '/' | '/record-list' | '/records/$recordId'
+  to:
+    | '/'
+    | '/record-list'
+    | '/record-table'
+    | '/invoices/$invoiceId'
+    | '/records/$recordId'
+  id:
+    | '__root__'
+    | '/'
+    | '/record-list'
+    | '/record-table'
+    | '/invoices/$invoiceId'
+    | '/records/$recordId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RecordListRoute: typeof RecordListRoute
+  RecordTableRoute: typeof RecordTableRoute
+  InvoicesInvoiceIdRoute: typeof InvoicesInvoiceIdRoute
   RecordsRecordIdRoute: typeof RecordsRecordIdRoute
 }
 
@@ -75,6 +111,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecordListRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/record-table': {
+      id: '/record-table'
+      path: '/record-table'
+      fullPath: '/record-table'
+      preLoaderRoute: typeof RecordTableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invoices/$invoiceId': {
+      id: '/invoices/$invoiceId'
+      path: '/invoices/$invoiceId'
+      fullPath: '/invoices/$invoiceId'
+      preLoaderRoute: typeof InvoicesInvoiceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/records/$recordId': {
       id: '/records/$recordId'
       path: '/records/$recordId'
@@ -88,6 +138,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RecordListRoute: RecordListRoute,
+  RecordTableRoute: RecordTableRoute,
+  InvoicesInvoiceIdRoute: InvoicesInvoiceIdRoute,
   RecordsRecordIdRoute: RecordsRecordIdRoute,
 }
 export const routeTree = rootRouteImport
