@@ -1,10 +1,7 @@
 import { createFileRoute, notFound, stripSearchParams } from "@tanstack/react-router"
 import { sampleInvoices } from "@workspace/fixtures/invoices.ts"
-import { recordTableViews } from "../../../../experiments/record-table/iteration-views.ts"
-import {
-  tableSearch,
-  tableSearchDefaults,
-} from "../../../../experiments/record-table/table-search.ts"
+import { InvoicePage } from "../../../../experiments/record-table.tsx"
+import { tableSearch, tableSearchDefaults } from "../../../../experiments/record-table-model.ts"
 
 export const Route = createFileRoute("/canvas/experiments/invoices/$invoiceId")({
   validateSearch: tableSearch,
@@ -21,7 +18,6 @@ export const Route = createFileRoute("/canvas/experiments/invoices/$invoiceId")(
 
 function InvoiceRoute() {
   const invoice = Route.useLoaderData()
-  const { state, iteration } = Route.useSearch()
-  const { InvoicePage } = recordTableViews(iteration)
+  const { state } = Route.useSearch()
   return <InvoicePage invoice={invoice} state={state} />
 }

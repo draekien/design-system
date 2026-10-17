@@ -7,6 +7,8 @@ supersedes:
 
 # Keep experiment iterations and remove experiments on promotion
 
+On 2026-10-17 the repository owner removed the iterations after they shipped in `c73e6ce`, because they added too much complexity. The record table experiment is a single set of files again. The promotion rule and the deletion of the record list experiment stand.
+
 The repository owner set three rules on 2026-10-17: an experiment is promoted to a lockup when it is production ready; a promoted experiment is removed from the experiments area; an experiment keeps its iterations while it is in progress. This plan follows [2026-10-17-fold-lab-into-web.md](2026-10-17-fold-lab-into-web.md).
 
 ## Goal

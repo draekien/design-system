@@ -6,8 +6,7 @@ import { SearchFrame } from "../playground/canvas-frame.tsx"
 import { Segmented } from "../playground/playground-controls.tsx"
 import { canvasPointers, canvasWidths } from "../playground/playground-search.ts"
 import { segmentItem } from "../playground/playground-styles.ts"
-import { RuleNotes } from "../playground/rule-notes.tsx"
-import { type Iterations, iterationOf } from "./experiment-iteration.ts"
+import { type Rule, RuleNotes } from "../playground/rule-notes.tsx"
 import {
   type ExperimentSearch,
   experimentCanvasSearch,
@@ -54,28 +53,25 @@ const controls: ReadonlyArray<{
 
 type CanvasPath = "/canvas/experiments/record-table"
 
-/**
- * An experiment's page: an iteration picker and what changed in the selected iteration, its canvas
- * in an iframe under state, view, width and pointer controls, then the iteration's rules.
- */
+type RuleSection = { title: string; rules: ReadonlyArray<Rule> }
+
+/** An experiment's page: its canvas in an iframe under state, view, width and pointer controls, then its rules. */
 export function ExperimentPage({
   title,
   description,
   canvas,
   search,
-  iterations,
+  ruleSections,
 }: {
   title: string
   description: string
   canvas: CanvasPath
   search: ExperimentSearch
-  iterations: Iterations
+  ruleSections: ReadonlyArray<RuleSection>
 }): React.ReactElement {
   const router = useRouter()
   const navigate = useNavigate()
   const { width, ...canvasSearch } = search
-  const iteration = iterationOf(iterations, search.iteration)
-  const latest = iterationOf(iterations, undefined)
   const [src] = React.useState(
     () => router.buildLocation({ to: canvas, search: canvasSearch }).href
   )
@@ -100,33 +96,6 @@ export function ExperimentPage({
           {description}
         </p>
       </header>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <span aria-hidden={iterations.length > 1} className="font-medium text-sm">
-          Iteration{iterations.length === 1 ? ` ${iteration.n}` : null}
-        </span>
-        {iterations.length > 1 && (
-          <Segmented label="Iteration">
-            {iterations.map((option) => (
-              <button
-                key={option.n}
-                type="button"
-                aria-pressed={iteration.n === option.n}
-                onClick={() =>
-                  setSearch({ iteration: option.n === latest.n ? undefined : option.n })
-                }
-                className={cn(segmentItem, "tabular-nums")}
-              >
-                {option.n}
-              </button>
-            ))}
-          </Segmented>
-        )}
-        <p className="max-w-2xl text-pretty text-muted-foreground text-sm leading-relaxed">
-          <time dateTime={iteration.date}>{iteration.date}</time>
-          {" · "}
-          {iteration.summary}
-        </p>
-      </div>
       <div className="flex flex-wrap items-center gap-2">
         {controls.map((control) => (
           <Segmented key={control.key} label={control.label}>
@@ -160,7 +129,7 @@ export function ExperimentPage({
           className={width === "fill" ? "h-full" : "mx-auto h-full rounded-lg border"}
         />
       </div>
-      {iteration.ruleSections.map((section) => (
+      {ruleSections.map((section) => (
         <section key={section.title} className="flex flex-col gap-2">
           <h2 className="font-semibold text-sm">{section.title}</h2>
           <RuleNotes rules={section.rules} />
