@@ -29,7 +29,8 @@ The rules live in how the components compose, built on Base UI's composition API
 - Each registry item carries its usage guidance in its `docs` field, and the docs site carries the full guidelines.
 - Rule precedence: Linear first; Primer, Carbon, Geist, Stripe Apps and Saga only where Linear has no answer. Hover cards may hold links, following Linear over Primer.
 - Registry items are named for their role and never reuse a shadcn/ui item name (docs/adr/0003-name-registry-items-for-their-role.md).
-- Undecided: the component list.
+- Registry items: `record-list`, `record-row`, `status-mark`, `person-mark`, `figure`, `track`, `relative-time`, `field-state`, `field-card`.
+- A component starts as a greyscale experiment on the docs site, becomes a lockup in `packages/ui` when it is production ready, and gets a playground page.
 
 ## Brand Commitments
 
@@ -39,14 +40,16 @@ Monochrome plus one accent colour; the accent marks only what can be acted on. P
 
 - docs/references/ux-references.md: researched rules with quotes from Linear, Primer, Carbon, Geist, Stripe Apps and Saga.
 - docs/references/shadcn-registry-*.md: the shadcn registry documentation, captured 2026-10-14.
-- No components, demos, adopters or usage data exist yet; do not fabricate them.
+- The nine registry items above, each with a component page on the docs site; `record-list` also has a lockup page with its States view and constellation.
+- No adopters or usage data exist yet; do not fabricate them.
 
 ## Product Principles
 
 1. A rule is enforced by composition before it is explained in prose.
-2. Every rule cites its source; a rule without one is marked as this system's own decision.
-3. Show the data the task needs; disclose the rest on request, by mouse and by keyboard.
-4. Error and refusal copy states what went wrong, then how to fix it.
+2. The system is defined by the relationships between components: rank, fit, placement, adjacency, spacing between types and nested radius.
+3. Every rule cites its source; a rule without one is marked as this system's own decision.
+4. Show the data the task needs; disclose the rest on request, by mouse and by keyboard.
+5. Error and refusal copy states what went wrong, then how to fix it.
 
 ## Accessibility & Inclusion
 

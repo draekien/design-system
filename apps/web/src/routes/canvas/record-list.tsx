@@ -25,7 +25,7 @@ function RecordListCanvasRoute() {
   }
 
   return (
-    <CanvasDocument search={options} onFrameNavigate={handleFrameNavigate}>
+    <CanvasDocument search={options} schema={search} onFrameNavigate={handleFrameNavigate}>
       <RecordListCanvas options={options} />
     </CanvasDocument>
   )

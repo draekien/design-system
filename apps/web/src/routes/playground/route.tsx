@@ -64,6 +64,11 @@ function PlaygroundLayout() {
               </Link>
             ))}
           </NavGroup>
+          <NavGroup label="Experiments">
+            <Link to="/playground/experiments/record-table" className={navLink}>
+              Record table
+            </Link>
+          </NavGroup>
           <NavGroup label="Settings">
             <Link to="/playground/theme" className={navLink}>
               Canvas theme

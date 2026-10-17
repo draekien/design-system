@@ -24,6 +24,7 @@ export default defineConfig({
           { path: "/playground/theme" },
           { path: "/playground/rules" },
           { path: "/canvas/record-list" },
+          { path: "/canvas/experiments/record-table" },
         ],
         prerender: {
           enabled: true,

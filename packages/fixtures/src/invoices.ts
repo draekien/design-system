@@ -19,6 +19,58 @@ export type SampleInvoice = {
   summary: string
 }
 
+/** One line of a sample invoice: a child record that breaks down the invoice's amount. */
+export type SampleInvoiceLine = {
+  id: string
+  /** The `id` of the invoice the line belongs to. */
+  invoiceId: string
+  description: string
+  /** The line's amount in Australian dollars; a discount is negative. */
+  amount: number
+}
+
+/** The lines of each sample invoice; an invoice's line amounts sum to its amount. INV-2040 has none. */
+export const sampleInvoiceLines: readonly SampleInvoiceLine[] = [
+  {
+    id: "INV-2041-1",
+    invoiceId: "INV-2041",
+    description: "Freight tracking licence, 40 seats",
+    amount: 11_200,
+  },
+  {
+    id: "INV-2041-2",
+    invoiceId: "INV-2041",
+    description: "Route optimisation add-on",
+    amount: 1_240.5,
+  },
+  { id: "INV-2041-3", invoiceId: "INV-2041", description: "Onboarding call", amount: 400 },
+  {
+    id: "INV-2039-1",
+    invoiceId: "INV-2039",
+    description: "Enterprise licence, 12 months",
+    amount: 52_500,
+  },
+  { id: "INV-2039-2", invoiceId: "INV-2039", description: "Priority support", amount: 2_272.73 },
+  {
+    id: "INV-2039-3",
+    invoiceId: "INV-2039",
+    description: "Volume discount, 12%",
+    amount: -6_572.73,
+  },
+  {
+    id: "INV-2038-1",
+    invoiceId: "INV-2038",
+    description: "Data migration, final milestone",
+    amount: 6_900,
+  },
+  {
+    id: "INV-2038-2",
+    invoiceId: "INV-2038",
+    description: "Cut-over weekend support",
+    amount: 525.75,
+  },
+]
+
 /** Four synthetic invoices, soonest due first. */
 export const sampleInvoices: readonly SampleInvoice[] = [
   {
