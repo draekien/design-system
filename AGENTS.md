@@ -28,6 +28,8 @@ Build on Base UI primitives only; never add or import Radix (`@radix-ui/*`).
 
 Read docs/contexts/design-rules.md before designing, building or changing a component, its composition or its usage docs, and before writing user-facing copy in a component or example.
 
+Read DESIGN.md before building or styling any UI in `packages/ui`, an experiment or a playground page.
+
 Read docs/references/shadcn-registry-index.md before changing `registry.json`, a registry item, or how the registry is published.
 
 ## Writing
@@ -61,6 +63,9 @@ Before editing files for a substantial task:
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that experiment and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
 - An experiment is promoted to a lockup when it is production ready: its components move to `packages/ui`, its playground lockup route is added, and the same change deletes the experiment, its routes and its sidebar entry.
+- This is a design system first and a component library second: a component encodes the rank, fit, placement, adjacency, spacing and radius rules in `docs/contexts/design-rules.md` and `DESIGN.md`, and takes every colour, radius, font and gap from the tokens in `packages/ui/src/styles/globals.css`.
+- Run `/impeccable shape` before every design system change: a token, a rule in `docs/contexts/design-rules.md`, `DESIGN.md`, a new component or a new lockup.
+- Run `/impeccable document` to regenerate `DESIGN.md` and `.impeccable/design.json` in the same change that alters a token or a component's visual treatment.
 - Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `packages/ui`.
 - Run `/simplify` and then `/code-review` on every change before committing it.
 - Show screenshots of every changed surface in a task's completion summary.

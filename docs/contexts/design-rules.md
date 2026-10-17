@@ -90,6 +90,28 @@ Numeric columns right-align in tabular figures.
 
 A narrow table hides a column together with its header.
 
+## Radius
+
+A radius builds outward from the floor: a leaf control (checkbox, button, input) takes the floor, `--radius-sm`, and a container's radius is its content's radius plus its padding. This is this design system's own decision.
+
+A container with no padding between it and its content, such as a row, is square.
+
+Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and turns off nesting.
+
+Circles (`rounded-full`) are exempt: status dots and initials.
+
+A container sets `--container-radius` and `--container-padding` on itself; the container around it computes its radius from them with `calc()`.
+
+## Spacing between components
+
+The container sets the gap between its children by how the two neighbours relate. This is this design system's own decision.
+
+| Token | Neighbours | Value |
+| --- | --- | --- |
+| `--gap-run` | the same component in a run, such as row after row | 0 |
+| `--gap-related` | parts of one record or one control, such as a status dot and its word | 0.5rem |
+| `--gap-section` | separate sections, such as two stacked record lists | 1.5rem |
+
 ## Rules adopted without a component yet
 
 Every error or refusal states what went wrong, then how the caller fixes it; apologise only when the product itself failed.
