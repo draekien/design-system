@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlaygroundRouteRouteImport } from './routes/playground/route'
 import { Route as CanvasRecordListRouteImport } from './routes/canvas/record-list'
 import { Route as PlaygroundIndexRouteImport } from './routes/playground/index'
+import { Route as PlaygroundComponentRouteImport } from './routes/playground/$component'
 import { Route as PlaygroundRecordListRouteImport } from './routes/playground/record-list'
 import { Route as PlaygroundRulesRouteImport } from './routes/playground/rules'
 import { Route as PlaygroundThemeRouteImport } from './routes/playground/theme'
@@ -37,6 +38,11 @@ const PlaygroundIndexRoute = PlaygroundIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PlaygroundRouteRoute,
 } as any)
+const PlaygroundComponentRoute = PlaygroundComponentRouteImport.update({
+  id: '/$component',
+  path: '/$component',
+  getParentRoute: () => PlaygroundRouteRoute,
+} as any)
 const PlaygroundRecordListRoute = PlaygroundRecordListRouteImport.update({
   id: '/record-list',
   path: '/record-list',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/playground': typeof PlaygroundRouteRouteWithChildren
   '/canvas/record-list': typeof CanvasRecordListRoute
+  '/playground/$component': typeof PlaygroundComponentRoute
   '/playground/record-list': typeof PlaygroundRecordListRoute
   '/playground/rules': typeof PlaygroundRulesRoute
   '/playground/theme': typeof PlaygroundThemeRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/canvas/record-list': typeof CanvasRecordListRoute
+  '/playground/$component': typeof PlaygroundComponentRoute
   '/playground/record-list': typeof PlaygroundRecordListRoute
   '/playground/rules': typeof PlaygroundRulesRoute
   '/playground/theme': typeof PlaygroundThemeRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/playground': typeof PlaygroundRouteRouteWithChildren
   '/canvas/record-list': typeof CanvasRecordListRoute
+  '/playground/$component': typeof PlaygroundComponentRoute
   '/playground/record-list': typeof PlaygroundRecordListRoute
   '/playground/rules': typeof PlaygroundRulesRoute
   '/playground/theme': typeof PlaygroundThemeRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
     | '/'
     | '/playground'
     | '/canvas/record-list'
+    | '/playground/$component'
     | '/playground/record-list'
     | '/playground/rules'
     | '/playground/theme'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/canvas/record-list'
+    | '/playground/$component'
     | '/playground/record-list'
     | '/playground/rules'
     | '/playground/theme'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/playground'
     | '/canvas/record-list'
+    | '/playground/$component'
     | '/playground/record-list'
     | '/playground/rules'
     | '/playground/theme'
@@ -145,6 +157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlaygroundIndexRouteImport
       parentRoute: typeof PlaygroundRouteRoute
     }
+    '/playground/$component': {
+      id: '/playground/$component'
+      path: '/$component'
+      fullPath: '/playground/$component'
+      preLoaderRoute: typeof PlaygroundComponentRouteImport
+      parentRoute: typeof PlaygroundRouteRoute
+    }
     '/playground/record-list': {
       id: '/playground/record-list'
       path: '/record-list'
@@ -170,6 +189,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface PlaygroundRouteRouteChildren {
+  PlaygroundComponentRoute: typeof PlaygroundComponentRoute
   PlaygroundRecordListRoute: typeof PlaygroundRecordListRoute
   PlaygroundRulesRoute: typeof PlaygroundRulesRoute
   PlaygroundThemeRoute: typeof PlaygroundThemeRoute
@@ -177,6 +197,7 @@ interface PlaygroundRouteRouteChildren {
 }
 
 const PlaygroundRouteRouteChildren: PlaygroundRouteRouteChildren = {
+  PlaygroundComponentRoute: PlaygroundComponentRoute,
   PlaygroundRecordListRoute: PlaygroundRecordListRoute,
   PlaygroundRulesRoute: PlaygroundRulesRoute,
   PlaygroundThemeRoute: PlaygroundThemeRoute,

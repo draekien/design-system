@@ -58,8 +58,9 @@ export type RecordRowProps = useRender.ComponentProps<"li"> & {
 /**
  * One item in a `RecordList`. Its parts are named for the rank of the information they hold:
  * `RecordRowIdentify` (rank 1: what the item is), one `RecordRowRead` per reading the list exists
- * for (rank 2), and `RecordRowLink` to the item's own page (rank 5). Rank 3 is peek, rendered
- * beside the list from `RecordList`'s `peekValue`; rank 4 is a `field-card` on a rank 1 or 2 value.
+ * for (rank 2), and `RecordRowLink` to the item's own page (rank 5). Peek, rendered from
+ * `RecordList`'s `peekValue`, previews part of that page read-only; rank 4 is a `field-card` on a
+ * rank 1 or 2 value.
  * Columns line up down the list whatever the values are.
  */
 export function RecordRow({
@@ -174,7 +175,65 @@ export function RecordRowSelect({ className, ...props }: RecordRowSelectProps): 
   )
 }
 
-const linkClass = "col-[2/-1] grid h-full min-h-11 grid-cols-subgrid items-center pl-1"
+const linkClass = "col-[2/-2] grid h-full min-h-11 grid-cols-subgrid items-center pl-1"
+
+const peekClass =
+  "col-[-2/-1] ml-1 flex size-6 shrink-0 items-center justify-center rounded-md pointer-coarse:size-11"
+
+/** Props for {@link RecordRowPeek}. */
+export type RecordRowPeekProps = Omit<React.ComponentProps<"button">, "children" | "type">
+
+/**
+ * A button at the end of the row that toggles peek on it, so a pointer reaches peek while a click
+ * on `RecordRowLink` opens the item's page. It is 24×24px, 44×44px on a coarse pointer, and is
+ * drawn only on a hovered, focused or peeked row, and always on a coarse pointer. It is not a tab
+ * stop: Space on the focused row toggles peek. Its accessible name is "Peek" followed by the row's
+ * name; pass `aria-controls` the id of the element that renders peek.
+ */
+export function RecordRowPeek({ className, ...props }: RecordRowPeekProps): React.ReactElement {
+  const row = useRecordRow("RecordRowPeek")
+  const list = useRecordList()
+  const labelId = React.useId()
+
+  if (row.kind === "loading") {
+    return <span data-slot="record-row-peek" className={peekClass} />
+  }
+
+  return (
+    <button
+      {...mergeProps<"button">(
+        {
+          type: "button",
+          tabIndex: -1,
+          "aria-expanded": row.isPeeked,
+          "aria-labelledby": `${labelId} ${row.nameId}`,
+          onClick: () => list.onTogglePeek(row.value),
+          className: cn(
+            peekClass,
+            "invisible cursor-pointer text-muted-foreground outline-none transition-colors hover:bg-foreground/7 hover:text-foreground aria-expanded:visible aria-expanded:text-foreground pointer-coarse:visible group-hover/record-row:visible group-has-[[data-slot=record-row-link]:focus-visible]/record-row:visible",
+            className
+          ),
+        },
+        props
+      )}
+      data-slot="record-row-peek"
+    >
+      <span id={labelId} className="sr-only">
+        Peek
+      </span>
+      <svg viewBox="0 0 16 16" aria-hidden="true" className="size-4">
+        <path
+          d="M1.75 8S4 3.75 8 3.75 14.25 8 14.25 8 12 12.25 8 12.25 1.75 8 1.75 8Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    </button>
+  )
+}
 
 /**
  * The link to the item's own page (rank 5), holding `RecordRowIdentify` and the `RecordRowRead`s.
@@ -248,13 +307,13 @@ function usePart(
 
 /**
  * Rank 1: what the item is. Holds an optional `RecordRowKey` and `RecordRowGlyph`, then one
- * `RecordRowName`, at the start of the row.
+ * `RecordRowName` and an optional `RecordRowDescription`, at the start of the row.
  */
 export function RecordRowIdentify({ children, ...props }: RecordRowPartProps): React.ReactElement {
   return usePart(
     "RecordRowIdentify",
     "record-row-identify",
-    "col-[1/4] grid min-w-0 grid-cols-subgrid items-center",
+    "col-[1/5] grid min-w-0 grid-cols-subgrid items-center",
     children,
     { ...props, children }
   )
@@ -296,7 +355,8 @@ export function RecordRowGlyph({
 }
 
 /**
- * The item's name. It fills the width the other columns leave and truncates; it is never hidden.
+ * The item's name. It takes the width it needs from what the other columns leave and truncates;
+ * it is never hidden.
  * The row's focus underline is drawn under it.
  */
 export function RecordRowName(props: RecordRowPartProps): React.ReactElement {
@@ -305,8 +365,23 @@ export function RecordRowName(props: RecordRowPartProps): React.ReactElement {
     "RecordRowName",
     "record-row-name",
     "col-start-3 min-w-0 truncate font-medium text-sm decoration-2 decoration-ring underline-offset-3 group-focus-visible/record-row-link:underline",
-    <Bar className="w-2/3" />,
+    <Bar className="w-40 max-w-full" />,
     { ...props, id: row.kind === "record" ? row.nameId : undefined }
+  )
+}
+
+/**
+ * One line after the name saying what the item is about, in muted text. It fills the width the
+ * other columns leave, truncates before the name does, and is hidden when the list is narrower
+ * than 640px.
+ */
+export function RecordRowDescription(props: RecordRowPartProps): React.ReactElement {
+  return usePart(
+    "RecordRowDescription",
+    "record-row-description",
+    "col-start-4 min-w-0 truncate pl-3 text-muted-foreground text-sm @max-[40rem]:hidden",
+    <Bar className="w-2/3" />,
+    props
   )
 }
 

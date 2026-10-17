@@ -5,6 +5,7 @@ import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { RecordList } from "@workspace/ui/components/record-list.tsx"
 import {
   RecordRow,
+  RecordRowDescription,
   RecordRowGlyph,
   RecordRowIdentify,
   RecordRowKey,
@@ -300,6 +301,11 @@ function RowParts<TItem>({
           <RecordRowName className={nameClassName} data-anchor={anchors?.get("name")}>
             {dataset.name(item)}
           </RecordRowName>
+          {!hidden.has("description") && (
+            <RecordRowDescription data-anchor={anchors?.get("description")}>
+              {dataset.summary(item)}
+            </RecordRowDescription>
+          )}
         </RecordRowIdentify>
         {shownReads(dataset, hidden).map((read) => (
           <RecordRowRead key={read.part} narrow={read.narrow} data-anchor={anchors?.get(read.part)}>
@@ -892,13 +898,27 @@ function rowDrawing<TItem>({
   add("name", {
     name: "RecordRowName",
     depth: 4,
-    note: "Fills the remaining width; truncates",
+    note: "Takes the width it needs; truncates after the description; never hidden",
     specimen: (
       <PartRow dataset={dataset} item={item}>
         <RecordRowName>{dataset.name(item)}</RecordRowName>
       </PartRow>
     ),
   })
+  if (!hidden.has("description")) {
+    add("description", {
+      name: "RecordRowDescription",
+      depth: 4,
+      note: "One muted line; fills the remaining width, truncates first, hidden below 640px",
+      specimen: (
+        <PartRow dataset={dataset} item={item}>
+          <RecordRowDescription className="col-span-full pl-0">
+            {dataset.summary(item)}
+          </RecordRowDescription>
+        </PartRow>
+      ),
+    })
+  }
   for (const read of reads) {
     add(read.part, {
       name: "RecordRowRead",
@@ -955,7 +975,7 @@ function rowDrawing<TItem>({
   add("peek", {
     name: "Peek",
     depth: 0,
-    note: "Playground part: follows peekValue; beside the list at lg, under the row below",
+    note: "Playground part: a read-only preview of the page; beside the list at lg, under the row below",
     specimen: (
       <div className="py-1 text-sm">
         <PeekContent dataset={dataset} item={item} state={state} onOpen={handleSpecimenChange} />
@@ -969,7 +989,12 @@ function rowDrawing<TItem>({
       rank: 1,
       reveal: "always",
       summary: `What the ${dataset.item} is, at the start of every row`,
-      links: [...link("key"), ...(glyph === undefined ? [] : link(glyph.part)), ...link("name")],
+      links: [
+        ...link("key"),
+        ...(glyph === undefined ? [] : link(glyph.part)),
+        ...link("name"),
+        ...link("description"),
+      ],
     },
     {
       title: "Read",
@@ -979,29 +1004,21 @@ function rowDrawing<TItem>({
       links: reads.flatMap((read) => link(read.part)),
     },
     {
-      title: "Explain",
-      rank: 3,
-      reveal: "revealed",
-      gesture: "Space",
-      summary: "Peek shows the summary and every field without leaving the list",
-      links: link("peek", "link"),
-    },
-    {
       title: "Enrich",
       rank: 4,
       reveal: "revealed",
       gesture: "Hover 300ms",
       summary:
-        "A hover card on the value it describes; peek holds the same fields for keyboard and touch",
+        "A hover card on the value it describes; peek and the page hold the same fields for keyboard and touch",
       links: carded.flatMap((read) => (read.card === undefined ? [] : link(read.card, read.part))),
     },
     {
       title: "Elsewhere",
       rank: 5,
       reveal: "revealed",
-      gesture: "Enter or click",
-      summary: `The link opens the ${dataset.item}'s page, which holds every field`,
-      links: link("link"),
+      gesture: "Enter or click; Space peeks",
+      summary: `The link opens the ${dataset.item}'s page, which holds every field; peek previews it without leaving the list`,
+      links: [...link("link"), ...link("peek", "link")],
     },
     {
       title: "Act",

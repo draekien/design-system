@@ -350,7 +350,14 @@ function StatusCard({ record }: { record: SampleRecord }) {
 }
 
 function RecordTitle({ record }: { record: SampleRecord }) {
-  return <span className={cn(slot.title, "truncate font-medium text-sm")}>{record.title}</span>
+  return (
+    <span className={cn(slot.title, "flex items-baseline gap-3 text-sm")}>
+      <span className="max-w-full shrink-0 truncate font-medium">{record.title}</span>
+      <span className="hidden min-w-0 flex-1 truncate text-muted-foreground sm:block">
+        {record.summary}
+      </span>
+    </span>
+  )
 }
 
 function OwnerSlot({ record, state }: { record: SampleRecord; state: RowState }) {
@@ -454,8 +461,9 @@ function LoadingRow() {
         <span className={slot.status}>
           <span className="size-2.5 rounded-full bg-muted" />
         </span>
-        <span className={slot.title}>
-          <Bar className="w-2/3" />
+        <span className={cn(slot.title, "flex items-center gap-3")}>
+          <Bar className="w-40 max-w-full shrink-0" />
+          <Bar className="hidden w-1/3 sm:block" />
         </span>
         <span className={cn("flex shrink-0 items-center", ownerSlotWidth.loaded)}>
           <Bar className="w-full" />
@@ -853,8 +861,8 @@ function loadingDrawing(peekId: string): Drawing {
         links: [{ part: 3, anchor: 3 }],
       },
       {
-        title: "Explain",
-        rank: 3,
+        title: "Elsewhere",
+        rank: 5,
         summary: "Peek says it waits until the records load",
         reveal: "revealed",
         gesture: "Space",
@@ -1101,7 +1109,7 @@ function rowParts(
       name: "RecordTitle",
       depth: 3,
       qty: 1,
-      note: "Fills the remaining width; truncates",
+      note: "The title, then a muted one-line summary that truncates first and hides below sm",
       specimen: (
         <div className="flex w-48">
           <RecordTitle record={record} />
@@ -1300,7 +1308,7 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
     {
       title: "Identify",
       rank: 1,
-      summary: "What the record is: its ID and title",
+      summary: "What the record is: its ID, title and one-line summary",
       reveal: "always",
       links: [
         { part: 5, anchor: 5 },
@@ -1317,14 +1325,6 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
         { part: 9, anchor: 9 },
         { part: updatedN, anchor: updatedN },
       ],
-    },
-    {
-      title: "Explain",
-      rank: 3,
-      summary: "Peek on the focused row: summary, team and time in status",
-      reveal: "revealed",
-      gesture: "Space",
-      links: [{ part: peekN, anchor: 2 }],
     },
     {
       title: "Enrich",
@@ -1344,10 +1344,14 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
     {
       title: "Elsewhere",
       rank: 5,
-      summary: "The row link opens the record page, which shows every field peek shows",
+      summary:
+        "The row link opens the record page; peek previews its team and time in status without leaving the list",
       reveal: "revealed",
-      gesture: "Enter or click",
-      links: [{ part: 4, anchor: 4 }],
+      gesture: "Enter or click; Space peeks",
+      links: [
+        { part: 4, anchor: 4 },
+        { part: peekN, anchor: 2 },
+      ],
     },
     {
       title: "Act",

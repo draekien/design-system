@@ -38,6 +38,7 @@
     "@babel/core": "8.0.7",
     "@rolldown/plugin-babel": "0.2.4",
     "@tanstack/devtools-vite": "0.8.5",
+    "@tanstack/highlight": "1.1.0",
     "@testing-library/dom": "10.4.2",
     "@testing-library/react": "16.3.3",
     "@testing-library/user-event": "14.6.7",

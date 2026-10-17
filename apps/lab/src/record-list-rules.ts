@@ -2,7 +2,7 @@ import type { Rule } from "./rule-notes.tsx"
 
 export const recordListRules: ReadonlyArray<Rule> = [
   {
-    rule: "A row shows ID, status, title, owner and updated; the summary, team and time in status wait for peek and the record page.",
+    rule: "A row shows ID, status, title, its summary as a muted description, owner and updated; the team and time in status wait for peek and the record page.",
     source: "Linear issue list (screenshots, 2026-10-08)",
   },
   {
@@ -10,8 +10,16 @@ export const recordListRules: ReadonlyArray<Rule> = [
     source: "This design system's own decision",
   },
   {
-    rule: "Space toggles peek on the focused row; ↑ ↓ Home End move focus, and an open peek follows it; Esc closes peek. Peek is keyboard-only because the row link reaches the same fields by mouse and touch.",
+    rule: "Space toggles peek on the focused row; ↑ ↓ Home End move focus, and an open peek follows it; Esc closes peek. Peek previews part of the record page and holds nothing that page lacks.",
     source: "Linear Peek",
+  },
+  {
+    rule: "A row with a peek button opens peek from it on hover, focus or a coarse pointer, so a click on the row opens the record page.",
+    source: "This design system's own decision (Linear Peek previews without leaving the list)",
+  },
+  {
+    rule: "A drawer that shows peek returns focus to the row that opened it.",
+    source: "This design system's own decision",
   },
   {
     rule: "Peek opens beside the list at lg and wider, and under the peeked row below lg.",
@@ -39,7 +47,7 @@ export const recordListRules: ReadonlyArray<Rule> = [
     source: "Primer designer checklist; 44px is this design system's own decision",
   },
   {
-    rule: "Below sm the row hides the ID and shows the owner's initials only; below md it hides updated.",
+    rule: "Below sm the row hides the ID and the description and shows the owner's initials only; below md it hides updated.",
     source: "This design system's own decision",
   },
   {

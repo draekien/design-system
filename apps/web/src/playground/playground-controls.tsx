@@ -96,3 +96,28 @@ export function CopyButton({
     </button>
   )
 }
+
+export function InstallCommand({
+  command,
+  className,
+}: {
+  command: string
+  className?: string
+}): React.ReactElement {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-2 rounded-lg border bg-card py-1 pr-1 pl-3.5 shadow-[0_1px_2px_rgb(0_0_0/0.04)]",
+        className
+      )}
+    >
+      <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap py-1.5 font-mono text-[0.8125rem]">
+        <span aria-hidden="true" className="select-none text-muted-foreground">
+          ${" "}
+        </span>
+        {command}
+      </code>
+      <CopyButton text={command} label="Copy" />
+    </div>
+  )
+}

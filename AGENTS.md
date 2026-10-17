@@ -12,6 +12,18 @@ It is not affiliated with any employer.
 
 Build on Base UI primitives only; never add or import Radix (`@radix-ui/*`).
 
+## Decisions
+
+- Take the option you would recommend and proceed; do not stop to ask which option the user prefers. This overrides "Ask rather than guess" for every decision not listed below.
+- Ask the user before creating, amending, superseding or deprecating an ADR in `docs/adr/`.
+- Ask the user before adding, changing or removing a rule in `docs/contexts/design-rules.md`, any `AGENTS.md` or `CLAUDE.md`, or `.claude/rules/`.
+- Ask the user before any choice that departs from an accepted ADR or from a rule in those files.
+- Ask the user before renaming or removing a published registry item, or changing its props.
+- Ask the user before adding a runtime dependency to a registry item.
+- Ask the user before changing how `registry.json` is published.
+- When a plan is complete, end with a decision summary and wait for the user's go-ahead before implementing: one table row per decision with the columns Decision, Chosen, Rule it follows, and Rejected (why); at most eight rows; one line per cell; readable in one minute.
+- In the decision summary, write "none" in Rule it follows when no rule or ADR covers the decision, rather than naming a rule loosely.
+
 ## Contexts
 
 Read docs/contexts/design-rules.md before designing, building or changing a component, its composition or its usage docs, and before writing user-facing copy in a component or example.
@@ -48,12 +60,14 @@ Before editing files for a substantial task:
 - Inside `packages/ui`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/ui/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `"cn"`.
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that lab and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
-- A component moves wireframe in `apps/lab`, then component in `packages/ui`, then playground route in `apps/web`.
-- Every wireframe and playground page shows its rules table, the interactive lockup and a constellation, following the `state` search param. On a playground page each part is the real `packages/ui` export.
+- A lockup moves wireframe in `apps/lab`, then component in `packages/ui`, then playground route in `apps/web`.
+- Every wireframe and lockup page shows its rules table, the interactive lockup and a constellation, following the `state` search param. On a playground page each part is the real `packages/ui` export.
 - A constellation draws the component at rest in the centre, one satellite per information rank around it holding that rank's parts with hover cards and panels drawn open, a connector from each part to the centre part that shows or reveals it, and a numbered parts list nesting each part under the part that contains it.
 - A constellation draws always-shown ranks with solid satellites and connectors above the centre, and revealed ranks with dashed satellites below it whose dashed connectors, labelled with the revealing gesture, appear on hover or focus.
-- A playground page shows a States view: the component's interaction states and narrow widths, one specimen each.
+- A lockup page shows a States view: the component's interaction states and narrow widths, one specimen each.
 - A playground page stacks the lockup, the States view and the constellation in that order; the lockup and the States view each render in their own canvas iframe with its own width and pointer controls, the constellation in the page.
+- The lockup and the States view each have a Preview/Code toggle in their toolbar.
+- A component page shows its install command, description, a specimen with a Code toggle, its registry `docs`, and its dependents.
 - A lab route renders its canvas (`view` selects lockup or constellation) when the `embed` search param is true, and its rules table otherwise; the lab shell loads the canvas in an iframe sized by the `width` param.
 - Lab wireframes style hover and touch with `hover:` and `pointer-coarse:`; `apps/lab/src/styles.css` redefines both so the `pointer=coarse` param simulates a coarse pointer.
 - Run tasks from the repo root: `pnpm build`, `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm dev`.

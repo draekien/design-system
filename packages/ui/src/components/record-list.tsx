@@ -10,11 +10,16 @@ type RecordListContextValue = {
   onLinkFocus: (value: string) => void
   onLinkKeyDown: (event: React.KeyboardEvent<HTMLElement>, value: string) => void
   onToggleSelected: (value: string) => void
+  onTogglePeek: (value: string) => void
 }
 
 const RecordListContext = React.createContext<RecordListContextValue | null>(null)
 
 const linkSelector = '[data-slot="record-row-link"]'
+
+const rowSelector = '[data-slot="record-row"]'
+
+const selectSelector = '[data-slot="record-row-select"]'
 
 /** Props for {@link RecordList}. */
 export type RecordListProps = Omit<useRender.ComponentProps<"ul">, "defaultValue"> & {
@@ -28,7 +33,7 @@ export type RecordListProps = Omit<useRender.ComponentProps<"ul">, "defaultValue
   peekValue?: string | null
   /** The row peeked on first render when peek is uncontrolled. */
   defaultPeekValue?: string | null
-  /** Called when Space toggles peek, Esc closes it, or peek follows focus to another row. */
+  /** Called when Space or a `RecordRowPeek` toggles peek, Esc closes it, or peek follows focus to another row. */
   onPeekValueChange?: (value: string | null) => void
 }
 
@@ -56,8 +61,10 @@ function rowLinks(root: HTMLElement | null): ReadonlyArray<HTMLElement> {
 /**
  * A list of records, one `RecordRow` per record. Owns the row keyboard model: the list is one
  * tab stop; ↑ ↓ Home End move focus between rows; Space toggles peek on the focused row and an
- * open peek follows focus; X toggles selection; Esc closes peek, then clears the selection.
- * Peek renders nothing itself: read `peekValue` and render the record's detail beside the list.
+ * open peek follows focus; X toggles selection on a row that has a `RecordRowSelect`; Esc closes
+ * peek, then clears the selection. A `RecordRowPeek` toggles peek by pointer.
+ * Peek renders nothing itself: read `peekValue` and render a read-only preview of the record's
+ * page beside the list, under the row or in a drawer.
  * The list is a grid that its rows share, so their columns line up. Give any other child, such as an
  * inline peek, `col-span-full`.
  */
@@ -129,6 +136,11 @@ export function RecordList({
         return
       case "x":
       case "X":
+        if (
+          (event.currentTarget.closest(rowSelector)?.querySelector(selectSelector) ?? null) === null
+        ) {
+          return
+        }
         event.preventDefault()
         toggleSelected(value)
         return
@@ -160,6 +172,13 @@ export function RecordList({
     }
   }
 
+  function togglePeek(value: string) {
+    rowLinks(rootRef.current)
+      .find((link) => link.dataset.value === value)
+      ?.focus()
+    setPeekValue(peekValue === value ? null : value)
+  }
+
   const context: RecordListContextValue = {
     activeValue,
     peekValue,
@@ -167,6 +186,7 @@ export function RecordList({
     onLinkFocus: setActiveValue,
     onLinkKeyDown: handleLinkKeyDown,
     onToggleSelected: toggleSelected,
+    onTogglePeek: togglePeek,
   }
 
   const element = useRender({
@@ -177,7 +197,7 @@ export function RecordList({
     props: mergeProps<"ul">(
       {
         className: cn(
-          "@container grid grid-cols-[auto_auto_auto_minmax(0,1fr)_repeat(8,auto)]",
+          "@container grid grid-cols-[auto_auto_auto_minmax(0,auto)_minmax(0,1fr)_repeat(8,auto)_auto]",
           className
         ),
       },
