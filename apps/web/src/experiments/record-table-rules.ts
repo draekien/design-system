@@ -22,7 +22,7 @@ export const recordTableRules: ReadonlyArray<Rule> = [
     source: "Linear Display options; design rules: a collapsed group keeps its counts",
   },
   {
-    rule: "An invoice's lines are its child rows: rank 3, collapsed by default, drawn under the invoice in its columns, each description starting at the group name's column. The line count is a rank 2 reading in the Lines column; the expand control is the chevron alone, and an invoice with no lines draws none.",
+    rule: "An invoice's lines are its child rows: rank 3, collapsed by default, drawn under the invoice in its columns, each description aligned with the customer name. The line count is a rank 2 reading in the Lines column; the expand control is the chevron alone, and an invoice with no lines draws none.",
     source:
       "Carbon data table; Saga Interactive table; the line count column is this design system's own decision",
   },

@@ -1009,8 +1009,8 @@ export function LineRow({
       )}
       {...focusProps}
     >
-      <EmptyCells seats={["select", "expand"]} />
-      <CellElement colSpan={2} className="col-span-2 col-start-3 flex min-w-0 items-center">
+      <EmptyCells seats={["select", "expand", "invoice"]} />
+      <CellElement className={cn(seatClass.customer, "items-center")}>
         <span className="truncate text-muted-foreground text-sm">{line.description}</span>
       </CellElement>
       <EmptyCells seats={["lines"]} />
@@ -1039,10 +1039,10 @@ export function LinesErrorRow({
       className={cn(rowClass, "min-h-9 border-b border-dashed py-1.5", focusRing)}
       {...focusProps}
     >
-      <EmptyCells seats={["select", "expand"]} />
+      <EmptyCells seats={["select", "expand", "invoice"]} />
       <CellElement
-        colSpan={6}
-        className="col-span-full col-start-3 flex flex-wrap items-center gap-x-3 text-muted-foreground text-xs"
+        colSpan={5}
+        className="col-span-full col-start-4 flex flex-wrap items-center gap-x-3 text-muted-foreground text-xs"
       >
         Lines for {invoice.id} could not load: the billing service did not respond.
         <Link
