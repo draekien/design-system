@@ -37,7 +37,3 @@
 @utility focus-ring {
   @apply outline-hidden focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-foreground;
 }
-
-@utility focus-look {
-  @apply outline-solid outline-2 outline-foreground;
-}

@@ -48,7 +48,7 @@ A narrow surface truncates rank 1 and 2 values first, then abbreviates them, the
 
 Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks.
 
-A row offers peek by pointer through its own peek button, so a click on the row opens rank 5.
+Peek opens with Space on the focused row, so a click on the row opens rank 5.
 
 A drawer that shows peek returns focus to the row that opened it.
 
@@ -64,7 +64,7 @@ An empty group is hidden.
 
 Groups do not nest, and records nest one level deep: a record's child records are rank 3, collapsed by default, and drawn under it in its columns.
 
-A parent row's expand control shows its child count beside the chevron.
+A parent row's child count is a rank 2 reading in its own column; the expand control is the chevron alone.
 
 Sorting orders records within their group and child records within their parent; it never moves a record out of either.
 

@@ -18,13 +18,13 @@ export const recordTableRules: ReadonlyArray<Rule> = [
     source: "This design system's own decision",
   },
   {
-    rule: "Invoices group by status in the order Draft, Sent, Paid. Each group header shows the status, the invoice count and the amount sum, and keeps all three when collapsed. An empty group is hidden.",
+    rule: "Invoices group by status in the order Draft, Sent, Paid. Each group header shows the status, the invoice count, the line count sum and the amount sum, and keeps all four when collapsed. An empty group is hidden.",
     source: "Linear Display options; design rules: a collapsed group keeps its counts",
   },
   {
-    rule: "An invoice's lines are its child rows: rank 3, collapsed by default, drawn under the invoice in its columns. The expand control shows the line count beside the chevron; an invoice with no lines draws none.",
+    rule: "An invoice's lines are its child rows: rank 3, collapsed by default, drawn under the invoice in its columns, each description aligned with the customer name. The line count is a rank 2 reading in the Lines column; the expand control is the chevron alone, and an invoice with no lines draws none.",
     source:
-      "Carbon data table; Saga Interactive table; Primer progressive disclosure pairs the icon with text",
+      "Carbon data table; Saga Interactive table; the line count column is this design system's own decision",
   },
   {
     rule: "Sorting orders invoices within their status group and lines within their invoice.",
@@ -44,7 +44,7 @@ export const recordTableRules: ReadonlyArray<Rule> = [
     source: "This design system's own decision",
   },
   {
-    rule: "A click on an invoice row opens its page; the checkbox, the expand control and the peek button sit above the row's link.",
+    rule: "A click on an invoice row opens its page; the checkbox and the expand control sit above the row's link. Peek opens only with Space on the focused invoice, as in the record list.",
     source: "This design system's own decision",
   },
   {
@@ -64,7 +64,7 @@ export const recordTableRules: ReadonlyArray<Rule> = [
     source: "This design system's own decision (Linear Peek; Stripe Apps design)",
   },
   {
-    rule: "Below md the table hides Paid %; below sm it also hides Invoice, and Due moves under the customer name. Every hidden value stays in peek and on the invoice page.",
+    rule: "Below md the table hides Lines and Paid %; below sm it also hides Invoice, and Due moves under the customer name. Every hidden value stays in peek and on the invoice page.",
     source: "Primer DataTable",
   },
   {
@@ -76,7 +76,7 @@ export const recordTableRules: ReadonlyArray<Rule> = [
     source: "Design rules: a row is selectable only when it draws a selection checkbox",
   },
   {
-    rule: "Every hit area is at least 24×24px; checkboxes and the peek button grow to 44×44px on a coarse pointer.",
+    rule: "Every hit area is at least 24×24px; checkboxes and the expand control grow to 44×44px on a coarse pointer.",
     source: "Primer designer checklist; 44px is this design system's own decision",
   },
 ]

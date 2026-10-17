@@ -53,7 +53,7 @@ export const rankingRules: ReadonlyArray<string> = [
   "A component's parts are named for the rank they hold, never for a data field, so a part takes any data ranked for it.",
   "A narrow surface truncates rank 1 and 2 values first, then abbreviates them, then hides the ones marked hideable; a hidden value stays reachable at rank 3 or 5.",
   "Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks.",
-  "A row offers peek by pointer through its own peek button, so a click on the row opens rank 5.",
+  "Peek opens with Space on the focused row, so a click on the row opens rank 5.",
   "A drawer that shows peek returns focus to the row that opened it.",
   "A description in rank 1 is one line after the name; it truncates and hides before the name does.",
   "A row is selectable only when it draws a selection checkbox.",

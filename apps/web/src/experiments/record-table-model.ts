@@ -13,11 +13,11 @@ export type TableState = Exclude<FixtureState, "error">
 
 export type RowState = Exclude<FixtureState, "error" | "loading">
 
-export type Column = "invoice" | "customer" | "amount" | "paid" | "due"
+export type Column = "invoice" | "customer" | "lines" | "amount" | "paid" | "due"
 
 export type Sort = { column: Column; direction: "ascending" | "descending" }
 
-export type Seat = "select" | "expand" | Column | "peek"
+export type Seat = "select" | "expand" | Column
 
 export const statusOrder: ReadonlyArray<InvoiceStatus> = ["draft", "sent", "paid"]
 
@@ -30,12 +30,13 @@ export const statusLabel: Readonly<Record<InvoiceStatus, string>> = {
 export const columnLabel: Readonly<Record<Column, string>> = {
   invoice: "Invoice",
   customer: "Customer",
+  lines: "Lines",
   amount: "Amount",
   paid: "Paid %",
   due: "Due",
 }
 
-export const columns = ["invoice", "customer", "amount", "paid", "due"] as const
+export const columns = ["invoice", "customer", "lines", "amount", "paid", "due"] as const
 
 export const tableSearchDefaults: {
   sort: Column
@@ -68,22 +69,29 @@ export const seatClass: Readonly<Record<Seat, string>> = {
   expand: "col-start-2 flex",
   invoice: "col-start-3 hidden pr-3 sm:flex",
   customer: "col-start-4 flex min-w-0",
-  amount: "col-start-5 flex justify-end pl-4",
-  paid: "col-start-6 hidden justify-end pl-4 md:flex",
-  due: "col-start-7 hidden justify-end pr-2 pl-4 sm:flex",
-  peek: "col-start-8 flex justify-center",
+  lines: "col-start-5 hidden justify-end pl-4 md:flex",
+  amount: "col-start-6 flex justify-end pl-4",
+  paid: "col-start-7 hidden justify-end pl-4 md:flex",
+  due: "col-start-8 hidden justify-end pr-2 pl-4 sm:flex",
 }
 
-export const numericColumns: ReadonlySet<Column> = new Set(["amount", "paid"])
+export const numericColumns: ReadonlySet<Column> = new Set(["lines", "amount", "paid"])
 
 export const gridClass =
-  "grid grid-cols-[1.5rem_minmax(2.25rem,auto)_auto_minmax(0,1fr)_auto_auto_auto_1.5rem] pointer-coarse:grid-cols-[2.75rem_minmax(2.25rem,auto)_auto_minmax(0,1fr)_auto_auto_auto_2.75rem]"
+  "grid grid-cols-[1.5rem_1.5rem_auto_minmax(0,1fr)_auto_auto_auto_auto] pointer-coarse:grid-cols-[2.75rem_2.75rem_auto_minmax(0,1fr)_auto_auto_auto_auto]"
 
 export const rowClass = "col-span-full grid grid-cols-subgrid items-center gap-x-1 px-2"
 
 export const focusRing = "focus-ring focus-visible:-outline-offset-2"
 
-export const focusLook = "focus-look -outline-offset-2"
+export const rowFocus = "outline-hidden focus-visible:bg-foreground/7"
+
+export const rowFocusLook = "bg-foreground/7"
+
+export const nameFocus =
+  "decoration-2 decoration-ring underline-offset-3 group-focus-visible/row:underline"
+
+export const nameFocusLook = "underline decoration-2 decoration-ring underline-offset-3"
 
 export const handleIgnore = (): undefined => undefined
 
@@ -139,6 +147,8 @@ export function compareInvoices(column: Column, a: SampleInvoice, b: SampleInvoi
       return a.id.localeCompare(b.id)
     case "customer":
       return a.customer.localeCompare(b.customer)
+    case "lines":
+      return linesOf(a).length - linesOf(b).length
     case "amount":
       return a.amount - b.amount
     case "paid":
@@ -155,6 +165,7 @@ export function compareLines(column: Column, a: SampleInvoiceLine, b: SampleInvo
     case "amount":
       return a.amount - b.amount
     case "invoice":
+    case "lines":
     case "paid":
     case "due":
       return 0
@@ -190,6 +201,10 @@ export function statusGroups(sort: Sort): ReadonlyArray<StatusGroup> {
 
 export function groupSum(group: StatusGroup): number {
   return group.invoices.reduce((sum, invoice) => sum + invoice.amount, 0)
+}
+
+export function groupLineCount(group: StatusGroup): number {
+  return group.invoices.reduce((sum, invoice) => sum + linesOf(invoice).length, 0)
 }
 
 export const rowGroupClass = "col-span-full grid grid-cols-subgrid"

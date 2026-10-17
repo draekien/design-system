@@ -17,13 +17,11 @@ import {
   ExpandButton,
   GroupHeaderRow,
   HeadRow,
-  HoverCard,
   InvoiceRow,
   LineRow,
   LinesErrorRow,
   LoadingGroupRow,
   LoadingRow,
-  PeekButton,
   PeekPanel,
   SelectBox,
   SelectionBarBody,
@@ -36,6 +34,7 @@ import {
   formatAmount,
   formatPaid,
   gridClass,
+  groupLineCount,
   groupSum,
   handleIgnore,
   linesOf,
@@ -255,6 +254,7 @@ const selectionKeys: ReadonlySet<PartKey> = new Set(["groupSelect", "rowSelect",
 type Wrap = (key: PartKey, className: string, node: React.ReactNode) => React.ReactNode
 
 const drawingSubject = firstGroupAndInvoice()
+const drawingLineCount = linesOf(drawingSubject.invoice).length
 
 function firstGroupAndInvoice(): { group: StatusGroup; invoice: StatusGroup["invoices"][number] } {
   const group = statusGroups(drawingSort).find((candidate) => candidate.status === "sent")
@@ -293,6 +293,9 @@ function DrawnTable({
             </div>
             <div className={seatClass.customer}>
               <ColumnHeader column="customer" sort={drawingSort} isSortable onSort={handleIgnore} />
+            </div>
+            <div className={seatClass.lines}>
+              <ColumnHeader column="lines" sort={drawingSort} isSortable onSort={handleIgnore} />
             </div>
             {wrap(
               "column",
@@ -345,6 +348,9 @@ function DrawnTable({
                 </span>
               </>
             )}
+            <div className={cn(seatClass.lines, "items-center text-sm tabular-nums")}>
+              {groupLineCount(group)}
+            </div>
             {wrap(
               "groupSum",
               cn(seatClass.amount, "text-sm tabular-nums"),
@@ -376,11 +382,7 @@ function DrawnTable({
             {wrap(
               "expand",
               seatClass.expand,
-              <ExpandButton
-                count={linesOf(invoice).length}
-                isExpanded={false}
-                onClick={handleIgnore}
-              />
+              <ExpandButton count={drawingLineCount} isExpanded={false} onClick={handleIgnore} />
             )}
             <div
               className={cn(
@@ -393,14 +395,11 @@ function DrawnTable({
             {wrap(
               "link",
               cn(seatClass.customer, "items-center"),
-              <HoverCard
-                trigger={
-                  <span className="block truncate font-medium text-sm">{invoice.customer}</span>
-                }
-              >
-                <ContactCard invoice={invoice} />
-              </HoverCard>
+              <span className="block truncate font-medium text-sm">{invoice.customer}</span>
             )}
+            <div className={cn(seatClass.lines, "items-center text-sm tabular-nums")}>
+              {drawingLineCount}
+            </div>
             {wrap(
               "reads",
               cn(seatClass.amount, "items-center text-sm tabular-nums"),
@@ -411,9 +410,6 @@ function DrawnTable({
             </div>
             <div className={cn(seatClass.due, "items-center")}>
               <DueText invoice={invoice} />
-            </div>
-            <div className={seatClass.peek}>
-              <PeekButton isPeeked={false} isRevealed={false} onClick={handleIgnore} />
             </div>
           </div>
         )}
@@ -565,7 +561,6 @@ function partSpecs(
             linkRef={handleIgnore}
             onToggleExpanded={handleIgnore}
             onToggleSelected={handleIgnore}
-            onTogglePeek={handleIgnore}
             look="focus"
           />
         </div>
@@ -591,10 +586,8 @@ function partSpecs(
       key: "expand",
       name: "ExpandButton",
       depth: 2,
-      note: "Chevron and line count; drawn only on an invoice with lines",
-      specimen: (
-        <ExpandButton count={linesOf(invoice).length} isExpanded={false} onClick={handleIgnore} />
-      ),
+      note: "Chevron; drawn only on an invoice with lines",
+      specimen: <ExpandButton count={drawingLineCount} isExpanded={false} onClick={handleIgnore} />,
     },
     {
       key: "link",
@@ -618,9 +611,10 @@ function partSpecs(
       key: "reads",
       name: "Reads",
       depth: 2,
-      note: "Amount and Paid % right-aligned in tabular figures; Due says Overdue in medium weight. Paid % hides below md; below sm Due moves under the customer",
+      note: "Lines, Amount and Paid % right-aligned in tabular figures; Due says Overdue in medium weight. Lines and Paid % hide below md; below sm Due moves under the customer",
       specimen: (
         <span className="flex gap-4 text-sm tabular-nums">
+          <span>{drawingLineCount}</span>
           <span>{formatAmount(invoice.amount)}</span>
           <span>{formatPaid(invoice.paid)}</span>
           <DueText invoice={invoice} />
@@ -780,7 +774,7 @@ function rowDrawing(state: RowState, peekId: string): Drawing {
           ? "An invoice's lines, which say they failed and offer Retry"
           : "An invoice's lines, collapsed until asked for; groups collapse to their header",
       reveal: "revealed",
-      gesture: "→ or click the count",
+      gesture: "→ or click the chevron",
       links: [
         { part: n("line"), anchor: n("expand") },
         { part: n("expand"), anchor: n("expand") },

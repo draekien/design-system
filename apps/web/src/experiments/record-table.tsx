@@ -8,26 +8,34 @@ import {
   sampleInvoices,
 } from "@workspace/fixtures/invoices.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import {
+  FieldCard,
+  FieldCardContent,
+  FieldCardTrigger,
+} from "@workspace/ui/components/field-card.tsx"
 import { cn } from "cn"
 import * as React from "react"
 import {
   type Column,
-  cardSurface,
   columnLabel,
   columns,
   compareLines,
-  focusLook,
   focusRing,
   formatAmount,
   formatPaid,
   gridClass,
+  groupLineCount,
   groupSum,
   handleIgnore,
   linesOf,
+  nameFocus,
+  nameFocusLook,
   numericColumns,
   type RowState,
   readDue,
   rowClass,
+  rowFocus,
+  rowFocusLook,
   rowGroupClass,
   type Seat,
   type Sort,
@@ -348,11 +356,6 @@ function useInvoiceTable(state: RowState) {
     }
   }
 
-  function togglePeek(invoice: SampleInvoice) {
-    rowRefs.current.get(invoice.id)?.focus()
-    setPeekedId((current) => (current === invoice.id ? null : invoice.id))
-  }
-
   function closePeek() {
     if (peekedId !== null) {
       rowRefs.current.get(peekedId)?.focus()
@@ -381,7 +384,6 @@ function useInvoiceTable(state: RowState) {
     setExpanded,
     groupSelection,
     toggleSelected,
-    togglePeek,
     closePeek,
     clearSelection,
     onRowFocus: setActiveKey,
@@ -616,7 +618,7 @@ export function HeadRow({
         <span className="sr-only">{isSelectable ? "Selected" : "Row"}</span>
       </HeadCellElement>
       <HeadCellElement className={seatClass.expand}>
-        <span className="sr-only">Lines</span>
+        <span className="sr-only">Expand</span>
       </HeadCellElement>
       {columns.map((column) => (
         <ColumnHeader
@@ -627,9 +629,6 @@ export function HeadRow({
           onSort={onSort}
         />
       ))}
-      <HeadCellElement className={seatClass.peek}>
-        <span className="sr-only">Peek</span>
-      </HeadCellElement>
     </RowElement>
   )
 }
@@ -734,7 +733,6 @@ function TableRow({ row, table, peekIds }: { row: VisibleRow; table: Table; peek
           linkRef={(element) => table.registerLink(row.key, element)}
           onToggleExpanded={() => table.setExpanded(row, !table.isExpanded(row))}
           onToggleSelected={() => table.toggleSelected(row)}
-          onTogglePeek={() => table.togglePeek(row.invoice)}
         />
       )
     case "line":
@@ -796,9 +794,9 @@ export function GroupHeaderRow({
       className={cn(
         rowClass,
         "group/row relative h-9 border-b bg-muted/40 hover:bg-muted/70 pointer-coarse:h-11",
-        look !== "rest" && "bg-muted/70",
-        look === "focus" && focusLook,
-        focusRing
+        look === "hover" && "bg-muted/70",
+        look === "focus" && rowFocusLook,
+        rowFocus
       )}
       {...focusProps}
     >
@@ -825,7 +823,14 @@ export function GroupHeaderRow({
         </button>
       </CellElement>
       <CellElement colSpan={2} className="col-span-2 col-start-3 flex min-w-0 items-baseline gap-2">
-        <span id={nameId} className="truncate font-medium text-sm">
+        <span
+          id={nameId}
+          className={cn(
+            "truncate font-medium text-sm",
+            nameFocus,
+            look === "focus" && nameFocusLook
+          )}
+        >
           {statusLabel[group.status]}
         </span>
         <span id={countId} className="text-muted-foreground text-xs tabular-nums">
@@ -833,13 +838,17 @@ export function GroupHeaderRow({
           <span className="sr-only">{invoiceCount(group.invoices.length)}</span>
         </span>
       </CellElement>
+      <CellElement className={cn(seatClass.lines, "items-center text-sm tabular-nums")}>
+        {groupLineCount(group)}
+        <span className="sr-only"> lines</span>
+      </CellElement>
       <CellElement className={cn(seatClass.amount, "items-center text-sm tabular-nums")}>
         <span id={sumId}>
           <span className="sr-only">total </span>
           {formatAmount(groupSum(group))}
         </span>
       </CellElement>
-      <EmptyCells seats={["paid", "due", "peek"]} />
+      <EmptyCells seats={["paid", "due"]} />
     </RowElement>
   )
 }
@@ -855,7 +864,6 @@ export function InvoiceRow({
   linkRef,
   onToggleExpanded,
   onToggleSelected,
-  onTogglePeek,
   look = "rest",
   ...focusProps
 }: FocusableRowProps & {
@@ -867,7 +875,6 @@ export function InvoiceRow({
   linkRef: (element: HTMLAnchorElement | null) => void
   onToggleExpanded: () => void
   onToggleSelected: () => void
-  onTogglePeek: () => void
   look?: RowLook
 }): React.ReactElement {
   const nameId = React.useId()
@@ -878,14 +885,15 @@ export function InvoiceRow({
       aria-expanded={lineCount > 0 ? isExpanded : undefined}
       aria-selected={isSelected ?? undefined}
       aria-labelledby={nameId}
+      aria-controls={isPeeked ? peekIds : undefined}
       aria-keyshortcuts={rowKeyShortcuts}
       className={cn(
         rowClass,
         "group/row relative h-11 border-b hover:bg-muted/60",
-        look !== "rest" && "bg-muted/60",
-        look === "focus" && focusLook,
+        look === "hover" && "bg-muted/60",
+        look === "focus" && rowFocusLook,
         isPeeked && "bg-muted hover:bg-muted",
-        focusRing
+        rowFocus
       )}
       {...focusProps}
     >
@@ -924,11 +932,19 @@ export function InvoiceRow({
           tabIndex={-1}
           className="min-w-0 after:absolute after:inset-0"
         >
-          <HoverCard trigger={<CustomerName id={nameId} invoice={invoice} />}>
-            <ContactCard invoice={invoice} />
-          </HoverCard>
+          <FieldCard>
+            <FieldCardTrigger className="relative z-10 justify-start">
+              <CustomerName id={nameId} invoice={invoice} isFocusLook={look === "focus"} />
+            </FieldCardTrigger>
+            <FieldCardContent>
+              <ContactCard invoice={invoice} />
+            </FieldCardContent>
+          </FieldCard>
           <DueLine invoice={invoice} />
         </Link>
+      </CellElement>
+      <CellElement className={cn(seatClass.lines, "items-center text-sm tabular-nums")}>
+        {lineCount}
       </CellElement>
       <CellElement className={cn(seatClass.amount, "items-center text-sm tabular-nums")}>
         {formatAmount(invoice.amount)}
@@ -939,22 +955,24 @@ export function InvoiceRow({
       <CellElement className={cn(seatClass.due, "items-center")}>
         <DueText invoice={invoice} />
       </CellElement>
-      <CellElement className={seatClass.peek}>
-        <PeekButton
-          controls={isPeeked ? peekIds : undefined}
-          describedBy={nameId}
-          isPeeked={isPeeked}
-          isRevealed={look !== "rest"}
-          onClick={onTogglePeek}
-        />
-      </CellElement>
     </RowElement>
   )
 }
 
-function CustomerName({ id, invoice }: { id: string; invoice: SampleInvoice }) {
+function CustomerName({
+  id,
+  invoice,
+  isFocusLook,
+}: {
+  id: string
+  invoice: SampleInvoice
+  isFocusLook: boolean
+}) {
   return (
-    <span id={id} className="block truncate font-medium text-sm">
+    <span
+      id={id}
+      className={cn("block truncate font-medium text-sm", nameFocus, isFocusLook && nameFocusLook)}
+    >
       {invoice.customer}
     </span>
   )
@@ -1007,21 +1025,24 @@ export function LineRow({
       aria-keyshortcuts="Space Enter ArrowUp ArrowDown ArrowLeft Home End"
       className={cn(
         rowClass,
-        "h-9 border-b border-dashed hover:bg-muted/40 pointer-coarse:h-11",
-        focusRing
+        "group/row h-9 border-b border-dashed hover:bg-muted/40 pointer-coarse:h-11",
+        rowFocus
       )}
       {...focusProps}
     >
       <EmptyCells seats={["select", "expand", "invoice"]} />
-      <CellElement className={cn(seatClass.customer, "items-center pl-4")}>
-        <span className="truncate text-muted-foreground text-sm">{line.description}</span>
+      <CellElement className={cn(seatClass.customer, "items-center")}>
+        <span className={cn("truncate text-muted-foreground text-sm", nameFocus)}>
+          {line.description}
+        </span>
       </CellElement>
+      <EmptyCells seats={["lines"]} />
       <CellElement
         className={cn(seatClass.amount, "items-center text-muted-foreground text-sm tabular-nums")}
       >
         {formatAmount(line.amount)}
       </CellElement>
-      <EmptyCells seats={["paid", "due", "peek"]} />
+      <EmptyCells seats={["paid", "due"]} />
     </RowElement>
   )
 }
@@ -1044,7 +1065,7 @@ export function LinesErrorRow({
       <EmptyCells seats={["select", "expand", "invoice"]} />
       <CellElement
         colSpan={5}
-        className="col-span-full col-start-4 flex flex-wrap items-center gap-x-3 pl-4 text-muted-foreground text-xs"
+        className="col-span-full col-start-4 flex flex-wrap items-center gap-x-3 text-muted-foreground text-xs"
       >
         Lines for {invoice.id} could not load: the billing service did not respond.
         <Link
@@ -1068,10 +1089,11 @@ export function LoadingGroupRow(): React.ReactElement {
       <CellElement colSpan={2} className="col-span-2 col-start-3 flex items-center">
         <Bar className="w-16 bg-foreground/10" />
       </CellElement>
+      <EmptyCells seats={["lines"]} />
       <CellElement className={cn(seatClass.amount, "items-center")}>
         <Bar className="w-16 bg-foreground/10" />
       </CellElement>
-      <EmptyCells seats={["paid", "due", "peek"]} />
+      <EmptyCells seats={["paid", "due"]} />
     </RowElement>
   )
 }
@@ -1086,6 +1108,9 @@ export function LoadingRow(): React.ReactElement {
       <CellElement className={cn(seatClass.customer, "items-center")}>
         <Bar className="w-36 max-w-full" />
       </CellElement>
+      <CellElement className={cn(seatClass.lines, "items-center")}>
+        <Bar className="w-4" />
+      </CellElement>
       <CellElement className={cn(seatClass.amount, "items-center")}>
         <Bar className="w-16" />
       </CellElement>
@@ -1095,7 +1120,6 @@ export function LoadingRow(): React.ReactElement {
       <CellElement className={cn(seatClass.due, "items-center")}>
         <Bar className="w-24" />
       </CellElement>
-      <EmptyCells seats={["peek"]} />
     </RowElement>
   )
 }
@@ -1137,10 +1161,9 @@ export function ExpandButton({
       aria-label={`${isExpanded ? "Hide" : "Show"} ${count} lines`}
       aria-describedby={describedBy}
       onClick={onClick}
-      className="relative z-10 flex min-h-6 min-w-6 items-center gap-0.5 rounded-sm pr-1.5 text-muted-foreground text-xs tabular-nums hover:bg-muted hover:text-foreground pointer-coarse:min-h-11"
+      className="relative z-10 flex min-h-6 min-w-6 items-center justify-center rounded-sm text-muted-foreground hover:bg-muted hover:text-foreground pointer-coarse:min-h-11 pointer-coarse:min-w-11"
     >
       <Chevron isExpanded={isExpanded} />
-      {count}
     </button>
   )
 }
@@ -1179,69 +1202,6 @@ export function SelectBox({
         )}
       />
     </label>
-  )
-}
-
-export function PeekButton({
-  controls,
-  describedBy,
-  isPeeked,
-  isRevealed,
-  onClick,
-}: {
-  controls?: string
-  describedBy?: string
-  isPeeked: boolean
-  isRevealed: boolean
-  onClick: () => void
-}): React.ReactElement {
-  return (
-    <button
-      type="button"
-      tabIndex={-1}
-      aria-label="Peek"
-      aria-describedby={describedBy}
-      aria-controls={controls}
-      aria-expanded={isPeeked}
-      onClick={onClick}
-      className={cn(
-        "relative z-10 flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground pointer-coarse:size-11",
-        revealOnRow,
-        (isPeeked || isRevealed) && "opacity-100",
-        isPeeked && "text-foreground"
-      )}
-    >
-      <svg viewBox="0 0 16 16" aria-hidden="true" className="size-4">
-        <path
-          d="M1.75 8S4 3.75 8 3.75 14.25 8 14.25 8 12 12.25 8 12.25 1.75 8 1.75 8Z"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-        />
-        <circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      </svg>
-    </button>
-  )
-}
-
-export function HoverCard({
-  trigger,
-  children,
-}: {
-  trigger: React.ReactNode
-  children: React.ReactNode
-}): React.ReactElement {
-  return (
-    <span className="group/card relative z-10 block min-w-0">
-      {trigger}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute top-full left-0 z-20 block pt-1 opacity-0 transition-opacity duration-0 group-hover/card:pointer-events-auto group-hover/card:opacity-100 group-hover/card:delay-300"
-      >
-        <span className={cardSurface}>{children}</span>
-      </span>
-    </span>
   )
 }
 
