@@ -6,8 +6,9 @@ import {
   Constellation,
   type ConstellationGroup,
   type ConstellationPart,
-} from "../playground/constellation.tsx"
-import { clipSpecimen } from "./clip-specimen.tsx"
+} from "../../../playground/constellation.tsx"
+import { clipSpecimen } from "../../clip-specimen.tsx"
+import { ErrorMessage } from "../../wireframe-parts.tsx"
 import {
   Chevron,
   ColumnHeader,
@@ -47,7 +48,6 @@ import {
   statusGroups,
   statusLabel,
 } from "./record-table-model.ts"
-import { ErrorMessage } from "./wireframe-parts.tsx"
 
 const tableWidth = "w-[36rem]"
 

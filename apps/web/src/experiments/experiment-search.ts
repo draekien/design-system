@@ -4,11 +4,10 @@ import { canvasPointerSearch, canvasWidths } from "../playground/playground-sear
 
 export const experimentViews = ["lockup", "constellation"] as const
 
-export type ExperimentView = (typeof experimentViews)[number]
-
 export const experimentCanvasSearch = fixtureStateSearch.extend({
   ...canvasPointerSearch.shape,
   view: z.enum(experimentViews).default("lockup").catch("lockup"),
+  iteration: z.number().int().positive().optional().catch(undefined),
 })
 
 export type ExperimentCanvasSearch = z.output<typeof experimentCanvasSearch>

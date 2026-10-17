@@ -60,7 +60,9 @@ Before editing files for a substantial task:
 - Inside `packages/ui`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/ui/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `"cn"`.
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that experiment and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
-- A lockup moves wireframe in experiments, then component in `packages/ui`, then playground lockup route.
+- An experiment is promoted to a lockup when it is production ready: its components move to `packages/ui`, its playground lockup route is added, and the same change deletes the experiment, its routes and its sidebar entry.
+- An experiment keeps each iteration in a numbered folder under `apps/web/src/experiments/<name>/`, frozen once the next starts, and lists it in `iterations.ts` with its date and what changed.
+- Start a new iteration when a change alters what the wireframe shows, hides, reveals or how it is composed; edit the current iteration for a bug fix.
 - Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `packages/ui`.
 - Run `/simplify` and then `/code-review` on every change before committing it.
 - Show screenshots of every changed surface in a task's completion summary.

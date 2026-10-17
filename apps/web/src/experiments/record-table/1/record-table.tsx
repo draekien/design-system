@@ -10,6 +10,7 @@ import {
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { cn } from "cn"
 import * as React from "react"
+import { Bar, ErrorMessage, Kbd } from "../../wireframe-parts.tsx"
 import {
   type Column,
   cardSurface,
@@ -39,7 +40,6 @@ import {
   type TableSearch,
   type TableState,
 } from "./record-table-model.ts"
-import { Bar, ErrorMessage, Kbd } from "./wireframe-parts.tsx"
 
 type VisibleRow =
   | { kind: "group"; key: string; group: StatusGroup }

@@ -65,9 +65,6 @@ function PlaygroundLayout() {
             ))}
           </NavGroup>
           <NavGroup label="Experiments">
-            <Link to="/playground/experiments/record-list" className={navLink}>
-              Record list
-            </Link>
             <Link to="/playground/experiments/record-table" className={navLink}>
               Record table
             </Link>

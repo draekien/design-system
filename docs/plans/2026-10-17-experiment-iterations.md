@@ -1,7 +1,7 @@
 ---
 title: Keep experiment iterations and remove experiments on promotion
 date: 2026-10-17
-status: active
+status: done
 supersedes:
 ---
 
@@ -21,7 +21,9 @@ apps/web/src/experiments/
 ├─ experiment-search.ts         adds `iteration` to the page and canvas search
 ├─ wireframe-parts.tsx          shared wireframe parts
 └─ record-table/
-   ├─ iterations.ts             [{ n: 1, date, summary, lockup, constellation, invoicePage, rules }]
+   ├─ iterations.ts             [{ n: 1, date, summary, ruleSections }]
+   ├─ iteration-views.ts        iteration n → its Lockup, Constellation and InvoicePage
+   ├─ table-search.ts           the table's search schema, shared by every iteration
    └─ 1/
       ├─ record-table.tsx
       ├─ record-table-drawing.tsx
@@ -39,6 +41,9 @@ apps/web/src/experiments/
 | How a page selects one | `iteration` search param, defaulting to the latest; the canvas layout retains it so in-canvas links keep it | Matches how `state`, `view` and `pointer` already work |
 | Sidebar | One entry per experiment, not per iteration | This design system's own decision |
 | Shared code | `wireframe-parts.tsx`, the playground canvas and constellation stay shared across iterations | Freezing shared infrastructure would copy the playground |
+| Canvas search | `record-table/table-search.ts` holds the canvas URL schema with its own list of sortable columns; each iteration keeps its own `columns` | Routes are shared by every iteration; a later iteration's columns must not change an earlier one |
+| Canvas components | `record-table/iteration-views.ts` maps each iteration number to its components, typed so a missing entry fails to compile; only the canvas routes import it | Keeps the playground page from loading every iteration's wireframe |
+| Latest in links | Selecting the latest iteration removes `iteration` from the URL | A link without `iteration` follows new iterations; one with it stays pinned |
 | Promotion | The change that adds a lockup's playground route deletes the experiment folder, its routes and its sidebar entry | The owner's rule |
 | Record list experiment | Delete now; `/playground/record-list` is its lockup | The owner's rule |
 
@@ -47,7 +52,7 @@ apps/web/src/experiments/
 1. Delete the record list experiment: `experiments/record-list.tsx`, `experiments/record-list-rules.ts`, `experiments/clip-specimen.tsx` if nothing else uses it, the record list page and canvas routes, the record route under `/canvas/experiments/records`, and its sidebar entry.
 2. Move the record table files into `experiments/record-table/1/` and add `experiments/record-table/iterations.ts` with iteration 1.
 3. Add `iteration` to `experimentSearch` and `experimentCanvasSearch`; the canvas routes render the selected iteration's lockup, constellation and invoice page.
-4. Show the iterations on the experiment page: an Iteration control beside State, and the selected iteration's date and summary above the canvas.
+4. Show the iterations on the experiment page: a labelled Iteration control with the selected iteration's date and summary, above the State control.
 5. Rewrite the `AGENTS.md` lines below.
 
 ## AGENTS.md lines

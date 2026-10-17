@@ -7,7 +7,8 @@ import {
 } from "@workspace/fixtures/invoices.ts"
 import { fixtureNow } from "@workspace/fixtures/records.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
-import { z } from "zod"
+
+export type { TableSearch } from "../table-search.ts"
 
 export type TableState = Exclude<FixtureState, "error">
 
@@ -16,6 +17,8 @@ export type RowState = Exclude<FixtureState, "error" | "loading">
 export type Column = "invoice" | "customer" | "amount" | "paid" | "due"
 
 export type Sort = { column: Column; direction: "ascending" | "descending" }
+
+export const columns = ["invoice", "customer", "amount", "paid", "due"] as const
 
 export type Seat = "select" | "expand" | Column | "peek"
 
@@ -34,34 +37,6 @@ export const columnLabel: Readonly<Record<Column, string>> = {
   paid: "Paid %",
   due: "Due",
 }
-
-export const columns = ["invoice", "customer", "amount", "paid", "due"] as const
-
-export const tableSearchDefaults: {
-  sort: Column
-  direction: Sort["direction"]
-  collapsed: Array<string>
-  expanded: Array<string>
-} = { sort: "due", direction: "ascending", collapsed: [], expanded: [] }
-
-export const tableSearch = z.object({
-  sort: z.enum(columns).default(tableSearchDefaults.sort).catch(tableSearchDefaults.sort),
-  direction: z
-    .enum(["ascending", "descending"])
-    .default(tableSearchDefaults.direction)
-    .catch(tableSearchDefaults.direction),
-  collapsed: z
-    .array(z.string())
-    .default(tableSearchDefaults.collapsed)
-    .catch(tableSearchDefaults.collapsed),
-  expanded: z
-    .array(z.string())
-    .default(tableSearchDefaults.expanded)
-    .catch(tableSearchDefaults.expanded),
-  focus: z.string().optional().catch(undefined),
-})
-
-export type TableSearch = z.output<typeof tableSearch>
 
 export const seatClass: Readonly<Record<Seat, string>> = {
   select: "col-start-1 flex justify-center",

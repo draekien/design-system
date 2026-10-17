@@ -18,12 +18,9 @@ import { Route as PlaygroundComponentRouteImport } from './routes/playground/$co
 import { Route as PlaygroundRecordListRouteImport } from './routes/playground/record-list'
 import { Route as PlaygroundRulesRouteImport } from './routes/playground/rules'
 import { Route as PlaygroundThemeRouteImport } from './routes/playground/theme'
-import { Route as CanvasExperimentsRecordListRouteImport } from './routes/canvas/experiments/record-list'
 import { Route as CanvasExperimentsRecordTableRouteImport } from './routes/canvas/experiments/record-table'
-import { Route as PlaygroundExperimentsRecordListRouteImport } from './routes/playground/experiments/record-list'
 import { Route as PlaygroundExperimentsRecordTableRouteImport } from './routes/playground/experiments/record-table'
 import { Route as CanvasExperimentsInvoicesInvoiceIdRouteImport } from './routes/canvas/experiments/invoices/$invoiceId'
-import { Route as CanvasExperimentsRecordsRecordIdRouteImport } from './routes/canvas/experiments/records/$recordId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,23 +67,11 @@ const PlaygroundThemeRoute = PlaygroundThemeRouteImport.update({
   path: '/theme',
   getParentRoute: () => PlaygroundRouteRoute,
 } as any)
-const CanvasExperimentsRecordListRoute =
-  CanvasExperimentsRecordListRouteImport.update({
-    id: '/record-list',
-    path: '/record-list',
-    getParentRoute: () => CanvasExperimentsRouteRoute,
-  } as any)
 const CanvasExperimentsRecordTableRoute =
   CanvasExperimentsRecordTableRouteImport.update({
     id: '/record-table',
     path: '/record-table',
     getParentRoute: () => CanvasExperimentsRouteRoute,
-  } as any)
-const PlaygroundExperimentsRecordListRoute =
-  PlaygroundExperimentsRecordListRouteImport.update({
-    id: '/experiments/record-list',
-    path: '/experiments/record-list',
-    getParentRoute: () => PlaygroundRouteRoute,
   } as any)
 const PlaygroundExperimentsRecordTableRoute =
   PlaygroundExperimentsRecordTableRouteImport.update({
@@ -100,12 +85,6 @@ const CanvasExperimentsInvoicesInvoiceIdRoute =
     path: '/invoices/$invoiceId',
     getParentRoute: () => CanvasExperimentsRouteRoute,
   } as any)
-const CanvasExperimentsRecordsRecordIdRoute =
-  CanvasExperimentsRecordsRecordIdRouteImport.update({
-    id: '/records/$recordId',
-    path: '/records/$recordId',
-    getParentRoute: () => CanvasExperimentsRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -117,12 +96,9 @@ export interface FileRoutesByFullPath {
   '/playground/rules': typeof PlaygroundRulesRoute
   '/playground/theme': typeof PlaygroundThemeRoute
   '/playground/': typeof PlaygroundIndexRoute
-  '/canvas/experiments/record-list': typeof CanvasExperimentsRecordListRoute
   '/canvas/experiments/record-table': typeof CanvasExperimentsRecordTableRoute
-  '/playground/experiments/record-list': typeof PlaygroundExperimentsRecordListRoute
   '/playground/experiments/record-table': typeof PlaygroundExperimentsRecordTableRoute
   '/canvas/experiments/invoices/$invoiceId': typeof CanvasExperimentsInvoicesInvoiceIdRoute
-  '/canvas/experiments/records/$recordId': typeof CanvasExperimentsRecordsRecordIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -133,12 +109,9 @@ export interface FileRoutesByTo {
   '/playground/rules': typeof PlaygroundRulesRoute
   '/playground/theme': typeof PlaygroundThemeRoute
   '/playground': typeof PlaygroundIndexRoute
-  '/canvas/experiments/record-list': typeof CanvasExperimentsRecordListRoute
   '/canvas/experiments/record-table': typeof CanvasExperimentsRecordTableRoute
-  '/playground/experiments/record-list': typeof PlaygroundExperimentsRecordListRoute
   '/playground/experiments/record-table': typeof PlaygroundExperimentsRecordTableRoute
   '/canvas/experiments/invoices/$invoiceId': typeof CanvasExperimentsInvoicesInvoiceIdRoute
-  '/canvas/experiments/records/$recordId': typeof CanvasExperimentsRecordsRecordIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -151,12 +124,9 @@ export interface FileRoutesById {
   '/playground/rules': typeof PlaygroundRulesRoute
   '/playground/theme': typeof PlaygroundThemeRoute
   '/playground/': typeof PlaygroundIndexRoute
-  '/canvas/experiments/record-list': typeof CanvasExperimentsRecordListRoute
   '/canvas/experiments/record-table': typeof CanvasExperimentsRecordTableRoute
-  '/playground/experiments/record-list': typeof PlaygroundExperimentsRecordListRoute
   '/playground/experiments/record-table': typeof PlaygroundExperimentsRecordTableRoute
   '/canvas/experiments/invoices/$invoiceId': typeof CanvasExperimentsInvoicesInvoiceIdRoute
-  '/canvas/experiments/records/$recordId': typeof CanvasExperimentsRecordsRecordIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -170,12 +140,9 @@ export interface FileRouteTypes {
     | '/playground/rules'
     | '/playground/theme'
     | '/playground/'
-    | '/canvas/experiments/record-list'
     | '/canvas/experiments/record-table'
-    | '/playground/experiments/record-list'
     | '/playground/experiments/record-table'
     | '/canvas/experiments/invoices/$invoiceId'
-    | '/canvas/experiments/records/$recordId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -186,12 +153,9 @@ export interface FileRouteTypes {
     | '/playground/rules'
     | '/playground/theme'
     | '/playground'
-    | '/canvas/experiments/record-list'
     | '/canvas/experiments/record-table'
-    | '/playground/experiments/record-list'
     | '/playground/experiments/record-table'
     | '/canvas/experiments/invoices/$invoiceId'
-    | '/canvas/experiments/records/$recordId'
   id:
     | '__root__'
     | '/'
@@ -203,12 +167,9 @@ export interface FileRouteTypes {
     | '/playground/rules'
     | '/playground/theme'
     | '/playground/'
-    | '/canvas/experiments/record-list'
     | '/canvas/experiments/record-table'
-    | '/playground/experiments/record-list'
     | '/playground/experiments/record-table'
     | '/canvas/experiments/invoices/$invoiceId'
-    | '/canvas/experiments/records/$recordId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -283,26 +244,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlaygroundThemeRouteImport
       parentRoute: typeof PlaygroundRouteRoute
     }
-    '/canvas/experiments/record-list': {
-      id: '/canvas/experiments/record-list'
-      path: '/record-list'
-      fullPath: '/canvas/experiments/record-list'
-      preLoaderRoute: typeof CanvasExperimentsRecordListRouteImport
-      parentRoute: typeof CanvasExperimentsRouteRoute
-    }
     '/canvas/experiments/record-table': {
       id: '/canvas/experiments/record-table'
       path: '/record-table'
       fullPath: '/canvas/experiments/record-table'
       preLoaderRoute: typeof CanvasExperimentsRecordTableRouteImport
       parentRoute: typeof CanvasExperimentsRouteRoute
-    }
-    '/playground/experiments/record-list': {
-      id: '/playground/experiments/record-list'
-      path: '/experiments/record-list'
-      fullPath: '/playground/experiments/record-list'
-      preLoaderRoute: typeof PlaygroundExperimentsRecordListRouteImport
-      parentRoute: typeof PlaygroundRouteRoute
     }
     '/playground/experiments/record-table': {
       id: '/playground/experiments/record-table'
@@ -318,13 +265,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CanvasExperimentsInvoicesInvoiceIdRouteImport
       parentRoute: typeof CanvasExperimentsRouteRoute
     }
-    '/canvas/experiments/records/$recordId': {
-      id: '/canvas/experiments/records/$recordId'
-      path: '/records/$recordId'
-      fullPath: '/canvas/experiments/records/$recordId'
-      preLoaderRoute: typeof CanvasExperimentsRecordsRecordIdRouteImport
-      parentRoute: typeof CanvasExperimentsRouteRoute
-    }
   }
 }
 
@@ -334,7 +274,6 @@ interface PlaygroundRouteRouteChildren {
   PlaygroundRulesRoute: typeof PlaygroundRulesRoute
   PlaygroundThemeRoute: typeof PlaygroundThemeRoute
   PlaygroundIndexRoute: typeof PlaygroundIndexRoute
-  PlaygroundExperimentsRecordListRoute: typeof PlaygroundExperimentsRecordListRoute
   PlaygroundExperimentsRecordTableRoute: typeof PlaygroundExperimentsRecordTableRoute
 }
 
@@ -344,7 +283,6 @@ const PlaygroundRouteRouteChildren: PlaygroundRouteRouteChildren = {
   PlaygroundRulesRoute: PlaygroundRulesRoute,
   PlaygroundThemeRoute: PlaygroundThemeRoute,
   PlaygroundIndexRoute: PlaygroundIndexRoute,
-  PlaygroundExperimentsRecordListRoute: PlaygroundExperimentsRecordListRoute,
   PlaygroundExperimentsRecordTableRoute: PlaygroundExperimentsRecordTableRoute,
 }
 
@@ -353,20 +291,15 @@ const PlaygroundRouteRouteWithChildren = PlaygroundRouteRoute._addFileChildren(
 )
 
 interface CanvasExperimentsRouteRouteChildren {
-  CanvasExperimentsRecordListRoute: typeof CanvasExperimentsRecordListRoute
   CanvasExperimentsRecordTableRoute: typeof CanvasExperimentsRecordTableRoute
   CanvasExperimentsInvoicesInvoiceIdRoute: typeof CanvasExperimentsInvoicesInvoiceIdRoute
-  CanvasExperimentsRecordsRecordIdRoute: typeof CanvasExperimentsRecordsRecordIdRoute
 }
 
 const CanvasExperimentsRouteRouteChildren: CanvasExperimentsRouteRouteChildren =
   {
-    CanvasExperimentsRecordListRoute: CanvasExperimentsRecordListRoute,
     CanvasExperimentsRecordTableRoute: CanvasExperimentsRecordTableRoute,
     CanvasExperimentsInvoicesInvoiceIdRoute:
       CanvasExperimentsInvoicesInvoiceIdRoute,
-    CanvasExperimentsRecordsRecordIdRoute:
-      CanvasExperimentsRecordsRecordIdRoute,
   }
 
 const CanvasExperimentsRouteRouteWithChildren =

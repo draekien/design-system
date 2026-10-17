@@ -4,7 +4,7 @@ import {
   experimentSearch,
   experimentSearchDefaults,
 } from "../../../experiments/experiment-search.ts"
-import { invoicePageRules, recordTableRules } from "../../../experiments/record-table-rules.ts"
+import { recordTableIterations } from "../../../experiments/record-table/iterations.ts"
 
 const DESCRIPTION =
   "The greyscale wireframe of a table of invoices grouped by status, which readers compare down each column."
@@ -21,11 +21,6 @@ export const Route = createFileRoute("/playground/experiments/record-table")({
   component: RecordTableExperiment,
 })
 
-const ruleSections = [
-  { title: "Rules this wireframe encodes", rules: recordTableRules },
-  { title: "Invoice page", rules: invoicePageRules },
-]
-
 function RecordTableExperiment() {
   const search = Route.useSearch()
   const hydrated = useHydrated()
@@ -36,7 +31,7 @@ function RecordTableExperiment() {
       description={DESCRIPTION}
       canvas="/canvas/experiments/record-table"
       search={hydrated ? search : experimentSearchDefaults}
-      ruleSections={ruleSections}
+      iterations={recordTableIterations}
     />
   )
 }
