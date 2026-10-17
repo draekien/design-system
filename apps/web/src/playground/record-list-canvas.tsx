@@ -33,7 +33,7 @@ import type { CanvasOptions } from "./playground-search.ts"
 type ListState = Exclude<FixtureState, "error">
 
 const listSurface =
-  "overflow-hidden border bg-card text-card-foreground shadow-[0_1px_2px_rgb(0_0_0/0.04),0_12px_32px_-12px_rgb(0_0_0/0.1)]"
+  "overflow-hidden rounded-xl border bg-card text-card-foreground shadow-[0_1px_2px_rgb(0_0_0/0.04),0_12px_32px_-12px_rgb(0_0_0/0.1)]"
 
 const textLink =
   "inline-flex min-h-6 items-center rounded-sm font-medium underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-ring"
@@ -220,7 +220,7 @@ function PlaygroundRecordList<TItem>({
         <aside
           id={panelPeekId}
           aria-label="Peek"
-          className="hidden rounded-container border bg-card container-p-4 text-card-foreground text-sm lg:sticky lg:top-6 lg:block lg:max-h-[calc(100svh-3rem)] lg:overflow-y-auto"
+          className="hidden rounded-xl border bg-card p-4 text-card-foreground text-sm lg:sticky lg:top-6 lg:block lg:max-h-[calc(100svh-3rem)] lg:overflow-y-auto"
         >
           <PeekPanelBody dataset={dataset} item={peeked} state={state} onOpen={setOpenValue} />
         </aside>
@@ -560,7 +560,7 @@ function ErrorMessage<TItem>({
 
 function Kbd({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded-sm border bg-background px-1 font-sans text-[0.6875rem] text-foreground shadow-[0_1px_0_var(--border)]">
+    <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-background px-1 font-sans text-[0.6875rem] text-foreground shadow-[0_1px_0_var(--border)]">
       {children}
     </kbd>
   )

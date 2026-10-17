@@ -34,30 +34,6 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  --spacing-run: 0px;
-  --spacing-related: 0.5rem;
-  --spacing-section: 1.5rem;
-}
-
-@utility rounded-container {
-  border-radius: min(
-    var(--content-radius, calc(var(--radius) * 0.6)) +
-    var(--container-padding, 0px),
-    var(--radius) *
-    100
-  );
-  :where(& > *) {
-    --content-radius: initial;
-    --container-padding: initial;
-  }
-}
-
-@utility container-p-* {
-  --container-padding: --spacing(--value(number));
-  padding: var(--container-padding);
-  :where(& > *) {
-    --container-padding: initial;
-  }
 }
 
 :root {

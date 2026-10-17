@@ -27,10 +27,6 @@ describe("usedIn", () => {
     }
   })
 
-  it("does not name a lockup as used in itself", () => {
-    expect(usedIn(requireRegistryItem("record-list"))).toEqual([])
-  })
-
   it("keeps the lockup out of the component list", () => {
     expect(componentItems.map((item) => item.name)).not.toContain("record-list")
   })

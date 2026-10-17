@@ -262,63 +262,6 @@ export function FieldCardExample() {
 }
 `
 
-function CompositionTokensPreview() {
-  return (
-    <div className="flex flex-col gap-section text-xs">
-      <div className="flex flex-wrap items-start gap-related">
-        <div className="rounded-container border bg-card container-p-3">
-          <p className="rounded-sm bg-muted px-2 py-1">6px + 12px padding = 18px</p>
-        </div>
-        <div className="rounded-container border bg-card container-p-4">
-          <p className="rounded-sm bg-muted px-2 py-1">6px + 16px padding = 22px</p>
-        </div>
-        <div className="rounded-container border bg-card container-p-3 [--radius:0rem]">
-          <p className="rounded-sm bg-muted px-2 py-1">--radius: 0rem = 0px</p>
-        </div>
-      </div>
-      <div className="flex flex-col gap-run border bg-card">
-        <p className="border-b px-2 py-1">Row 1</p>
-        <p className="px-2 py-1">Row 2, gap-run: 0 above</p>
-      </div>
-      <StatusMark>
-        <StatusMarkDot fill="full" />
-        <StatusMarkLabel>gap-related: 8px between the dot and its word</StatusMarkLabel>
-      </StatusMark>
-      <p className="text-muted-foreground">gap-section: 24px between each group above</p>
-    </div>
-  )
-}
-
-const compositionTokensCode = `import { StatusMark, StatusMarkDot, StatusMarkLabel } from "@/components/status-mark"
-
-export function CompositionTokensExample() {
-  return (
-    <div className="flex flex-col gap-section text-xs">
-      <div className="flex flex-wrap items-start gap-related">
-        <div className="rounded-container border bg-card container-p-3">
-          <p className="rounded-sm bg-muted px-2 py-1">6px + 12px padding = 18px</p>
-        </div>
-        <div className="rounded-container border bg-card container-p-4">
-          <p className="rounded-sm bg-muted px-2 py-1">6px + 16px padding = 22px</p>
-        </div>
-        <div className="rounded-container border bg-card container-p-3 [--radius:0rem]">
-          <p className="rounded-sm bg-muted px-2 py-1">--radius: 0rem = 0px</p>
-        </div>
-      </div>
-      <div className="flex flex-col gap-run border bg-card">
-        <p className="border-b px-2 py-1">Row 1</p>
-        <p className="px-2 py-1">Row 2, gap-run: 0 above</p>
-      </div>
-      <StatusMark>
-        <StatusMarkDot fill="full" />
-        <StatusMarkLabel>gap-related: 8px between the dot and its word</StatusMarkLabel>
-      </StatusMark>
-      <p className="text-muted-foreground">gap-section: 24px between each group above</p>
-    </div>
-  )
-}
-`
-
 export const componentSpecimens: Readonly<Record<string, ComponentSpecimen>> = {
   "record-row": {
     fileName: "record-row-example.tsx",
@@ -351,10 +294,5 @@ export const componentSpecimens: Readonly<Record<string, ComponentSpecimen>> = {
     fileName: "field-card-example.tsx",
     code: fieldCardCode,
     Preview: FieldCardPreview,
-  },
-  "composition-tokens": {
-    fileName: "composition-tokens-example.tsx",
-    code: compositionTokensCode,
-    Preview: CompositionTokensPreview,
   },
 }

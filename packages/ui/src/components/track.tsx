@@ -18,7 +18,7 @@ export function Track({ locale = "en", className, ...props }: TrackProps): React
     <Meter.Root
       data-slot="track"
       locale={locale}
-      className={cn("inline-flex items-center gap-related", className)}
+      className={cn("inline-flex items-center gap-2", className)}
       {...props}
     >
       <Meter.Track

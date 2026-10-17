@@ -79,7 +79,7 @@ export function ComponentPage({
       </PageSection>
 
       <PageSection title="Usage" description="The guidance shipped in the registry item's docs.">
-        <p className="max-w-prose text-pretty text-sm leading-relaxed">{usageText(item.docs)}</p>
+        <p className="max-w-2xl text-pretty text-sm leading-relaxed">{usageText(item.docs)}</p>
       </PageSection>
 
       <PageSection

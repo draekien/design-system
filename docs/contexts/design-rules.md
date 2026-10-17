@@ -96,21 +96,21 @@ A radius builds outward from the floor: a leaf control (checkbox, button, input)
 
 A container with no padding between it and its content, such as a row, is square.
 
-Every radius derives from `--radius`, so `--radius: 0rem` makes every radius 0 and turns off nesting.
+Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and turns off nesting.
 
 Circles (`rounded-full`) are exempt: status dots and initials.
 
-A container takes its padding from `container-p-<n>`, which also sets `--container-padding`, and sets `--content-radius` when its content is rounder than the floor; `rounded-container` from the `composition-tokens` item gives it the content's radius plus that padding.
+A container sets `--container-radius` and `--container-padding` on itself; the container around it computes its radius from them with `calc()`.
 
 ## Spacing between components
 
-The container sets the gap between its children by how the two neighbours relate, with `gap-run`, `gap-related` or `gap-section` from the `composition-tokens` item. This is this design system's own decision.
+The container sets the gap between its children by how the two neighbours relate. This is this design system's own decision.
 
-| Utility (variable) | Neighbours | Value |
+| Token | Neighbours | Value |
 | --- | --- | --- |
-| `gap-run` (`--spacing-run`) | the same component in a run, such as row after row | 0 |
-| `gap-related` (`--spacing-related`) | parts of one record or one control, such as a status dot and its word | 0.5rem |
-| `gap-section` (`--spacing-section`) | separate sections, such as two stacked record lists | 1.5rem |
+| `--gap-run` | the same component in a run, such as row after row | 0 |
+| `--gap-related` | parts of one record or one control, such as a status dot and its word | 0.5rem |
+| `--gap-section` | separate sections, such as two stacked record lists | 1.5rem |
 
 ## Rules adopted without a component yet
 

@@ -149,7 +149,7 @@ export function RecordRowSelect({ className, ...props }: RecordRowSelectProps): 
       aria-labelledby={`${labelId} ${row.nameId}`}
       className={cn(
         selectClass,
-        "group/select invisible cursor-pointer outline-none data-checked:visible pointer-coarse:visible group-hover/record-row:visible group-has-[[data-slot=record-row-link]:focus-visible]/record-row:visible",
+        "group/select invisible cursor-pointer rounded-md outline-none data-checked:visible pointer-coarse:visible group-hover/record-row:visible group-has-[[data-slot=record-row-link]:focus-visible]/record-row:visible",
         className
       )}
       {...props}
@@ -157,7 +157,7 @@ export function RecordRowSelect({ className, ...props }: RecordRowSelectProps): 
       <span id={labelId} className="sr-only">
         Select
       </span>
-      <span className="flex size-4 items-center justify-center rounded-sm border border-input bg-background text-primary-foreground shadow-xs transition-colors group-hover/select:border-muted-foreground group-data-checked/select:border-primary group-data-checked/select:bg-primary">
+      <span className="flex size-4 items-center justify-center rounded-[0.3125rem] border border-input bg-background text-primary-foreground shadow-xs transition-colors group-hover/select:border-muted-foreground group-data-checked/select:border-primary group-data-checked/select:bg-primary">
         <Checkbox.Indicator>
           <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3">
             <path
@@ -178,7 +178,7 @@ export function RecordRowSelect({ className, ...props }: RecordRowSelectProps): 
 const linkClass = "col-[2/-2] grid h-full min-h-11 grid-cols-subgrid items-center pl-1"
 
 const peekClass =
-  "col-[-2/-1] ml-1 flex size-6 shrink-0 items-center justify-center rounded-sm pointer-coarse:size-11"
+  "col-[-2/-1] ml-1 flex size-6 shrink-0 items-center justify-center rounded-md pointer-coarse:size-11"
 
 /** Props for {@link RecordRowPeek}. */
 export type RecordRowPeekProps = Omit<React.ComponentProps<"button">, "children" | "type">
