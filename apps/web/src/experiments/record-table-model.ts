@@ -84,7 +84,14 @@ export const rowClass = "col-span-full grid grid-cols-subgrid items-center gap-x
 
 export const focusRing = "focus-ring focus-visible:-outline-offset-2"
 
-export const focusLook = "focus-look -outline-offset-2"
+export const rowFocus = "outline-hidden focus-visible:bg-foreground/7"
+
+export const rowFocusLook = "bg-foreground/7"
+
+export const nameFocus =
+  "decoration-2 decoration-ring underline-offset-3 group-focus-visible/row:underline"
+
+export const nameFocusLook = "underline decoration-2 decoration-ring underline-offset-3"
 
 export const handleIgnore = (): undefined => undefined
 

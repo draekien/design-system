@@ -20,7 +20,6 @@ import {
   columnLabel,
   columns,
   compareLines,
-  focusLook,
   focusRing,
   formatAmount,
   formatPaid,
@@ -29,10 +28,14 @@ import {
   groupSum,
   handleIgnore,
   linesOf,
+  nameFocus,
+  nameFocusLook,
   numericColumns,
   type RowState,
   readDue,
   rowClass,
+  rowFocus,
+  rowFocusLook,
   rowGroupClass,
   type Seat,
   type Sort,
@@ -791,9 +794,9 @@ export function GroupHeaderRow({
       className={cn(
         rowClass,
         "group/row relative h-9 border-b bg-muted/40 hover:bg-muted/70 pointer-coarse:h-11",
-        look !== "rest" && "bg-muted/70",
-        look === "focus" && focusLook,
-        focusRing
+        look === "hover" && "bg-muted/70",
+        look === "focus" && rowFocusLook,
+        rowFocus
       )}
       {...focusProps}
     >
@@ -820,7 +823,14 @@ export function GroupHeaderRow({
         </button>
       </CellElement>
       <CellElement colSpan={2} className="col-span-2 col-start-3 flex min-w-0 items-baseline gap-2">
-        <span id={nameId} className="truncate font-medium text-sm">
+        <span
+          id={nameId}
+          className={cn(
+            "truncate font-medium text-sm",
+            nameFocus,
+            look === "focus" && nameFocusLook
+          )}
+        >
           {statusLabel[group.status]}
         </span>
         <span id={countId} className="text-muted-foreground text-xs tabular-nums">
@@ -880,10 +890,10 @@ export function InvoiceRow({
       className={cn(
         rowClass,
         "group/row relative h-11 border-b hover:bg-muted/60",
-        look !== "rest" && "bg-muted/60",
-        look === "focus" && focusLook,
+        look === "hover" && "bg-muted/60",
+        look === "focus" && rowFocusLook,
         isPeeked && "bg-muted hover:bg-muted",
-        focusRing
+        rowFocus
       )}
       {...focusProps}
     >
@@ -924,7 +934,7 @@ export function InvoiceRow({
         >
           <FieldCard>
             <FieldCardTrigger className="relative z-10 justify-start">
-              <CustomerName id={nameId} invoice={invoice} />
+              <CustomerName id={nameId} invoice={invoice} isFocusLook={look === "focus"} />
             </FieldCardTrigger>
             <FieldCardContent>
               <ContactCard invoice={invoice} />
@@ -949,9 +959,20 @@ export function InvoiceRow({
   )
 }
 
-function CustomerName({ id, invoice }: { id: string; invoice: SampleInvoice }) {
+function CustomerName({
+  id,
+  invoice,
+  isFocusLook,
+}: {
+  id: string
+  invoice: SampleInvoice
+  isFocusLook: boolean
+}) {
   return (
-    <span id={id} className="block truncate font-medium text-sm">
+    <span
+      id={id}
+      className={cn("block truncate font-medium text-sm", nameFocus, isFocusLook && nameFocusLook)}
+    >
       {invoice.customer}
     </span>
   )
@@ -1004,14 +1025,16 @@ export function LineRow({
       aria-keyshortcuts="Space Enter ArrowUp ArrowDown ArrowLeft Home End"
       className={cn(
         rowClass,
-        "h-9 border-b border-dashed hover:bg-muted/40 pointer-coarse:h-11",
-        focusRing
+        "group/row h-9 border-b border-dashed hover:bg-muted/40 pointer-coarse:h-11",
+        rowFocus
       )}
       {...focusProps}
     >
       <EmptyCells seats={["select", "expand", "invoice"]} />
       <CellElement className={cn(seatClass.customer, "items-center")}>
-        <span className="truncate text-muted-foreground text-sm">{line.description}</span>
+        <span className={cn("truncate text-muted-foreground text-sm", nameFocus)}>
+          {line.description}
+        </span>
       </CellElement>
       <EmptyCells seats={["lines"]} />
       <CellElement
