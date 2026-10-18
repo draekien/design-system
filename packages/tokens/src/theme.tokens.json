@@ -1,0 +1,124 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "radius": {
+    "base": {
+      "$type": "dimension",
+      "$value": {
+        "value": 0.625,
+        "unit": "rem"
+      }
+    }
+  },
+  "theme": {
+    "font": {
+      "sans": {
+        "$type": "fontFamily",
+        "$value": ["Mona Sans Variable", "ui-sans-serif", "system-ui", "sans-serif"]
+      }
+    },
+    "color": {
+      "ring": {
+        "$type": "color",
+        "$value": "{semantic.color.ring}"
+      },
+      "input": {
+        "$type": "color",
+        "$value": "{semantic.color.input}"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{semantic.color.border}"
+      },
+      "destructive": {
+        "$type": "color",
+        "$value": "{semantic.color.destructive}"
+      },
+      "accent-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.accent-foreground}"
+      },
+      "accent": {
+        "$type": "color",
+        "$value": "{semantic.color.accent}"
+      },
+      "muted-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.muted-foreground}"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "{semantic.color.muted}"
+      },
+      "secondary-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.secondary-foreground}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{semantic.color.secondary}"
+      },
+      "primary-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.primary-foreground}"
+      },
+      "primary": {
+        "$type": "color",
+        "$value": "{semantic.color.primary}"
+      },
+      "popover-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.popover-foreground}"
+      },
+      "popover": {
+        "$type": "color",
+        "$value": "{semantic.color.popover}"
+      },
+      "card-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.card-foreground}"
+      },
+      "card": {
+        "$type": "color",
+        "$value": "{semantic.color.card}"
+      },
+      "foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.foreground}"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "{semantic.color.background}"
+      }
+    },
+    "radius": {
+      "sm": {
+        "$type": "number",
+        "$value": 0.6
+      },
+      "md": {
+        "$type": "number",
+        "$value": 0.8
+      },
+      "lg": {
+        "$type": "number",
+        "$value": 1
+      },
+      "xl": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "2xl": {
+        "$type": "number",
+        "$value": 1.8
+      },
+      "3xl": {
+        "$type": "number",
+        "$value": 2.2
+      },
+      "4xl": {
+        "$type": "number",
+        "$value": 2.6
+      }
+    }
+  }
+}

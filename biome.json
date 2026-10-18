@@ -9,6 +9,8 @@
     "includes": [
       "**",
       "!**/routeTree.gen.ts",
+      "!**/*.gen.css",
+      "!packages/tokens/theme.template.css",
       "!.biome",
       "!.intent",
       "!.claude",

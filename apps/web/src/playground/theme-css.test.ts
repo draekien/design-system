@@ -19,10 +19,13 @@ const css = `:root {
 }`
 
 describe("siteThemeCss", () => {
-  it("holds the light and dark blocks of the site's globals.css", () => {
-    expect(siteThemeCss.startsWith(":root {\n  --background:")).toBe(true)
-    expect(siteThemeCss).toContain("\n\n.dark {\n  --background:")
-    expect(siteThemeCss).not.toContain("@theme")
+  it("holds the light and dark blocks of the site's generated tokens", () => {
+    const names = (mode: "light" | "dark") =>
+      readThemeTokens(siteThemeCss, mode).map(({ name }) => name)
+
+    expect(names("light")).toContain("--background")
+    expect(names("dark")).toContain("--background")
+    expect(siteThemeCss).toMatch(/^:root \{\n {2}--[\s\S]*\n\}\n\n\.dark \{\n {2}--[\s\S]*\n\}$/)
   })
 })
 

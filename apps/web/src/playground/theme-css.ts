@@ -1,5 +1,5 @@
 // biome-ignore lint/correctness/noUnresolvedImports: Vite resolves the ?raw suffix to the file as a string
-import globalsCss from "@workspace/ui/styles/globals.css?raw"
+import tokensCss from "@workspace/ui/styles/tokens.gen.css?raw"
 
 export type ThemeMode = "light" | "dark"
 
@@ -18,7 +18,7 @@ const colorPattern = /^(#[0-9a-f]{3,8}|(oklch|oklab|lch|lab|rgba?|hsla?|hwb|colo
 const oklchPattern =
   /^oklch\(\s*([\d.]+%?|none)\s+([\d.]+%?|none)\s+([\d.]+(?:deg)?|none)\s*(?:\/\s*([\d.]+%?)\s*)?\)$/i
 
-export const siteThemeCss: string = Array.from(globalsCss.matchAll(blockPattern), (match) =>
+export const siteThemeCss: string = Array.from(tokensCss.matchAll(blockPattern), (match) =>
   match[0].replaceAll(/\s*\n\s*/g, "\n  ").replace(/\s*\}$/, "\n}")
 ).join("\n\n")
 
