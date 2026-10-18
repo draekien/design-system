@@ -18,9 +18,9 @@ export const Route = createFileRoute("/playground/$component")({
   head: ({ loaderData }) => ({
     meta:
       loaderData === undefined
-        ? [{ title: "Not found · Playground · {{design-system}}" }]
+        ? [{ title: "Not found · Playground · design-system" }]
         : [
-            { title: `${loaderData.title} · Playground · {{design-system}}` },
+            { title: `${loaderData.title} · Playground · design-system` },
             { name: "description", content: loaderData.description },
           ],
   }),

@@ -55,7 +55,7 @@ None of the four new names exists as an `@shadcn` item: `pnpm dlx shadcn@4.21.4 
 
 1. Add `sampleInvoiceLines` to `packages/fixtures/src/invoices.ts`.
 2. Add the grouping, nesting, selection and table rules to `docs/contexts/design-rules.md`, and the APG and ARIA rows to `docs/references/ux-references.md`.
-3. Wireframe `apps/lab/src/record-table.tsx` with its rules table, lockup and constellation, every fixture state, at every canvas width and pointer.
+3. Wireframe `apps/web/src/experiments/record-table.tsx` with its rules table, lockup and constellation, every fixture state, at every canvas width and pointer.
 4. Build `use-record-rows`, `record-group`, `record-row` changes, `record-table`, `selection-bar` in `packages/ui`, with tests beside each.
 5. Move `record-list` onto `useRecordRows` and the record-list lab and playground footers onto `SelectionBar`.
 6. Add the `/playground/record-table` lockup page and the component pages, and register every item in `packages/ui/registry.json`.

@@ -4,7 +4,7 @@ import { RulesPage } from "../../playground/rules-page.tsx"
 export const Route = createFileRoute("/playground/rules")({
   head: () => ({
     meta: [
-      { title: "Rules · Playground · {{design-system}}" },
+      { title: "Rules · Playground · design-system" },
       {
         name: "description",
         content:

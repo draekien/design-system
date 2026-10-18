@@ -14,7 +14,7 @@ export const Route = createFileRoute("/playground/experiments/record-table")({
   search: { middlewares: [stripSearchParams(experimentSearchDefaults)] },
   head: () => ({
     meta: [
-      { title: "Record table · Experiments · Playground · {{design-system}}" },
+      { title: "Record table · Experiments · Playground · design-system" },
       { name: "description", content: DESCRIPTION },
     ],
   }),

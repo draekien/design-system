@@ -4,7 +4,7 @@ import { PlaygroundIndex } from "../../playground/playground-index.tsx"
 export const Route = createFileRoute("/playground/")({
   head: () => ({
     meta: [
-      { title: "Playground · {{design-system}}" },
+      { title: "Playground · design-system" },
       {
         name: "description",
         content:
