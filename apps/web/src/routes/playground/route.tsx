@@ -68,7 +68,7 @@ function PlaygroundLayout() {
               </Link>
             ))}
           </NavGroup>
-          <NavGroup label="Tokens">
+          <NavGroup label="Styles">
             <Link to="/playground/tokens" className={navLink}>
               Tokens
             </Link>
