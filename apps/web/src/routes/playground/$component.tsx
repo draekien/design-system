@@ -2,6 +2,7 @@ import { createFileRoute, notFound, stripSearchParams, useHydrated } from "@tans
 import { ComponentPage } from "../../playground/component-page.tsx"
 import { componentSearch } from "../../playground/playground-search.ts"
 import { componentItems } from "../../playground/registry-items.ts"
+import { siteName } from "../../site.ts"
 
 const defaults = componentSearch.parse({})
 
@@ -18,9 +19,9 @@ export const Route = createFileRoute("/playground/$component")({
   head: ({ loaderData }) => ({
     meta:
       loaderData === undefined
-        ? [{ title: "Not found · Playground · design-system" }]
+        ? [{ title: `Not found · Playground · ${siteName}` }]
         : [
-            { title: `${loaderData.title} · Playground · design-system` },
+            { title: `${loaderData.title} · Playground · ${siteName}` },
             { name: "description", content: loaderData.description },
           ],
   }),

@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { Mark } from "./mark.tsx"
 import { RecordDemo } from "./record-demo.tsx"
+import { siteName } from "./site.ts"
 import { stateRules } from "./state-rules.ts"
 import { StateSwap } from "./state-swap.tsx"
 
@@ -78,7 +79,7 @@ function Wordmark() {
       <span aria-hidden="true" className="text-muted-foreground">
         {"{{"}
       </span>
-      design-system
+      {siteName}
       <span aria-hidden="true" className="text-muted-foreground">
         {"}}"}
       </span>

@@ -5,6 +5,7 @@ import {
   experimentSearchDefaults,
 } from "../../../experiments/experiment-search.ts"
 import { invoicePageRules, recordTableRules } from "../../../experiments/record-table-rules.ts"
+import { siteName } from "../../../site.ts"
 
 const DESCRIPTION =
   "The greyscale wireframe of a table of invoices grouped by status, which readers compare down each column."
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/playground/experiments/record-table")({
   search: { middlewares: [stripSearchParams(experimentSearchDefaults)] },
   head: () => ({
     meta: [
-      { title: "Record table · Experiments · Playground · design-system" },
+      { title: `Record table · Experiments · Playground · ${siteName}` },
       { name: "description", content: DESCRIPTION },
     ],
   }),
