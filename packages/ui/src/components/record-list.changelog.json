@@ -1,6 +1,14 @@
 [
   {
     "date": "2026-10-18",
+    "description": "Includes every RecordRow part, which the removed record-row item used to ship: import RecordRow, RecordRowLink and the other parts from @/components/record-list."
+  },
+  {
+    "date": "2026-10-18",
+    "description": "The docs link to this item's playground page at /playground/components/record-list."
+  },
+  {
+    "date": "2026-10-18",
     "description": "Assessed against the lifecycle criteria: beta. Its design critique is not yet clean: the status shows as a dot with no visible word (issue #44)."
   },
   {

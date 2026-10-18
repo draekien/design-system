@@ -1,20 +1,7 @@
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import { componentModule } from "./component-module.ts"
 import type { Dataset, Hidden } from "./datasets.tsx"
-import { isPartShown } from "./datasets.tsx"
-
-export const componentModule: Readonly<Record<string, string>> = {
-  FieldCard: "field-card",
-  FieldCardContent: "field-card",
-  FieldCardTrigger: "field-card",
-  FieldState: "field-state",
-  Figure: "figure",
-  PersonMark: "person-mark",
-  RelativeTime: "relative-time",
-  StatusMark: "status-mark",
-  StatusMarkDot: "status-mark",
-  StatusMarkLabel: "status-mark",
-  Track: "track",
-}
+import { capitalise, isPartShown } from "./datasets.tsx"
 
 function indent(lines: ReadonlyArray<string>, depth: number) {
   return lines.map((line) => `${"  ".repeat(depth)}${line}`)
@@ -129,10 +116,6 @@ function contentImports(contentModules: RowCode["contentModules"]) {
     .flatMap(([module, names]) => importLines(module, names))
 }
 
-function capitalise(text: string) {
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`
-}
-
 export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): string {
   const item = dataset.item
   const { parts, contentModules, row } = rowCode(dataset, hidden, true)
@@ -142,8 +125,7 @@ export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): 
     'import { Link } from "@tanstack/react-router"',
     'import * as React from "react"',
     ...contentImports(contentModules),
-    'import { RecordList } from "@/components/record-list"',
-    ...importLines("record-row", parts),
+    ...importLines("record-list", ["RecordList", ...parts]),
     "",
     `export function ${list}({ ${dataset.noun}, now }: ${list}Props) {`,
     "  const [peekValue, setPeekValue] = React.useState<string | null>(null)",
@@ -184,11 +166,11 @@ export function recordListStatesCode<TItem>(
 
   if (state === "loading") {
     return [
-      'import { RecordList } from "@/components/record-list"',
-      ...importLines(
-        "record-row",
-        parts.filter((part) => part !== "RecordRow").concat("RecordRowLoading")
-      ),
+      ...importLines("record-list", [
+        "RecordList",
+        ...parts.filter((part) => part !== "RecordRow"),
+        "RecordRowLoading",
+      ]),
       "",
       `export function ${noun}Loading() {`,
       "  return (",
@@ -214,8 +196,7 @@ export function recordListStatesCode<TItem>(
   return [
     'import { Link } from "@tanstack/react-router"',
     ...contentImports(contentModules),
-    'import { RecordList } from "@/components/record-list"',
-    ...importLines("record-row", parts),
+    ...importLines("record-list", ["RecordList", ...parts]),
     "",
     `export function ${capitalise(item)}RowStates({ ${item}, now }: ${capitalise(item)}RowStatesProps) {`,
     "  const row = (",

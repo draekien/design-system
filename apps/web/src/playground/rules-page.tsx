@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { sampleRecords } from "@workspace/fixtures/records.ts"
-import { RecordList } from "@workspace/ui/components/record-list.tsx"
 import {
+  RecordList,
   RecordRow,
   RecordRowGlyph,
   RecordRowIdentify,
@@ -9,13 +9,13 @@ import {
   RecordRowLink,
   RecordRowName,
   RecordRowRead,
-} from "@workspace/ui/components/record-row.tsx"
+} from "@workspace/ui/components/record-list.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
-import { recordsDataset } from "./datasets.tsx"
+import { recordsDataset } from "../lockups/record-list/datasets.tsx"
+import { recordListRules } from "../lockups/record-list/record-list-rules.ts"
 import { generalRules, rankingRules, ranks, sourceRules } from "./design-rules.ts"
 import { focusRing } from "./playground-styles.ts"
-import { recordListRules } from "./record-list-rules.ts"
 import { RuleNotes } from "./rule-notes.tsx"
 
 const exampleRecord = sampleRecords[0]
@@ -128,7 +128,7 @@ export function RulesPage(): React.ReactElement {
           </h2>
           <p className="mt-2 text-pretty text-muted-foreground leading-relaxed">
             The rules the record list and record row encode, with their sources.{" "}
-            <Link to="/playground/record-list" className={textLink}>
+            <Link to="/playground/lockups/record-list" className={textLink}>
               Try them in the playground
             </Link>
           </p>

@@ -1,9 +1,10 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
 import type * as React from "react"
 import { cn } from "@/lib/cn.ts"
+import { lockups } from "../../lockups/lockups.ts"
 import { Mark } from "../../mark.tsx"
 import { focusRing } from "../../playground/playground-styles.ts"
-import { componentItems } from "../../playground/registry-items.ts"
+import { componentItems, libItems } from "../../playground/registry-items.ts"
 import { siteName } from "../../site.ts"
 
 export const Route = createFileRoute("/playground")({
@@ -49,16 +50,35 @@ function PlaygroundLayout() {
             </Link>
           </div>
           <NavGroup label="Lockups">
-            <Link to="/playground/record-list" className={navLink}>
-              Record list
-            </Link>
+            {lockups.map((lockup) => (
+              <Link key={lockup.name} to={lockup.page} className={navLink}>
+                {lockup.title}
+              </Link>
+            ))}
           </NavGroup>
           <NavGroup label="Components">
             {componentItems.map((item) => (
               <Link
                 key={item.name}
-                to="/playground/$component"
+                to="/playground/components/$component"
                 params={{ component: item.name }}
+                className={navLink}
+              >
+                {item.title}
+              </Link>
+            ))}
+          </NavGroup>
+          <NavGroup label="Tokens">
+            <Link to="/playground/tokens" className={navLink}>
+              Tokens
+            </Link>
+          </NavGroup>
+          <NavGroup label="Lib">
+            {libItems.map((item) => (
+              <Link
+                key={item.name}
+                to="/playground/lib/$item"
+                params={{ item: item.name }}
                 className={navLink}
               >
                 {item.title}
@@ -68,11 +88,6 @@ function PlaygroundLayout() {
           <NavGroup label="Experiments">
             <Link to="/playground/experiments/record-table" className={navLink}>
               Record table
-            </Link>
-          </NavGroup>
-          <NavGroup label="Settings">
-            <Link to="/playground/theme" className={navLink}>
-              Canvas theme
             </Link>
           </NavGroup>
         </nav>

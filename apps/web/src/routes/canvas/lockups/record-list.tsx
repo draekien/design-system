@@ -1,13 +1,13 @@
 import { createFileRoute, stripSearchParams, useHydrated } from "@tanstack/react-router"
-import { CanvasDocument, type CanvasMessageSearch } from "../../playground/canvas-frame.tsx"
-import { canvasPointerSearch, canvasSearch } from "../../playground/playground-search.ts"
-import { RecordListCanvas } from "../../playground/record-list-canvas.tsx"
+import { CanvasDocument, type CanvasMessageSearch } from "../../../playground/canvas-frame.tsx"
+import { canvasPointerSearch, canvasSearch } from "../../../playground/playground-search.ts"
+import { RecordListCanvas } from "../../../playground/record-list-canvas.tsx"
 
 const search = canvasSearch.extend(canvasPointerSearch.shape)
 
 const defaults = search.parse({})
 
-export const Route = createFileRoute("/canvas/record-list")({
+export const Route = createFileRoute("/canvas/lockups/record-list")({
   validateSearch: search,
   search: { middlewares: [stripSearchParams(defaults)] },
   head: () => ({ meta: [{ title: "Record list canvas" }, { name: "robots", content: "noindex" }] }),

@@ -14,11 +14,18 @@ import { getRouteApi, Link } from "@tanstack/react-router"
 import { fixtureStates } from "@workspace/fixtures/state.ts"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
+import { recordListLockup } from "../lockups/lockups.ts"
+import {
+  capitalise,
+  datasetParts,
+  invoicesDataset,
+  recordsDataset,
+} from "../lockups/record-list/datasets.tsx"
+import { recordListCode, recordListStatesCode } from "../lockups/record-list/record-list-code.ts"
+import { recordListRules } from "../lockups/record-list/record-list-rules.ts"
 import { CanvasFrame, type CanvasMessageSearch } from "./canvas-frame.tsx"
 import { CodeBlock } from "./code-block.tsx"
-import { datasetParts, invoicesDataset, recordsDataset } from "./datasets.tsx"
-import { ItemChanges, ItemMetaList } from "./item-record.tsx"
-import { ControlGroup, InstallCommand, Segmented } from "./playground-controls.tsx"
+import { ControlGroup, Segmented } from "./playground-controls.tsx"
 import {
   type CanvasPointer,
   type CanvasWidth,
@@ -32,20 +39,15 @@ import {
 } from "./playground-search.ts"
 import { focusRing, segmentItem } from "./playground-styles.ts"
 import { RecordListConstellation } from "./record-list-canvas.tsx"
-import { recordListCode, recordListStatesCode } from "./record-list-code.ts"
-import { recordListRules } from "./record-list-rules.ts"
-import { builtFrom, installCommand, requireRegistryItem } from "./registry-items.ts"
 import { RelatedItems } from "./related-items.tsx"
 import { RuleNotes } from "./rule-notes.tsx"
 import { savePlaygroundTheme, usePlaygroundTheme } from "./theme-store.ts"
 
-const route = getRouteApi("/playground/record-list")
+const route = getRouteApi("/playground/lockups/record-list")
 
-const lockup = requireRegistryItem("record-list")
-
-const builtFromItems = builtFrom(lockup).map(({ item, installs }) => ({
+const builtFromItems = recordListLockup.components.map((item) => ({
   item,
-  tag: installs === "with" ? "Installs with record-list" : "Install separately",
+  tag: capitalise(item.meta.status),
 }))
 
 const stateLabel = {
@@ -104,18 +106,15 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
     <div className="mx-auto grid max-w-[100rem] grid-cols-[minmax(0,1fr)] gap-8 px-5 py-8 sm:px-8 lg:py-10 xl:grid-cols-[minmax(0,1fr)_17rem] xl:gap-x-10">
       <header className="xl:col-start-1 xl:row-start-1">
         <h1 className="font-semibold text-3xl tracking-[-0.03em] [font-stretch:108%]">
-          Record list
+          {recordListLockup.title}
         </h1>
         <p className="mt-2 max-w-2xl text-pretty text-muted-foreground leading-relaxed">
-          Rows for any data: rank each value, and the row decides where it goes, how it reads and
-          what it does when the list is narrow.{" "}
-          <code className="font-mono text-[0.875em] text-foreground">record-list</code> holds the
+          {recordListLockup.description}{" "}
+          <code className="font-mono text-[0.875em] text-foreground">RecordList</code> holds the
           keyboard model,{" "}
-          <code className="font-mono text-[0.875em] text-foreground">record-row</code> the ranked
+          <code className="font-mono text-[0.875em] text-foreground">RecordRow</code> the ranked
           parts.
         </p>
-        <ItemMetaList meta={lockup.meta} className="mt-4" />
-        <InstallCommand command={installCommand(lockup.name)} className="mt-5 max-w-2xl" />
       </header>
 
       <div className="flex min-w-0 flex-col gap-12 xl:col-start-1 xl:row-start-2">
@@ -143,7 +142,7 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
             ) : (
               <div className={cn(frameGround(search.width), "h-[clamp(28rem,68vh,46rem)]")}>
                 <CanvasFrame
-                  to="/canvas/record-list"
+                  to="/canvas/lockups/record-list"
                   view="lockup"
                   title="Record list lockup"
                   search={search}
@@ -183,7 +182,7 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
             ) : (
               <div className={cn(frameGround(search.statesWidth), "h-[clamp(28rem,80vh,56rem)]")}>
                 <CanvasFrame
-                  to="/canvas/record-list"
+                  to="/canvas/lockups/record-list"
                   view="states"
                   title="Record list states"
                   search={{ ...search, width: search.statesWidth, pointer: search.statesPointer }}
@@ -211,7 +210,7 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
         <ViewSection
           id={sectionId.builtFrom}
           title="Built from"
-          description="The registry items the lockup is composed from. Open one to see it on its own."
+          description="The components the lockup is composed from. Install these; the lockup itself is not installed."
         >
           <RelatedItems label="Built from" items={builtFromItems} />
         </ViewSection>
@@ -222,14 +221,6 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
           description="The disclosure and composition rules the lockup encodes, each with its source."
         >
           <RuleNotes rules={recordListRules} />
-        </ViewSection>
-
-        <ViewSection
-          id={sectionId.changes}
-          title="Changes"
-          description="Changes to this item by date, newest first."
-        >
-          <ItemChanges changelog={lockup.changelog} />
         </ViewSection>
       </div>
 
@@ -265,7 +256,6 @@ const sectionId = {
   constellation: "constellation",
   builtFrom: "built-from",
   rules: "rules",
-  changes: "changes",
 } as const
 
 const pageSections = [
@@ -274,7 +264,6 @@ const pageSections = [
   { id: sectionId.constellation, label: "Constellation" },
   { id: sectionId.builtFrom, label: "Built from" },
   { id: sectionId.rules, label: "Rules" },
-  { id: sectionId.changes, label: "Changes" },
 ] as const
 
 function PageNav() {
@@ -448,7 +437,7 @@ function CanvasToolbar({
         </Segmented>
         {theme.css === "" ? null : (
           <Link
-            to="/playground/theme"
+            to="/playground/tokens"
             className={cn(
               "inline-flex min-h-7 items-center rounded-md px-2 text-muted-foreground text-xs hover:text-foreground",
               focusRing

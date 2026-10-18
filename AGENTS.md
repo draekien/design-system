@@ -57,7 +57,8 @@ Before editing files for a substantial task:
 # Project
 
 - Turborepo monorepo managed with pnpm. Apps in `apps/`, shared packages in `packages/`.
-- `apps/web`: TanStack Start on Vite, React, TypeScript, Vitest. The docs site and the `/playground/<component>` routes, prerendered to GitHub Pages.
+- `apps/web`: TanStack Start on Vite, React, TypeScript, Vitest. The docs site and the `/playground/<tier>/<name>` routes, prerendered to GitHub Pages.
+- A lockup lives in `apps/web/src/lockups/<name>`, composes published components to demonstrate the rules, and is never a registry item (ADR 0005).
 - `apps/web/src/experiments`: greyscale coded wireframes, one `/playground/experiments/<name>` page each, listed in the playground sidebar under Experiments and deployed with the site.
 - `packages/ui` is the registry source: every component in it is installable through `packages/ui/registry.json`, and `apps/web` imports it as `@workspace/ui`.
 - Name a registry item in flat kebab-case for its role, never an `@shadcn` item name (`pnpm dlx shadcn@4.21.4 view @shadcn/<name>` fails when the name is free); item name, file name and main export match.
@@ -65,7 +66,7 @@ Before editing files for a substantial task:
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that experiment and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
 - A component moves through `experiment`, `beta`, `stable` and `deprecated`, recorded in `meta.status` in `packages/ui/registry.json`.
-- An experiment becomes `beta` when its components move to `packages/ui` and the registry, its playground lockup route is added, and the same change deletes the experiment, its routes and its sidebar entry.
+- An experiment becomes `beta` when its components move to `packages/ui` and the registry, its lockup is added to `apps/web/src/lockups` with a `/playground/lockups/<name>` route, and the same change deletes the experiment, its routes and its sidebar entry.
 - Every change to a registry item adds a dated entry, newest first, to the `<name>.changelog.json` beside its source in `packages/ui/src` in the same commit.
 - This is a design system first and a component library second: a component encodes the rank, fit, placement, adjacency, spacing and radius rules in `docs/contexts/design-rules.md` and `DESIGN.md`, and takes every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `packages/tokens/src` and generated into `packages/ui/src/styles`, never edited in the generated files.
 - Run `/impeccable shape` before every design system change: a token, a rule in `docs/contexts/design-rules.md`, `DESIGN.md`, a new component or a new lockup.

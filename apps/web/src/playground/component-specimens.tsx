@@ -6,17 +6,16 @@ import {
 import { FieldState } from "@workspace/ui/components/field-state.tsx"
 import { Figure } from "@workspace/ui/components/figure.tsx"
 import { PersonMark } from "@workspace/ui/components/person-mark.tsx"
-import { RecordList } from "@workspace/ui/components/record-list.tsx"
 import {
+  RecordList,
   RecordRow,
   RecordRowGlyph,
   RecordRowIdentify,
   RecordRowKey,
   RecordRowLink,
   RecordRowName,
-  RecordRowRead,
   RecordRowSelect,
-} from "@workspace/ui/components/record-row.tsx"
+} from "@workspace/ui/components/record-list.tsx"
 import { RelativeTime } from "@workspace/ui/components/relative-time.tsx"
 import {
   StatusMark,
@@ -24,7 +23,7 @@ import {
   StatusMarkLabel,
 } from "@workspace/ui/components/status-mark.tsx"
 import { Track } from "@workspace/ui/components/track.tsx"
-import type * as React from "react"
+import * as React from "react"
 
 export type ComponentSpecimen = {
   fileName: string
@@ -32,76 +31,86 @@ export type ComponentSpecimen = {
   Preview: () => React.ReactElement
 }
 
-function RecordRowPreview() {
+const listRecords = [
+  { id: "REC-101", name: "Vendor onboarding checklist", fill: "none", status: "Draft" },
+  { id: "REC-104", name: "Quarterly access review", fill: "half", status: "In review" },
+  { id: "REC-109", name: "Data retention policy", fill: "full", status: "Approved" },
+] as const
+
+function RecordListPreview() {
+  const hintId = React.useId()
   return (
     <div className="w-full overflow-hidden rounded-xl border bg-card text-card-foreground">
-      <RecordList aria-label="Records">
-        <RecordRow value="REC-104" className="border-b-0">
-          <RecordRowSelect />
-          <RecordRowLink href="#REC-104">
-            <RecordRowIdentify>
-              <RecordRowKey narrow="hide">REC-104</RecordRowKey>
-              <RecordRowGlyph>
-                <StatusMark>
-                  <StatusMarkDot fill="half" />
-                  <StatusMarkLabel>In review</StatusMarkLabel>
-                </StatusMark>
-              </RecordRowGlyph>
-              <RecordRowName>Quarterly access review</RecordRowName>
-            </RecordRowIdentify>
-            <RecordRowRead narrow="abbreviate">
-              <PersonMark name="Mira Okafor" />
-            </RecordRowRead>
-            <RecordRowRead narrow="hide">
-              <RelativeTime dateTime="2026-10-15T09:12:00Z" now="2026-10-15T11:12:00Z" />
-            </RecordRowRead>
-          </RecordRowLink>
-        </RecordRow>
+      <RecordList aria-label="Records" aria-describedby={hintId}>
+        {listRecords.map((record) => (
+          <RecordRow key={record.id} value={record.id} className="last:border-b-0">
+            <RecordRowSelect />
+            <RecordRowLink href={`#${record.id}`}>
+              <RecordRowIdentify>
+                <RecordRowKey narrow="hide">{record.id}</RecordRowKey>
+                <RecordRowGlyph>
+                  <StatusMark>
+                    <StatusMarkDot fill={record.fill} />
+                    <StatusMarkLabel>{record.status}</StatusMarkLabel>
+                  </StatusMark>
+                </RecordRowGlyph>
+                <RecordRowName>{record.name}</RecordRowName>
+              </RecordRowIdentify>
+            </RecordRowLink>
+          </RecordRow>
+        ))}
       </RecordList>
+      <p id={hintId} className="border-t px-3 py-2 text-muted-foreground text-xs">
+        ↑ ↓ move between rows · X selects the focused row
+      </p>
     </div>
   )
 }
 
-const recordRowCode = `import { PersonMark } from "@/components/person-mark"
-import { RecordList } from "@/components/record-list"
-import {
+const recordListCode = `import {
+  RecordList,
   RecordRow,
   RecordRowGlyph,
   RecordRowIdentify,
   RecordRowKey,
   RecordRowLink,
   RecordRowName,
-  RecordRowRead,
   RecordRowSelect,
-} from "@/components/record-row"
-import { RelativeTime } from "@/components/relative-time"
+} from "@/components/record-list"
 import { StatusMark, StatusMarkDot, StatusMarkLabel } from "@/components/status-mark"
+import * as React from "react"
 
-export function RecordRowExample() {
+const records = [
+  { id: "REC-101", name: "Vendor onboarding checklist", fill: "none", status: "Draft" },
+  { id: "REC-104", name: "Quarterly access review", fill: "half", status: "In review" },
+  { id: "REC-109", name: "Data retention policy", fill: "full", status: "Approved" },
+] as const
+
+export function RecordListExample() {
+  const hintId = React.useId()
   return (
-    <RecordList aria-label="Records">
-      <RecordRow value="REC-104">
-        <RecordRowSelect />
-        <RecordRowLink href="/records/REC-104">
-          <RecordRowIdentify>
-            <RecordRowKey narrow="hide">REC-104</RecordRowKey>
-            <RecordRowGlyph>
-              <StatusMark>
-                <StatusMarkDot fill="half" />
-                <StatusMarkLabel>In review</StatusMarkLabel>
-              </StatusMark>
-            </RecordRowGlyph>
-            <RecordRowName>Quarterly access review</RecordRowName>
-          </RecordRowIdentify>
-          <RecordRowRead narrow="abbreviate">
-            <PersonMark name="Mira Okafor" />
-          </RecordRowRead>
-          <RecordRowRead narrow="hide">
-            <RelativeTime dateTime="2026-10-15T09:12:00Z" now="2026-10-15T11:12:00Z" />
-          </RecordRowRead>
-        </RecordRowLink>
-      </RecordRow>
-    </RecordList>
+    <>
+      <RecordList aria-label="Records" aria-describedby={hintId}>
+        {records.map((record) => (
+          <RecordRow key={record.id} value={record.id}>
+            <RecordRowSelect />
+            <RecordRowLink href={\`/records/\${record.id}\`}>
+              <RecordRowIdentify>
+                <RecordRowKey narrow="hide">{record.id}</RecordRowKey>
+                <RecordRowGlyph>
+                  <StatusMark>
+                    <StatusMarkDot fill={record.fill} />
+                    <StatusMarkLabel>{record.status}</StatusMarkLabel>
+                  </StatusMark>
+                </RecordRowGlyph>
+                <RecordRowName>{record.name}</RecordRowName>
+              </RecordRowIdentify>
+            </RecordRowLink>
+          </RecordRow>
+        ))}
+      </RecordList>
+      <p id={hintId}>↑ ↓ move between rows · X selects the focused row</p>
+    </>
   )
 }
 `
@@ -263,10 +272,10 @@ export function FieldCardExample() {
 `
 
 export const componentSpecimens: Readonly<Record<string, ComponentSpecimen>> = {
-  "record-row": {
-    fileName: "record-row-example.tsx",
-    code: recordRowCode,
-    Preview: RecordRowPreview,
+  "record-list": {
+    fileName: "record-list-example.tsx",
+    code: recordListCode,
+    Preview: RecordListPreview,
   },
   "status-mark": {
     fileName: "status-mark-example.tsx",

@@ -14,8 +14,7 @@ Name `tokens` in the command with the item. shadcn replaces the CSS variables yo
 
 | Item | Description |
 | --- | --- |
-| `record-list` | A list of record rows with one tab stop, arrow-key focus, keyboard peek and keyboard selection. |
-| `record-row` | A 44px row whose parts are named for the rank of what they hold, so any data lines up, reads and narrows by rank. |
+| `record-list` | A list of 44px record rows, each part named for the rank of what it holds, with one tab stop, arrow-key focus, keyboard peek and keyboard selection. |
 | `status-mark` | A state drawn as a shape-coded dot and its word, for a rank 2 Read. |
 | `person-mark` | A person's initials in a 24px circle, then their name. |
 | `figure` | A number the caller compares down a list, in tabular figures, with a compact short form. |

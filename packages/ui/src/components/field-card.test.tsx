@@ -2,14 +2,14 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 import { FieldCard, FieldCardContent, FieldCardTrigger } from "@/components/field-card.tsx"
-import { RecordList } from "@/components/record-list.tsx"
 import {
+  RecordList,
   RecordRow,
   RecordRowIdentify,
   RecordRowLink,
   RecordRowName,
   RecordRowRead,
-} from "@/components/record-row.tsx"
+} from "@/components/record-list.tsx"
 
 describe("FieldCardContent", () => {
   it("keeps a click inside the card from activating the row link around its trigger", async () => {

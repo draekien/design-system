@@ -1,6 +1,5 @@
 import registry from "@workspace/ui/registry.json" with { type: "json" }
 import { z } from "zod"
-import { componentModule } from "./record-list-code.ts"
 
 export const itemStatuses = ["experiment", "beta", "stable", "deprecated"] as const
 
@@ -111,8 +110,6 @@ function meetsLifecycle(item: RegistryItem): RegistryItem {
   return item
 }
 
-export type ItemPart = { item: RegistryItem; installs: "with" | "separately" }
-
 const registryPrefix = "draekien/design-system/"
 
 export const registryItems: ReadonlyArray<RegistryItem> = registry.items.map((item) =>
@@ -132,18 +129,12 @@ export const registryItems: ReadonlyArray<RegistryItem> = registry.items.map((it
 
 export const tokensItemName = "tokens"
 
-export const cnItemName = "cn"
-
-const lockupParts: Readonly<Record<string, ReadonlyArray<string>>> = {
-  "record-list": Object.values(componentModule),
-}
-
-export const lockupItems: ReadonlyArray<RegistryItem> = registryItems.filter(
-  (item) => item.name in lockupParts
+export const componentItems: ReadonlyArray<RegistryItem> = registryItems.filter(
+  (item) => item.type === "registry:ui"
 )
 
-export const componentItems: ReadonlyArray<RegistryItem> = registryItems.filter(
-  (item) => item.type === "registry:ui" && !(item.name in lockupParts)
+export const libItems: ReadonlyArray<RegistryItem> = registryItems.filter(
+  (item) => item.type === "registry:lib"
 )
 
 export function usageText(docs: string): string {
@@ -163,26 +154,4 @@ export function requireRegistryItem(name: string): RegistryItem {
     throw new Error(`registry.json has no item named ${name}.`)
   }
   return item
-}
-
-export function builtFrom(lockup: RegistryItem): ReadonlyArray<ItemPart> {
-  const installed = lockup.registryDependencies.filter(
-    (name) => requireRegistryItem(name).type === "registry:ui"
-  )
-  const separate = [...new Set(lockupParts[lockup.name] ?? [])].filter(
-    (name) => !installed.includes(name)
-  )
-  return [
-    ...installed.map((name) => ({ item: requireRegistryItem(name), installs: "with" as const })),
-    ...separate.map((name) => ({
-      item: requireRegistryItem(name),
-      installs: "separately" as const,
-    })),
-  ]
-}
-
-export function usedIn(component: RegistryItem): ReadonlyArray<RegistryItem> {
-  return lockupItems.filter((lockup) =>
-    builtFrom(lockup).some((part) => part.item.name === component.name)
-  )
 }
