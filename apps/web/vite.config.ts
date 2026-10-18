@@ -44,7 +44,7 @@ export default defineConfig({
           name: "unit",
           environment: "jsdom",
           setupFiles: ["./src/setup.ts"],
-          css: { include: /globals\.css/ },
+          css: { include: /tokens\.gen\.css/ },
         },
       },
     ],

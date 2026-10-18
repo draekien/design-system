@@ -1,6 +1,7 @@
 import { Meter } from "@base-ui/react/meter"
-import { cn } from "cn"
 import type * as React from "react"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { cn } from "@/lib/cn"
 
 /** Props for {@link Track}. */
 export type TrackProps = Omit<Meter.Root.Props, "children" | "locale"> & {
@@ -27,7 +28,7 @@ export function Track({ locale = "en", className, ...props }: TrackProps): React
       >
         <Meter.Indicator className="h-full rounded-full bg-foreground/70" />
       </Meter.Track>
-      <Meter.Value className="min-w-[4ch] text-end text-xs tabular-nums" />
+      <Meter.Value className="min-w-(--track-value-min) text-end text-xs tabular-nums" />
     </Meter.Root>
   )
 }

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "color": {
+      "background": {
+        "$type": "color",
+        "$value": "{color.neutral.50}"
+      },
+      "foreground": {
+        "$type": "color",
+        "$value": "{color.neutral.950}"
+      },
+      "card": {
+        "$type": "color",
+        "$value": "{color.neutral.white}"
+      },
+      "card-foreground": {
+        "$type": "color",
+        "$value": "{color.neutral.950}"
+      },
+      "popover": {
+        "$type": "color",
+        "$value": "{color.neutral.white}"
+      },
+      "popover-foreground": {
+        "$type": "color",
+        "$value": "{color.neutral.950}"
+      },
+      "primary": {
+        "$type": "color",
+        "$value": "{color.accent.500}"
+      },
+      "primary-foreground": {
+        "$type": "color",
+        "$value": "{color.neutral.950}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{color.zinc.100}"
+      },
+      "secondary-foreground": {
+        "$type": "color",
+        "$value": "{color.zinc.900}"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "{color.zinc.100}"
+      },
+      "muted-foreground": {
+        "$type": "color",
+        "$value": "{color.zinc.500}"
+      },
+      "accent": {
+        "$type": "color",
+        "$value": "{color.zinc.100}"
+      },
+      "accent-foreground": {
+        "$type": "color",
+        "$value": "{color.zinc.900}"
+      },
+      "destructive": {
+        "$type": "color",
+        "$value": "{color.red.600}"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{color.zinc.200}"
+      },
+      "input": {
+        "$type": "color",
+        "$value": "{color.zinc.200}"
+      },
+      "ring": {
+        "$type": "color",
+        "$value": "{color.accent.600}"
+      }
+    }
+  }
+}

@@ -12,8 +12,8 @@ import {
   RecordRowPeek,
   RecordRowRead,
 } from "@workspace/ui/components/record-row.tsx"
-import { cn } from "cn"
 import * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import { componentSpecimens } from "./component-specimens.tsx"
 import { InstallCommand } from "./playground-controls.tsx"
 import { focusRing } from "./playground-styles.ts"
@@ -37,12 +37,19 @@ function useIsWide() {
   )
 }
 
-function itemPageLink(item: RegistryItem): React.ReactElement {
-  return item.name === "record-list" ? (
-    <Link to="/playground/record-list" />
-  ) : (
-    <Link to="/playground/$component" params={{ component: item.name }} />
-  )
+type LinkProps = { className?: string; children?: React.ReactNode }
+
+function itemPageLink(item: RegistryItem, props: LinkProps = {}): React.ReactElement {
+  if (item.type === "registry:theme") {
+    return <Link to="/playground/theme" {...props} />
+  }
+  if (item.type === "registry:lib") {
+    return <Link to="/playground/theme" hash={item.name} {...props} />
+  }
+  if (item.name === "record-list") {
+    return <Link to="/playground/record-list" {...props} />
+  }
+  return <Link to="/playground/$component" params={{ component: item.name }} {...props} />
 }
 
 export function ItemPageLink({
@@ -51,18 +58,8 @@ export function ItemPageLink({
   children,
 }: {
   item: RegistryItem
-  className?: string
-  children: React.ReactNode
-}): React.ReactElement {
-  return item.name === "record-list" ? (
-    <Link to="/playground/record-list" className={className}>
-      {children}
-    </Link>
-  ) : (
-    <Link to="/playground/$component" params={{ component: item.name }} className={className}>
-      {children}
-    </Link>
-  )
+} & LinkProps): React.ReactElement {
+  return itemPageLink(item, { className, children })
 }
 
 export function RelatedItems({

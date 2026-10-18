@@ -1,5 +1,5 @@
-import { cn } from "cn"
 import type * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import type { Changelog, ItemMeta, ItemStatus } from "./registry-items.ts"
 
 const statusLabel: Readonly<Record<ItemStatus, string>> = {

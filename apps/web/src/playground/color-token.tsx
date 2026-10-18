@@ -1,7 +1,7 @@
 import { Popover } from "@base-ui/react/popover"
 import { Slider } from "@base-ui/react/slider"
-import { cn } from "cn"
 import * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import { focusRing } from "./playground-styles.ts"
 import { formatOklch, type Oklch, parseOklch } from "./theme-css.ts"
 

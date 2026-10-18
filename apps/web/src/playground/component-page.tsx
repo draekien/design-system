@@ -7,12 +7,8 @@ import { ItemChanges, ItemMetaList } from "./item-record.tsx"
 import { InstallCommand, Segmented } from "./playground-controls.tsx"
 import type { SectionTab } from "./playground-search.ts"
 import { segmentItem } from "./playground-styles.ts"
-import { installCommand, type RegistryItem, usedIn } from "./registry-items.ts"
+import { installCommand, type RegistryItem, usageText, usedIn } from "./registry-items.ts"
 import { RelatedItems } from "./related-items.tsx"
-
-function usageText(docs: string) {
-  return docs.replace(/\s*Playground: \S+$/, "")
-}
 
 export function ComponentPage({
   item,

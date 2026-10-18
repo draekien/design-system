@@ -10,8 +10,8 @@ import {
   RecordRowName,
   RecordRowRead,
 } from "@workspace/ui/components/record-row.tsx"
-import { cn } from "cn"
 import * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import { recordsDataset } from "./datasets.tsx"
 import { generalRules, rankingRules, ranks, sourceRules } from "./design-rules.ts"
 import { focusRing } from "./playground-styles.ts"

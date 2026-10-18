@@ -24,8 +24,11 @@ const changelogSchema = z
 
 export type Changelog = z.output<typeof changelogSchema>
 
+const itemTypeSchema = z.enum(["registry:ui", "registry:theme", "registry:lib"])
+
 export type RegistryItem = {
   name: string
+  type: z.output<typeof itemTypeSchema>
   title: string
   description: string
   docs: string
@@ -66,6 +69,7 @@ const registryPrefix = "draekien/design-system/"
 
 export const registryItems: ReadonlyArray<RegistryItem> = registry.items.map((item) => ({
   name: item.name,
+  type: itemTypeSchema.parse(item.type),
   title: item.title,
   description: item.description,
   docs: item.docs,
@@ -76,6 +80,10 @@ export const registryItems: ReadonlyArray<RegistryItem> = registry.items.map((it
   changelog: parseChangelog(item.name, changelogFiles),
 }))
 
+export const tokensItemName = "tokens"
+
+export const cnItemName = "cn"
+
 const lockupParts: Readonly<Record<string, ReadonlyArray<string>>> = {
   "record-list": Object.values(componentModule),
 }
@@ -85,8 +93,12 @@ export const lockupItems: ReadonlyArray<RegistryItem> = registryItems.filter(
 )
 
 export const componentItems: ReadonlyArray<RegistryItem> = registryItems.filter(
-  (item) => !(item.name in lockupParts)
+  (item) => item.type === "registry:ui" && !(item.name in lockupParts)
 )
+
+export function usageText(docs: string): string {
+  return docs.replace(/\s*Playground: \S+$/, "")
+}
 
 export function installCommand(name: string): string {
   return `pnpm dlx shadcn@latest add ${registryPrefix}${name}`
@@ -101,7 +113,9 @@ export function requireRegistryItem(name: string): RegistryItem {
 }
 
 export function builtFrom(lockup: RegistryItem): ReadonlyArray<ItemPart> {
-  const installed = lockup.registryDependencies
+  const installed = lockup.registryDependencies.filter(
+    (name) => requireRegistryItem(name).type === "registry:ui"
+  )
   const separate = [...new Set(lockupParts[lockup.name] ?? [])].filter(
     (name) => !installed.includes(name)
   )

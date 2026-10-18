@@ -1,5 +1,6 @@
-import { cn } from "cn"
 import type * as React from "react"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { cn } from "@/lib/cn"
 
 function initialsOf(name: string) {
   const parts = name.trim().split(/\s+/)
@@ -27,7 +28,7 @@ export function PersonMark({ name, className, ...props }: PersonMarkProps): Reac
     >
       <span
         aria-hidden="true"
-        className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted font-medium text-[0.625rem] text-muted-foreground"
+        className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted font-medium text-micro text-muted-foreground"
       >
         {initialsOf(name)}
       </span>

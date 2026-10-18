@@ -1,6 +1,6 @@
 import { type FixtureState, fixtureStates } from "@workspace/fixtures/state.ts"
-import { cn } from "cn"
 import type * as React from "react"
+import { cn } from "@/lib/cn.ts"
 
 export function StateSwap({
   state,

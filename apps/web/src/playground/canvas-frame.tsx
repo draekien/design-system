@@ -1,7 +1,7 @@
 import { useHydrated, useRouter } from "@tanstack/react-router"
-import { cn } from "cn"
 import * as React from "react"
 import { z } from "zod"
+import { cn } from "@/lib/cn.ts"
 import {
   type CanvasPointer,
   type CanvasView,

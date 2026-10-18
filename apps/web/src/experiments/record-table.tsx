@@ -13,8 +13,8 @@ import {
   FieldCardContent,
   FieldCardTrigger,
 } from "@workspace/ui/components/field-card.tsx"
-import { cn } from "cn"
 import * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import {
   type Column,
   columnLabel,

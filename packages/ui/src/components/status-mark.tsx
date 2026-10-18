@@ -1,5 +1,6 @@
-import { cn } from "cn"
 import type * as React from "react"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { cn } from "@/lib/cn"
 
 /**
  * A state drawn as a dot and a word. Compose `StatusMarkDot`, then `StatusMarkLabel`. In an
@@ -41,7 +42,7 @@ export function StatusMarkDot({
       data-slot="status-mark-dot"
       aria-hidden="true"
       className={cn(
-        "size-2.5 shrink-0 rounded-full border-[1.5px] border-current",
+        "size-2.5 shrink-0 rounded-full border-(length:--status-mark-ring) border-current",
         dotFill[fill],
         className
       )}

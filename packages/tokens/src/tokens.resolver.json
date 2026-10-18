@@ -1,0 +1,25 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/resolver.json",
+  "name": "design-system",
+  "version": "2025.10",
+  "sets": {
+    "primitive": { "sources": [{ "$ref": "primitive.tokens.json" }] },
+    "theme": { "sources": [{ "$ref": "theme.tokens.json" }] },
+    "component": { "sources": [{ "$ref": "component.tokens.json" }] }
+  },
+  "modifiers": {
+    "theme": {
+      "default": "light",
+      "contexts": {
+        "light": [{ "$ref": "semantic.light.tokens.json" }],
+        "dark": [{ "$ref": "semantic.dark.tokens.json" }]
+      }
+    }
+  },
+  "resolutionOrder": [
+    { "$ref": "#/sets/primitive" },
+    { "$ref": "#/modifiers/theme" },
+    { "$ref": "#/sets/theme" },
+    { "$ref": "#/sets/component" }
+  ]
+}

@@ -1,10 +1,11 @@
 import { Checkbox } from "@base-ui/react/checkbox"
 import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
-import { cn } from "cn"
 import * as React from "react"
 // biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .tsx extensions
 import { useRecordList } from "@/components/record-list"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { cn } from "@/lib/cn"
 
 type RecordRowContextValue =
   | {
@@ -36,8 +37,8 @@ export type RecordRowNarrow = "keep" | "abbreviate" | "hide"
 const narrowClass: Readonly<Record<RecordRowNarrow, string>> = {
   keep: "",
   abbreviate:
-    "@max-[48rem]:**:data-[abbreviation=long]:sr-only @max-[48rem]:**:data-[abbreviation=short]:inline",
-  hide: "@max-[48rem]:**:data-[abbreviation=long]:sr-only @max-[48rem]:**:data-[abbreviation=short]:inline @max-[40rem]:hidden",
+    "@max-abbreviate:**:data-[abbreviation=long]:sr-only @max-abbreviate:**:data-[abbreviation=short]:inline",
+  hide: "@max-abbreviate:**:data-[abbreviation=long]:sr-only @max-abbreviate:**:data-[abbreviation=short]:inline @max-hide:hidden",
 }
 
 const rowClass =
@@ -157,7 +158,7 @@ export function RecordRowSelect({ className, ...props }: RecordRowSelectProps): 
       <span id={labelId} className="sr-only">
         Select
       </span>
-      <span className="flex size-4 items-center justify-center rounded-[0.3125rem] border border-input bg-background text-primary-foreground shadow-xs transition-colors group-hover/select:border-muted-foreground group-data-checked/select:border-primary group-data-checked/select:bg-primary">
+      <span className="flex size-4 items-center justify-center rounded-checkbox border border-input bg-background text-primary-foreground shadow-xs transition-colors group-hover/select:border-muted-foreground group-data-checked/select:border-primary group-data-checked/select:bg-primary">
         <Checkbox.Indicator>
           <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3">
             <path
@@ -379,7 +380,7 @@ export function RecordRowDescription(props: RecordRowPartProps): React.ReactElem
   return usePart(
     "RecordRowDescription",
     "record-row-description",
-    "col-start-4 min-w-0 truncate pl-3 text-muted-foreground text-sm @max-[40rem]:hidden",
+    "col-start-4 min-w-0 truncate pl-3 text-muted-foreground text-sm @max-hide:hidden",
     <Bar className="w-2/3" />,
     props
   )

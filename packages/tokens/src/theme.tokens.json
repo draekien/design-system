@@ -1,0 +1,347 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "radius": {
+    "base": {
+      "$type": "dimension",
+      "$value": {
+        "value": 0.625,
+        "unit": "rem"
+      }
+    }
+  },
+  "theme": {
+    "font": {
+      "sans": {
+        "$type": "fontFamily",
+        "$value": ["Mona Sans Variable", "ui-sans-serif", "system-ui", "sans-serif"]
+      }
+    },
+    "color": {
+      "ring": {
+        "$type": "color",
+        "$value": "{semantic.color.ring}"
+      },
+      "input": {
+        "$type": "color",
+        "$value": "{semantic.color.input}"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{semantic.color.border}"
+      },
+      "destructive": {
+        "$type": "color",
+        "$value": "{semantic.color.destructive}"
+      },
+      "accent-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.accent-foreground}"
+      },
+      "accent": {
+        "$type": "color",
+        "$value": "{semantic.color.accent}"
+      },
+      "muted-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.muted-foreground}"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "{semantic.color.muted}"
+      },
+      "secondary-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.secondary-foreground}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{semantic.color.secondary}"
+      },
+      "primary-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.primary-foreground}"
+      },
+      "primary": {
+        "$type": "color",
+        "$value": "{semantic.color.primary}"
+      },
+      "popover-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.popover-foreground}"
+      },
+      "popover": {
+        "$type": "color",
+        "$value": "{semantic.color.popover}"
+      },
+      "card-foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.card-foreground}"
+      },
+      "card": {
+        "$type": "color",
+        "$value": "{semantic.color.card}"
+      },
+      "foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.foreground}"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "{semantic.color.background}"
+      }
+    },
+    "radius": {
+      "checkbox": {
+        "$type": "number",
+        "$value": 0.5
+      },
+      "sm": {
+        "$type": "number",
+        "$value": 0.6
+      },
+      "floor": {
+        "$type": "number",
+        "$value": "{theme.radius.sm}"
+      },
+      "md": {
+        "$type": "number",
+        "$value": 0.8
+      },
+      "lg": {
+        "$type": "number",
+        "$value": 1
+      },
+      "xl": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "2xl": {
+        "$type": "number",
+        "$value": 1.8
+      },
+      "card": {
+        "$type": "number",
+        "$value": "{theme.radius.2xl}"
+      },
+      "3xl": {
+        "$type": "number",
+        "$value": 2.2
+      },
+      "4xl": {
+        "$type": "number",
+        "$value": 2.6
+      },
+      "panel": {
+        "$type": "number",
+        "$value": 3.4
+      }
+    },
+    "spacing": {
+      "run": {
+        "$type": "dimension",
+        "$value": {
+          "value": 0,
+          "unit": "rem"
+        }
+      },
+      "related": {
+        "$type": "dimension",
+        "$value": {
+          "value": 0.5,
+          "unit": "rem"
+        }
+      },
+      "section": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1.5,
+          "unit": "rem"
+        }
+      },
+      "hit-min": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1.5,
+          "unit": "rem"
+        }
+      },
+      "hit-coarse": {
+        "$type": "dimension",
+        "$value": {
+          "value": 2.75,
+          "unit": "rem"
+        }
+      },
+      "row": {
+        "$type": "dimension",
+        "$value": {
+          "value": 2.75,
+          "unit": "rem"
+        }
+      },
+      "row-inset": {
+        "$type": "dimension",
+        "$value": {
+          "value": 0.5,
+          "unit": "rem"
+        }
+      }
+    },
+    "text": {
+      "micro": {
+        "$type": "typography",
+        "$value": {
+          "fontFamily": "{theme.font.sans}",
+          "fontSize": {
+            "value": 0.625,
+            "unit": "rem"
+          },
+          "fontWeight": 500,
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "rem"
+          }
+        }
+      },
+      "label": {
+        "$type": "typography",
+        "$value": {
+          "fontFamily": "{theme.font.sans}",
+          "fontSize": {
+            "value": 0.75,
+            "unit": "rem"
+          },
+          "fontWeight": 500,
+          "lineHeight": 1.33,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "rem"
+          }
+        }
+      },
+      "body": {
+        "$type": "typography",
+        "$value": {
+          "fontFamily": "{theme.font.sans}",
+          "fontSize": {
+            "value": 0.875,
+            "unit": "rem"
+          },
+          "fontWeight": 400,
+          "lineHeight": 1.43,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "rem"
+          }
+        }
+      },
+      "title": {
+        "$type": "typography",
+        "$value": {
+          "fontFamily": "{theme.font.sans}",
+          "fontSize": {
+            "value": 0.875,
+            "unit": "rem"
+          },
+          "fontWeight": 600,
+          "lineHeight": 1.43,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "rem"
+          }
+        }
+      }
+    },
+    "shadow": {
+      "popover": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [0, 0, 0],
+              "alpha": 0.05
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 2,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [0, 0, 0],
+              "alpha": 0.18
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 10,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 28,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -8,
+              "unit": "px"
+            }
+          }
+        ]
+      }
+    },
+    "transition-duration": {
+      "quick": {
+        "$type": "duration",
+        "$value": {
+          "value": 150,
+          "unit": "ms"
+        }
+      }
+    },
+    "ease": {
+      "out": {
+        "$type": "cubicBezier",
+        "$value": [0, 0, 0.2, 1]
+      }
+    },
+    "z-index": {
+      "popover": {
+        "$type": "number",
+        "$value": 50
+      }
+    },
+    "container": {
+      "abbreviate": {
+        "$type": "dimension",
+        "$value": {
+          "value": 48,
+          "unit": "rem"
+        }
+      },
+      "hide": {
+        "$type": "dimension",
+        "$value": {
+          "value": 40,
+          "unit": "rem"
+        }
+      }
+    }
+  }
+}
