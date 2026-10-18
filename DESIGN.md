@@ -28,15 +28,21 @@ typography:
     fontSize: "0.75rem"
     fontWeight: 500
     lineHeight: 1.33
+  micro:
+    fontFamily: "Mona Sans Variable, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.625rem"
+    fontWeight: 500
+    lineHeight: 1.4
 rounded:
+  checkbox: "5px"
   floor: "6px"
   card: "18px"
   panel: "34px"
   full: "9999px"
 spacing:
-  gap-run: "0px"
-  gap-related: "8px"
-  gap-section: "24px"
+  run: "0px"
+  related: "8px"
+  section: "24px"
   hit-min: "24px"
   hit-coarse: "44px"
   row: "44px"
@@ -45,14 +51,12 @@ components:
   button-primary:
     backgroundColor: "{colors.signal-orange}"
     textColor: "{colors.ink}"
-    typography: "{typography.label}"
     rounded: "{rounded.floor}"
     padding: "0 8px"
     height: "28px"
   button-ghost:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
-    typography: "{typography.label}"
     rounded: "{rounded.floor}"
     padding: "0 8px"
     height: "28px"
@@ -65,13 +69,13 @@ components:
   field-card:
     backgroundColor: "{colors.sheet}"
     textColor: "{colors.ink}"
-    typography: "{typography.label}"
     rounded: "{rounded.card}"
     padding: "12px"
     width: "240px"
   person-mark-initials:
     backgroundColor: "{colors.quiet-grey}"
     textColor: "{colors.muted-ink}"
+    typography: "{typography.micro}"
     rounded: "{rounded.full}"
     size: "24px"
 ---
@@ -91,10 +95,10 @@ The system is defined by the relationships between components, not by the compon
 | Placement | A record table where the caller compares down a column, a record list where they scan for one record | `docs/contexts/design-rules.md` |
 | Nesting | Groups do not nest; records nest one level deep | `docs/contexts/design-rules.md`, `RecordList` |
 | Adjacency | A selection bar holds at most two actions, then a ⋯ menu | `docs/contexts/design-rules.md` |
-| Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px | `docs/contexts/design-rules.md`; tokens not yet in `globals.css` |
-| Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; not yet in components |
+| Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px | `docs/contexts/design-rules.md`; the `--spacing-run`, `--spacing-related` and `--spacing-section` tokens, which no component uses yet |
+| Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; the `--radius-floor`, `--radius-card` and `--radius-panel` tokens, which no component uses yet |
 
-The palette is monochrome with a single orange that marks only what can be acted on. Density is high: 44px rows, 12–14px type, hairline borders and no decorative fills, so a list of hundreds of records stays scannable. Depth is flat; only layers that float above the page (hover cards, menus, peek panels) cast a shadow.
+The palette is monochrome with a single orange that marks only what can be acted on. Density is high: 44px rows, 10–14px type, hairline borders and no decorative fills, so a list of hundreds of records stays scannable. Depth is flat; only layers that float above the page (hover cards, menus, peek panels) cast a shadow.
 
 **Key Characteristics:**
 - Components declare which components they contain, sit beside and sit inside.
@@ -136,42 +140,43 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 ### Hierarchy
 - **Title** (600, 0.875rem): section headings and hover card titles.
 - **Body** (400–500, 0.875rem): row values; a row's name is 500.
-- **Label** (500, 0.75rem): buttons, column headers, footers, hover card bodies and key hints.
+- **Label** (500, 0.75rem): buttons, column headers, footers and key hints.
+- **Micro** (500, 0.625rem): initials inside a person mark and the smallest button's label; never running text.
 
 ### Named Rules
 **The Tabular Figures Rule.** Every number compared down a column (amounts, percentages, counts, widths) uses tabular figures, so digits align.
 
 ## Layout
 
-Lists are CSS grids whose rows are subgrids, so every row's columns align with the header without fixed widths. A row is 44px high with an 8px inset. Columns that hold rank 3 values hide first as the width narrows; the record's name truncates before it wraps. Interactive targets are at least 24×24px, and 44×44px on a coarse pointer.
+Lists are CSS grids whose rows are subgrids, so every row's columns align with the header without fixed widths. A row is 44px high with an 8px inset. Columns respond to the list's width, not the viewport's: below the `abbreviate` container width (48rem) a column shows its short form, and below the `hide` container width (40rem) a column marked to hide disappears. Columns that hold rank 3 values hide first; the record's name truncates before it wraps. Interactive targets are at least 24×24px, and 44×44px on a coarse pointer.
 
-The container sets the gap between its children by how the two neighbours relate: `{spacing.gap-run}` between the same component in a run (row after row; the border separates them), `{spacing.gap-related}` between parts of one record or control (a status dot and its word), `{spacing.gap-section}` between separate sections (two stacked record lists). A component never sets margin on itself.
+The container sets the gap between its children by how the two neighbours relate: `{spacing.run}` between the same component in a run (row after row; the border separates them), `{spacing.related}` between parts of one record or control (a status dot and its word), `{spacing.section}` between separate sections (two stacked record lists). A component never sets margin on itself.
 
 ## Elevation & Depth
 
 Surfaces are flat and separated by Hairline borders and Paper/Sheet contrast. Shadows appear only on layers that float above the page.
 
 ### Shadow Vocabulary
-- **Floating layer** (`box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18)`): hover cards, menus and peek panels.
+- **Popover** (`--shadow-popover`: `0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18)`): hover cards, menus and peek panels, which also sit on the `--z-index-popover` layer (50).
 
 ### Named Rules
 **The Flat-At-Rest Rule.** Nothing on the page casts a shadow at rest; a shadow means the layer floats and will close.
 
 ## Shapes
 
-A radius builds outward from a floor. A leaf control (checkbox, button, input) takes the floor, `{rounded.floor}` (`--radius-sm`, 6px). A container's radius is its content's radius plus its padding: a field card with 12px padding around a leaf control is `{rounded.card}` (18px), and a panel with 16px padding around a card is `{rounded.panel}` (34px). A container with no padding between it and its content, such as a row, is square.
+A radius builds outward from a floor. A leaf control (button, input) takes the floor, `{rounded.floor}` (`--radius-floor`, 6px). The selection checkbox is the one exception: at 16px square it takes `{rounded.checkbox}` (`--radius-checkbox`, 5px). A container's radius is its content's radius plus its padding: a field card with 12px padding around a leaf control is `{rounded.card}` (18px), and a panel with 16px padding around a card is `{rounded.panel}` (34px). A container with no padding between it and its content, such as a row, is square.
 
 Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and turns off nesting. Circles are reserved for status dots and initials.
 
 ### Named Rules
-**The Outward Radius Rule.** A container sets `--container-radius` and `--container-padding` on itself; the container around it computes its own radius with `calc(var(--container-radius) + var(--container-padding))`.
+**The Outward Radius Rule.** A container's radius is its content's radius plus its padding, so a container never picks a radius on its own.
 
-**Not yet in code.** The button is still `rounded-md` (8px), the field card `rounded-lg` (10px), and the selection checkbox `rounded-[0.3125rem]`; moving them to the floor and the outward rule is a follow-up lockup change.
+**Not yet in code.** The default, sm, lg and icon buttons are still `rounded-md` (8px), the field card `rounded-lg` (10px), and the selection checkbox casts a `shadow-xs` at rest; moving them to the floor and the outward rule is a follow-up lockup change.
 
 ## Components
 
 ### Buttons
-- **Shape:** the floor radius (`{rounded.floor}`), 28px high by default; 20, 24 and 32px sizes exist.
+- **Shape:** the floor radius (`{rounded.floor}`) at the xs sizes; the other sizes are still `rounded-md` (see Shapes). 28px high by default; 20, 24 and 32px sizes exist.
 - **Primary:** Signal Orange fill with Ink text, 12px medium label.
 - **Ghost / Outline:** transparent with Ink text; outline adds a Hairline border.
 - **Hover / Focus:** primary fades to 80%; focus draws a 2px Signal Ring at 30% and a ring-coloured border. Pressed buttons move down 1px.
@@ -183,12 +188,12 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 
 ### Field card (hover card)
 - **Corner Style:** its content's radius plus its 12px padding (`{rounded.card}`).
-- **Background:** Sheet with a Hairline border and the floating-layer shadow.
+- **Background:** Sheet with a Hairline border and the popover shadow.
 - **Size:** 240px wide, 12px padding, 12px text.
-- **Motion:** opens over 150ms from 97% scale and fades out instantly; no motion under reduced motion.
+- **Motion:** opens over `--transition-duration-quick` (150ms) with `--ease-out`, from `--field-card-enter-scale` (97%), and fades out instantly; no motion under reduced motion.
 
 ### Status mark
-- **Style:** a 10px dot with a 1.5px border, filled, half-filled or hollow by state, beside the state's word.
+- **Style:** a 10px dot with a `--status-mark-ring` (1.5px) border, filled, half-filled or hollow by state, beside the state's word.
 
 ### Person mark
 - **Style:** the person's initials in a 24px Quiet Grey circle, then their name; initials alone at narrow widths.
@@ -196,9 +201,9 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** take every colour, radius and font from the tokens in `packages/ui/src/styles/globals.css`.
+- **Do** take every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `packages/tokens/src` and generated into `packages/ui/src/styles/tokens.gen.css` and `theme.gen.css`.
 - **Do** derive a container's radius from its content's radius plus its padding.
-- **Do** let the container set the gap between its children from `--gap-run`, `--gap-related` or `--gap-section`.
+- **Do** let the container set the gap between its children from `--spacing-run`, `--spacing-related` or `--spacing-section`.
 - **Do** keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer.
 - **Do** give every hit area at least 24×24px, and 44×44px on a coarse pointer.
 - **Do** use tabular figures for any number compared down a column.
@@ -209,3 +214,4 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Don't** put a shadow on a surface that sits in the page flow.
 - **Don't** add a second typeface; use Mona Sans weights and widths.
 - **Don't** give a component margin or a hard-coded radius; both come from its container.
+- **Don't** write an untokenised value such as `text-[0.625rem]`, `z-50` or `duration-150` in a published component; add a token instead.
