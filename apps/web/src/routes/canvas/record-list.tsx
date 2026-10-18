@@ -27,6 +27,7 @@ function RecordListCanvasRoute() {
   return (
     <CanvasDocument search={options} schema={search} onFrameNavigate={handleFrameNavigate}>
       <RecordListCanvas options={options} />
+      <img src="/favicon.svg" />
     </CanvasDocument>
   )
 }
