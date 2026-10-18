@@ -6,7 +6,10 @@
     "dev": "vite dev",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:a11y": "playwright test --project a11y",
+    "test:screenshots": "vite build && playwright test --project screenshots",
+    "test:screenshots:update": "vite build && playwright test --project screenshots --update-snapshots=changed"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",
@@ -35,7 +38,9 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@babel/core": "8.0.7",
+    "@playwright/test": "1.64.1",
     "@rolldown/plugin-babel": "0.2.4",
     "@tanstack/devtools-vite": "0.8.5",
     "@tanstack/highlight": "1.1.0",

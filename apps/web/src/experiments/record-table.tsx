@@ -446,6 +446,16 @@ type ElementProps = React.HTMLAttributes<HTMLElement> & {
 
 const TableTagContext = React.createContext<"table" | "div">("table")
 
+function withoutTableAria({
+  "aria-sort": _sort,
+  "aria-level": _level,
+  "aria-expanded": _expanded,
+  "aria-selected": _selected,
+  ...props
+}: ElementProps): ElementProps {
+  return props
+}
+
 /** Draws the table's rows and cells as `div`s, for drawings that wrap rows in other elements. */
 export function DivTable({ children }: { children: React.ReactNode }): React.ReactElement {
   return <TableTagContext value="div">{children}</TableTagContext>
@@ -456,7 +466,7 @@ function RowElement(props: ElementProps) {
     // biome-ignore lint/a11y/noRedundantRoles: WebKit drops the implicit row role from a tr displayed as grid
     <tr role="row" {...props} />
   ) : (
-    <div {...props} />
+    <div {...withoutTableAria(props)} />
   )
 }
 
@@ -474,7 +484,7 @@ function HeadCellElement(props: ElementProps) {
   return React.useContext(TableTagContext) === "table" ? (
     <th scope="col" {...props} />
   ) : (
-    <div {...props} />
+    <div {...withoutTableAria(props)} />
   )
 }
 

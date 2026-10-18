@@ -1,7 +1,7 @@
 import * as React from "react"
 import { z } from "zod"
 
-const storageKey = "design-system:playground-theme"
+export const themeStorageKey = "design-system:playground-theme"
 
 const changeEvent = "design-system:playground-theme-change"
 
@@ -15,7 +15,7 @@ export type PlaygroundTheme = z.output<typeof themeSchema>
 export const defaultPlaygroundTheme: PlaygroundTheme = { mode: "light", css: "" }
 
 /** Sets the stored mode on `<html>` before first paint; run once from the document head. */
-export const themeModeScript = `try{document.documentElement.classList.toggle("dark",JSON.parse(localStorage.getItem(${JSON.stringify(storageKey)})??"{}").mode==="dark")}catch{}`
+export const themeModeScript = `try{document.documentElement.classList.toggle("dark",JSON.parse(localStorage.getItem(${JSON.stringify(themeStorageKey)})??"{}").mode==="dark")}catch{}`
 
 function subscribe(onChange: () => void) {
   window.addEventListener("storage", onChange)
@@ -28,7 +28,7 @@ function subscribe(onChange: () => void) {
 
 function readStoredTheme(): string | null {
   try {
-    return window.localStorage.getItem(storageKey)
+    return window.localStorage.getItem(themeStorageKey)
   } catch {
     return null
   }
@@ -52,7 +52,7 @@ export function usePlaygroundTheme(): PlaygroundTheme {
 
 export function savePlaygroundTheme(theme: PlaygroundTheme): boolean {
   try {
-    window.localStorage.setItem(storageKey, JSON.stringify(theme))
+    window.localStorage.setItem(themeStorageKey, JSON.stringify(theme))
   } catch {
     return false
   }

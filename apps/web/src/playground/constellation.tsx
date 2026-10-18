@@ -254,6 +254,7 @@ export function Constellation({
   stage: HTMLDivElement | null
   onStageChange: (stage: HTMLDivElement | null) => void
 }): React.ReactElement {
+  const frameRef = React.useRef<HTMLDivElement>(null)
   const viewportRef = React.useRef<HTMLDivElement>(null)
   const dragRef = React.useRef<Drag | null>(null)
   const [hoveredN, setHoveredN] = React.useState<number | null>(null)
@@ -265,12 +266,13 @@ export function Constellation({
   const [partsChoice, setPartsChoice] = React.useState<boolean | null>(null)
   const layoutKey = JSON.stringify([parts.map((part) => part.name), groups])
   const geometry = useGeometry(stage, layoutKey)
+  const frame = useSize(frameRef)
   const viewport = useSize(viewportRef)
   const view = manualView ?? fitView(viewport, geometry)
   const viewRef = React.useRef(view)
   const hintId = React.useId()
   const activeN = hoveredN ?? pinnedN
-  const isPartsOpen = partsChoice ?? (viewport.width === 0 || viewport.width >= 880)
+  const isPartsOpen = partsChoice ?? (frame.width === 0 || frame.width >= 880)
 
   React.useLayoutEffect(() => {
     viewRef.current = view
@@ -418,7 +420,7 @@ export function Constellation({
   const firstLabelled = new Set<number>()
 
   return (
-    <div className="flex h-full min-h-0 bg-background">
+    <div ref={frameRef} className="flex h-full min-h-0 bg-background">
       <div className="relative min-w-0 flex-1">
         <section
           ref={viewportRef}

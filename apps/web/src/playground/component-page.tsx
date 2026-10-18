@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import * as React from "react"
 import { CodeBlock } from "./code-block.tsx"
 import { componentSpecimens } from "./component-specimens.tsx"
+import { ItemChanges, ItemMetaList } from "./item-record.tsx"
 import { InstallCommand, Segmented } from "./playground-controls.tsx"
 import type { SectionTab } from "./playground-search.ts"
 import { segmentItem } from "./playground-styles.ts"
@@ -37,6 +38,7 @@ export function ComponentPage({
         <p className="mt-2 max-w-2xl text-pretty text-muted-foreground leading-relaxed">
           {item.description}
         </p>
+        <ItemMetaList meta={item.meta} className="mt-4" />
         <InstallCommand command={installCommand(item.name)} className="mt-5 max-w-2xl" />
       </header>
 
@@ -91,6 +93,10 @@ export function ComponentPage({
         ) : (
           <RelatedItems label="Used in" items={dependents} />
         )}
+      </PageSection>
+
+      <PageSection title="Changes" description="Each dated change to this item, newest first.">
+        <ItemChanges changelog={item.changelog} />
       </PageSection>
     </div>
   )

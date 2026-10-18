@@ -17,6 +17,7 @@ import * as React from "react"
 import { CanvasFrame, type CanvasMessageSearch } from "./canvas-frame.tsx"
 import { CodeBlock } from "./code-block.tsx"
 import { datasetParts, invoicesDataset, recordsDataset } from "./datasets.tsx"
+import { ItemChanges, ItemMetaList } from "./item-record.tsx"
 import { ControlGroup, InstallCommand, Segmented } from "./playground-controls.tsx"
 import {
   type CanvasPointer,
@@ -113,6 +114,7 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
           <code className="font-mono text-[0.875em] text-foreground">record-row</code> the ranked
           parts.
         </p>
+        <ItemMetaList meta={lockup.meta} className="mt-4" />
         <InstallCommand command={installCommand(lockup.name)} className="mt-5 max-w-2xl" />
       </header>
 
@@ -221,6 +223,14 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
         >
           <RuleNotes rules={recordListRules} />
         </ViewSection>
+
+        <ViewSection
+          id={sectionId.changes}
+          title="Changes"
+          description="Each dated change to this item, newest first."
+        >
+          <ItemChanges changelog={lockup.changelog} />
+        </ViewSection>
       </div>
 
       <aside
@@ -255,6 +265,7 @@ const sectionId = {
   constellation: "constellation",
   builtFrom: "built-from",
   rules: "rules",
+  changes: "changes",
 } as const
 
 const pageSections = [
@@ -263,6 +274,7 @@ const pageSections = [
   { id: sectionId.constellation, label: "Constellation" },
   { id: sectionId.builtFrom, label: "Built from" },
   { id: sectionId.rules, label: "Rules" },
+  { id: sectionId.changes, label: "Changes" },
 ] as const
 
 function PageNav() {

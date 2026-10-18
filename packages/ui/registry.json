@@ -14,7 +14,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "RecordList holds RecordRow children; installing record-list installs record-row. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection on a row that has a RecordRowSelect, Esc closes peek and then clears the selection. RecordList renders no peek: read peekValue with onPeekValueChange and render a read-only preview of the item's page beside the list or in a drawer at wide widths, and under the row or in a bottom drawer at narrow ones; it holds nothing that page lacks. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "RecordList holds RecordRow children; installing record-list installs record-row. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection on a row that has a RecordRowSelect, Esc closes peek and then clears the selection. RecordList renders no peek: read peekValue with onPeekValueChange and render a read-only preview of the item's page beside the list or in a drawer at wide widths, and under the row or in a bottom drawer at narrow ones; it holds nothing that page lacks. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/record-list",
+      "meta": { "status": "beta", "a11yReviewed": null }
     },
     {
       "name": "record-row",
@@ -29,7 +30,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Rank each value, then compose: an optional RecordRowSelect (a row without one cannot be selected), then RecordRowLink holding RecordRowIdentify (rank 1: an optional RecordRowKey, an optional RecordRowGlyph such as a status-mark drawn as its dot only, then RecordRowName, then an optional one-line RecordRowDescription) and one RecordRowRead per rank 2 reading, at most eight, then an optional RecordRowPeek, a button that toggles peek on the row so a click on RecordRowLink can open the item's page. Hold a person-mark, figure, track, relative-time, status-mark or field-state in each Read. Rank 4 is a field-card on a rank 1 or 2 value; rank 5 is the item's page, reached through RecordRowLink's render, and peek, rendered from RecordList's peekValue, previews part of it read-only. Columns line up down the list. When the list narrows the description truncates, then the name; below 640px the description is hidden; set narrow=\"abbreviate\" to switch a part to its short form below 768px, or narrow=\"hide\" to drop it below 640px, and keep a hidden value in peek and on the item's page. While loading, render RecordRowLoading with the same parts. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Rank each value, then compose: an optional RecordRowSelect (a row without one cannot be selected), then RecordRowLink holding RecordRowIdentify (rank 1: an optional RecordRowKey, an optional RecordRowGlyph such as a status-mark drawn as its dot only, then RecordRowName, then an optional one-line RecordRowDescription) and one RecordRowRead per rank 2 reading, at most eight, then an optional RecordRowPeek, a button that toggles peek on the row so a click on RecordRowLink can open the item's page. Hold a person-mark, figure, track, relative-time, status-mark or field-state in each Read. Rank 4 is a field-card on a rank 1 or 2 value; rank 5 is the item's page, reached through RecordRowLink's render, and peek, rendered from RecordList's peekValue, previews part of it read-only. Columns line up down the list. When the list narrows the description truncates, then the name; below 640px the description is hidden; set narrow=\"abbreviate\" to switch a part to its short form below 768px, or narrow=\"hide\" to drop it below 640px, and keep a hidden value in peek and on the item's page. While loading, render RecordRowLoading with the same parts. Playground: https://design-system.wpei.me/playground/record-list",
+      "meta": { "status": "beta", "a11yReviewed": null }
     },
     {
       "name": "status-mark",
@@ -43,7 +45,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Compose StatusMarkDot (fill none, half or full) then StatusMarkLabel. The dot tells states apart by shape, not colour. In a RecordRowGlyph, and in an abbreviated RecordRowRead, only the dot is drawn and the word is read by screen readers. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Compose StatusMarkDot (fill none, half or full) then StatusMarkLabel. The dot tells states apart by shape, not colour. In a RecordRowGlyph, and in an abbreviated RecordRowRead, only the dot is drawn and the word is read by screen readers. Playground: https://design-system.wpei.me/playground/record-list",
+      "meta": { "status": "beta", "a11yReviewed": null }
     },
     {
       "name": "person-mark",
@@ -57,7 +60,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Pass name; the initials come from its first and last words. In an abbreviated RecordRowRead only the initials are drawn and the name is read by screen readers. Wrap it in a field-card to show more about the person. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Pass name; the initials come from its first and last words. In an abbreviated RecordRowRead only the initials are drawn and the name is read by screen readers. Wrap it in a field-card to show more about the person. Playground: https://design-system.wpei.me/playground/record-list",
+      "meta": { "status": "beta", "a11yReviewed": null }
     },
     {
       "name": "figure",
@@ -71,7 +75,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Pass value and Intl.NumberFormat options in format, and a locale so server and browser render the same text. It sits at the end of its column. In an abbreviated RecordRowRead it switches to compact notation, such as $13K. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Pass value and Intl.NumberFormat options in format, and a locale so server and browser render the same text. It sits at the end of its column. In an abbreviated RecordRowRead it switches to compact notation, such as $13K. Playground: https://design-system.wpei.me/playground/record-list",
+      "meta": { "status": "beta", "a11yReviewed": null }
     },
     {
       "name": "track",
@@ -85,7 +90,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Pass value, min and max, a format and an aria-label. In an abbreviated RecordRowRead the bar is dropped and the value stays. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Pass value, min and max, a format and an aria-label. In an abbreviated RecordRowRead the bar is dropped and the value stays. Playground: https://design-system.wpei.me/playground/record-list",
+      "meta": { "status": "beta", "a11yReviewed": null }
     },
     {
       "name": "relative-time",
@@ -99,7 +105,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Pass dateTime and now as ISO 8601 strings; passing now keeps server and browser output the same. In an abbreviated RecordRowRead it switches to the narrow form, such as 2h ago. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Pass dateTime and now as ISO 8601 strings; passing now keeps server and browser output the same. In an abbreviated RecordRowRead it switches to the narrow form, such as 2h ago. Playground: https://design-system.wpei.me/playground/record-list",
+      "meta": { "status": "beta", "a11yReviewed": null }
     },
     {
       "name": "field-state",
@@ -113,7 +120,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Pass state unavailable or hidden. State why, and how to get access, once outside the fields it replaces, such as in the list footer. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Pass state unavailable or hidden. State why, and how to get access, once outside the fields it replaces, such as in the list footer. Playground: https://design-system.wpei.me/playground/record-list",
+      "meta": { "status": "beta", "a11yReviewed": null }
     },
     {
       "name": "field-card",
@@ -127,7 +135,8 @@
           "type": "registry:ui"
         }
       ],
-      "docs": "Compose FieldCard, FieldCardTrigger around the value, then FieldCardContent. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links. The card renders into the body; pass FieldCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/record-list"
+      "docs": "Compose FieldCard, FieldCardTrigger around the value, then FieldCardContent. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links. The card renders into the body; pass FieldCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/record-list",
+      "meta": { "status": "beta", "a11yReviewed": null }
     }
   ]
 }
