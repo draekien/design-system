@@ -1,5 +1,6 @@
-import { cn } from "cn"
 import type * as React from "react"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { cn } from "@/lib/cn"
 
 /** Props for {@link Figure}. */
 export type FigureProps = Omit<React.ComponentProps<"data">, "children" | "value"> & {

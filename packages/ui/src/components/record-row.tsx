@@ -1,10 +1,11 @@
 import { Checkbox } from "@base-ui/react/checkbox"
 import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
-import { cn } from "cn"
 import * as React from "react"
 // biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .tsx extensions
 import { useRecordList } from "@/components/record-list"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { cn } from "@/lib/cn"
 
 type RecordRowContextValue =
   | {

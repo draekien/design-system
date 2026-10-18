@@ -1,7 +1,7 @@
 import { sampleInvoiceLines } from "@workspace/fixtures/invoices.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
-import { cn } from "cn"
 import * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import {
   Constellation,
   type ConstellationGroup,

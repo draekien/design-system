@@ -2,6 +2,7 @@ import { defineConfig } from "@terrazzo/cli"
 import type { Config } from "@terrazzo/parser"
 import css from "@terrazzo/plugin-css"
 import tailwind from "@terrazzo/plugin-tailwind"
+import { type CnGroups, cnConfig } from "./cn-config.ts"
 import { registryTheme } from "./registry-theme.ts"
 
 type Color = { colorSpace: string; components: ReadonlyArray<number | null>; alpha: number }
@@ -23,6 +24,19 @@ const withoutThemeTokens = (contents: string) =>
     .split("\n")
     .filter((line) => !line.trim().startsWith("--theme-"))
     .join("\n")
+
+const themeGroups: CnGroups = {
+  font: null,
+  color: null,
+  radius: "theme",
+  spacing: "theme",
+  text: "theme",
+  shadow: "theme",
+  "transition-duration": "duration",
+  ease: "theme",
+  "z-index": "z",
+  container: "theme",
+}
 
 export const tokensConfig = {
   tokens: ["./src/tokens.resolver.json"],
@@ -71,20 +85,12 @@ export const tokensConfig = {
     tailwind({
       template: new URL("./theme.template.css", import.meta.url).href,
       filename: "theme.gen.css",
-      theme: {
-        font: ["theme.font.*"],
-        color: ["theme.color.*"],
-        radius: ["theme.radius.*"],
-        spacing: ["theme.spacing.*"],
-        text: ["theme.text.*"],
-        shadow: ["theme.shadow.*"],
-        "transition-duration": ["theme.transition-duration.*"],
-        ease: ["theme.ease.*"],
-        "z-index": ["theme.z-index.*"],
-        container: ["theme.container.*"],
-      },
+      theme: Object.fromEntries(
+        Object.keys(themeGroups).map((group) => [group, [`theme.${group}.*`]])
+      ),
     }),
     registryTheme({ registry: new URL("../ui/registry.json", import.meta.url), item: "tokens" }),
+    cnConfig({ file: new URL("../ui/src/lib/cn.ts", import.meta.url), groups: themeGroups }),
   ],
 } satisfies Config
 

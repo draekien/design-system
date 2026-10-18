@@ -1,7 +1,7 @@
 import { useNavigate, useRouter } from "@tanstack/react-router"
 import { fixtureStates } from "@workspace/fixtures/state.ts"
-import { cn } from "cn"
 import * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import { SearchFrame } from "../playground/canvas-frame.tsx"
 import { Segmented } from "../playground/playground-controls.tsx"
 import { canvasPointers, canvasWidths } from "../playground/playground-search.ts"

@@ -1,14 +1,20 @@
 import { Moon02Icon, Sun03Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { cn } from "cn"
 import * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import { CanvasFrame } from "./canvas-frame.tsx"
 import { ColorToken } from "./color-token.tsx"
 import { ItemChanges, ItemMetaList } from "./item-record.tsx"
 import { InstallCommand, Segmented } from "./playground-controls.tsx"
 import { playgroundSearch } from "./playground-search.ts"
 import { focusRing, segmentItem } from "./playground-styles.ts"
-import { installCommand, requireRegistryItem, tokensItemName, usageText } from "./registry-items.ts"
+import {
+  cnItemName,
+  installCommand,
+  requireRegistryItem,
+  tokensItemName,
+  usageText,
+} from "./registry-items.ts"
 import {
   isColorValue,
   readThemeTokens,
@@ -26,6 +32,7 @@ import {
 } from "./theme-store.ts"
 
 const tokensItem = requireRegistryItem(tokensItemName)
+const cnItem = requireRegistryItem(cnItemName)
 
 type SaveResult =
   | { kind: "idle" }
@@ -265,6 +272,22 @@ export function ThemePage(): React.ReactElement {
             Changes
           </h2>
           <ItemChanges changelog={tokensItem.changelog} />
+        </section>
+
+        <section
+          id={cnItemName}
+          aria-labelledby={`${cnItemName}-title`}
+          className="mt-7 flex scroll-mt-6 flex-col gap-2"
+        >
+          <h2 id={`${cnItemName}-title`} className="font-medium text-sm">
+            The {cnItem.title} item
+          </h2>
+          <p className="text-pretty text-muted-foreground text-sm leading-relaxed">
+            {cnItem.description} {usageText(cnItem.docs)}
+          </p>
+          <ItemMetaList meta={cnItem.meta} />
+          <InstallCommand command={installCommand(cnItemName)} />
+          <ItemChanges changelog={cnItem.changelog} />
         </section>
       </div>
 

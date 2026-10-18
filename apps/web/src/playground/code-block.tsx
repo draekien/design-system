@@ -3,8 +3,8 @@ import { tsx } from "@tanstack/highlight/languages/tsx"
 import { createThemeCss } from "@tanstack/highlight/theme"
 import { githubDarkTheme } from "@tanstack/highlight/themes/github-dark"
 import { githubLightTheme } from "@tanstack/highlight/themes/github-light"
-import { cn } from "cn"
 import type * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import { CopyButton } from "./playground-controls.tsx"
 
 const highlighter = createHighlighter({ languages: [tsx] })

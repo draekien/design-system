@@ -12,6 +12,7 @@
       "!**/*.gen.css",
       "!packages/tokens/theme.template.css",
       "!packages/ui/registry.json",
+      "!packages/ui/src/lib/cn.ts",
       "!.biome",
       "!.intent",
       "!.claude",

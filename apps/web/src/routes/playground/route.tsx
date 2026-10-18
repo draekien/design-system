@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
-import { cn } from "cn"
 import type * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import { Mark } from "../../mark.tsx"
 import { focusRing } from "../../playground/playground-styles.ts"
 import { componentItems } from "../../playground/registry-items.ts"

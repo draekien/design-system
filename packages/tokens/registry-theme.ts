@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs"
-import { relative } from "node:path"
 import { fileURLToPath } from "node:url"
 import type { BuildHookOptions, Plugin } from "@terrazzo/parser"
 import { formatCompositeDeclarations } from "@terrazzo/plugin-tailwind"
+import { outputPath } from "./output-path.ts"
 
 type CssVars = Readonly<Record<string, string>>
 
@@ -45,12 +45,12 @@ function readVars(
 }
 
 export function registryTheme({ registry, item }: { registry: URL; item: string }): Plugin {
-  let outDir = ""
+  let outDir = new URL("file:///")
   return {
     name: "registry-theme",
     enforce: "post",
     config(config) {
-      outDir = fileURLToPath(config.outDir)
+      outDir = config.outDir
     },
     build({ getTransforms, outputFile }) {
       const isVariable = (id: string) => !id.startsWith("theme.")
@@ -68,10 +68,7 @@ export function registryTheme({ registry, item }: { registry: URL; item: string 
       const items = source.items.map((candidate) =>
         candidate.name === item ? { ...candidate, cssVars } : candidate
       )
-      outputFile(
-        relative(outDir, fileURLToPath(registry)).replaceAll("\\", "/"),
-        `${JSON.stringify({ ...source, items }, null, 2)}\n`
-      )
+      outputFile(outputPath(outDir, registry), `${JSON.stringify({ ...source, items }, null, 2)}\n`)
     },
   }
 }

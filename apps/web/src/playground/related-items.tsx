@@ -12,8 +12,8 @@ import {
   RecordRowPeek,
   RecordRowRead,
 } from "@workspace/ui/components/record-row.tsx"
-import { cn } from "cn"
 import * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import { componentSpecimens } from "./component-specimens.tsx"
 import { InstallCommand } from "./playground-controls.tsx"
 import { focusRing } from "./playground-styles.ts"
@@ -42,6 +42,9 @@ type LinkProps = { className?: string; children?: React.ReactNode }
 function itemPageLink(item: RegistryItem, props: LinkProps = {}): React.ReactElement {
   if (item.type === "registry:theme") {
     return <Link to="/playground/theme" {...props} />
+  }
+  if (item.type === "registry:lib") {
+    return <Link to="/playground/theme" hash={item.name} {...props} />
   }
   if (item.name === "record-list") {
     return <Link to="/playground/record-list" {...props} />

@@ -15,9 +15,9 @@ import {
   RecordRowRead,
   RecordRowSelect,
 } from "@workspace/ui/components/record-row.tsx"
-import { cn } from "cn"
 import * as React from "react"
 import { flushSync } from "react-dom"
+import { cn } from "@/lib/cn.ts"
 import { Constellation, type ConstellationGroup, type ConstellationPart } from "./constellation.tsx"
 import {
   type Dataset,

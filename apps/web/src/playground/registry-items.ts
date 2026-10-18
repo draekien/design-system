@@ -24,7 +24,7 @@ const changelogSchema = z
 
 export type Changelog = z.output<typeof changelogSchema>
 
-const itemTypeSchema = z.enum(["registry:ui", "registry:theme"])
+const itemTypeSchema = z.enum(["registry:ui", "registry:theme", "registry:lib"])
 
 export type RegistryItem = {
   name: string
@@ -81,6 +81,8 @@ export const registryItems: ReadonlyArray<RegistryItem> = registry.items.map((it
 }))
 
 export const tokensItemName = "tokens"
+
+export const cnItemName = "cn"
 
 const lockupParts: Readonly<Record<string, ReadonlyArray<string>>> = {
   "record-list": Object.values(componentModule),

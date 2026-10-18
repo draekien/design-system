@@ -1,6 +1,7 @@
 import { PreviewCard } from "@base-ui/react/preview-card"
-import { cn } from "cn"
 import type * as React from "react"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { cn } from "@/lib/cn"
 
 /**
  * Rank 4: more about one entity or property already on screen, such as a person or a stage, in a

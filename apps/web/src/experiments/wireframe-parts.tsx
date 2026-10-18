@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { cn } from "cn"
 import type * as React from "react"
+import { cn } from "@/lib/cn.ts"
 
 /** Says what failed to load and links back to the loaded state. */
 export function ErrorMessage({ subject }: { subject: string }): React.ReactElement {

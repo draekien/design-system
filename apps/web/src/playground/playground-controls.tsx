@@ -1,7 +1,7 @@
 import { Copy01Icon, Tick02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { cn } from "cn"
 import * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import { focusRing } from "./playground-styles.ts"
 
 export function Segmented({

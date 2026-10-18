@@ -1,4 +1,4 @@
-import { cn } from "cn"
+import { cn } from "@/lib/cn.ts"
 
 export const focusRing =
   "outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"

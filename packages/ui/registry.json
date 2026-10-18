@@ -126,17 +126,37 @@
       }
     },
     {
+      "name": "cn",
+      "type": "registry:lib",
+      "title": "cn",
+      "description": "Joins and merges class names, and resolves the token utilities so a className override replaces them.",
+      "dependencies": [
+        "cn@0.4.0"
+      ],
+      "files": [
+        {
+          "path": "src/lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "docs": "Import cn from @/lib/cn and pass it class names; a later class replaces an earlier one in the same group, token utilities such as text-micro, shadow-popover and duration-quick included. Every component item in this registry imports it. Playground: https://design-system.wpei.me/playground/theme",
+      "meta": {
+        "status": "beta",
+        "a11yReviewed": null
+      }
+    },
+    {
       "name": "record-list",
       "type": "registry:ui",
       "title": "Record list",
       "description": "A list of record rows with one tab stop, arrow-key focus, keyboard peek and keyboard selection.",
       "dependencies": [
-        "@base-ui/react@1.8.0",
-        "cn@0.4.0"
+        "@base-ui/react@1.8.0"
       ],
       "registryDependencies": [
         "draekien/design-system/record-row",
-        "draekien/design-system/tokens"
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
       ],
       "files": [
         {
@@ -156,12 +176,12 @@
       "title": "Record row",
       "description": "A 44px row whose parts are named for the rank of what they hold, so any data lines up, reads and narrows by rank.",
       "dependencies": [
-        "@base-ui/react@1.8.0",
-        "cn@0.4.0"
+        "@base-ui/react@1.8.0"
       ],
       "registryDependencies": [
         "draekien/design-system/record-list",
-        "draekien/design-system/tokens"
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
       ],
       "files": [
         {
@@ -180,11 +200,9 @@
       "type": "registry:ui",
       "title": "Status mark",
       "description": "A state drawn as a shape-coded dot and its word, for a rank 2 Read.",
-      "dependencies": [
-        "cn@0.4.0"
-      ],
       "registryDependencies": [
-        "draekien/design-system/tokens"
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
       ],
       "files": [
         {
@@ -203,11 +221,9 @@
       "type": "registry:ui",
       "title": "Person mark",
       "description": "A person's initials in a 24px circle, then their name.",
-      "dependencies": [
-        "cn@0.4.0"
-      ],
       "registryDependencies": [
-        "draekien/design-system/tokens"
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
       ],
       "files": [
         {
@@ -226,11 +242,9 @@
       "type": "registry:ui",
       "title": "Figure",
       "description": "A number the caller compares down a list, in tabular figures, with a compact short form.",
-      "dependencies": [
-        "cn@0.4.0"
-      ],
       "registryDependencies": [
-        "draekien/design-system/tokens"
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
       ],
       "files": [
         {
@@ -250,11 +264,11 @@
       "title": "Track",
       "description": "A measurement within a known range, drawn as a bar and its value, on Base UI Meter.",
       "dependencies": [
-        "@base-ui/react@1.8.0",
-        "cn@0.4.0"
+        "@base-ui/react@1.8.0"
       ],
       "registryDependencies": [
-        "draekien/design-system/tokens"
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
       ],
       "files": [
         {
@@ -273,11 +287,9 @@
       "type": "registry:ui",
       "title": "Relative time",
       "description": "A moment stated relative to now, with a narrow short form.",
-      "dependencies": [
-        "cn@0.4.0"
-      ],
       "registryDependencies": [
-        "draekien/design-system/tokens"
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
       ],
       "files": [
         {
@@ -296,11 +308,9 @@
       "type": "registry:ui",
       "title": "Field state",
       "description": "Stands in for a value that failed to load or that the viewer's role cannot see.",
-      "dependencies": [
-        "cn@0.4.0"
-      ],
       "registryDependencies": [
-        "draekien/design-system/tokens"
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
       ],
       "files": [
         {
@@ -320,11 +330,11 @@
       "title": "Field card",
       "description": "Rank 4: a hover card on a rank 1 or 2 value with more about that entity or property.",
       "dependencies": [
-        "@base-ui/react@1.8.0",
-        "cn@0.4.0"
+        "@base-ui/react@1.8.0"
       ],
       "registryDependencies": [
-        "draekien/design-system/tokens"
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
       ],
       "files": [
         {
