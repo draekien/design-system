@@ -27,13 +27,13 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
   --radius-card: calc(var(--radius) * 1.8);
+  --radius-checkbox: calc(var(--radius) * 0.5);
   --radius-floor: calc(var(--radius) * 0.6);
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-panel: calc(var(--radius) * 3.4);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-xl: calc(var(--radius) * 1.4);
-  --radius-xs: calc(var(--radius) * 0.5);
   --spacing-hit-coarse: 2.75rem;
   --spacing-hit-min: 1.5rem;
   --spacing-related: 0.5rem;

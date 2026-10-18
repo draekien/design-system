@@ -91,7 +91,7 @@
       }
     },
     "radius": {
-      "xs": {
+      "checkbox": {
         "$type": "number",
         "$value": 0.5
       },
