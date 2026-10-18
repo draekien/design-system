@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { PlaygroundIndex } from "../../playground/playground-index.tsx"
+import { siteName } from "../../site.ts"
 
 export const Route = createFileRoute("/playground/")({
   head: () => ({
     meta: [
-      { title: "Playground · {{design-system}}" },
+      { title: `Playground · ${siteName}` },
       {
         name: "description",
         content:

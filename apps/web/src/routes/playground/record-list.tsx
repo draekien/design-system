@@ -1,13 +1,14 @@
 import { createFileRoute, stripSearchParams, useHydrated } from "@tanstack/react-router"
 import { playgroundSearch, playgroundSearchDefaults } from "../../playground/playground-search.ts"
 import { RecordListPage } from "../../playground/record-list-page.tsx"
+import { siteName } from "../../site.ts"
 
 export const Route = createFileRoute("/playground/record-list")({
   validateSearch: playgroundSearch,
   search: { middlewares: [stripSearchParams(playgroundSearchDefaults)] },
   head: () => ({
     meta: [
-      { title: "Record list · Playground · {{design-system}}" },
+      { title: `Record list · Playground · ${siteName}` },
       {
         name: "description",
         content:

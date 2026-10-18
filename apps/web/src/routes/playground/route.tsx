@@ -4,6 +4,7 @@ import type * as React from "react"
 import { Mark } from "../../mark.tsx"
 import { focusRing } from "../../playground/playground-styles.ts"
 import { componentItems } from "../../playground/registry-items.ts"
+import { siteName } from "../../site.ts"
 
 export const Route = createFileRoute("/playground")({
   component: PlaygroundLayout,
@@ -28,7 +29,7 @@ function PlaygroundLayout() {
               <span aria-hidden="true" className="text-muted-foreground">
                 {"{{"}
               </span>
-              design-system
+              {siteName}
               <span aria-hidden="true" className="text-muted-foreground">
                 {"}}"}
               </span>

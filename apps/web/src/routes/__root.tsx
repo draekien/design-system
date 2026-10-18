@@ -11,6 +11,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import * as React from "react"
 import { themeModeScript, usePlaygroundTheme } from "../playground/theme-store.ts"
+import { siteName } from "../site.ts"
 // biome-ignore lint/correctness/noUnresolvedImports: vite ?url query resolves to the stylesheet url, which Biome cannot resolve
 import appCss from "../styles.css?url"
 
@@ -19,7 +20,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "{{design-system}} — coming soon" },
+      { title: siteName },
       {
         name: "description",
         content:
