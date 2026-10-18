@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
   builtFrom,
+  changelogByDate,
   componentItems,
   installCommand,
   itemStatuses,
@@ -98,6 +99,24 @@ describe("parseChangelog", () => {
     ]
 
     expect(() => parseChangelog("figure", { [path]: entries })).toThrow("is not newest first")
+  })
+})
+
+describe("changelogByDate", () => {
+  it("puts entries that share a date under one day, keeping their order", () => {
+    const changelog = [
+      { date: "2026-10-18", description: "Installs into your components folder." },
+      { date: "2026-10-18", description: "Depends on the tokens item." },
+      { date: "2026-10-16", description: "Component introduced." },
+    ]
+
+    expect(changelogByDate(changelog)).toEqual([
+      {
+        date: "2026-10-18",
+        descriptions: ["Installs into your components folder.", "Depends on the tokens item."],
+      },
+      { date: "2026-10-16", descriptions: ["Component introduced."] },
+    ])
   })
 })
 

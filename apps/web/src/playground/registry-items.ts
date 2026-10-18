@@ -25,6 +25,21 @@ const changelogSchema = z
 
 export type Changelog = z.output<typeof changelogSchema>
 
+type ChangelogDay = { date: string; descriptions: ReadonlyArray<string> }
+
+export function changelogByDate(changelog: Changelog): ReadonlyArray<ChangelogDay> {
+  const days = new Map<string, Array<string>>()
+  for (const entry of changelog) {
+    const descriptions = days.get(entry.date)
+    if (descriptions === undefined) {
+      days.set(entry.date, [entry.description])
+    } else {
+      descriptions.push(entry.description)
+    }
+  }
+  return Array.from(days, ([date, descriptions]) => ({ date, descriptions }))
+}
+
 const itemTypeSchema = z.enum(["registry:ui", "registry:theme", "registry:lib"])
 
 export type RegistryItem = {

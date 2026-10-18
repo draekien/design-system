@@ -227,7 +227,7 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
         <ViewSection
           id={sectionId.changes}
           title="Changes"
-          description="Each dated change to this item, newest first."
+          description="Changes to this item by date, newest first."
         >
           <ItemChanges changelog={lockup.changelog} />
         </ViewSection>
