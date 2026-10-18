@@ -4,7 +4,7 @@
 
 A personal, public, open-source design system, distributed as a shadcn registry from this GitHub repository.
 
-It encodes rules for data disclosure (what a surface shows, what it hides, how hidden data is revealed, how actions are ranked) and data composition (how records assemble into rows, cards and rails, how surfaces lay out, how data is grouped and ordered, and how permission, loading, partial and error states change what is shown).
+A general-purpose design system whose components encode the rules for data disclosure (what a surface shows, what it hides, how hidden data is revealed, how actions are ranked) and data composition (how parts assemble into rows, cards and rails, how surfaces lay out, how data is grouped and ordered, and how permission, loading, partial and error states change what is shown).
 
 It is not affiliated with any employer.
 
