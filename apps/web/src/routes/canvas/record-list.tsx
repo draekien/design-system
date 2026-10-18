@@ -27,7 +27,7 @@ function RecordListCanvasRoute() {
   return (
     <CanvasDocument search={options} schema={search} onFrameNavigate={handleFrameNavigate}>
       <RecordListCanvas options={options} />
-      <img src="/favicon.svg" />
+      <p style={{ color: "#eeeeee" }}>Low contrast text</p>
     </CanvasDocument>
   )
 }
