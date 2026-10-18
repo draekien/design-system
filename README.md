@@ -7,8 +7,10 @@ Documentation and live examples: https://design-system.wpei.me/
 ## Install a component
 
 ```sh
-pnpm dlx shadcn@latest add draekien/design-system/<item>
+pnpm dlx shadcn@latest add draekien/design-system/tokens draekien/design-system/<item>
 ```
+
+Name `tokens` in the command with the item. shadcn replaces the CSS variables you already have only when a theme item is named in the command, so an item installed alone keeps your current colours and font, and naming `tokens` again later replaces any of its variables you have edited.
 
 | Item | Description |
 | --- | --- |

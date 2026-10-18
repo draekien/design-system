@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   builtFrom,
   componentItems,
+  installCommand,
   itemStatuses,
   parseChangelog,
   parseItemMeta,
@@ -101,5 +102,17 @@ describe("registryItems", () => {
       expect(itemStatuses).toContain(item.meta.status)
       expect(item.changelog.length).toBeGreaterThan(0)
     }
+  })
+})
+
+describe("installCommand", () => {
+  it("names the tokens item before an item that depends on it, so shadcn replaces the existing colours", () => {
+    expect(installCommand("status-mark")).toBe(
+      "pnpm dlx shadcn@latest add draekien/design-system/tokens draekien/design-system/status-mark"
+    )
+  })
+
+  it.each(["tokens", "cn"])("installs %s alone, since it does not depend on tokens", (name) => {
+    expect(installCommand(name)).toBe(`pnpm dlx shadcn@latest add draekien/design-system/${name}`)
   })
 })

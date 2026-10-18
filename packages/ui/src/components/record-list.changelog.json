@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-10-18",
+    "description": "Installs into your components folder, so import it from @/components."
+  },
+  {
+    "date": "2026-10-18",
     "description": "Merges class names with the cn item, so a className override replaces a token utility."
   },
   {
