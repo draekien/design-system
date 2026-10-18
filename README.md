@@ -1,6 +1,6 @@
 # design-system
 
-A personal, open-source design system distributed as a [shadcn](https://ui.shadcn.com/) registry from this repository. Its components encode rules for data disclosure (what a surface shows, what it hides, how hidden data is revealed, how actions are ranked) and data composition (how records assemble into rows and cards, and how loading, partial, permission and error states change what is shown). Every component is built on [Base UI](https://base-ui.com/).
+A personal, open-source, general-purpose design system distributed as a [shadcn](https://ui.shadcn.com/) registry from this repository. Its components encode the rules for data disclosure (what a surface shows, what it hides, how hidden data is revealed, how actions are ranked) and data composition (how parts assemble into rows and cards, and how loading, partial, permission and error states change what is shown). Every component is built on [Base UI](https://base-ui.com/).
 
 Documentation and live examples: https://design-system.wpei.me/
 
