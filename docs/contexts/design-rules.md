@@ -92,7 +92,9 @@ A narrow table hides a column together with its header.
 
 ## Radius
 
-A radius builds outward from the floor: a leaf control (checkbox, button, input) takes the floor, `--radius-sm`, and a container's radius is its content's radius plus its padding. This is this design system's own decision.
+A radius builds outward from the floor: a leaf control (button, input) takes the floor, `--radius-floor` (6px), and a container's radius is its content's radius plus its padding. This is this design system's own decision.
+
+The selection checkbox is the one leaf control below the floor: it takes `--radius-checkbox` (5px). This is this design system's own decision.
 
 A container with no padding between it and its content, such as a row, is square.
 
@@ -100,7 +102,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 
 Circles (`rounded-full`) are exempt: status dots and initials.
 
-A container sets `--container-radius` and `--container-padding` on itself; the container around it computes its radius from them with `calc()`.
+A container's radius is a token: `--radius-card` (18px) for 12px of padding around a leaf control, `--radius-panel` (34px) for 16px of padding around a card.
 
 ## Spacing between components
 
@@ -108,9 +110,9 @@ The container sets the gap between its children by how the two neighbours relate
 
 | Token | Neighbours | Value |
 | --- | --- | --- |
-| `--gap-run` | the same component in a run, such as row after row | 0 |
-| `--gap-related` | parts of one record or one control, such as a status dot and its word | 0.5rem |
-| `--gap-section` | separate sections, such as two stacked record lists | 1.5rem |
+| `--spacing-run` (`gap-run`) | the same component in a run, such as row after row | 0 |
+| `--spacing-related` (`gap-related`) | parts of one record or one control, such as a status dot and its word | 0.5rem |
+| `--spacing-section` (`gap-section`) | separate sections, such as two stacked record lists | 1.5rem |
 
 ## Rules adopted without a component yet
 

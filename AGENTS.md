@@ -63,7 +63,7 @@ Before editing files for a substantial task:
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that experiment and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
 - An experiment is promoted to a lockup when it is production ready: its components move to `packages/ui`, its playground lockup route is added, and the same change deletes the experiment, its routes and its sidebar entry.
-- This is a design system first and a component library second: a component encodes the rank, fit, placement, adjacency, spacing and radius rules in `docs/contexts/design-rules.md` and `DESIGN.md`, and takes every colour, radius, font and gap from the tokens in `packages/ui/src/styles/globals.css`.
+- This is a design system first and a component library second: a component encodes the rank, fit, placement, adjacency, spacing and radius rules in `docs/contexts/design-rules.md` and `DESIGN.md`, and takes every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `packages/tokens/src` and generated into `packages/ui/src/styles`, never edited in the generated files.
 - Run `/impeccable shape` before every design system change: a token, a rule in `docs/contexts/design-rules.md`, `DESIGN.md`, a new component or a new lockup.
 - Run `/impeccable document` to regenerate `DESIGN.md` and `.impeccable/design.json` in the same change that alters a token or a component's visual treatment.
 - Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `packages/ui`.

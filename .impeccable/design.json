@@ -1,32 +1,114 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-17T00:00:00Z",
+  "generatedAt": "2026-10-18T00:00:00Z",
   "title": "Design System: design-system",
   "extensions": {
     "colorMeta": {
-      "signal-orange": { "role": "primary", "displayName": "Signal Orange", "canonical": "oklch(0.6895 0.181 45.98)" },
-      "signal-ring": { "role": "primary", "displayName": "Signal Ring", "canonical": "oklch(0.64 0.2 40)" },
-      "alert-red": { "role": "destructive", "displayName": "Alert Red", "canonical": "oklch(0.577 0.245 27.325)" },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "oklch(0.145 0 0)" },
-      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "oklch(0.985 0 0)" },
-      "sheet": { "role": "neutral", "displayName": "Sheet", "canonical": "oklch(1 0 0)" },
-      "quiet-grey": { "role": "neutral", "displayName": "Quiet Grey", "canonical": "oklch(0.967 0.001 286.375)" },
-      "slate-ink": { "role": "neutral", "displayName": "Slate Ink", "canonical": "oklch(0.21 0.006 285.885)" },
-      "muted-ink": { "role": "neutral", "displayName": "Muted Ink", "canonical": "oklch(0.49 0.012 286)" },
-      "hairline": { "role": "neutral", "displayName": "Hairline", "canonical": "oklch(0.925 0.003 286)" }
+      "signal-orange": {
+        "role": "primary",
+        "displayName": "Signal Orange",
+        "canonical": "oklch(0.6895 0.181 45.98)"
+      },
+      "signal-ring": {
+        "role": "primary",
+        "displayName": "Signal Ring",
+        "canonical": "oklch(0.64 0.2 40)"
+      },
+      "alert-red": {
+        "role": "destructive",
+        "displayName": "Alert Red",
+        "canonical": "oklch(0.577 0.245 27.325)"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(0.145 0 0)"
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "oklch(0.985 0 0)"
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Sheet",
+        "canonical": "oklch(1 0 0)"
+      },
+      "quiet-grey": {
+        "role": "neutral",
+        "displayName": "Quiet Grey",
+        "canonical": "oklch(0.967 0.001 286.375)"
+      },
+      "slate-ink": {
+        "role": "neutral",
+        "displayName": "Slate Ink",
+        "canonical": "oklch(0.21 0.006 285.885)"
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "oklch(0.49 0.012 286)"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(0.925 0.003 286)"
+      }
     },
     "typographyMeta": {
-      "title": { "displayName": "Title", "purpose": "Section headings and hover card titles." },
-      "body": { "displayName": "Body", "purpose": "Row values; a row's name is weight 500." },
-      "label": { "displayName": "Label", "purpose": "Buttons, column headers, footers, hover card bodies and key hints." }
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section headings and hover card titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Row values; a row's name is weight 500."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, column headers, footers and key hints."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Initials inside a person mark and the smallest button's label; never running text."
+      }
     },
     "shadows": [
-      { "name": "floating-layer", "value": "0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18)", "purpose": "Hover cards, menus and peek panels; nothing in the page flow casts a shadow." }
+      {
+        "name": "popover",
+        "value": "0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18)",
+        "purpose": "Hover cards, menus and peek panels, on the popover layer (z-index 50); nothing in the page flow casts a shadow."
+      }
     ],
     "motion": [
-      { "name": "popup-open", "value": "150ms ease-out, from scale 0.97 and opacity 0", "purpose": "Field card opening; closing is instant and reduced motion disables it." }
+      {
+        "name": "duration-quick",
+        "value": "150ms",
+        "purpose": "Opening a floating layer such as the field card."
+      },
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0, 0, 0.2, 1)",
+        "purpose": "Easing for a layer that opens."
+      },
+      {
+        "name": "field-card-enter-scale",
+        "value": "0.97",
+        "purpose": "The field card's starting scale; closing is instant and reduced motion disables it."
+      }
     ],
-    "breakpoints": []
+    "breakpoints": [
+      {
+        "name": "abbreviate",
+        "value": "48rem",
+        "purpose": "Container width below which a record row column shows its short form."
+      },
+      {
+        "name": "hide",
+        "value": "40rem",
+        "purpose": "Container width below which a record row column marked to hide disappears."
+      }
+    ]
   },
   "components": [
     {
@@ -35,7 +117,7 @@
       "refersTo": "button-primary",
       "description": "The one accent-filled control; marks the action the caller can take.",
       "html": "<button class=\"ds-btn-primary\">Approve invoice</button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 8px; border: 1px solid transparent; border-radius: var(--radius-sm); background: var(--primary); color: var(--primary-foreground); font: 500 0.75rem/1.625 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-primary:hover { background: color-mix(in oklch, var(--primary) 80%, transparent); } .ds-btn-primary:focus-visible { outline: none; border-color: var(--ring); box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent); } .ds-btn-primary:active { transform: translateY(1px); }"
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 8px; border: 1px solid transparent; border-radius: calc(var(--radius) * 0.6); background: var(--primary); color: var(--primary-foreground); font: 500 0.75rem/1.625 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-primary:hover { background: color-mix(in oklch, var(--primary) 80%, transparent); } .ds-btn-primary:focus-visible { outline: none; border-color: var(--ring); box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent); } .ds-btn-primary:active { transform: translateY(1px); }"
     },
     {
       "name": "Ghost Button",
@@ -43,7 +125,7 @@
       "refersTo": "button-ghost",
       "description": "A secondary action with no fill.",
       "html": "<button class=\"ds-btn-ghost\">Clear</button>",
-      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; height: 28px; padding: 0 8px; border: 1px solid transparent; border-radius: var(--radius-sm); background: transparent; color: var(--foreground); font: 500 0.75rem/1.625 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-ghost:hover { background: var(--muted); } .ds-btn-ghost:focus-visible { outline: none; border-color: var(--ring); box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent); }"
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; height: 28px; padding: 0 8px; border: 1px solid transparent; border-radius: calc(var(--radius) * 0.6); background: transparent; color: var(--foreground); font: 500 0.75rem/1.625 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-ghost:hover { background: var(--muted); } .ds-btn-ghost:focus-visible { outline: none; border-color: var(--ring); box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent); }"
     },
     {
       "name": "Record Row",
@@ -59,7 +141,7 @@
       "refersTo": "field-card",
       "description": "Rank 4 hover card on one entity's trigger; its radius is its content's radius plus its padding.",
       "html": "<div class=\"ds-field-card\"><strong>Dana Whitfield</strong><p>Accounts payable, Sydney</p><button class=\"ds-field-card-action\">Open profile</button></div>",
-      "css": ".ds-field-card { width: 240px; padding: 12px; border: 1px solid var(--border); border-radius: calc(var(--radius-sm) + 12px); background: var(--popover); color: var(--popover-foreground); font: 400 0.75rem/1.33 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18); } .ds-field-card p { margin: 4px 0 8px; color: var(--muted-foreground); } .ds-field-card-action { height: 24px; padding: 0 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; font: inherit; font-weight: 500; }"
+      "css": ".ds-field-card { width: 240px; padding: 12px; border: 1px solid var(--border); border-radius: calc(var(--radius) * 0.6 + 12px); background: var(--popover); color: var(--popover-foreground); font: 400 0.75rem/1.33 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18); } .ds-field-card p { margin: 4px 0 8px; color: var(--muted-foreground); } .ds-field-card-action { height: 24px; padding: 0 8px; border: 1px solid var(--border); border-radius: calc(var(--radius) * 0.6); background: transparent; font: inherit; font-weight: 500; }"
     },
     {
       "name": "Status Mark",
@@ -90,23 +172,47 @@
       "The container sets the gap between its children: run 0, related 8px, section 24px."
     ],
     "rules": [
-      { "name": "The Act-Only Accent Rule", "body": "Signal Orange appears only on something the caller can act on, or on the focus ring.", "section": "colors" },
-      { "name": "The No-Colour-Alone Rule", "body": "A state is carried by a shape and a word, so it reads in greyscale.", "section": "colors" },
-      { "name": "The Tabular Figures Rule", "body": "Every number compared down a column uses tabular figures.", "section": "typography" },
-      { "name": "The Flat-At-Rest Rule", "body": "Nothing on the page casts a shadow at rest; a shadow means the layer floats and will close.", "section": "elevation" },
-      { "name": "The Outward Radius Rule", "body": "A container's radius is its content's radius plus its padding, from the --radius-sm floor.", "section": "shapes" }
+      {
+        "name": "The Act-Only Accent Rule",
+        "body": "Signal Orange appears only on something the caller can act on, or on the focus ring.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Colour-Alone Rule",
+        "body": "A state is carried by a shape and a word, so it reads in greyscale.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Every number compared down a column uses tabular figures.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-At-Rest Rule",
+        "body": "Nothing on the page casts a shadow at rest; a shadow means the layer floats and will close.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Outward Radius Rule",
+        "body": "A container's radius is its content's radius plus its padding, so a container never picks a radius on its own.",
+        "section": "shapes"
+      }
     ],
     "dos": [
-      "Do take every colour, radius and font from the tokens in packages/ui/src/styles/globals.css.",
+      "Do take every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in packages/tokens/src and generated into packages/ui/src/styles/tokens.gen.css and theme.gen.css.",
       "Do derive a container's radius from its content's radius plus its padding.",
-      "Do let the container set the gap between its children from --gap-run, --gap-related or --gap-section.",
-      "Do keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer."
+      "Do let the container set the gap between its children from --spacing-run, --spacing-related or --spacing-section.",
+      "Do keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer.",
+      "Do give every hit area at least 24×24px, and 44×44px on a coarse pointer.",
+      "Do use tabular figures for any number compared down a column."
     ],
     "donts": [
       "Don't use Signal Orange on anything the caller cannot act on.",
-      "Don't show a state by colour alone.",
+      "Don't show a state by colour alone; pair it with a shape and a word.",
       "Don't put a shadow on a surface that sits in the page flow.",
-      "Don't give a component margin or a hard-coded radius; both come from its container."
+      "Don't add a second typeface; use Mona Sans weights and widths.",
+      "Don't give a component margin or a hard-coded radius; both come from its container.",
+      "Don't write an untokenised value such as text-[0.625rem], z-50 or duration-150 in a published component; add a token instead."
     ]
   }
 }
