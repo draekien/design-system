@@ -11,19 +11,13 @@ import {
   RecordRowRead,
 } from "@workspace/ui/components/record-list.tsx"
 import * as React from "react"
-import { cn } from "@/lib/cn.ts"
 import { recordsDataset } from "../lockups/record-list/datasets.tsx"
 import { recordListRules } from "../lockups/record-list/record-list-rules.ts"
 import { generalRules, rankingRules, ranks, sourceRules } from "./design-rules.ts"
-import { focusRing } from "./playground-styles.ts"
+import { textLink } from "./playground-styles.ts"
 import { RuleNotes } from "./rule-notes.tsx"
 
 const exampleRecord = sampleRecords[0]
-
-const textLink = cn(
-  "rounded-sm font-medium text-foreground underline decoration-border underline-offset-3 hover:decoration-foreground",
-  focusRing
-)
 
 export function RulesPage(): React.ReactElement {
   const rankingId = React.useId()

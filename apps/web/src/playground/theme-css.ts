@@ -3,6 +3,11 @@ import tokensCss from "@workspace/ui/styles/tokens.gen.css?raw"
 
 export type ThemeMode = "light" | "dark"
 
+export const themeModes: ReadonlyArray<{ mode: ThemeMode; label: string }> = [
+  { mode: "light", label: "Light" },
+  { mode: "dark", label: "Dark" },
+]
+
 export type ThemeToken = { name: string; value: string; start: number; end: number }
 
 export type Oklch = { l: number; c: number; h: number; alpha: number }
@@ -37,6 +42,10 @@ export function readThemeTokens(css: string, mode: ThemeMode): ThemeToken[] {
     }
   }
   return tokens
+}
+
+export function tokensByName(css: string, mode: ThemeMode): ReadonlyMap<string, ThemeToken> {
+  return new Map(readThemeTokens(css, mode).map((token) => [token.name, token]))
 }
 
 export function setThemeToken(css: string, mode: ThemeMode, name: string, value: string): string {

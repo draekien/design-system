@@ -437,7 +437,7 @@ function CanvasToolbar({
         </Segmented>
         {theme.css === "" ? null : (
           <Link
-            to="/playground/tokens"
+            to="/playground/theme"
             className={cn(
               "inline-flex min-h-7 items-center rounded-md px-2 text-muted-foreground text-xs hover:text-foreground",
               focusRing

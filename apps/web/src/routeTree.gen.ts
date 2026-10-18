@@ -14,6 +14,7 @@ import { Route as PlaygroundRouteRouteImport } from './routes/playground/route'
 import { Route as CanvasExperimentsRouteRouteImport } from './routes/canvas/experiments/route'
 import { Route as PlaygroundIndexRouteImport } from './routes/playground/index'
 import { Route as PlaygroundRulesRouteImport } from './routes/playground/rules'
+import { Route as PlaygroundThemeRouteImport } from './routes/playground/theme'
 import { Route as PlaygroundTokensRouteImport } from './routes/playground/tokens'
 import { Route as CanvasExperimentsRecordTableRouteImport } from './routes/canvas/experiments/record-table'
 import { Route as CanvasLockupsRecordListRouteImport } from './routes/canvas/lockups/record-list'
@@ -46,6 +47,11 @@ const PlaygroundIndexRoute = PlaygroundIndexRouteImport.update({
 const PlaygroundRulesRoute = PlaygroundRulesRouteImport.update({
   id: '/rules',
   path: '/rules',
+  getParentRoute: () => PlaygroundRouteRoute,
+} as any)
+const PlaygroundThemeRoute = PlaygroundThemeRouteImport.update({
+  id: '/theme',
+  path: '/theme',
   getParentRoute: () => PlaygroundRouteRoute,
 } as any)
 const PlaygroundTokensRoute = PlaygroundTokensRouteImport.update({
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/playground': typeof PlaygroundRouteRouteWithChildren
   '/canvas/experiments': typeof CanvasExperimentsRouteRouteWithChildren
   '/playground/rules': typeof PlaygroundRulesRoute
+  '/playground/theme': typeof PlaygroundThemeRoute
   '/playground/tokens': typeof PlaygroundTokensRoute
   '/playground/': typeof PlaygroundIndexRoute
   '/canvas/experiments/record-table': typeof CanvasExperimentsRecordTableRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/canvas/experiments': typeof CanvasExperimentsRouteRouteWithChildren
   '/playground/rules': typeof PlaygroundRulesRoute
+  '/playground/theme': typeof PlaygroundThemeRoute
   '/playground/tokens': typeof PlaygroundTokensRoute
   '/playground': typeof PlaygroundIndexRoute
   '/canvas/experiments/record-table': typeof CanvasExperimentsRecordTableRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/playground': typeof PlaygroundRouteRouteWithChildren
   '/canvas/experiments': typeof CanvasExperimentsRouteRouteWithChildren
   '/playground/rules': typeof PlaygroundRulesRoute
+  '/playground/theme': typeof PlaygroundThemeRoute
   '/playground/tokens': typeof PlaygroundTokensRoute
   '/playground/': typeof PlaygroundIndexRoute
   '/canvas/experiments/record-table': typeof CanvasExperimentsRecordTableRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
     | '/playground'
     | '/canvas/experiments'
     | '/playground/rules'
+    | '/playground/theme'
     | '/playground/tokens'
     | '/playground/'
     | '/canvas/experiments/record-table'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/'
     | '/canvas/experiments'
     | '/playground/rules'
+    | '/playground/theme'
     | '/playground/tokens'
     | '/playground'
     | '/canvas/experiments/record-table'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/playground'
     | '/canvas/experiments'
     | '/playground/rules'
+    | '/playground/theme'
     | '/playground/tokens'
     | '/playground/'
     | '/canvas/experiments/record-table'
@@ -228,6 +240,13 @@ declare module '@tanstack/react-router' {
       path: '/rules'
       fullPath: '/playground/rules'
       preLoaderRoute: typeof PlaygroundRulesRouteImport
+      parentRoute: typeof PlaygroundRouteRoute
+    }
+    '/playground/theme': {
+      id: '/playground/theme'
+      path: '/theme'
+      fullPath: '/playground/theme'
+      preLoaderRoute: typeof PlaygroundThemeRouteImport
       parentRoute: typeof PlaygroundRouteRoute
     }
     '/playground/tokens': {
@@ -291,6 +310,7 @@ declare module '@tanstack/react-router' {
 
 interface PlaygroundRouteRouteChildren {
   PlaygroundRulesRoute: typeof PlaygroundRulesRoute
+  PlaygroundThemeRoute: typeof PlaygroundThemeRoute
   PlaygroundTokensRoute: typeof PlaygroundTokensRoute
   PlaygroundIndexRoute: typeof PlaygroundIndexRoute
   PlaygroundComponentsComponentRoute: typeof PlaygroundComponentsComponentRoute
@@ -301,6 +321,7 @@ interface PlaygroundRouteRouteChildren {
 
 const PlaygroundRouteRouteChildren: PlaygroundRouteRouteChildren = {
   PlaygroundRulesRoute: PlaygroundRulesRoute,
+  PlaygroundThemeRoute: PlaygroundThemeRoute,
   PlaygroundTokensRoute: PlaygroundTokensRoute,
   PlaygroundIndexRoute: PlaygroundIndexRoute,
   PlaygroundComponentsComponentRoute: PlaygroundComponentsComponentRoute,

@@ -7,7 +7,7 @@ import { recordListLockup } from "../lockups/lockups.ts"
 import { CanvasFrame } from "./canvas-frame.tsx"
 import { CopyButton } from "./playground-controls.tsx"
 import { playgroundSearch } from "./playground-search.ts"
-import { focusRing } from "./playground-styles.ts"
+import { focusRing, textLink } from "./playground-styles.ts"
 import { installCommand, registryItems } from "./registry-items.ts"
 import { ItemPageLink } from "./related-items.tsx"
 import { usePlaygroundTheme } from "./theme-store.ts"
@@ -80,13 +80,7 @@ export function PlaygroundIndex(): React.ReactElement {
         </div>
         <p className="text-muted-foreground text-sm">
           {theme.css === "" ? "Previews use this site's theme. " : "Previews use your theme. "}
-          <Link
-            to="/playground/tokens"
-            className={cn(
-              "rounded-sm font-medium text-foreground underline decoration-border underline-offset-3 hover:decoration-foreground",
-              focusRing
-            )}
-          >
+          <Link to="/playground/theme" className={textLink}>
             Set the canvas theme
           </Link>
         </p>

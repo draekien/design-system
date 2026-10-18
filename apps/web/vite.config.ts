@@ -22,6 +22,7 @@ export default defineConfig({
         pages: [
           { path: "/playground/lockups/record-list" },
           { path: "/playground/tokens" },
+          { path: "/playground/theme" },
           { path: "/playground/rules" },
           { path: "/canvas/lockups/record-list" },
           { path: "/canvas/experiments/record-table" },

@@ -90,6 +90,11 @@ function PlaygroundLayout() {
               Record table
             </Link>
           </NavGroup>
+          <NavGroup label="Settings">
+            <Link to="/playground/theme" className={navLink}>
+              Canvas theme
+            </Link>
+          </NavGroup>
         </nav>
       </aside>
       <div className="min-w-0">

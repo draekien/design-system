@@ -1,13 +1,13 @@
 import { CodeIcon, ViewIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Link } from "@tanstack/react-router"
-import * as React from "react"
+import type * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import { usedIn } from "../lockups/lockups.ts"
 import { CodeBlock } from "./code-block.tsx"
 import { componentSpecimens } from "./component-specimens.tsx"
 import { ItemChanges, ItemMetaList } from "./item-record.tsx"
-import { InstallCommand, Segmented } from "./playground-controls.tsx"
+import { InstallCommand, PageSection, Segmented } from "./playground-controls.tsx"
 import type { SectionTab } from "./playground-search.ts"
 import { focusRing, segmentItem } from "./playground-styles.ts"
 import { installCommand, type RegistryItem, usageText } from "./registry-items.ts"
@@ -119,28 +119,5 @@ export function ComponentPage({
         <ItemChanges changelog={item.changelog} />
       </PageSection>
     </div>
-  )
-}
-
-function PageSection({
-  title,
-  description,
-  children,
-}: {
-  title: string
-  description: string
-  children: React.ReactNode
-}) {
-  const headingId = React.useId()
-  return (
-    <section aria-labelledby={headingId} className="flex flex-col gap-3">
-      <header>
-        <h2 id={headingId} className="font-semibold text-lg tracking-tight">
-          {title}
-        </h2>
-        <p className="mt-0.5 max-w-2xl text-pretty text-muted-foreground text-sm">{description}</p>
-      </header>
-      {children}
-    </section>
   )
 }
