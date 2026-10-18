@@ -4,6 +4,13 @@
   "tasks": {
     "build": {
       "cache": false
+    },
+    "test": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/packages/ui/registry.json",
+        "$TURBO_ROOT$/packages/ui/src/styles/*.gen.css"
+      ]
     }
   }
 }

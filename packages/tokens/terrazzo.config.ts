@@ -2,6 +2,7 @@ import { defineConfig } from "@terrazzo/cli"
 import type { Config } from "@terrazzo/parser"
 import css from "@terrazzo/plugin-css"
 import tailwind from "@terrazzo/plugin-tailwind"
+import { registryTheme } from "./registry-theme.ts"
 
 type Color = { colorSpace: string; components: ReadonlyArray<number | null>; alpha: number }
 
@@ -59,6 +60,7 @@ export const tokensConfig = {
         radius: ["theme.radius.*"],
       },
     }),
+    registryTheme({ registry: new URL("../ui/registry.json", import.meta.url), item: "tokens" }),
   ],
 } satisfies Config
 

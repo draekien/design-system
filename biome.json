@@ -11,6 +11,7 @@
       "!**/routeTree.gen.ts",
       "!**/*.gen.css",
       "!packages/tokens/theme.template.css",
+      "!packages/ui/registry.json",
       "!.biome",
       "!.intent",
       "!.claude",

@@ -17,6 +17,14 @@ async function freshBuild() {
   return new Map(outputFiles.map((file) => [file.filename, String(file.contents)]))
 }
 
+function blockVariables(css: string, selector: ":root" | ".dark") {
+  const start = css.indexOf(`${selector} {`)
+  const block = start === -1 ? "" : css.slice(start, css.indexOf("}", start))
+  return Object.fromEntries(
+    Array.from(block.matchAll(/--([\w-]+): ([^;]+);/g), (match) => [match[1], match[2]])
+  )
+}
+
 describe("generated token CSS", () => {
   it("matches a fresh build of the token source", async () => {
     for (const [filename, contents] of await freshBuild()) {
@@ -35,5 +43,15 @@ describe("generated token CSS", () => {
     for (const name of colorNames) {
       expect(files.get("theme.gen.css")).toContain(`--color-${name}: var(--${name});`)
     }
+  })
+
+  it("publishes the same light and dark variables in the tokens registry item", async () => {
+    const files = await freshBuild()
+    const css = files.get("tokens.gen.css") ?? ""
+    const registry = JSON.parse(files.get("../../registry.json") ?? "{}")
+    const tokens = registry.items.find((item: { name: string }) => item.name === "tokens")
+
+    expect(tokens.cssVars.light).toEqual(blockVariables(css, ":root"))
+    expect(tokens.cssVars.dark).toEqual(blockVariables(css, ".dark"))
   })
 })

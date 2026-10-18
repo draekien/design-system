@@ -4,9 +4,11 @@ import { cn } from "cn"
 import * as React from "react"
 import { CanvasFrame } from "./canvas-frame.tsx"
 import { ColorToken } from "./color-token.tsx"
-import { Segmented } from "./playground-controls.tsx"
+import { ItemChanges, ItemMetaList } from "./item-record.tsx"
+import { InstallCommand, Segmented } from "./playground-controls.tsx"
 import { playgroundSearch } from "./playground-search.ts"
 import { focusRing, segmentItem } from "./playground-styles.ts"
+import { installCommand, requireRegistryItem, tokensItemName, usageText } from "./registry-items.ts"
 import {
   isColorValue,
   readThemeTokens,
@@ -22,6 +24,8 @@ import {
   savePlaygroundTheme,
   usePlaygroundTheme,
 } from "./theme-store.ts"
+
+const tokensItem = requireRegistryItem(tokensItemName)
 
 type SaveResult =
   | { kind: "idle" }
@@ -63,6 +67,7 @@ export function ThemePage(): React.ReactElement {
   const cssId = React.useId()
   const statusId = React.useId()
   const tokensId = React.useId()
+  const changesId = React.useId()
 
   if (saved !== syncedFrom) {
     setSyncedFrom(saved)
@@ -117,6 +122,12 @@ export function ThemePage(): React.ReactElement {
           every component in your theme. Only the playground canvases use it; the rest of this site
           keeps its own. It is stored in this browser and shared by every playground page.
         </p>
+        <p className="mt-3 text-pretty text-muted-foreground leading-relaxed">
+          This site's theme is the {tokensItem.title.toLowerCase()} item.{" "}
+          {usageText(tokensItem.docs)}
+        </p>
+        <ItemMetaList meta={tokensItem.meta} className="mt-4" />
+        <InstallCommand command={installCommand(tokensItemName)} className="mt-5" />
 
         <section aria-labelledby={tokensId} className="mt-7 flex flex-col gap-2">
           <div className="flex items-center justify-between gap-3">
@@ -248,6 +259,13 @@ export function ThemePage(): React.ReactElement {
             <SaveMessage result={result} />
           </p>
         </form>
+
+        <section aria-labelledby={changesId} className="mt-7 flex flex-col gap-2">
+          <h2 id={changesId} className="font-medium text-sm">
+            Changes
+          </h2>
+          <ItemChanges changelog={tokensItem.changelog} />
+        </section>
       </div>
 
       <section

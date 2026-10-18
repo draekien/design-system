@@ -1,1 +1,10 @@
-[{ "date": "2026-10-16", "description": "Component introduced." }]
+[
+  {
+    "date": "2026-10-18",
+    "description": "Depends on the tokens item."
+  },
+  {
+    "date": "2026-10-16",
+    "description": "Component introduced."
+  }
+]
