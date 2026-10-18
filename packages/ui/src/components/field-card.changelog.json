@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-10-18",
+    "description": "Takes its shadow, layer, duration and opening scale from the tokens item."
+  },
+  {
+    "date": "2026-10-18",
     "description": "Depends on the tokens item."
   },
   {

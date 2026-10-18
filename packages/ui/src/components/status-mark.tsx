@@ -41,7 +41,7 @@ export function StatusMarkDot({
       data-slot="status-mark-dot"
       aria-hidden="true"
       className={cn(
-        "size-2.5 shrink-0 rounded-full border-[1.5px] border-current",
+        "size-2.5 shrink-0 rounded-full border-(length:--status-mark-ring) border-current",
         dotFill[fill],
         className
       )}

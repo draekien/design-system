@@ -27,7 +27,7 @@ export function Track({ locale = "en", className, ...props }: TrackProps): React
       >
         <Meter.Indicator className="h-full rounded-full bg-foreground/70" />
       </Meter.Track>
-      <Meter.Value className="min-w-[4ch] text-end text-xs tabular-nums" />
+      <Meter.Value className="min-w-(--track-value-min) text-end text-xs tabular-nums" />
     </Meter.Root>
   )
 }

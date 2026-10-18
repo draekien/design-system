@@ -27,7 +27,7 @@ export function PersonMark({ name, className, ...props }: PersonMarkProps): Reac
     >
       <span
         aria-hidden="true"
-        className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted font-medium text-[0.625rem] text-muted-foreground"
+        className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted font-medium text-micro text-muted-foreground"
       >
         {initialsOf(name)}
       </span>
