@@ -74,6 +74,22 @@ function toOklch(value: string): Oklch | null {
   return parseOklch(computed)
 }
 
+export function ColorSwatch({
+  value,
+  className,
+}: {
+  value: string
+  className: string
+}): React.ReactElement {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn("shrink-0 shadow-[0_0_0_1px_rgb(0_0_0/0.12)_inset]", className)}
+      style={{ background: `linear-gradient(${value}, ${value}), ${checkerboard}` }}
+    />
+  )
+}
+
 export function ColorToken({
   name,
   value,
@@ -129,11 +145,7 @@ export function ColorToken({
           focusRing
         )}
       >
-        <span
-          aria-hidden="true"
-          className="size-5 shrink-0 rounded-[0.3rem] shadow-[0_0_0_1px_rgb(0_0_0/0.12)_inset]"
-          style={{ background: `linear-gradient(${value}, ${value}), ${checkerboard}` }}
-        />
+        <ColorSwatch value={value} className="size-5 rounded-[0.3rem]" />
         <span className="truncate font-mono text-[0.6875rem] text-muted-foreground tabular-nums group-hover/token:text-foreground">
           {value}
         </span>
@@ -142,11 +154,7 @@ export function ColorToken({
         <Popover.Positioner side="bottom" align="start" sideOffset={6} className="z-50">
           <Popover.Popup className="flex w-72 origin-(--transform-origin) flex-col gap-4 rounded-xl border bg-popover p-4 text-popover-foreground shadow-[0_1px_2px_rgb(0_0_0/0.05),0_16px_40px_-12px_rgb(0_0_0/0.25)] outline-none transition-[opacity,scale] duration-150 ease-out data-ending-style:opacity-0 data-starting-style:scale-[0.97] data-starting-style:opacity-0 motion-reduce:transition-none">
             <div className="flex items-center gap-3">
-              <span
-                aria-hidden="true"
-                className="size-10 shrink-0 rounded-lg shadow-[0_0_0_1px_rgb(0_0_0/0.12)_inset]"
-                style={{ background: `linear-gradient(${value}, ${value}), ${checkerboard}` }}
-              />
+              <ColorSwatch value={value} className="size-10 rounded-lg" />
               <div className="min-w-0">
                 <Popover.Title className="truncate font-mono font-medium text-sm">
                   {name}

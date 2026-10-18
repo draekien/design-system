@@ -4,17 +4,9 @@ import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import { CanvasFrame } from "./canvas-frame.tsx"
 import { ColorToken } from "./color-token.tsx"
-import { ItemChanges, ItemMetaList } from "./item-record.tsx"
-import { InstallCommand, Segmented } from "./playground-controls.tsx"
+import { Segmented } from "./playground-controls.tsx"
 import { playgroundSearch } from "./playground-search.ts"
 import { focusRing, segmentItem } from "./playground-styles.ts"
-import {
-  cnItemName,
-  installCommand,
-  requireRegistryItem,
-  tokensItemName,
-  usageText,
-} from "./registry-items.ts"
 import {
   isColorValue,
   readThemeTokens,
@@ -22,6 +14,8 @@ import {
   siteThemeCss,
   type ThemeMode,
   type ThemeToken,
+  themeModes,
+  tokensByName,
 } from "./theme-css.ts"
 import {
   countCustomProperties,
@@ -30,9 +24,6 @@ import {
   savePlaygroundTheme,
   usePlaygroundTheme,
 } from "./theme-store.ts"
-
-const tokensItem = requireRegistryItem(tokensItemName)
-const cnItem = requireRegistryItem(cnItemName)
 
 type SaveResult =
   | { kind: "idle" }
@@ -43,26 +34,17 @@ type SaveResult =
 
 const previewSearch = playgroundSearch.parse({})
 
-const modes: ReadonlyArray<{ mode: ThemeMode; label: string }> = [
-  { mode: "light", label: "Light" },
-  { mode: "dark", label: "Dark" },
-]
-
 function storedCss(css: string): string {
   return css.trim() === siteThemeCss ? "" : css.trim()
 }
 
 function colorTokenNames(css: string): string[] {
-  const names = modes.flatMap(({ mode }) =>
+  const names = themeModes.flatMap(({ mode }) =>
     readThemeTokens(css, mode)
       .filter((token) => isColorValue(token.value))
       .map((token) => token.name)
   )
   return [...new Set(names)]
-}
-
-function tokensByName(css: string, mode: ThemeMode): ReadonlyMap<string, ThemeToken> {
-  return new Map(readThemeTokens(css, mode).map((token) => [token.name, token]))
 }
 
 export function ThemePage(): React.ReactElement {
@@ -74,7 +56,6 @@ export function ThemePage(): React.ReactElement {
   const cssId = React.useId()
   const statusId = React.useId()
   const tokensId = React.useId()
-  const changesId = React.useId()
 
   if (saved !== syncedFrom) {
     setSyncedFrom(saved)
@@ -129,12 +110,6 @@ export function ThemePage(): React.ReactElement {
           every component in your theme. Only the playground canvases use it; the rest of this site
           keeps its own. It is stored in this browser and shared by every playground page.
         </p>
-        <p className="mt-3 text-pretty text-muted-foreground leading-relaxed">
-          This site's theme is the {tokensItem.title.toLowerCase()} item.{" "}
-          {usageText(tokensItem.docs)}
-        </p>
-        <ItemMetaList meta={tokensItem.meta} className="mt-4" />
-        <InstallCommand command={installCommand(tokensItemName)} className="mt-5" />
 
         <section aria-labelledby={tokensId} className="mt-7 flex flex-col gap-2">
           <div className="flex items-center justify-between gap-3">
@@ -151,7 +126,7 @@ export function ThemePage(): React.ReactElement {
                 <th scope="col" className="w-[34%] border-b px-3 py-2 font-medium">
                   Token
                 </th>
-                {modes.map(({ mode, label }) => (
+                {themeModes.map(({ mode, label }) => (
                   <th key={mode} scope="col" className="border-b px-3 py-2 font-medium">
                     {label}
                   </th>
@@ -167,7 +142,7 @@ export function ThemePage(): React.ReactElement {
                   >
                     {name.slice(2)}
                   </th>
-                  {modes.map(({ mode, label }) => {
+                  {themeModes.map(({ mode, label }) => {
                     const token = tokens[mode].get(name)
                     return (
                       <td key={mode} className="px-1.5 py-0.5">
@@ -242,7 +217,7 @@ export function ThemePage(): React.ReactElement {
               Reset to this site's theme
             </button>
             <Segmented label="Canvas mode" className="ml-auto">
-              {modes.map(({ mode, label }) => (
+              {themeModes.map(({ mode, label }) => (
                 <button
                   key={mode}
                   type="button"
@@ -266,29 +241,6 @@ export function ThemePage(): React.ReactElement {
             <SaveMessage result={result} />
           </p>
         </form>
-
-        <section aria-labelledby={changesId} className="mt-7 flex flex-col gap-2">
-          <h2 id={changesId} className="font-medium text-sm">
-            Changes
-          </h2>
-          <ItemChanges changelog={tokensItem.changelog} />
-        </section>
-
-        <section
-          id={cnItemName}
-          aria-labelledby={`${cnItemName}-title`}
-          className="mt-7 flex scroll-mt-6 flex-col gap-2"
-        >
-          <h2 id={`${cnItemName}-title`} className="font-medium text-sm">
-            The {cnItem.title} item
-          </h2>
-          <p className="text-pretty text-muted-foreground text-sm leading-relaxed">
-            {cnItem.description} {usageText(cnItem.docs)}
-          </p>
-          <ItemMetaList meta={cnItem.meta} />
-          <InstallCommand command={installCommand(cnItemName)} />
-          <ItemChanges changelog={cnItem.changelog} />
-        </section>
       </div>
 
       <section
@@ -298,7 +250,7 @@ export function ThemePage(): React.ReactElement {
         <h2 className="font-medium text-muted-foreground text-xs">Preview · Record list</h2>
         <div className="flex h-[30rem] overflow-hidden rounded-xl border bg-muted/50 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[16px_16px] p-3">
           <CanvasFrame
-            to="/canvas/record-list"
+            to="/canvas/lockups/record-list"
             view="lockup"
             title="Record list preview"
             search={previewSearch}

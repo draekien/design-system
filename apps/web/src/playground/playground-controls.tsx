@@ -121,3 +121,26 @@ export function InstallCommand({
     </div>
   )
 }
+
+export function PageSection({
+  title,
+  description,
+  children,
+}: {
+  title: string
+  description: React.ReactNode
+  children: React.ReactNode
+}): React.ReactElement {
+  const headingId = React.useId()
+  return (
+    <section aria-labelledby={headingId} className="flex flex-col gap-3">
+      <header>
+        <h2 id={headingId} className="font-semibold text-lg tracking-tight">
+          {title}
+        </h2>
+        <p className="mt-0.5 max-w-2xl text-pretty text-muted-foreground text-sm">{description}</p>
+      </header>
+      {children}
+    </section>
+  )
+}

@@ -15,7 +15,7 @@ import {
 import { FieldState } from "@workspace/ui/components/field-state.tsx"
 import { Figure } from "@workspace/ui/components/figure.tsx"
 import { PersonMark } from "@workspace/ui/components/person-mark.tsx"
-import type { RecordRowNarrow } from "@workspace/ui/components/record-row.tsx"
+import type { RecordRowNarrow } from "@workspace/ui/components/record-list.tsx"
 import { RelativeTime } from "@workspace/ui/components/relative-time.tsx"
 import {
   StatusMark,
@@ -25,7 +25,11 @@ import {
 } from "@workspace/ui/components/status-mark.tsx"
 import { Track } from "@workspace/ui/components/track.tsx"
 import type * as React from "react"
-import type { CanvasDataset, CanvasOptions, RecordListPart } from "./playground-search.ts"
+import type {
+  CanvasDataset,
+  CanvasOptions,
+  RecordListPart,
+} from "../../playground/playground-search.ts"
 import { randomInvoices, randomRecords } from "./random-records.ts"
 
 export type RowState = Exclude<FixtureState, "error" | "loading">
@@ -181,6 +185,21 @@ function ownerValue(record: SampleRecord, state: RowState, context?: ReadContext
             "end"
           )
   }
+}
+
+export const listSurface =
+  "overflow-hidden rounded-xl border bg-card text-card-foreground shadow-[0_1px_2px_rgb(0_0_0/0.04),0_12px_32px_-12px_rgb(0_0_0/0.1)]"
+
+export function capitalise(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
+export function shownReads<TItem>(dataset: Dataset<TItem>, hidden: Hidden) {
+  return dataset.reads.filter((read) => !hidden.has(read.part))
+}
+
+export function hasCard<TItem>(read: ReadDefinition<TItem>, hidden: Hidden) {
+  return read.card !== undefined && isPartShown(hidden, read.card, read.part)
 }
 
 export const recordsDataset: Dataset<SampleRecord> = {

@@ -3,6 +3,15 @@ import { invoicesDataset, recordsDataset } from "./datasets.tsx"
 import { recordListStatesCode } from "./record-list-code.ts"
 
 describe("recordListStatesCode", () => {
+  it("imports RecordList and every row part from record-list alone", () => {
+    const code = recordListStatesCode(recordsDataset, new Set(), "loaded")
+
+    expect(code).toContain("  RecordList,\n")
+    expect(code).toContain("  RecordRowName,\n")
+    expect(code.match(/ from "@\/components\/record-list"/g)).toHaveLength(1)
+    expect(code).not.toContain("@/components/record-row")
+  })
+
   it("renders the loading row with empty parts and no record data", () => {
     const code = recordListStatesCode(recordsDataset, new Set(), "loading")
 

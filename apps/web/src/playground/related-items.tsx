@@ -2,8 +2,8 @@ import { Drawer } from "@base-ui/react/drawer"
 import { ArrowRight02Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Link } from "@tanstack/react-router"
-import { RecordList } from "@workspace/ui/components/record-list.tsx"
 import {
+  RecordList,
   RecordRow,
   RecordRowDescription,
   RecordRowIdentify,
@@ -11,7 +11,7 @@ import {
   RecordRowName,
   RecordRowPeek,
   RecordRowRead,
-} from "@workspace/ui/components/record-row.tsx"
+} from "@workspace/ui/components/record-list.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import { componentSpecimens } from "./component-specimens.tsx"
@@ -41,15 +41,14 @@ type LinkProps = { className?: string; children?: React.ReactNode }
 
 function itemPageLink(item: RegistryItem, props: LinkProps = {}): React.ReactElement {
   if (item.type === "registry:theme") {
-    return <Link to="/playground/theme" {...props} />
+    return <Link to="/playground/tokens" {...props} />
   }
   if (item.type === "registry:lib") {
-    return <Link to="/playground/theme" hash={item.name} {...props} />
+    return <Link to="/playground/lib/$item" params={{ item: item.name }} {...props} />
   }
-  if (item.name === "record-list") {
-    return <Link to="/playground/record-list" {...props} />
-  }
-  return <Link to="/playground/$component" params={{ component: item.name }} {...props} />
+  return (
+    <Link to="/playground/components/$component" params={{ component: item.name }} {...props} />
+  )
 }
 
 export function ItemPageLink({

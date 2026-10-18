@@ -1,12 +1,12 @@
 import { createFileRoute, notFound, stripSearchParams, useHydrated } from "@tanstack/react-router"
-import { ComponentPage } from "../../playground/component-page.tsx"
-import { componentSearch } from "../../playground/playground-search.ts"
-import { componentItems } from "../../playground/registry-items.ts"
-import { siteName } from "../../site.ts"
+import { ComponentPage } from "../../../playground/component-page.tsx"
+import { componentSearch } from "../../../playground/playground-search.ts"
+import { componentItems } from "../../../playground/registry-items.ts"
+import { siteName } from "../../../site.ts"
 
 const defaults = componentSearch.parse({})
 
-export const Route = createFileRoute("/playground/$component")({
+export const Route = createFileRoute("/playground/components/$component")({
   validateSearch: componentSearch,
   search: { middlewares: [stripSearchParams(defaults)] },
   loader: ({ params }) => {

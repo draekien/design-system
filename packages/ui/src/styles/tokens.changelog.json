@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-10-18",
+    "description": "The docs link to this item's playground page at /playground/tokens."
+  },
+  {
+    "date": "2026-10-18",
     "description": "Assessed against the lifecycle criteria: beta."
   },
   {
