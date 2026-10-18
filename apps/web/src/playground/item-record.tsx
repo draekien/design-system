@@ -1,6 +1,11 @@
 import type * as React from "react"
 import { cn } from "@/lib/cn.ts"
-import type { Changelog, ItemMeta, ItemStatus } from "./registry-items.ts"
+import {
+  type Changelog,
+  changelogByDate,
+  type ItemMeta,
+  type ItemStatus,
+} from "./registry-items.ts"
 
 const statusLabel: Readonly<Record<ItemStatus, string>> = {
   experiment: "Experiment",
@@ -45,15 +50,25 @@ export function ItemMetaList({
 export function ItemChanges({ changelog }: { changelog: Changelog }): React.ReactElement {
   return (
     <ol className="flex max-w-2xl flex-col text-sm">
-      {changelog.map((entry) => (
+      {changelogByDate(changelog).map((day) => (
         <li
-          key={`${entry.date} ${entry.description}`}
+          key={day.date}
           className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 border-b py-2.5 first:pt-0 last:border-b-0"
         >
-          <time dateTime={entry.date} className="text-muted-foreground tabular-nums">
-            {formatDate(entry.date)}
+          <time dateTime={day.date} className="text-muted-foreground tabular-nums">
+            {formatDate(day.date)}
           </time>
-          <span className="text-pretty">{entry.description}</span>
+          {day.descriptions.length === 1 ? (
+            <span className="text-pretty">{day.descriptions[0]}</span>
+          ) : (
+            <ul className="flex flex-col gap-1.5">
+              {day.descriptions.map((description) => (
+                <li key={description} className="text-pretty">
+                  {description}
+                </li>
+              ))}
+            </ul>
+          )}
         </li>
       ))}
     </ol>

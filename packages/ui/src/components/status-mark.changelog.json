@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-10-18",
+    "description": "Assessed against the lifecycle criteria: beta. Its design critique is not yet clean: in forced-colours mode the in-review and approved dots look the same (issue #41)."
+  },
+  {
+    "date": "2026-10-18",
     "description": "Installs into your components folder, so import it from @/components."
   },
   {

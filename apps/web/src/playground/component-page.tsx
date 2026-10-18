@@ -91,7 +91,7 @@ export function ComponentPage({
         )}
       </PageSection>
 
-      <PageSection title="Changes" description="Each dated change to this item, newest first.">
+      <PageSection title="Changes" description="Changes to this item by date, newest first.">
         <ItemChanges changelog={item.changelog} />
       </PageSection>
     </div>
