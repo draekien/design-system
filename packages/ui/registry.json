@@ -119,7 +119,7 @@
           "secondary-foreground": "oklch(0.985 0 0)"
         }
       },
-      "docs": "Adds the light and dark colour variables, the radius, spacing and type scales, the popover shadow, the motion, z-index and container tokens, and the Mona Sans font to your CSS file. Every item in this registry depends on it. Name it in the same shadcn add command as the item: shadcn replaces your existing colour and font variables only when a theme item is named in the command, not when it arrives as a dependency. The colour variables use the shadcn/ui names. Playground: https://design-system.wpei.me/playground/theme",
+      "docs": "Adds the light and dark colour variables, the radius, spacing and type scales, the popover shadow, the motion, z-index and container tokens, and the Mona Sans font to your CSS file. Every component item in this registry depends on it. Name it in the same shadcn add command as the item: shadcn replaces the variables you already have with these only when a theme item is named in the command, not when it arrives as a dependency, so naming it again later replaces any of these variables you have edited. The colour variables use the shadcn/ui names. Playground: https://design-system.wpei.me/playground/theme",
       "meta": {
         "status": "beta",
         "a11yReviewed": null

@@ -101,10 +101,10 @@ export function usageText(docs: string): string {
 }
 
 export function installCommand(name: string): string {
-  const names = requireRegistryItem(name).registryDependencies.includes(tokensItemName)
-    ? [tokensItemName, name]
-    : [name]
-  return `pnpm dlx shadcn@latest add ${names.map((item) => `${registryPrefix}${item}`).join(" ")}`
+  const tokens = requireRegistryItem(name).registryDependencies.includes(tokensItemName)
+    ? `${registryPrefix}${tokensItemName} `
+    : ""
+  return `pnpm dlx shadcn@latest add ${tokens}${registryPrefix}${name}`
 }
 
 export function requireRegistryItem(name: string): RegistryItem {
