@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs"
 import { relative } from "node:path"
 import { fileURLToPath } from "node:url"
 import type { BuildHookOptions, Plugin } from "@terrazzo/parser"
+import { formatCompositeDeclarations } from "@terrazzo/plugin-tailwind"
 
 type CssVars = Readonly<Record<string, string>>
 
@@ -11,16 +12,36 @@ function readVars(
   theme: "light" | "dark",
   keep: (id: string) => boolean
 ): CssVars {
-  return Object.fromEntries(
-    getTransforms({ format, input: { theme } })
-      .filter((transform) => keep(transform.token.id))
-      .map((transform) => {
-        if (transform.localID === undefined || typeof transform.value !== "string") {
-          throw new Error(`${transform.token.id} has no single ${format} variable to publish.`)
+  const entries = getTransforms({ format, input: { theme } })
+    .filter((transform) => keep(transform.token.id))
+    .flatMap((transform): Array<[string, string]> => {
+      if (transform.localID === undefined) {
+        throw new Error(`${transform.token.id} has no ${format} variable name to publish.`)
+      }
+      if (typeof transform.value === "string") {
+        return [[transform.localID.replace(/^--/, ""), transform.value]]
+      }
+      if (format === "css") {
+        throw new Error(`${transform.token.id} has a composite value; publish it from theme.*.`)
+      }
+      return formatCompositeDeclarations(
+        transform.localID,
+        transform.value,
+        transform.token.$type
+      ).map((declaration) => {
+        const match = /^--([^:]+): (.*);$/s.exec(declaration)
+        if (match?.[1] === undefined || match[2] === undefined) {
+          throw new Error(`${transform.token.id} produced an unreadable declaration.`)
         }
-        return [transform.localID.replace(/^--/, ""), transform.value]
+        return [match[1], match[2]]
       })
-  )
+    })
+  const names = entries.map(([name]) => name)
+  const duplicate = names.find((name, index) => names.indexOf(name) !== index)
+  if (duplicate !== undefined) {
+    throw new Error(`More than one token publishes --${duplicate}.`)
+  }
+  return Object.fromEntries(entries)
 }
 
 export function registryTheme({ registry, item }: { registry: URL; item: string }): Plugin {

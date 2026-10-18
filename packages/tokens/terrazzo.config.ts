@@ -14,6 +14,10 @@ const oklch = ({ colorSpace, components, alpha }: Color) => {
   return `oklch(${channels}${alpha < 1 ? ` / ${Number((alpha * 100).toFixed(4))}%` : ""})`
 }
 
+const dimension = ({ value, unit }: { value: number; unit: string }) => `${value}${unit}`
+
+const unitExtension = "me.wpei.unit"
+
 const withoutThemeTokens = (contents: string) =>
   contents
     .split("\n")
@@ -29,13 +33,26 @@ export const tokensConfig = {
       variableName: (token) =>
         token.id === "radius.base"
           ? "--radius"
-          : `--${token.id.replace(/^semantic\.color\./, "").replaceAll(".", "-")}`,
+          : `--${token.id.replace(/^(semantic\.color|component)\./, "").replaceAll(".", "-")}`,
       transform(token) {
         if (token.$type === "color" && !token.id.startsWith("theme.")) {
           return oklch(token.$value)
         }
         if (token.$type === "number" && token.id.startsWith("theme.radius.")) {
           return token.$value === 1 ? "var(--radius)" : `calc(var(--radius) * ${token.$value})`
+        }
+        if (token.$type === "typography") {
+          const { fontSize, fontWeight, lineHeight, letterSpacing } = token.$value
+          return {
+            "font-size": dimension(fontSize),
+            "font-weight": String(fontWeight),
+            "line-height":
+              typeof lineHeight === "number" ? String(lineHeight) : dimension(lineHeight),
+            "letter-spacing": dimension(letterSpacing),
+          }
+        }
+        if (token.$type === "number" && typeof token.$extensions?.[unitExtension] === "string") {
+          return `${token.$value}${token.$extensions[unitExtension]}`
         }
       },
       permutations: [
@@ -46,7 +63,7 @@ export const tokensConfig = {
         },
         {
           input: { theme: "dark" },
-          exclude: ["color.**", "radius.**"],
+          exclude: ["color.**", "radius.**", "component.**"],
           prepare: (contents) => `.dark {\n  ${withoutThemeTokens(contents)}\n}`,
         },
       ],
@@ -58,6 +75,13 @@ export const tokensConfig = {
         font: ["theme.font.*"],
         color: ["theme.color.*"],
         radius: ["theme.radius.*"],
+        spacing: ["theme.spacing.*"],
+        text: ["theme.text.*"],
+        shadow: ["theme.shadow.*"],
+        "transition-duration": ["theme.transition-duration.*"],
+        ease: ["theme.ease.*"],
+        "z-index": ["theme.z-index.*"],
+        container: ["theme.container.*"],
       },
     }),
     registryTheme({ registry: new URL("../ui/registry.json", import.meta.url), item: "tokens" }),
