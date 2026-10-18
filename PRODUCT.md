@@ -16,7 +16,7 @@ Developers building data-dense web interfaces, and the coding agents working for
 
 ## Product Purpose
 
-A personal, public, open-source design system distributed as a shadcn registry from its GitHub repository. It encodes rules for data disclosure (what a surface shows, what it hides, how hidden data is revealed, how actions are ranked) and data composition (assembling records into rows, cards, hover cards and rails; list, detail and side-panel layouts; grouping and ordering; permission-shaped data; loading, partial and error states; progressive disclosure). A GitHub Pages site documents it.
+A personal, public, open-source design system distributed as a shadcn registry from its GitHub repository. A general-purpose design system whose components encode the rules for data disclosure (what a surface shows, what it hides, how hidden data is revealed, how actions are ranked) and data composition (how parts assemble into rows, cards and rails, how surfaces lay out, how data is grouped and ordered, and how permission, loading, partial and error states change what is shown). A GitHub Pages site documents it.
 
 ## Positioning
 
