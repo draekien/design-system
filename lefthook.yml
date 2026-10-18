@@ -12,3 +12,14 @@ pre-push:
       run: pnpm typecheck
     test:
       run: pnpm test
+    screenshots:
+      glob:
+        - "apps/web/*"
+        - "apps/web/**/*"
+        - "packages/**/*"
+      exclude:
+        - "**/*.test.ts"
+        - "**/*.test.tsx"
+        - "**/*.changelog.json"
+        - "**/*.md"
+      run: pnpm --filter web test:screenshots

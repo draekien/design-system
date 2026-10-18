@@ -68,3 +68,7 @@ Thumbs.db
 **/.impeccable/live/*.png
 # impeccable-ignore-end
 **/.impeccable/critique/
+
+# Playwright
+test-results
+playwright-report
