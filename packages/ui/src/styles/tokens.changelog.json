@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-10-18",
+    "description": "Assessed against the lifecycle criteria: beta."
+  },
+  {
+    "date": "2026-10-18",
     "description": "Item introduced, generated from the DTCG token source."
   }
 ]

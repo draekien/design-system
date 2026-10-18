@@ -4,6 +4,7 @@ import {
   componentItems,
   installCommand,
   itemStatuses,
+  lifecycleFailures,
   parseChangelog,
   parseItemMeta,
   registryItems,
@@ -43,22 +44,26 @@ describe("usedIn", () => {
 })
 
 describe("parseItemMeta", () => {
-  it("reads a status and a review date", () => {
-    expect(parseItemMeta("figure", { status: "stable", a11yReviewed: "2026-10-01" })).toEqual({
-      status: "stable",
-      a11yReviewed: "2026-10-01",
-    })
+  it("reads a status and the review and critique dates", () => {
+    const meta = { status: "stable", a11yReviewed: "2026-10-01", critiqued: "2026-09-30" }
+
+    expect(parseItemMeta("figure", meta)).toEqual(meta)
   })
 
-  it("reads a null review date as not reviewed", () => {
-    expect(parseItemMeta("figure", { status: "beta", a11yReviewed: null }).a11yReviewed).toBeNull()
+  it("reads null dates as not reviewed and not critiqued", () => {
+    const meta = parseItemMeta("figure", { status: "beta", a11yReviewed: null, critiqued: null })
+
+    expect([meta.a11yReviewed, meta.critiqued]).toEqual([null, null])
   })
+
+  const valid = { status: "beta", a11yReviewed: null, critiqued: null }
 
   it.each([
     ["no meta", undefined],
-    ["no status", { a11yReviewed: null }],
-    ["a status outside the four", { status: "alpha", a11yReviewed: null }],
-    ["a review date that is not an ISO date", { status: "beta", a11yReviewed: "1 Oct 2026" }],
+    ["no status", { ...valid, status: undefined }],
+    ["a status outside the four", { ...valid, status: "alpha" }],
+    ["a review date that is not an ISO date", { ...valid, a11yReviewed: "1 Oct 2026" }],
+    ["no critique date", { ...valid, critiqued: undefined }],
   ])("rejects an item with %s", (_case, meta) => {
     expect(() => parseItemMeta("figure", meta)).toThrow(
       "registry.json item figure has invalid meta"
@@ -93,6 +98,82 @@ describe("parseChangelog", () => {
     ]
 
     expect(() => parseChangelog("figure", { [path]: entries })).toThrow("is not newest first")
+  })
+})
+
+describe("lifecycleFailures", () => {
+  const itemNames = ["figure", "track"]
+  const beta = {
+    name: "figure",
+    description: "A number the caller compares down a list.",
+    docs: "Pass value and format.",
+    meta: { status: "beta", a11yReviewed: null, critiqued: null },
+  } as const
+  const deprecated = {
+    ...beta,
+    description: "Deprecated: use track.",
+    docs: "Install track instead.",
+    meta: { ...beta.meta, status: "deprecated" },
+  } as const
+
+  it.each([
+    ["a beta item with docs and no dates", beta],
+    [
+      "a stable item with both dates",
+      { ...beta, meta: { status: "stable", a11yReviewed: "2026-10-01", critiqued: "2026-10-01" } },
+    ],
+    ["a deprecated item that names its replacement", deprecated],
+  ] as const)("passes %s", (_case, item) => {
+    expect(lifecycleFailures(item, itemNames)).toEqual([])
+  })
+
+  it.each([
+    ["blank docs", { ...beta, docs: " " }, "has no docs"],
+    [
+      "docs holding only a Playground link",
+      { ...beta, docs: "Playground: https://design-system.wpei.me/playground/figure" },
+      "has no docs",
+    ],
+    [
+      "an experiment status",
+      { ...beta, meta: { ...beta.meta, status: "experiment" } },
+      "is published as an experiment",
+    ],
+    [
+      "stable with no critique date",
+      { ...beta, meta: { status: "stable", a11yReviewed: "2026-10-01", critiqued: null } },
+      "is stable without a critique and a review date",
+    ],
+    [
+      "stable with no review date",
+      { ...beta, meta: { status: "stable", a11yReviewed: null, critiqued: "2026-10-01" } },
+      "is stable without a critique and a review date",
+    ],
+    [
+      "deprecated without the Deprecated: prefix",
+      { ...deprecated, description: "Use track." },
+      "is deprecated without naming its replacement",
+    ],
+    [
+      "deprecated with docs naming no other item",
+      { ...deprecated, docs: "Install figure from a later release." },
+      "is deprecated without naming its replacement",
+    ],
+    [
+      "deprecated with another item named only in its Playground link",
+      {
+        ...deprecated,
+        docs: "No longer kept. Playground: https://design-system.wpei.me/playground/track",
+      },
+      "is deprecated without naming its replacement",
+    ],
+    [
+      "deprecated with another item's name inside a longer word",
+      { ...deprecated, docs: "Use sidetracked values instead." },
+      "is deprecated without naming its replacement",
+    ],
+  ] as const)("fails an item with %s", (_case, item, failure) => {
+    expect(lifecycleFailures(item, itemNames)).toEqual([failure])
   })
 })
 

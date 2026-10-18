@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-10-18",
+    "description": "Assessed against the lifecycle criteria: beta. Its design critique is not yet clean: the card has no keyboard or touch route of its own (issue #42)."
+  },
+  {
+    "date": "2026-10-18",
     "description": "Installs into your components folder, so import it from @/components."
   },
   {

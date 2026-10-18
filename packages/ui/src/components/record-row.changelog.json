@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-10-18",
+    "description": "Assessed against the lifecycle criteria: beta, with a clean design critique."
+  },
+  {
+    "date": "2026-10-18",
     "description": "Installs into your components folder, so import it from @/components."
   },
   {

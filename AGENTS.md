@@ -32,6 +32,8 @@ Read DESIGN.md before building or styling any UI in `packages/ui`, an experiment
 
 Read docs/references/shadcn-registry-index.md before changing `registry.json`, a registry item, or how the registry is published.
 
+Read docs/contexts/component-lifecycle.md before setting or changing an item's `meta.status`.
+
 ## Writing
 
 Agent docs are read on every turn — every line is context each agent pays for whether or not the task touches it. One rule per line, stated as the rule. No preamble, no restating the heading. Cut anything two source files would teach. State behaviour literally: no metaphor, no analogy. The domain's own vocabulary is not a metaphor. A pointer to another document names the task that triggers the read, never the directory it points at.
@@ -62,7 +64,9 @@ Before editing files for a substantial task:
 - Inside `packages/ui`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/ui/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `@/lib/cn`, which `packages/tokens` generates from the token groups.
 - Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that experiment and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
-- An experiment is promoted to a lockup when it is production ready: its components move to `packages/ui`, its playground lockup route is added, and the same change deletes the experiment, its routes and its sidebar entry.
+- A component moves through `experiment`, `beta`, `stable` and `deprecated`, recorded in `meta.status` in `packages/ui/registry.json`.
+- An experiment becomes `beta` when its components move to `packages/ui` and the registry, its playground lockup route is added, and the same change deletes the experiment, its routes and its sidebar entry.
+- Every change to a registry item adds a dated entry, newest first, to `packages/ui/src/components/<name>.changelog.json` in the same commit.
 - This is a design system first and a component library second: a component encodes the rank, fit, placement, adjacency, spacing and radius rules in `docs/contexts/design-rules.md` and `DESIGN.md`, and takes every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `packages/tokens/src` and generated into `packages/ui/src/styles`, never edited in the generated files.
 - Run `/impeccable shape` before every design system change: a token, a rule in `docs/contexts/design-rules.md`, `DESIGN.md`, a new component or a new lockup.
 - Run `/impeccable document` to regenerate `DESIGN.md` and `.impeccable/design.json` in the same change that alters a token or a component's visual treatment.
