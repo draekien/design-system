@@ -203,7 +203,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Style:** a 10px dot with a `--status-media-ring` (1.5px) border, filled, half-filled or hollow by state, then the state's name, then an optional one-line description in Muted Ink that truncates before the name.
 
 ### Entity
-- **Style:** initials or a picture in a 24px Quiet Grey circle, then the name, then an optional one-line description in Muted Ink; media alone at narrow widths.
+- **Style:** initials or a picture in a 24px Quiet Grey circle, then the name, then an optional one-line description in Muted Ink that truncates before the name; media alone at narrow widths.
 
 ### Missing fact
 - **Style:** the word "Unavailable" or "Hidden" in Muted Ink in place of a rank 2 value; the reason is stated once outside the list.
