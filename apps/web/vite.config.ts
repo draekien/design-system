@@ -25,6 +25,7 @@ export default defineConfig({
           { path: "/playground/theme" },
           { path: "/playground/rules" },
           { path: "/canvas/lockups/record-list" },
+          { path: "/canvas/experiments/bullet" },
           { path: "/canvas/experiments/record-table" },
         ],
         prerender: {

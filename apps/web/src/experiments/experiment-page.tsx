@@ -51,7 +51,7 @@ const controls: ReadonlyArray<{
   },
 ]
 
-type CanvasPath = "/canvas/experiments/record-table"
+type CanvasPath = "/canvas/experiments/bullet" | "/canvas/experiments/record-table"
 
 type RuleSection = { title: string; rules: ReadonlyArray<Rule> }
 
