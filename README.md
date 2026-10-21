@@ -15,13 +15,12 @@ Name `tokens` in the command with the item. shadcn replaces the CSS variables yo
 | Item | Description |
 | --- | --- |
 | `record-list` | A list of 44px record rows, each part named for the rank of what it holds, with one tab stop, arrow-key focus, keyboard peek and keyboard selection. |
-| `status-mark` | A state drawn as a shape-coded dot and its word, for a rank 2 Read. |
-| `person-mark` | A person's initials in a 24px circle, then their name. |
+| `status` | A state drawn as a shape-coded dot and its name, with an optional description. |
+| `entity` | A person, team or organisation drawn as its initials or picture in a 24px circle, then its name. |
 | `figure` | A number the caller compares down a list, in tabular figures, with a compact short form. |
-| `track` | A measurement within a known range, drawn as a bar and its value, on Base UI Meter. |
+| `meter` | A measurement within a known range, drawn as a bar and its value, on Base UI Meter. |
 | `relative-time` | A moment stated relative to now, with a narrow short form. |
-| `field-state` | Stands in for a value that failed to load or that the viewer's role cannot see. |
-| `field-card` | Rank 4: a hover card on a rank 1 or 2 value with more about that entity or property. |
+| `preview-card` | Rank 4: a hover card on a rank 1 or 2 value with more about that entity or property. |
 
 ## Licence
 

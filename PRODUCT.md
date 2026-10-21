@@ -28,8 +28,8 @@ The rules live in how the components compose, built on Base UI's composition API
 - The registry is `registry.json` at the repository root, installed from GitHub; GitHub Pages hosts only the docs site (docs/adr/0002-serve-the-registry-from-the-github-repository.md).
 - Each registry item carries its usage guidance in its `docs` field, and the docs site carries the full guidelines.
 - Rule precedence: Linear first; Primer, Carbon, Geist, Stripe Apps and Saga only where Linear has no answer. Hover cards may hold links, following Linear over Primer.
-- Registry items are named for their role and never reuse a shadcn/ui item name (docs/adr/0003-name-registry-items-for-their-role.md).
-- Registry items: `record-list`, `status-mark`, `person-mark`, `figure`, `track`, `relative-time`, `field-state`, `field-card`.
+- Registry items are named with the common UI word for what they render and never reuse a shadcn/ui item name (docs/adr/0003-name-registry-items-for-their-role.md).
+- Registry items: `record-list`, `status`, `entity`, `figure`, `meter`, `relative-time`, `preview-card`.
 - A component moves through `experiment`, `beta`, `stable` and `deprecated`: it starts as a greyscale experiment on the docs site, and becomes `beta` when it moves to `packages/ui` and gets a playground page.
 
 ## Brand Commitments
@@ -40,7 +40,7 @@ Monochrome plus one accent colour; the accent marks only what can be acted on. P
 
 - docs/references/ux-references.md: researched rules with quotes from Linear, Primer, Carbon, Geist, Stripe Apps and Saga.
 - docs/references/shadcn-registry-*.md: the shadcn registry documentation, captured 2026-10-14.
-- The eight registry items above, each with a component page on the docs site, and a record list lockup page, built from them, with its States view and constellation.
+- The seven registry items above, each with a component page on the docs site, and a record list lockup page, built from them, with its States view and constellation.
 - No adopters or usage data exist yet; do not fabricate them.
 
 ## Product Principles

@@ -66,18 +66,23 @@ components:
     typography: "{typography.body}"
     padding: "0 {spacing.row-inset}"
     height: "{spacing.row}"
-  field-card:
+  preview-card:
     backgroundColor: "{colors.sheet}"
     textColor: "{colors.ink}"
     rounded: "{rounded.card}"
     padding: "12px"
     width: "240px"
-  person-mark-initials:
+  entity-media:
     backgroundColor: "{colors.quiet-grey}"
     textColor: "{colors.muted-ink}"
     typography: "{typography.micro}"
     rounded: "{rounded.full}"
     size: "24px"
+  record-row-media-icon:
+    backgroundColor: "{colors.quiet-grey}"
+    textColor: "{colors.muted-ink}"
+    rounded: "{rounded.floor}"
+    size: "{spacing.hit-min}"
 ---
 
 # Design System: design-system
@@ -91,7 +96,7 @@ The system is defined by the relationships between components, not by the compon
 | Relationship | Example rule | Where it is encoded today |
 | --- | --- | --- |
 | Rank | Ranks 1 and 2 show for every record before rank 3 shows for any | `docs/contexts/design-rules.md` |
-| Fit | A row holds one `RecordRowIdentify` and at most eight `RecordRowRead` columns, each holding one figure, status mark or track | `RecordRow` parts |
+| Fit | A row holds one `RecordRowSubject` and at most eight `RecordRowFact` columns, each holding one status, entity, figure, meter or relative time | `RecordRow` parts |
 | Placement | A record table where the caller compares down a column, a record list where they scan for one record | `docs/contexts/design-rules.md` |
 | Nesting | Groups do not nest; records nest one level deep | `docs/contexts/design-rules.md`, `RecordList` |
 | Adjacency | A selection bar holds at most two actions, then a ⋯ menu | `docs/contexts/design-rules.md` |
@@ -171,7 +176,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 ### Named Rules
 **The Outward Radius Rule.** A container's radius is its content's radius plus its padding, so a container never picks a radius on its own.
 
-**Not yet in code.** The default, sm, lg and icon buttons are still `rounded-md` (8px), the field card `rounded-lg` (10px), and the selection checkbox casts a `shadow-xs` at rest; moving them to the floor and the outward rule is a follow-up lockup change.
+**Not yet in code.** The default, sm, lg and icon buttons are still `rounded-md` (8px), the preview card `rounded-lg` (10px), and the selection checkbox casts a `shadow-xs` at rest; moving them to the floor and the outward rule is a follow-up lockup change.
 
 ## Components
 
@@ -186,17 +191,24 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **States:** hover tints the row with Ink at 4%; a focused or peeked row with Ink at 7%; the row name underlines in Signal Ring on keyboard focus.
 - **Revealed controls:** the selection checkbox and peek button are invisible at rest and appear on row hover, focus or selection; on a coarse pointer they are always visible and 44×44px.
 
-### Field card (hover card)
+### Preview card (hover card)
 - **Corner Style:** its content's radius plus its 12px padding (`{rounded.card}`).
 - **Background:** Sheet with a Hairline border and the popover shadow.
 - **Size:** 240px wide, 12px padding, 12px text.
-- **Motion:** opens over `--transition-duration-quick` (150ms) with `--ease-out`, from `--field-card-enter-scale` (97%), and fades out instantly; no motion under reduced motion.
+- **Motion:** opens over `--transition-duration-quick` (150ms) with `--ease-out`, from `--preview-card-enter-scale` (97%), and fades out instantly; no motion under reduced motion.
 
-### Status mark
-- **Style:** a 10px dot with a `--status-mark-ring` (1.5px) border, filled, half-filled or hollow by state, beside the state's word.
+### Record row media
+- **Default:** a 24×24px slot that draws only the dot of a status or the circle of an entity; the name and description beside it are read by screen readers only.
+- **Icon:** one 16px Muted Ink icon in a 24×24px Quiet Grey square at the floor radius (`{rounded.floor}`); the icon carries its own accessible name.
 
-### Person mark
-- **Style:** the person's initials in a 24px Quiet Grey circle, then their name; initials alone at narrow widths.
+### Status
+- **Style:** a 10px dot with a `--status-media-ring` (1.5px) border, filled, half-filled or hollow by state, then the state's name, then an optional one-line description in Muted Ink that truncates before the name.
+
+### Entity
+- **Style:** initials or a picture in a 24px Quiet Grey circle, then the name, then an optional one-line description in Muted Ink; media alone at narrow widths.
+
+### Missing fact
+- **Style:** the word "Unavailable" or "Hidden" in Muted Ink in place of a rank 2 value; the reason is stated once outside the list.
 
 ## Do's and Don'ts
 
