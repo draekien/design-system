@@ -186,13 +186,10 @@ describe("registryItems", () => {
 })
 
 describe("installCommand", () => {
-  it("names the tokens item before an item that depends on it, so shadcn replaces the existing colours", () => {
-    expect(installCommand("status")).toBe(
-      "pnpm dlx shadcn@latest add draekien/design-system/tokens draekien/design-system/status"
-    )
-  })
-
-  it.each(["tokens", "cn"])("installs %s alone, since it does not depend on tokens", (name) => {
-    expect(installCommand(name)).toBe(`pnpm dlx shadcn@latest add draekien/design-system/${name}`)
-  })
+  it.each(["tokens", "cn", "status"])(
+    "installs %s alone, with tokens installed once beforehand",
+    (name) => {
+      expect(installCommand(name)).toBe(`pnpm dlx shadcn@latest add draekien/design-system/${name}`)
+    }
+  )
 })

@@ -9,8 +9,8 @@ import { componentSpecimens } from "./component-specimens.tsx"
 import { ItemChanges, ItemMetaList } from "./item-record.tsx"
 import { InstallCommand, PageSection, Segmented } from "./playground-controls.tsx"
 import type { SectionTab } from "./playground-search.ts"
-import { focusRing, segmentItem } from "./playground-styles.ts"
-import { installCommand, type RegistryItem, usageText } from "./registry-items.ts"
+import { focusRing, segmentItem, textLink } from "./playground-styles.ts"
+import { installCommand, type RegistryItem, tokensItemName, usageText } from "./registry-items.ts"
 
 export function ComponentPage({
   item,
@@ -39,6 +39,15 @@ export function ComponentPage({
         </p>
         <ItemMetaList meta={item.meta} className="mt-4" />
         <InstallCommand command={installCommand(item.name)} className="mt-5 max-w-2xl" />
+        {item.registryDependencies.includes(tokensItemName) ? (
+          <p className="mt-2 max-w-2xl text-muted-foreground text-sm">
+            Install{" "}
+            <Link to="/playground/tokens" className={textLink}>
+              tokens
+            </Link>{" "}
+            once before your first component.
+          </p>
+        ) : null}
       </header>
 
       {specimen === undefined ? null : (

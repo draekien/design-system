@@ -92,7 +92,11 @@ export function PlaygroundIndex(): React.ReactElement {
             Registry items
           </h2>
           <p className="mt-1 text-pretty text-muted-foreground text-sm leading-relaxed">
-            Every item installs with the shadcn CLI. An item pulls in the items it depends on.
+            Every item installs with the shadcn CLI and pulls in the items it depends on. Install{" "}
+            <Link to="/playground/tokens" className={textLink}>
+              tokens
+            </Link>{" "}
+            once before your first component.
           </p>
         </div>
         <ul className="divide-y rounded-xl border bg-card text-sm">

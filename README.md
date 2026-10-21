@@ -6,11 +6,19 @@ Documentation and live examples: https://design-system.wpei.me/
 
 ## Install a component
 
+Install `tokens` once, before your first component:
+
 ```sh
-pnpm dlx shadcn@latest add draekien/design-system/tokens draekien/design-system/<item>
+pnpm dlx shadcn@latest add draekien/design-system/tokens
 ```
 
-Name `tokens` in the command with the item. shadcn replaces the CSS variables you already have only when a theme item is named in the command, so an item installed alone keeps your current colours and font, and naming `tokens` again later replaces any of its variables you have edited.
+Then install each component:
+
+```sh
+pnpm dlx shadcn@latest add draekien/design-system/<item>
+```
+
+shadcn replaces the CSS variables you already have only when a theme item is named in the command. A component pulls in `tokens` as a dependency, but that only adds the variables you are missing, so without the first step your current colours and font stay. Running the first command again later replaces any `tokens` variables you have edited.
 
 | Item | Description |
 | --- | --- |
