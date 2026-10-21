@@ -549,7 +549,7 @@ export function RecordRowId({
 
 const mediaVariantClass = {
   default: "**:data-[abbreviation=long]:sr-only",
-  icon: "rounded-floor bg-muted text-muted-foreground [&_svg]:size-4",
+  icon: "text-muted-foreground [&_svg]:size-4",
 } as const
 
 /** Props for {@link RecordRowMedia}. */
@@ -558,7 +558,7 @@ export type RecordRowMediaProps = RecordRowNarrowPartProps &
     | {
         /**
          * `"default"` holds a `status` or `entity` and draws only its media, with its name and
-         * description read by screen readers only. `"icon"` holds one icon in a muted square.
+         * description read by screen readers only. `"icon"` holds one muted icon.
          * Defaults to `"default"`.
          */
         variant?: "default"
@@ -597,7 +597,11 @@ export function RecordRowMedia(props: RecordRowMediaProps): React.ReactElement {
       mediaVariantClass[props.variant ?? "default"],
       narrowClass[props.narrow ?? "keep"]
     ),
-    props.variant === "icon" ? null : <span className="size-2.5 rounded-full bg-muted" />,
+    props.variant === "icon" ? (
+      <span className="size-4 rounded-floor bg-muted" />
+    ) : (
+      <span className="size-2.5 rounded-full bg-muted" />
+    ),
     mediaPartProps(props)
   )
 }

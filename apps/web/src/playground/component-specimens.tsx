@@ -1,5 +1,3 @@
-import { File01Icon, Shield01Icon, Task01Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Entity,
   EntityDescription,
@@ -43,8 +41,6 @@ const listRecords = [
   {
     id: "REC-101",
     name: "Vendor onboarding checklist",
-    icon: Task01Icon,
-    kind: "Checklist",
     fill: "none",
     status: "Draft",
     owner: { initials: "MO", name: "Mira Okafor" },
@@ -52,8 +48,6 @@ const listRecords = [
   {
     id: "REC-104",
     name: "Quarterly access review",
-    icon: Shield01Icon,
-    kind: "Review",
     fill: "half",
     status: "In review",
     owner: { initials: "DP", name: "Dev Patel" },
@@ -61,8 +55,6 @@ const listRecords = [
   {
     id: "REC-109",
     name: "Data retention policy",
-    icon: File01Icon,
-    kind: "Policy",
     fill: "full",
     status: "Approved",
     owner: { initials: "AL", name: "Ana Lim" },
@@ -80,17 +72,14 @@ function RecordListPreview() {
             <RecordRowLink href={`#${record.id}`}>
               <RecordRowSubject>
                 <RecordRowId narrow="hide">{record.id}</RecordRowId>
-                <RecordRowMedia variant="icon" label={record.kind}>
-                  <HugeiconsIcon icon={record.icon} />
+                <RecordRowMedia>
+                  <Status>
+                    <StatusMedia fill={record.fill} />
+                    <StatusName>{record.status}</StatusName>
+                  </Status>
                 </RecordRowMedia>
                 <RecordRowName>{record.name}</RecordRowName>
               </RecordRowSubject>
-              <RecordRowFact narrow="abbreviate">
-                <Status>
-                  <StatusMedia fill={record.fill} />
-                  <StatusName>{record.status}</StatusName>
-                </Status>
-              </RecordRowFact>
               <RecordRowFact narrow="abbreviate">
                 <Entity>
                   <EntityMedia>{record.owner.initials}</EntityMedia>
@@ -108,9 +97,7 @@ function RecordListPreview() {
   )
 }
 
-const recordListCode = `import { File01Icon, Shield01Icon, Task01Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Entity, EntityMedia, EntityName } from "@/components/entity"
+const recordListCode = `import { Entity, EntityMedia, EntityName } from "@/components/entity"
 import {
   RecordList,
   RecordRow,
@@ -129,8 +116,6 @@ const records = [
   {
     id: "REC-101",
     name: "Vendor onboarding checklist",
-    icon: Task01Icon,
-    kind: "Checklist",
     fill: "none",
     status: "Draft",
     owner: { initials: "MO", name: "Mira Okafor" },
@@ -138,8 +123,6 @@ const records = [
   {
     id: "REC-104",
     name: "Quarterly access review",
-    icon: Shield01Icon,
-    kind: "Review",
     fill: "half",
     status: "In review",
     owner: { initials: "DP", name: "Dev Patel" },
@@ -147,8 +130,6 @@ const records = [
   {
     id: "REC-109",
     name: "Data retention policy",
-    icon: File01Icon,
-    kind: "Policy",
     fill: "full",
     status: "Approved",
     owner: { initials: "AL", name: "Ana Lim" },
@@ -166,17 +147,14 @@ export function RecordListExample() {
             <RecordRowLink href={\`/records/\${record.id}\`}>
               <RecordRowSubject>
                 <RecordRowId narrow="hide">{record.id}</RecordRowId>
-                <RecordRowMedia variant="icon" label={record.kind}>
-                  <HugeiconsIcon icon={record.icon} />
+                <RecordRowMedia>
+                  <Status>
+                    <StatusMedia fill={record.fill} />
+                    <StatusName>{record.status}</StatusName>
+                  </Status>
                 </RecordRowMedia>
                 <RecordRowName>{record.name}</RecordRowName>
               </RecordRowSubject>
-              <RecordRowFact narrow="abbreviate">
-                <Status>
-                  <StatusMedia fill={record.fill} />
-                  <StatusName>{record.status}</StatusName>
-                </Status>
-              </RecordRowFact>
               <RecordRowFact narrow="abbreviate">
                 <Entity>
                   <EntityMedia>{record.owner.initials}</EntityMedia>
