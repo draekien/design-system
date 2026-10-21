@@ -65,7 +65,7 @@ const listRecords = [
     kind: "Policy",
     fill: "full",
     status: "Approved",
-    owner: null,
+    owner: { initials: "AL", name: "Ana Lim" },
   },
 ] as const
 
@@ -80,27 +80,23 @@ function RecordListPreview() {
             <RecordRowLink href={`#${record.id}`}>
               <RecordRowSubject>
                 <RecordRowId narrow="hide">{record.id}</RecordRowId>
-                <RecordRowMedia variant="icon">
-                  <HugeiconsIcon icon={record.icon} role="img" aria-label={record.kind} />
+                <RecordRowMedia variant="icon" label={record.kind}>
+                  <HugeiconsIcon icon={record.icon} />
                 </RecordRowMedia>
                 <RecordRowName>{record.name}</RecordRowName>
               </RecordRowSubject>
-              <RecordRowFact>
+              <RecordRowFact narrow="abbreviate">
                 <Status>
                   <StatusMedia fill={record.fill} />
                   <StatusName>{record.status}</StatusName>
                 </Status>
               </RecordRowFact>
-              {record.owner === null ? (
-                <RecordRowFact narrow="abbreviate" missing="hidden" />
-              ) : (
-                <RecordRowFact narrow="abbreviate">
-                  <Entity>
-                    <EntityMedia>{record.owner.initials}</EntityMedia>
-                    <EntityName>{record.owner.name}</EntityName>
-                  </Entity>
-                </RecordRowFact>
-              )}
+              <RecordRowFact narrow="abbreviate">
+                <Entity>
+                  <EntityMedia>{record.owner.initials}</EntityMedia>
+                  <EntityName>{record.owner.name}</EntityName>
+                </Entity>
+              </RecordRowFact>
             </RecordRowLink>
           </RecordRow>
         ))}
@@ -155,7 +151,7 @@ const records = [
     kind: "Policy",
     fill: "full",
     status: "Approved",
-    owner: null,
+    owner: { initials: "AL", name: "Ana Lim" },
   },
 ] as const
 
@@ -170,27 +166,23 @@ export function RecordListExample() {
             <RecordRowLink href={\`/records/\${record.id}\`}>
               <RecordRowSubject>
                 <RecordRowId narrow="hide">{record.id}</RecordRowId>
-                <RecordRowMedia variant="icon">
-                  <HugeiconsIcon icon={record.icon} role="img" aria-label={record.kind} />
+                <RecordRowMedia variant="icon" label={record.kind}>
+                  <HugeiconsIcon icon={record.icon} />
                 </RecordRowMedia>
                 <RecordRowName>{record.name}</RecordRowName>
               </RecordRowSubject>
-              <RecordRowFact>
+              <RecordRowFact narrow="abbreviate">
                 <Status>
                   <StatusMedia fill={record.fill} />
                   <StatusName>{record.status}</StatusName>
                 </Status>
               </RecordRowFact>
-              {record.owner === null ? (
-                <RecordRowFact narrow="abbreviate" missing="hidden" />
-              ) : (
-                <RecordRowFact narrow="abbreviate">
-                  <Entity>
-                    <EntityMedia>{record.owner.initials}</EntityMedia>
-                    <EntityName>{record.owner.name}</EntityName>
-                  </Entity>
-                </RecordRowFact>
-              )}
+              <RecordRowFact narrow="abbreviate">
+                <Entity>
+                  <EntityMedia>{record.owner.initials}</EntityMedia>
+                  <EntityName>{record.owner.name}</EntityName>
+                </Entity>
+              </RecordRowFact>
             </RecordRowLink>
           </RecordRow>
         ))}

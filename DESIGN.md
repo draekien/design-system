@@ -199,7 +199,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 
 ### Record row media
 - **Default:** a 24×24px slot that draws only the dot of a status or the circle of an entity; the name and description beside it are read by screen readers only.
-- **Icon:** one 16px Muted Ink icon in a 24×24px Quiet Grey square at the floor radius (`{rounded.floor}`); the icon carries its own accessible name.
+- **Icon:** one 16px Muted Ink icon in a 24×24px Quiet Grey square at the floor radius (`{rounded.floor}`); its required `label` names it for screen readers.
 
 ### Status
 - **Style:** a 10px dot with a `--status-media-ring` (1.5px) border, filled, half-filled or hollow by state, then the state's name, then an optional one-line description in Muted Ink that truncates before the name.

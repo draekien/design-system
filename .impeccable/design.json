@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-21T03:26:50Z",
+  "generatedAt": "2026-10-21T03:32:00Z",
   "title": "Design System: design-system",
   "extensions": {
     "colorMeta": {
@@ -163,7 +163,7 @@
       "name": "Record Row Icon Media",
       "kind": "custom",
       "refersTo": "record-row-media-icon",
-      "description": "One icon for the record's kind in a quiet square at the floor radius, between the ID and the name.",
+      "description": "One icon for the record's kind in a quiet square at the floor radius, between the ID and the name; its label names it for screen readers.",
       "html": "<span class=\"ds-record-row-media-icon\" role=\"img\" aria-label=\"Invoice\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M5 3h10l4 4v14H5z\"/><path d=\"M9 12h6M9 16h4\"/></svg></span>",
       "css": ".ds-record-row-media-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: calc(var(--radius) * 0.6); background: var(--muted); color: var(--muted-foreground); } .ds-record-row-media-icon svg { width: 16px; height: 16px; }"
     }

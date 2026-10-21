@@ -321,12 +321,12 @@ describe("RecordRow", () => {
     ).toBeTruthy()
   })
 
-  it("names the link with an icon's accessible name in icon media", () => {
+  it("names the link with the label of icon media", () => {
     renderRow(
       <RecordRowLink href="/records/REC-104">
         <RecordRowSubject>
-          <RecordRowMedia variant="icon">
-            <svg role="img" aria-label="Review" />
+          <RecordRowMedia variant="icon" label="Review">
+            <svg />
           </RecordRowMedia>
           <RecordRowName>Quarterly access review</RecordRowName>
         </RecordRowSubject>

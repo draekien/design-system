@@ -553,34 +553,52 @@ const mediaVariantClass = {
 } as const
 
 /** Props for {@link RecordRowMedia}. */
-export type RecordRowMediaProps = RecordRowNarrowPartProps & {
-  /**
-   * `"default"` holds a `status` or `entity` and draws only its media, with its name and
-   * description read by screen readers only. `"icon"` holds one icon, which carries its own
-   * accessible name, in a muted square. Defaults to `"default"`.
-   */
-  variant?: keyof typeof mediaVariantClass
-}
+export type RecordRowMediaProps = RecordRowNarrowPartProps &
+  (
+    | {
+        /**
+         * `"default"` holds a `status` or `entity` and draws only its media, with its name and
+         * description read by screen readers only. `"icon"` holds one icon in a muted square.
+         * Defaults to `"default"`.
+         */
+        variant?: "default"
+      }
+    | {
+        variant: "icon"
+        /** What the icon stands for, such as "Invoice"; read by screen readers in place of the icon. */
+        label: string
+      }
+  )
 
 /**
  * A 24×24px picture of the item drawn between the ID and the name, such as its status dot, its
  * owner's initials or an icon for its kind.
  */
-export function RecordRowMedia({
-  variant = "default",
-  narrow = "keep",
-  ...props
-}: RecordRowMediaProps): React.ReactElement {
+function mediaPartProps(props: RecordRowMediaProps): RecordRowPartProps {
+  if (props.variant !== "icon") {
+    const { variant: _variant, narrow: _narrow, ...rest } = props
+    return rest
+  }
+  const { variant: _variant, narrow: _narrow, label, children, ...rest } = props
+  return {
+    ...rest,
+    role: "img",
+    "aria-label": label,
+    children: <span aria-hidden="true">{children}</span>,
+  }
+}
+
+export function RecordRowMedia(props: RecordRowMediaProps): React.ReactElement {
   return usePart(
     "RecordRowMedia",
     "record-row-media",
     cn(
       "col-start-2 mr-2 flex size-6 items-center justify-center",
-      mediaVariantClass[variant],
-      narrowClass[narrow]
+      mediaVariantClass[props.variant ?? "default"],
+      narrowClass[props.narrow ?? "keep"]
     ),
     <span className="size-2.5 rounded-full bg-muted" />,
-    props
+    mediaPartProps(props)
   )
 }
 
