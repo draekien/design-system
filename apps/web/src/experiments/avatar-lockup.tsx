@@ -145,10 +145,11 @@ function AssigneeAvatar() {
   return (
     <PreviewCard>
       <PreviewCardTrigger
-        render={<a href={assignee.profileUrl} aria-label={assignee.name} />}
+        render={<a href={assignee.profileUrl} />}
         className="focus-ring rounded-full pointer-coarse:min-h-11 pointer-coarse:min-w-11"
       >
         <PersonAvatar person={assignee} size="lg" />
+        <span className="sr-only">{assignee.name}</span>
       </PreviewCardTrigger>
       <PreviewCardContent>
         <PersonCard person={assignee} />
