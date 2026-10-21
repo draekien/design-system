@@ -30,8 +30,8 @@ Information takes one of five ranks, decided by what the caller came to the surf
 
 | Rank | Holds | Shows | Component |
 | --- | --- | --- | --- |
-| 1 Identify | what the thing is: ID, glyph, name, a one-line description | always, at the start of the row or head | text |
-| 2 Read | the reading the surface exists for: state, a figure the caller compares | always, in its own slot | figure, dot and word, track |
+| 1 Subject | what the row is about: ID, media, name, a one-line description | always, at the start of the row or head | text, icon, status, entity |
+| 2 Fact | one fact about the subject that the surface exists to compare, in its own column: a state, a person, a figure | always, in its own slot | status, entity, figure, meter, relative time |
 | 3 Explain | what a caller reads on some visits: purpose, breakdown, history, older entries | in place, one click away | expanded row, `Collapsible`, `Accordion`, "Show N more" |
 | 4 Enrich | more about one named entity or property — a person, a service, an organisation, a stage, a truncated value | an overlay on that entity's or property's own trigger | hover card |
 | 5 Elsewhere | everything about one record | the record's own surface; peek previews it read-only without leaving | link, peek |
@@ -52,7 +52,7 @@ Peek opens with Space on the focused row, so a click on the row opens rank 5.
 
 A drawer that shows peek returns focus to the row that opened it.
 
-A description in rank 1 is one line after the name; it truncates and hides before the name does.
+A description is one line after the name, in rank 1 and in a status or entity; it truncates and hides before the name does.
 
 A row is selectable only when it draws a selection checkbox.
 
@@ -64,7 +64,7 @@ An empty group is hidden.
 
 Groups do not nest, and records nest one level deep: a record's child records are rank 3, collapsed by default, and drawn under it in its columns.
 
-A parent row's child count is a rank 2 reading in its own column; the expand control is the chevron alone.
+A parent row's child count is a rank 2 fact in its own column; the expand control is the chevron alone.
 
 Sorting orders records within their group and child records within their parent; it never moves a record out of either.
 
