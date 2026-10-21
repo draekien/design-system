@@ -39,6 +39,13 @@ describe("recordListStatesCode", () => {
     expect(code).not.toContain("Entity")
   })
 
+  it("renders each fact missing in the state with its missing variant and no content import", () => {
+    const code = recordListStatesCode(recordsDataset, new Set(), "no-permission")
+
+    expect(code).toContain('<RecordRowFact narrow="abbreviate" missing="hidden" />')
+    expect(code).not.toContain("Entity")
+  })
+
   it("renders the description from the item's summary and drops it when hidden", () => {
     expect(recordListStatesCode(recordsDataset, new Set(), "loaded")).toContain(
       "<RecordRowDescription>{record.summary}</RecordRowDescription>"

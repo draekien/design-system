@@ -1,6 +1,6 @@
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { componentModule } from "./component-module.ts"
-import type { Dataset, Hidden } from "./datasets.tsx"
+import type { Dataset, Hidden, RowState } from "./datasets.tsx"
 import { capitalise, isPartShown } from "./datasets.tsx"
 
 function indent(lines: ReadonlyArray<string>, depth: number) {
@@ -29,11 +29,17 @@ type RowCode = {
   loadingRow: ReadonlyArray<string>
 }
 
-function rowCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden, key: boolean): RowCode {
+function rowCode<TItem>(
+  dataset: Dataset<TItem>,
+  hidden: Hidden,
+  key: boolean,
+  state: RowState
+): RowCode {
   const item = dataset.item
   const facts = dataset.facts.filter((fact) => !hidden.has(fact.part))
   const media =
     dataset.media !== undefined && !hidden.has(dataset.media.part) ? dataset.media : undefined
+  const missing = (fact: (typeof facts)[number]) => fact.missing?.[state]
   const withCard = (fact: (typeof facts)[number]) =>
     fact.card !== undefined && isPartShown(hidden, fact.card, fact.part)
 
@@ -50,7 +56,8 @@ function rowCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden, key: boolean): 
   ]
 
   const contentModules = new Map<string, Array<string>>()
-  for (const fact of media === undefined ? facts : [media, ...facts]) {
+  const shown = facts.filter((fact) => missing(fact) === undefined)
+  for (const fact of media === undefined ? shown : [media, ...shown]) {
     for (const name of fact.components(withCard(fact))) {
       const module = componentModule[name]
       if (module === undefined) {
@@ -69,11 +76,16 @@ function rowCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden, key: boolean): 
       ? []
       : ["<RecordRowMedia>", ...indent(media.code(withCard(media)), 1), "</RecordRowMedia>"]
 
-  const factLines = facts.flatMap((fact) => [
-    `<RecordRowFact narrow="${fact.narrow}">`,
-    ...indent(fact.code(withCard(fact)), 1),
-    "</RecordRowFact>",
-  ])
+  const factLines = facts.flatMap((fact) => {
+    const factMissing = missing(fact)
+    return factMissing === undefined
+      ? [
+          `<RecordRowFact narrow="${fact.narrow}">`,
+          ...indent(fact.code(withCard(fact)), 1),
+          "</RecordRowFact>",
+        ]
+      : [`<RecordRowFact narrow="${fact.narrow}" missing="${factMissing}" />`]
+  })
 
   const row = [
     key ? `<RecordRow key={${item}.id} value={${item}.id}>` : `<RecordRow value={${item}.id}>`,
@@ -118,7 +130,7 @@ function contentImports(contentModules: RowCode["contentModules"]) {
 
 export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): string {
   const item = dataset.item
-  const { parts, contentModules, row } = rowCode(dataset, hidden, true)
+  const { parts, contentModules, row } = rowCode(dataset, hidden, true, "loaded")
   const list = capitalise(dataset.noun)
 
   return [
@@ -160,7 +172,12 @@ export function recordListStatesCode<TItem>(
   hidden: Hidden,
   state: FixtureState
 ): string {
-  const { parts, contentModules, row, loadingRow } = rowCode(dataset, hidden, false)
+  const { parts, contentModules, row, loadingRow } = rowCode(
+    dataset,
+    hidden,
+    false,
+    state === "loading" || state === "error" ? "loaded" : state
+  )
   const noun = capitalise(dataset.noun)
   const item = dataset.item
 

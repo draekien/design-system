@@ -597,7 +597,7 @@ export function RecordRowMedia(props: RecordRowMediaProps): React.ReactElement {
       mediaVariantClass[props.variant ?? "default"],
       narrowClass[props.narrow ?? "keep"]
     ),
-    <span className="size-2.5 rounded-full bg-muted" />,
+    props.variant === "icon" ? null : <span className="size-2.5 rounded-full bg-muted" />,
     mediaPartProps(props)
   )
 }
