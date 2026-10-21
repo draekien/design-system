@@ -30,7 +30,7 @@ The rules live in how the components compose, built on Base UI's composition API
 - Rule precedence: Linear first; Primer, Carbon, Geist, Stripe Apps and Saga only where Linear has no answer. Hover cards may hold links, following Linear over Primer.
 - Registry items are named with the common UI word for what they render, and reuse a shadcn/ui item name only when the item is meant to replace that shadcn/ui component (docs/adr/0003-name-registry-items-for-their-role.md).
 - Registry items: `record-list`, `status`, `entity`, `figure`, `meter`, `relative-time`, `preview-card`.
-- A component moves through `experiment`, `beta`, `stable` and `deprecated`: it starts as a greyscale experiment on the docs site, and becomes `beta` when it moves to `packages/ui` and gets a playground page.
+- A component moves through `experiment`, `beta`, `stable` and `deprecated`: it starts as a greyscale experiment on the docs site, and becomes `beta` when it moves to `registry` and gets a playground page.
 
 ## Brand Commitments
 

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import registry from "@workspace/ui/registry.json" with { type: "json" }
+import registry from "@workspace/registry/registry.json" with { type: "json" }
 import type * as React from "react"
 import { ColorSwatch } from "./color-token.tsx"
 import { ItemChanges, ItemMetaList } from "./item-record.tsx"

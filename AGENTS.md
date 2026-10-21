@@ -28,7 +28,7 @@ Build on Base UI primitives only; never add or import Radix (`@radix-ui/*`).
 
 Read docs/contexts/design-rules.md before designing, building or changing a component, its composition, its usage docs or any page of the docs site, and before writing user-facing copy in a component, example or page.
 
-Read DESIGN.md before building or styling any UI in `packages/ui` or `apps/web`.
+Read DESIGN.md before building or styling any UI in `registry` or `apps/web`.
 
 Read docs/references/shadcn-registry-index.md before changing `registry.json`, a registry item, or how the registry is published.
 
@@ -56,33 +56,35 @@ Before editing files for a substantial task:
 
 # Project
 
-- Turborepo monorepo managed with pnpm. Apps in `apps/`, shared packages in `packages/`.
+- Turborepo monorepo managed with pnpm. Apps in `apps/`, published registry source in `registry/`, unpublished shared packages in `packages/`.
 - `apps/web`: TanStack Start on Vite, React, TypeScript, Vitest. The docs site and the `/playground/<tier>/<name>` routes, prerendered to GitHub Pages.
 - A lockup lives in `apps/web/src/lockups/<name>`, composes published components to demonstrate the rules, and is never a registry item (ADR 0005).
 - `apps/web/src/experiments`: greyscale coded wireframes, one `/playground/experiments/<name>` page each, listed in the playground sidebar under Experiments and deployed with the site.
 - Every rule in `docs/contexts/design-rules.md` and `DESIGN.md` applies at every scale: a component's own parts follow it as a lockup's components do, and every page, specimen and example in `apps/web` follows it.
-- `packages/ui` is the registry source: every component in it is installable through `packages/ui/registry.json`, and `apps/web` imports it as `@workspace/ui`.
+- `registry` is the registry source, organised by tier (`tokens`, `lib`, `hooks`, `components`): every item in it is installable through `registry/registry.json`, and `apps/web` imports it as `@workspace/registry`.
 - Name a registry item in flat kebab-case for its role; reuse an `@shadcn` item name only for an item meant to replace that shadcn/ui component (`pnpm dlx shadcn@4.21.4 view @shadcn/<name>` fails when the name is free); item name, file name and main export match.
-- Inside `packages/ui`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/ui/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `@/lib/cn`, which `packages/tokens` generates from the token groups.
-- Each app's tsconfig maps `@/*` to `packages/ui/src/*`; app code imports its own files with relative paths.
+- Inside `registry`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/registry/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `@/lib/cn`, which `registry/tokens` generates from the token groups.
+- Each app's tsconfig maps `@/*` to `registry/*`; app code imports its own files with relative paths.
 - `packages/fixtures` holds the sample records and states that experiment and playground routes render; select a state with the `state` search param, validated by `fixtureStateSearch`.
-- A component moves through `experiment`, `beta`, `stable` and `deprecated`, recorded in `meta.status` in `packages/ui/registry.json`.
-- An experiment becomes `beta` when its components move to `packages/ui` and the registry, its lockup is added to `apps/web/src/lockups` with a `/playground/lockups/<name>` route, and the same change deletes the experiment, its routes and its sidebar entry.
-- Every change to a registry item adds a dated entry, newest first, to the `<name>.changelog.json` beside its source in `packages/ui/src` in the same commit.
-- This is a design system first and a component library second: a component encodes the rank, fit, placement, adjacency, spacing and radius rules in `docs/contexts/design-rules.md` and `DESIGN.md`, and takes every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `packages/tokens/src` and generated into `packages/ui/src/styles`, never edited in the generated files.
+- A component moves through `experiment`, `beta`, `stable` and `deprecated`, recorded in `meta.status` in `registry/registry.json`.
+- An experiment becomes `beta` when its components move to `registry`, its lockup is added to `apps/web/src/lockups` with a `/playground/lockups/<name>` route, and the same change deletes the experiment, its routes and its sidebar entry.
+- Every change to a registry item adds a dated entry, newest first, to the `<name>.changelog.json` beside its source in `registry` in the same commit.
+- This is a design system first and a component library second: a component encodes the rank, fit, placement, adjacency, spacing and radius rules in `docs/contexts/design-rules.md` and `DESIGN.md`, and takes every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `registry/tokens` and generated into `registry/styles`, never edited in the generated files.
 - Run `/impeccable shape` before every design system change: a token, a rule in `docs/contexts/design-rules.md`, `DESIGN.md`, a new component or a new lockup.
 - Run `/impeccable document` to regenerate `DESIGN.md` and `.impeccable/design.json` in the same change that alters a token or a component's visual treatment.
-- Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `packages/ui`.
+- Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `registry`.
 - Run the impeccable critique on every component after it is built or changed, and fix every issue it reports before its `meta.critiqued` is set.
 - Run `/simplify` and then `/code-review` on every change before committing it.
 - Show screenshots of every changed surface in a task's completion summary.
-- Every wireframe and lockup page shows its rules table, the interactive lockup and a constellation, following the `state` search param. On a playground page each part is the real `packages/ui` export.
+- Every wireframe and lockup page shows its rules table, the interactive lockup and a constellation, following the `state` search param. On a playground page each part is the real `registry` export.
 - A constellation draws the component at rest in the centre, one satellite per information rank around it holding that rank's parts with hover cards and panels drawn open, a connector from each part to the centre part that shows or reveals it, and a numbered parts list nesting each part under the part that contains it.
 - A constellation draws always-shown ranks with solid satellites and connectors above the centre, and revealed ranks with dashed satellites below it whose dashed connectors, labelled with the revealing gesture, appear on hover or focus.
 - A lockup page shows a States view: the component's interaction states and narrow widths, one specimen each.
-- A playground page stacks the lockup, the States view and the constellation in that order; the lockup and the States view each render in their own canvas iframe with its own width and pointer controls, the constellation in the page.
+- A playground page stacks the lockup, the States view, the constellation, Usage, Composition, Examples, API Reference and Rules in that order; the lockup and the States view each render in their own canvas iframe with its own width and pointer controls, the constellation in the page.
 - The lockup and the States view each have a Preview/Code toggle in their toolbar.
-- A component page shows its install command, description, a specimen with a Code toggle, its registry `docs`, and its dependents.
+- A component page shows its install command, description, a specimen with a Code toggle, Usage (an imports block, a usage block and at most 50 words of description), Composition, Examples, API Reference, its dependents and its changes; a lib page omits Composition.
+- Usage, Composition, Examples and API Reference come from `<name>.docs.ts` in `apps/web/src/components/<name>` or the lockup's folder; each example is one `<name>-<variant>.tsx` file that is both the preview and the code view.
+- Type every API table with `ApiTable`, so `pnpm typecheck` fails when a part's props change.
 - An experiment page shows its rules table and loads its canvas through `canvas-frame.tsx`; `view` selects lockup or constellation.
 - Run tasks from the repo root: `pnpm build`, `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm dev`.
 - Run `pnpm typecheck`, never a global `tsc`.

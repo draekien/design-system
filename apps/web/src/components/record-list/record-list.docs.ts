@@ -1,0 +1,318 @@
+import type { Checkbox } from "@base-ui/react/checkbox"
+import type {
+  RecordList,
+  RecordRow,
+  RecordRowDescription,
+  RecordRowFact,
+  RecordRowId,
+  RecordRowLink,
+  RecordRowLoading,
+  RecordRowMedia,
+  RecordRowName,
+  RecordRowPeek,
+  RecordRowSelect,
+  RecordRowSubject,
+} from "@/components/record-list.tsx"
+import { type ApiTable, type ComponentDocs, requireSource } from "../item-docs.ts"
+import { RecordListFigures } from "./record-list-figures.tsx"
+import { RecordListMissing } from "./record-list-missing.tsx"
+import { RecordListNarrow } from "./record-list-narrow.tsx"
+
+const sources = import.meta.glob<string>("./*.tsx", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+})
+
+const li = { label: "<li>", href: null }
+const span = { label: "<span>", href: null }
+
+const renderProp = {
+  type: "React.ReactElement | ((props, state) => React.ReactElement)",
+  required: false,
+  default: null,
+  description: "Replaces the rendered element, or receives its props and state to render it.",
+} as const
+
+const narrowProp = {
+  type: '"keep" | "abbreviate" | "hide"',
+  required: false,
+  default: '"keep"',
+  description:
+    "How the part behaves when the list is narrow: keep draws it in full, abbreviate swaps it for its short form below 768px, hide also removes it below 640px.",
+} as const
+
+export const recordListDocs: ComponentDocs = {
+  kind: "component",
+  usage: {
+    imports: `import {
+  RecordList,
+  RecordRow,
+  RecordRowLink,
+  RecordRowName,
+  RecordRowSubject,
+} from "@/components/record-list"`,
+    code: `<RecordList aria-label="Records">
+  <RecordRow value="REC-104">
+    <RecordRowLink href="/records/REC-104">
+      <RecordRowSubject>
+        <RecordRowName>Quarterly access review</RecordRowName>
+      </RecordRowSubject>
+    </RecordRowLink>
+  </RecordRow>
+</RecordList>`,
+    description:
+      "Put one value in each RecordRowFact, at most eight per row. Show the keyboard hints near the list and point aria-describedby at them.",
+  },
+  composition: {
+    name: "RecordList",
+    item: null,
+    children: [
+      {
+        name: "RecordRow",
+        item: null,
+        children: [
+          { name: "RecordRowSelect", item: null, children: [] },
+          {
+            name: "RecordRowLink",
+            item: null,
+            children: [
+              {
+                name: "RecordRowSubject",
+                item: null,
+                children: [
+                  { name: "RecordRowId", item: null, children: [] },
+                  {
+                    name: "RecordRowMedia",
+                    item: null,
+                    children: [
+                      { name: "Status", item: "status", children: [] },
+                      { name: "Entity", item: "entity", children: [] },
+                    ],
+                  },
+                  { name: "RecordRowName", item: null, children: [] },
+                  { name: "RecordRowDescription", item: null, children: [] },
+                ],
+              },
+              {
+                name: "RecordRowFact",
+                item: null,
+                children: [
+                  { name: "Status", item: "status", children: [] },
+                  { name: "Entity", item: "entity", children: [] },
+                  { name: "Figure", item: "figure", children: [] },
+                  { name: "Meter", item: "meter", children: [] },
+                  { name: "RelativeTime", item: "relative-time", children: [] },
+                ],
+              },
+            ],
+          },
+          { name: "RecordRowPeek", item: null, children: [] },
+        ],
+      },
+      { name: "RecordRowLoading", item: null, children: [] },
+    ],
+  },
+  examples: [
+    {
+      name: "record-list-figures",
+      title: "Figures",
+      description: "Each fact lines up in its own column.",
+      Preview: RecordListFigures,
+      source: requireSource(sources, "./record-list-figures.tsx"),
+    },
+    {
+      name: "record-list-narrow",
+      title: "Narrow list",
+      description: "abbreviate shortens the total; hide removes the ID and the date.",
+      Preview: RecordListNarrow,
+      source: requireSource(sources, "./record-list-narrow.tsx"),
+    },
+    {
+      name: "record-list-missing",
+      title: "Missing facts and peek",
+      description: "missing draws a word in place of the value. Hover a row for its peek button.",
+      Preview: RecordListMissing,
+      source: requireSource(sources, "./record-list-missing.tsx"),
+    },
+  ],
+  api: [
+    {
+      kind: "part",
+      name: "RecordList",
+      description:
+        "The list, and its keyboard model: one tab stop, arrow keys between rows, Space to peek, X to select, Esc to close peek then clear selection.",
+      spreads: { label: "<ul>", href: null },
+      props: {
+        render: renderProp,
+        selectedValues: {
+          type: "ReadonlyArray<string>",
+          required: false,
+          default: null,
+          description:
+            "The values of the selected rows. Pass with onSelectedValuesChange to control selection.",
+        },
+        defaultSelectedValues: {
+          type: "ReadonlyArray<string>",
+          required: false,
+          default: "[]",
+          description: "The values selected on first render when selection is uncontrolled.",
+        },
+        onSelectedValuesChange: {
+          type: "(values: ReadonlyArray<string>) => void",
+          required: false,
+          default: null,
+          description: "Called with the next selection when X, the row checkbox or Esc changes it.",
+        },
+        peekValue: {
+          type: "string | null",
+          required: false,
+          default: null,
+          description:
+            "The value of the peeked row, or null when peek is closed. Pass with onPeekValueChange to control peek.",
+        },
+        defaultPeekValue: {
+          type: "string | null",
+          required: false,
+          default: "null",
+          description: "The row peeked on first render when peek is uncontrolled.",
+        },
+        onPeekValueChange: {
+          type: "(value: string | null) => void",
+          required: false,
+          default: null,
+          description:
+            "Called when Space or a RecordRowPeek toggles peek, Esc closes it, or peek follows focus to another row.",
+        },
+      } satisfies ApiTable<typeof RecordList, "ul">,
+    },
+    {
+      kind: "part",
+      name: "RecordRow",
+      description: "One item in the list, named by its value.",
+      spreads: li,
+      props: {
+        render: renderProp,
+        value: {
+          type: "string",
+          required: true,
+          default: null,
+          description: "The item's unique value, which list selection and peek refer to.",
+        },
+      } satisfies ApiTable<typeof RecordRow, "li">,
+    },
+    {
+      kind: "part",
+      name: "RecordRowSelect",
+      description:
+        "The selection checkbox, drawn on a hovered, focused or selected row and always on a coarse pointer.",
+      spreads: {
+        label: "Base UI Checkbox.Root",
+        href: "https://base-ui.com/react/components/checkbox#api-reference",
+      },
+      props: {} satisfies ApiTable<typeof RecordRowSelect, typeof Checkbox.Root>,
+    },
+    {
+      kind: "part",
+      name: "RecordRowLink",
+      description:
+        "The link to the item's own page, which holds the subject and the facts and is the row's one focus target.",
+      spreads: { label: "<a>", href: null },
+      props: { render: renderProp } satisfies ApiTable<typeof RecordRowLink, "a">,
+    },
+    {
+      kind: "part",
+      name: "RecordRowSubject",
+      description: "Rank 1: what the row is about, at the start of the row.",
+      spreads: span,
+      props: { render: renderProp } satisfies ApiTable<typeof RecordRowSubject, "span">,
+    },
+    {
+      kind: "part",
+      name: "RecordRowId",
+      description: "The item's ID, in muted tabular figures.",
+      spreads: span,
+      props: { render: renderProp, narrow: narrowProp } satisfies ApiTable<
+        typeof RecordRowId,
+        "span"
+      >,
+    },
+    {
+      kind: "part",
+      name: "RecordRowMedia",
+      description:
+        "A 24px picture of the item, such as its status dot, its owner's initials or a kind icon.",
+      spreads: span,
+      props: {
+        render: renderProp,
+        narrow: narrowProp,
+        variant: {
+          type: '"default" | "icon"',
+          required: false,
+          default: '"default"',
+          description:
+            "default holds a status or entity and draws only its media; icon holds one muted icon and requires label.",
+        },
+        label: {
+          type: "string",
+          required: false,
+          default: null,
+          description:
+            'Required with variant="icon": what the icon stands for, read by screen readers in place of the icon.',
+        },
+      } satisfies ApiTable<typeof RecordRowMedia, "span">,
+    },
+    {
+      kind: "part",
+      name: "RecordRowName",
+      description: "The item's name. It truncates and is never hidden.",
+      spreads: span,
+      props: { render: renderProp } satisfies ApiTable<typeof RecordRowName, "span">,
+    },
+    {
+      kind: "part",
+      name: "RecordRowDescription",
+      description:
+        "One muted line after the name. It truncates before the name does and is hidden below 640px.",
+      spreads: span,
+      props: { render: renderProp } satisfies ApiTable<typeof RecordRowDescription, "span">,
+    },
+    {
+      kind: "part",
+      name: "RecordRowFact",
+      description:
+        "Rank 2: one fact the list exists to compare, in its own column. A row holds at most eight.",
+      spreads: span,
+      props: {
+        render: {
+          ...renderProp,
+          description: `${renderProp.description} Not allowed with missing.`,
+        },
+        narrow: narrowProp,
+        missing: {
+          type: '"unavailable" | "hidden"',
+          required: false,
+          default: null,
+          description:
+            "Why the fact cannot be shown: unavailable when it failed to load, hidden when the viewer's role cannot see it.",
+        },
+      } satisfies ApiTable<typeof RecordRowFact, "span">,
+    },
+    {
+      kind: "part",
+      name: "RecordRowPeek",
+      description:
+        "A button at the end of the row that toggles peek by pointer, drawn on a hovered, focused or peeked row.",
+      spreads: { label: "<button>", href: null },
+      props: {} satisfies ApiTable<typeof RecordRowPeek, "button">,
+    },
+    {
+      kind: "part",
+      name: "RecordRowLoading",
+      description:
+        "A placeholder row for loading items; each part inside draws a bar so the columns match the rows that replace it.",
+      spreads: li,
+      props: { render: renderProp } satisfies ApiTable<typeof RecordRowLoading, "li">,
+    },
+  ],
+}

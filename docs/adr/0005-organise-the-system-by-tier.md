@@ -17,7 +17,7 @@ The system provides five kinds of thing: tokens, lib utilities, hooks, component
 
 ## Decision
 
-We will map each tier to one place in source and one route prefix on the docs site: tokens are the `registry:theme` item built from `packages/tokens` at `/playground/tokens`; lib utilities are `registry:lib` items in `packages/ui/src/lib` at `/playground/lib/<name>`; hooks are `registry:hook` items in `packages/ui/src/hooks` at `/playground/hooks/<name>`, added with the first hook; components are `registry:ui` items in `packages/ui/src/components` at `/playground/components/<name>`; lockups live in `apps/web/src/lockups/<name>` at `/playground/lockups/<name>` and are never registry items. A consumer installs the components a lockup is built from, not the lockup.
+We will map each tier to one place in source and one route prefix on the docs site: tokens are the `registry:theme` item built from `registry/tokens` at `/playground/tokens`; lib utilities are `registry:lib` items in `registry/lib` at `/playground/lib/<name>`; hooks are `registry:hook` items in `registry/hooks` at `/playground/hooks/<name>`, added with the first hook; components are `registry:ui` items in `registry/components` at `/playground/components/<name>`; lockups live in `apps/web/src/lockups/<name>` at `/playground/lockups/<name>` and are never registry items. A consumer installs the components a lockup is built from, not the lockup.
 
 ## Consequences
 
@@ -30,3 +30,5 @@ Every registry item has a page in its tier, and a lockup page lists the componen
 - Put lockups in an unpublished `packages/lockups` workspace package: rejected because only `apps/web` uses them, so a package adds a tsconfig, a build task and an export map for one consumer.
 
 ## Amendments
+
+- 2026-10-21: Each tier's source moved from `packages/ui/src/<tier>` (and `packages/tokens`) to `registry/<tier>`, a top-level workspace that holds only published source; `packages/` keeps unpublished shared packages. Item files stay flat inside each tier folder, because one `@/*` path alias must resolve the `@/lib/…` imports that `shadcn add` rewrites. The tier map and route prefixes are unchanged.

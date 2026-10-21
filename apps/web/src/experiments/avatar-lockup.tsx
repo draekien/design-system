@@ -5,7 +5,7 @@ import {
   PreviewCard,
   PreviewCardContent,
   PreviewCardTrigger,
-} from "@workspace/ui/components/preview-card.tsx"
+} from "@workspace/registry/components/preview-card.tsx"
 import * as React from "react"
 import { PeopleGroup, PeoplePopup, PersonAvatar, PersonCard } from "./avatar.tsx"
 import { Bullet, BulletLabel } from "./bullet.tsx"

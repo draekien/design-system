@@ -3,14 +3,14 @@ import {
   EntityDescription,
   EntityMedia,
   EntityName,
-} from "@workspace/ui/components/entity.tsx"
-import { Figure } from "@workspace/ui/components/figure.tsx"
-import { Meter } from "@workspace/ui/components/meter.tsx"
+} from "@workspace/registry/components/entity.tsx"
+import { Figure } from "@workspace/registry/components/figure.tsx"
+import { Meter } from "@workspace/registry/components/meter.tsx"
 import {
   PreviewCard,
   PreviewCardContent,
   PreviewCardTrigger,
-} from "@workspace/ui/components/preview-card.tsx"
+} from "@workspace/registry/components/preview-card.tsx"
 import {
   RecordList,
   RecordRow,
@@ -21,14 +21,14 @@ import {
   RecordRowName,
   RecordRowSelect,
   RecordRowSubject,
-} from "@workspace/ui/components/record-list.tsx"
-import { RelativeTime } from "@workspace/ui/components/relative-time.tsx"
+} from "@workspace/registry/components/record-list.tsx"
+import { RelativeTime } from "@workspace/registry/components/relative-time.tsx"
 import {
   Status,
   StatusDescription,
   StatusMedia,
   StatusName,
-} from "@workspace/ui/components/status.tsx"
+} from "@workspace/registry/components/status.tsx"
 import * as React from "react"
 
 export type ComponentSpecimen = {

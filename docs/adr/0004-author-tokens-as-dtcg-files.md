@@ -34,7 +34,7 @@ Both regenerate identical output from an unchanged source, and in both a change 
 
 ## Decision
 
-We will author tokens as DTCG 2025.10 JSON in `packages/tokens/src/`, with a resolver file whose `theme` modifier has `light` and `dark` contexts, and generate `packages/ui/src/styles/tokens.gen.css` and the `tokens` registry theme from it with Terrazzo 2.9.0 (`@terrazzo/cli`, `@terrazzo/plugin-css`, `@terrazzo/plugin-tailwind`) and one custom Terrazzo plugin for the registry `cssVars`. Generated files are never edited by hand.
+We will author tokens as DTCG 2025.10 JSON in `registry/tokens/`, with a resolver file whose `theme` modifier has `light` and `dark` contexts, and generate `registry/styles/tokens.gen.css` and the `tokens` registry theme from it with Terrazzo 2.9.0 (`@terrazzo/cli`, `@terrazzo/plugin-css`, `@terrazzo/plugin-tailwind`) and one custom Terrazzo plugin for the registry `cssVars`. Generated files are never edited by hand.
 
 ## Consequences
 
@@ -43,7 +43,7 @@ We will author tokens as DTCG 2025.10 JSON in `packages/tokens/src/`, with a res
 - Colour output needs a `transform()` override to keep oklch as authored; Terrazzo's default serializer would change every colour string.
 - `plugin-css` writes declarations in alphabetical order, so `tokens.gen.css` does not keep the source order. Custom property order has no effect on rendering.
 - The `@theme inline` block is generated from a template and alias tokens that exist only to feed `plugin-tailwind`; `plugin-css` output must exclude them.
-- Terrazzo brings 19 direct dependencies as build-time `devDependencies` of `packages/tokens`. Nothing is added to what consumers install.
+- Terrazzo brings 19 direct dependencies as build-time `devDependencies` of the `registry` workspace. Nothing is added to what consumers install.
 - Moving to another generator means rewriting the config, the `transform()` override and the registry plugin; the token files stay.
 
 ## Alternatives considered
@@ -52,3 +52,5 @@ We will author tokens as DTCG 2025.10 JSON in `packages/tokens/src/`, with a res
 - **Keep hand-written CSS and copy values into the registry theme**: rejected because every token would be kept in step by hand across `globals.css`, `cssVars` and the docs, which is the drift the token foundation removes.
 
 ## Amendments
+
+- 2026-10-21: Token sources moved from `packages/tokens/src/` to `registry/tokens/`, and generated CSS from `packages/ui/src/styles/` to `registry/styles/`. `packages/tokens` and `packages/ui` merged into one top-level `registry` workspace, so token generation writes into its own workspace instead of a sibling package. The decision to author DTCG and generate with Terrazzo is unchanged.

@@ -1,5 +1,6 @@
 packages:
   - "apps/*"
+  - "registry"
   - "packages/*"
 saveExact: true
 

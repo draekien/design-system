@@ -2,5 +2,5 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "design-system",
   "homepage": "https://design-system.wpei.me/",
-  "include": ["packages/ui/registry.json"]
+  "include": ["registry/registry.json"]
 }

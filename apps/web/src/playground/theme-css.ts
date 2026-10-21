@@ -1,5 +1,5 @@
 // biome-ignore lint/correctness/noUnresolvedImports: Vite resolves the ?raw suffix to the file as a string
-import tokensCss from "@workspace/ui/styles/tokens.gen.css?raw"
+import tokensCss from "@workspace/registry/styles/tokens.gen.css?raw"
 
 export type ThemeMode = "light" | "dark"
 

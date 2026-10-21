@@ -6,7 +6,7 @@ on:
     paths:
       - apps/web/**
       - "!apps/web/.impeccable/**"
-      - packages/ui/**
+      - registry/**
       - packages/fixtures/**
       - package.json
       - pnpm-lock.yaml
