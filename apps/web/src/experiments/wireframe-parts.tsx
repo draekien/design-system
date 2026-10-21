@@ -13,14 +13,21 @@ export function ErrorMessage({ subject }: { subject: string }): React.ReactEleme
       <p className="mt-1 max-w-sm text-muted-foreground text-sm">
         The request timed out after 10 seconds. Retry, or check your connection and reload the page.
       </p>
-      <Link
-        to="."
-        search={(previous) => ({ ...previous, state: "loaded" })}
-        className="mt-4 inline-flex min-h-9 items-center rounded-md border px-4 font-medium text-sm hover:bg-muted"
-      >
-        Retry
-      </Link>
+      <RetryLink className="mt-4 min-h-9 rounded-md border px-4 font-medium text-sm hover:bg-muted" />
     </section>
+  )
+}
+
+/** Reloads the wireframe in its loaded state. */
+export function RetryLink({ className }: { className: string }): React.ReactElement {
+  return (
+    <Link
+      to="."
+      search={(previous) => ({ ...previous, state: "loaded" })}
+      className={cn("focus-ring inline-flex items-center", className)}
+    >
+      Retry
+    </Link>
   )
 }
 

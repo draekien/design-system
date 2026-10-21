@@ -28,7 +28,7 @@ The rules live in how the components compose, built on Base UI's composition API
 - The registry is `registry.json` at the repository root, installed from GitHub; GitHub Pages hosts only the docs site (docs/adr/0002-serve-the-registry-from-the-github-repository.md).
 - Each registry item carries its usage guidance in its `docs` field, and the docs site carries the full guidelines.
 - Rule precedence: Linear first; Primer, Carbon, Geist, Stripe Apps and Saga only where Linear has no answer. Hover cards may hold links, following Linear over Primer.
-- Registry items are named with the common UI word for what they render and never reuse a shadcn/ui item name (docs/adr/0003-name-registry-items-for-their-role.md).
+- Registry items are named with the common UI word for what they render, and reuse a shadcn/ui item name only when the item is meant to replace that shadcn/ui component (docs/adr/0003-name-registry-items-for-their-role.md).
 - Registry items: `record-list`, `status`, `entity`, `figure`, `meter`, `relative-time`, `preview-card`.
 - A component moves through `experiment`, `beta`, `stable` and `deprecated`: it starts as a greyscale experiment on the docs site, and becomes `beta` when it moves to `packages/ui` and gets a playground page.
 

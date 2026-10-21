@@ -86,6 +86,12 @@ function PlaygroundLayout() {
             ))}
           </NavGroup>
           <NavGroup label="Experiments">
+            <Link to="/playground/experiments/avatar" className={navLink}>
+              Avatar
+            </Link>
+            <Link to="/playground/experiments/bullet" className={navLink}>
+              Bullet
+            </Link>
             <Link to="/playground/experiments/record-table" className={navLink}>
               Record table
             </Link>
