@@ -6,22 +6,23 @@ export const bulletRules: ReadonlyArray<Rule> = [
     source: "Design rules: Ranking information; Linear issue list (screenshots, 2026-10-08)",
   },
   {
-    rule: "An icon sits before or after the label in the order its BulletMedia is written, so [icon] [label], [icon] [label] [icon] and [label] [icon] need no props. Every icon is 16px and muted.",
+    rule: "An icon sits before or after the label in the order its BulletMedia is written, so [icon] [label], [icon] [label] [icon] and [label] [icon] need no props. Every icon is muted.",
     source:
       "Geist Entity (lead with the identifier); order as position is this design system's own decision",
   },
   {
-    rule: "A bullet comes in two sizes: default draws a 14px label, 16px icons and 24px stacked media; sm draws a 12px label, 14px icons and 20px stacked media, for a line of metadata such as the team and last update under the record's title. Both keep a hit area at least 24px high.",
+    rule: "A bullet comes in two sizes: default draws a 12px label, 14px icons and 20px avatars, as in the team and last update under the record's title; lg draws a 14px label, 16px icons and 24px avatars, as in the details list. Both keep a hit area at least 24px high.",
     source:
-      "The 14px body and 12px label sizes are DESIGN.md's type scale; the 24px floor is the Primer designer checklist",
+      "The 12px label and 14px body sizes are DESIGN.md's type scale; the 24px floor is the Primer designer checklist",
   },
   {
     rule: "An icon after the label adds meaning, such as restricted or opens in a new tab, and carries that word for screen readers through its label. It is never a caret announcing a menu.",
     source: "Primer progressive disclosure (a caret is not a disclosure control)",
   },
   {
-    rule: "An icon stack draws at most three 24px media overlapping, and the label beside it states the count, such as 3 reviewers.",
-    source: "Geist Show More (state how many items there are)",
+    rule: "An icon stack is an AvatarGroup from the avatar experiment, and the label beside it states the count, such as 3 reviewers; the bullet's size sets the avatars' size.",
+    source:
+      "Geist Show More (state how many items there are); Geist Avatar (20–24px beside a 14px label)",
   },
   {
     rule: "A bullet opens a popup by rendering as its trigger: Menu.Trigger for Priority's picker, Popover.Trigger for Reviewers, PreviewCardTrigger rendered as the workspace link for Workspace, and a link for Policy. Due opens nothing and is drawn the same.",

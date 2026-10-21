@@ -21,7 +21,6 @@ import {
 } from "@workspace/fixtures/record-details.ts"
 import { sampleRecords } from "@workspace/fixtures/records.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
-import { EntityMedia } from "@workspace/ui/components/entity.tsx"
 import {
   PreviewCard,
   PreviewCardContent,
@@ -29,13 +28,14 @@ import {
 } from "@workspace/ui/components/preview-card.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
-import { cardSurface, menuItem, menuSurface } from "./bullet-styles.ts"
+import { PeopleGroup, PeoplePopup } from "./avatar.tsx"
+import { menuItem, menuSurface } from "./bullet-styles.ts"
 import { Bar, ErrorMessage, RetryLink } from "./wireframe-parts.tsx"
 
 const bulletClass = cn(
-  "group/bullet relative isolate inline-flex min-h-6 min-w-0 max-w-full items-center justify-start gap-related text-left text-sm outline-hidden data-[size=sm]:text-xs",
+  "group/bullet relative isolate inline-flex min-h-6 min-w-0 max-w-full items-center justify-start gap-related text-left text-xs outline-hidden data-[size=lg]:text-sm data-[size=lg]:**:data-[slot=avatar]:[--avatar-size:--spacing(6)]",
   "before:absolute before:inset-y-0 before:-inset-x-1 before:-z-10 before:rounded-floor",
-  "[&:is(button,a)]:hover:before:bg-foreground/4 [&:is(button,a)]:data-popup-open:before:bg-foreground/7",
+  "[&:is(button,a):not([data-slot=preview-card-trigger])]:hover:before:bg-foreground/4 [&:is(button,a):not([data-slot=preview-card-trigger])]:data-popup-open:before:bg-foreground/7",
   "focus-visible:before:outline-2 focus-visible:before:outline-foreground focus-visible:before:outline-solid",
   "[&:is(button,a)]:pointer-coarse:min-h-11"
 )
@@ -43,14 +43,14 @@ const bulletClass = cn(
 /** Props for {@link Bullet}. */
 export type BulletProps = useRender.ComponentProps<"span"> & {
   /**
-   * `"default"` draws a 14px label, 16px icons and 24px stacked media; `"sm"` draws a 12px label,
-   * 14px icons and 20px stacked media. Both keep a hit area at least 24px high.
+   * `"default"` draws a 12px label, 14px icons and 20px avatars; `"lg"` draws a 14px label,
+   * 16px icons and 24px avatars. Both keep a hit area at least 24px high.
    */
-  size?: "default" | "sm"
+  size?: "default" | "lg"
 }
 
 /**
- * One fact on one line: `BulletMedia` or a `BulletMediaStack`, and a `BulletLabel`, in the order
+ * One fact on one line: `BulletMedia`, an `Avatar` or an `AvatarGroup`, and a `BulletLabel`, in the order
  * they are drawn. Render it as a trigger, such as `render={<Menu.Trigger />}`, to open a popup.
  */
 export function Bullet({
@@ -67,7 +67,7 @@ export function Bullet({
   })
 }
 
-/** One muted icon, 16px or 14px by the bullet's size, before or after the label. `label` names what the icon adds for screen readers. */
+/** One muted icon, 14px or 16px by the bullet's size, before or after the label. `label` names what the icon adds for screen readers. */
 export function BulletMedia({
   label,
   className,
@@ -78,7 +78,7 @@ export function BulletMedia({
     <span
       data-slot="bullet-media"
       className={cn(
-        "flex size-4 shrink-0 items-center justify-center text-muted-foreground group-data-[size=sm]/bullet:size-3.5 [&_svg]:size-full",
+        "flex size-3.5 shrink-0 items-center justify-center text-muted-foreground group-data-[size=lg]/bullet:size-4 [&_svg]:size-full",
         className
       )}
       {...props}
@@ -88,24 +88,6 @@ export function BulletMedia({
       </span>
       {label === undefined ? null : <span className="sr-only">{label}</span>}
     </span>
-  )
-}
-
-/** Media drawn overlapping, 24px or 20px by the bullet's size; pass at most three, and state the count in the `BulletLabel`. */
-export function BulletMediaStack({
-  className,
-  ...props
-}: React.ComponentProps<"span">): React.ReactElement {
-  return (
-    <span
-      data-slot="bullet-media-stack"
-      aria-hidden="true"
-      className={cn(
-        "flex shrink-0 -space-x-1 *:ring-2 *:ring-background group-data-[size=sm]/bullet:*:size-5",
-        className
-      )}
-      {...props}
-    />
   )
 }
 
@@ -226,7 +208,7 @@ export function DetailsPanel({
     Workspace: <WorkspaceBullet />,
     Policy: <PolicyBullet />,
     Due: (
-      <Bullet>
+      <Bullet size="lg">
         <DueContent />
       </Bullet>
     ),
@@ -248,24 +230,23 @@ export function DetailsPanel({
       </dl>
       {canEdit ? null : (
         <p className="mt-4 text-muted-foreground text-xs">
-          Only {details.owner}, the record's owner, can change its priority.
+          Only {details.owner.name}, the record's owner, can change its priority.
         </p>
       )}
     </section>
   )
 }
 
-/** The record's team and last update as small bullets, under its title. */
 function RecordMeta() {
   return (
     <p className="mt-2 flex flex-wrap gap-x-4 text-muted-foreground">
-      <Bullet size="sm">
+      <Bullet>
         <BulletMedia>
           <HugeiconsIcon icon={UserGroupIcon} />
         </BulletMedia>
         <BulletLabel>{record.team}</BulletLabel>
       </Bullet>
-      <Bullet size="sm">
+      <Bullet>
         <BulletMedia>
           <HugeiconsIcon icon={Clock01Icon} />
         </BulletMedia>
@@ -304,6 +285,7 @@ function PolicyBullet() {
   const anchors = React.use(AnchorsContext)
   return (
     <Bullet
+      size="lg"
       data-anchor={anchors?.policy}
       render={<a href={details.policyUrl} target="_blank" rel="noreferrer" />}
     >
@@ -331,7 +313,7 @@ function PriorityBullet({ canEdit }: { canEdit: boolean }) {
 
   if (!canEdit || anchors !== null) {
     return (
-      <Bullet data-anchor={anchors?.priority}>
+      <Bullet size="lg" data-anchor={anchors?.priority}>
         <PriorityContent priority={priority} />
       </Bullet>
     )
@@ -339,7 +321,7 @@ function PriorityBullet({ canEdit }: { canEdit: boolean }) {
 
   return (
     <Menu.Root>
-      <Bullet render={<Menu.Trigger aria-label={`Change priority, now ${priority}`} />}>
+      <Bullet size="lg" render={<Menu.Trigger aria-label={`Change priority, now ${priority}`} />}>
         <PriorityContent priority={priority} />
       </Bullet>
       <Menu.Portal>
@@ -372,54 +354,31 @@ function PriorityBullet({ canEdit }: { canEdit: boolean }) {
   )
 }
 
-/** The reviewers' initials, overlapping, then their count. */
+/** The reviewers' avatars, overlapping, then their count. */
 export function ReviewersContent(): React.ReactElement {
   const anchors = React.use(AnchorsContext)
   return (
     <>
-      <BulletMediaStack data-anchor={anchors?.stack}>
-        {details.reviewers.slice(0, 3).map((reviewer) => (
-          <EntityMedia key={reviewer.name}>{reviewer.initials}</EntityMedia>
-        ))}
-      </BulletMediaStack>
+      <PeopleGroup data-anchor={anchors?.stack} people={details.reviewers} />
       <BulletLabel>{details.reviewers.length} reviewers</BulletLabel>
     </>
   )
 }
 
-/** The reviewers' names, as the popover lists them. */
-export function ReviewersList(): React.ReactElement {
-  return (
-    <ul className="flex flex-col gap-1">
-      {details.reviewers.map((reviewer) => (
-        <li key={reviewer.name}>{reviewer.name}</li>
-      ))}
-    </ul>
-  )
-}
-
 function ReviewersBullet() {
   const anchors = React.use(AnchorsContext)
-  if (anchors !== null) {
-    return (
-      <Bullet data-anchor={anchors.reviewers}>
-        <ReviewersContent />
-      </Bullet>
-    )
-  }
   return (
     <Popover.Root>
-      <Bullet render={<Popover.Trigger openOnHover delay={300} closeDelay={0} />}>
+      <Bullet
+        size="lg"
+        data-anchor={anchors?.reviewers}
+        render={
+          anchors === null ? <Popover.Trigger openOnHover delay={300} closeDelay={0} /> : undefined
+        }
+      >
         <ReviewersContent />
       </Bullet>
-      <Popover.Portal>
-        <Popover.Positioner side="bottom" align="start" sideOffset={6} className="z-popover">
-          <Popover.Popup className={cardSurface}>
-            <Popover.Title className="mb-2 font-medium">Reviewers</Popover.Title>
-            <ReviewersList />
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
+      <PeoplePopup title="Reviewers" people={details.reviewers} />
     </Popover.Root>
   )
 }
@@ -427,7 +386,7 @@ function ReviewersBullet() {
 function ReviewersFailed() {
   return (
     <span className="flex min-w-0 items-center gap-related">
-      <Bullet>
+      <Bullet size="lg">
         <BulletMedia>
           <HugeiconsIcon icon={Alert02Icon} />
         </BulletMedia>
@@ -473,14 +432,14 @@ function WorkspaceBullet() {
   const anchors = React.use(AnchorsContext)
   if (anchors !== null) {
     return (
-      <Bullet data-anchor={anchors.workspace}>
+      <Bullet size="lg" data-anchor={anchors.workspace}>
         <WorkspaceContent />
       </Bullet>
     )
   }
   return (
     <PreviewCard>
-      <Bullet render={<PreviewCardTrigger render={<a href={details.workspaceUrl} />} />}>
+      <Bullet size="lg" render={<PreviewCardTrigger render={<a href={details.workspaceUrl} />} />}>
         <WorkspaceContent />
       </Bullet>
       <PreviewCardContent>
