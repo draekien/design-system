@@ -1,7 +1,7 @@
 ---
 title: Rename the shipped components to plain UI words
 date: 2026-10-19
-status: active
+status: done
 supersedes:
 ---
 
