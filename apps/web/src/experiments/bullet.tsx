@@ -6,10 +6,12 @@ import {
   Alert02Icon,
   ArrowUpRight01Icon,
   Calendar03Icon,
+  Clock01Icon,
   Flag03Icon,
   Folder01Icon,
   SquareLock02Icon,
   Tick02Icon,
+  UserGroupIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
@@ -31,12 +33,21 @@ import { cardSurface, menuItem, menuSurface } from "./bullet-styles.ts"
 import { Bar, ErrorMessage, RetryLink } from "./wireframe-parts.tsx"
 
 const bulletClass = cn(
-  "relative isolate inline-flex min-h-6 min-w-0 max-w-full items-center justify-start gap-related text-left text-sm outline-hidden",
+  "group/bullet relative isolate inline-flex min-h-6 min-w-0 max-w-full items-center justify-start gap-related text-left text-sm outline-hidden data-[size=sm]:text-xs",
   "before:absolute before:inset-y-0 before:-inset-x-1 before:-z-10 before:rounded-floor",
   "[&:is(button,a)]:hover:before:bg-foreground/4 [&:is(button,a)]:data-popup-open:before:bg-foreground/7",
   "focus-visible:before:outline-2 focus-visible:before:outline-foreground focus-visible:before:outline-solid",
   "[&:is(button,a)]:pointer-coarse:min-h-11"
 )
+
+/** Props for {@link Bullet}. */
+export type BulletProps = useRender.ComponentProps<"span"> & {
+  /**
+   * `"default"` draws a 14px label, 16px icons and 24px stacked media; `"sm"` draws a 12px label,
+   * 14px icons and 20px stacked media. Both keep a hit area at least 24px high.
+   */
+  size?: "default" | "sm"
+}
 
 /**
  * One fact on one line: `BulletMedia` or a `BulletMediaStack`, and a `BulletLabel`, in the order
@@ -44,17 +55,19 @@ const bulletClass = cn(
  */
 export function Bullet({
   render,
+  size = "default",
   className,
   ...props
-}: useRender.ComponentProps<"span">): React.ReactElement {
+}: BulletProps): React.ReactElement {
   return useRender({
     defaultTagName: "span",
     render,
+    state: { size },
     props: mergeProps<"span">({ className: cn(bulletClass, className) }, props),
   })
 }
 
-/** One 16px muted icon, before or after the label. `label` names what the icon adds for screen readers. */
+/** One muted icon, 16px or 14px by the bullet's size, before or after the label. `label` names what the icon adds for screen readers. */
 export function BulletMedia({
   label,
   className,
@@ -65,7 +78,7 @@ export function BulletMedia({
     <span
       data-slot="bullet-media"
       className={cn(
-        "flex size-4 shrink-0 items-center justify-center text-muted-foreground [&_svg]:size-4",
+        "flex size-4 shrink-0 items-center justify-center text-muted-foreground group-data-[size=sm]/bullet:size-3.5 [&_svg]:size-full",
         className
       )}
       {...props}
@@ -78,7 +91,7 @@ export function BulletMedia({
   )
 }
 
-/** 24px media drawn overlapping; pass at most three, and state the count in the `BulletLabel`. */
+/** Media drawn overlapping, 24px or 20px by the bullet's size; pass at most three, and state the count in the `BulletLabel`. */
 export function BulletMediaStack({
   className,
   ...props
@@ -87,7 +100,10 @@ export function BulletMediaStack({
     <span
       data-slot="bullet-media-stack"
       aria-hidden="true"
-      className={cn("flex shrink-0 -space-x-1 *:ring-2 *:ring-background", className)}
+      className={cn(
+        "flex shrink-0 -space-x-1 *:ring-2 *:ring-background group-data-[size=sm]/bullet:*:size-5",
+        className
+      )}
       {...props}
     />
   )
@@ -221,6 +237,7 @@ export function DetailsPanel({
         {record.title}
       </h2>
       <p className="text-muted-foreground text-xs">{details.recordId}</p>
+      <RecordMeta />
       <dl className={listClass}>
         {properties.map((name) => (
           <React.Fragment key={name}>
@@ -235,6 +252,26 @@ export function DetailsPanel({
         </p>
       )}
     </section>
+  )
+}
+
+/** The record's team and last update as small bullets, under its title. */
+function RecordMeta() {
+  return (
+    <p className="mt-2 flex flex-wrap gap-x-4 text-muted-foreground">
+      <Bullet size="sm">
+        <BulletMedia>
+          <HugeiconsIcon icon={UserGroupIcon} />
+        </BulletMedia>
+        <BulletLabel>{record.team}</BulletLabel>
+      </Bullet>
+      <Bullet size="sm">
+        <BulletMedia>
+          <HugeiconsIcon icon={Clock01Icon} />
+        </BulletMedia>
+        <BulletLabel>Updated {record.updated}</BulletLabel>
+      </Bullet>
+    </p>
   )
 }
 

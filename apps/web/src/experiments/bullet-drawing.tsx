@@ -95,20 +95,24 @@ function bulletDrawing(state: FixtureState): Drawing {
   }
 }
 
+const layoutContents = [
+  <DueContent key="due" />,
+  <WorkspaceContent key="workspace" />,
+  <PolicyContent key="policy" />,
+  <ReviewersContent key="reviewers" />,
+]
+
 const layouts = (
-  <span className="flex flex-col items-start gap-1">
-    <Bullet>
-      <DueContent />
-    </Bullet>
-    <Bullet>
-      <WorkspaceContent />
-    </Bullet>
-    <Bullet>
-      <PolicyContent />
-    </Bullet>
-    <Bullet>
-      <ReviewersContent />
-    </Bullet>
+  <span className="flex flex-col items-start gap-3">
+    {(["default", "sm"] as const).map((size) => (
+      <span key={size} className="flex flex-col items-start gap-1">
+        {layoutContents.map((content) => (
+          <Bullet key={content.key} size={size}>
+            {content}
+          </Bullet>
+        ))}
+      </span>
+    ))}
   </span>
 )
 
@@ -126,14 +130,14 @@ function panelDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
       n: 2,
       name: "Bullet",
       depth: 1,
-      note: "One fact on one line, 24px high: [icon] [label], [icon] [label] [icon], [label] [icon], [icon stack] [label]",
+      note: "One fact on one line, at least 24px high: [icon] [label], [icon] [label] [icon], [label] [icon], [icon stack] [label]; default size, then sm",
       specimen: layouts,
     },
     {
       n: 3,
       name: "BulletMedia",
       depth: 2,
-      note: "A 16px muted icon, before or after the label by the order of the parts",
+      note: "A muted icon, 16px or 14px at sm, before or after the label by the order of the parts",
       specimen: (
         <BulletMedia>
           <HugeiconsIcon icon={Flag03Icon} />
@@ -146,7 +150,7 @@ function panelDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
             n: 4,
             name: "BulletMediaStack",
             depth: 2,
-            note: "Up to three 24px media, overlapping; the label states the count",
+            note: "Up to three media, 24px or 20px at sm, overlapping; the label states the count",
             specimen: (
               <BulletMediaStack>
                 {sampleRecordDetails.reviewers.map((reviewer) => (

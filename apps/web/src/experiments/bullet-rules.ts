@@ -11,6 +11,11 @@ export const bulletRules: ReadonlyArray<Rule> = [
       "Geist Entity (lead with the identifier); order as position is this design system's own decision",
   },
   {
+    rule: "A bullet comes in two sizes: default draws a 14px label, 16px icons and 24px stacked media; sm draws a 12px label, 14px icons and 20px stacked media, for a line of metadata such as the team and last update under the record's title. Both keep a hit area at least 24px high.",
+    source:
+      "The 14px body and 12px label sizes are DESIGN.md's type scale; the 24px floor is the Primer designer checklist",
+  },
+  {
     rule: "An icon after the label adds meaning, such as restricted or opens in a new tab, and carries that word for screen readers through its label. It is never a caret announcing a menu.",
     source: "Primer progressive disclosure (a caret is not a disclosure control)",
   },
