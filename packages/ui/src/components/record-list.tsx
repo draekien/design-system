@@ -548,7 +548,7 @@ export function RecordRowId({
 }
 
 const mediaVariantClass = {
-  default: "**:data-[abbreviation=long]:sr-only",
+  default: "*:flex *:size-full *:items-center *:justify-center **:data-[abbreviation=long]:sr-only",
   icon: "text-muted-foreground [&_svg]:size-4",
 } as const
 

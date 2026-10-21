@@ -73,10 +73,17 @@ function RecordListPreview() {
               <RecordRowSubject>
                 <RecordRowId narrow="hide">{record.id}</RecordRowId>
                 <RecordRowMedia>
-                  <Status>
-                    <StatusMedia fill={record.fill} />
-                    <StatusName>{record.status}</StatusName>
-                  </Status>
+                  <PreviewCard>
+                    <PreviewCardTrigger>
+                      <Status>
+                        <StatusMedia fill={record.fill} />
+                        <StatusName>{record.status}</StatusName>
+                      </Status>
+                    </PreviewCardTrigger>
+                    <PreviewCardContent>
+                      <p className="font-medium text-sm">{record.status}</p>
+                    </PreviewCardContent>
+                  </PreviewCard>
                 </RecordRowMedia>
                 <RecordRowName>{record.name}</RecordRowName>
               </RecordRowSubject>
@@ -98,6 +105,7 @@ function RecordListPreview() {
 }
 
 const recordListCode = `import { Entity, EntityMedia, EntityName } from "@/components/entity"
+import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card"
 import {
   RecordList,
   RecordRow,
@@ -148,10 +156,17 @@ export function RecordListExample() {
               <RecordRowSubject>
                 <RecordRowId narrow="hide">{record.id}</RecordRowId>
                 <RecordRowMedia>
-                  <Status>
-                    <StatusMedia fill={record.fill} />
-                    <StatusName>{record.status}</StatusName>
-                  </Status>
+                  <PreviewCard>
+                    <PreviewCardTrigger>
+                      <Status>
+                        <StatusMedia fill={record.fill} />
+                        <StatusName>{record.status}</StatusName>
+                      </Status>
+                    </PreviewCardTrigger>
+                    <PreviewCardContent>
+                      <p className="font-medium text-sm">{record.status}</p>
+                    </PreviewCardContent>
+                  </PreviewCard>
                 </RecordRowMedia>
                 <RecordRowName>{record.name}</RecordRowName>
               </RecordRowSubject>

@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-10-21",
+    "description": "The docs say media drawn alone, such as a status dot, needs a PreviewCard that shows its word, and peek or the item's page to reach it by keyboard. The default media's child fills the 24×24px slot, so a card trigger in it takes the whole slot as its hover target."
+  },
+  {
+    "date": "2026-10-21",
     "description": "Renames the row parts to plain words: RecordRowIdentify is RecordRowSubject, RecordRowRead is RecordRowFact, RecordRowKey is RecordRowId and RecordRowGlyph is RecordRowMedia. RecordRowMedia adds variant icon, one 16px muted icon with no fill, named by its required label; a loading row draws it as a 16px block. RecordRowFact adds missing (unavailable or hidden), which replaces the removed field-state item."
   },
   {
