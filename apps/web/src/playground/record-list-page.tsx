@@ -559,7 +559,7 @@ function CanvasControls({
 
       <ControlGroup
         label="Parts"
-        hint="RecordRowLink, RecordRowIdentify and RecordRowName are required. The code follows these choices."
+        hint="RecordRowLink, RecordRowSubject and RecordRowName are required. The code follows these choices."
       >
         <div className="flex flex-col gap-0.5">
           {parts.map(({ part, label, parent }) => {

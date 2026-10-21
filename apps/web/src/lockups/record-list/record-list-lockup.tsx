@@ -6,14 +6,14 @@ import {
   RecordList,
   RecordRow,
   RecordRowDescription,
-  RecordRowGlyph,
-  RecordRowIdentify,
-  RecordRowKey,
+  RecordRowFact,
+  RecordRowId,
   RecordRowLink,
   RecordRowLoading,
+  RecordRowMedia,
   RecordRowName,
-  RecordRowRead,
   RecordRowSelect,
+  RecordRowSubject,
 } from "@workspace/ui/components/record-list.tsx"
 import * as React from "react"
 import { flushSync } from "react-dom"
@@ -21,11 +21,12 @@ import { cn } from "@/lib/cn.ts"
 import {
   capitalise,
   type Dataset,
+  factProps,
   type Hidden,
   hasCard,
   listSurface,
   type RowState,
-  shownReads,
+  shownFacts,
 } from "./datasets.tsx"
 
 export type ListState = Exclude<FixtureState, "error">
@@ -187,19 +188,19 @@ export function RowParts<TItem>({
           }
         }}
       >
-        <RecordRowIdentify data-anchor={anchors?.get("identify")}>
+        <RecordRowSubject data-anchor={anchors?.get("subject")}>
           {!hidden.has("key") && (
-            <RecordRowKey narrow={dataset.keyNarrow} data-anchor={anchors?.get("key")}>
+            <RecordRowId narrow={dataset.keyNarrow} data-anchor={anchors?.get("key")}>
               {dataset.key(item)}
-            </RecordRowKey>
+            </RecordRowId>
           )}
-          {dataset.glyph !== undefined && !hidden.has(dataset.glyph.part) && (
-            <RecordRowGlyph data-anchor={anchors?.get(dataset.glyph.part)}>
-              {dataset.glyph.render(item, {
+          {dataset.media !== undefined && !hidden.has(dataset.media.part) && (
+            <RecordRowMedia data-anchor={anchors?.get(dataset.media.part)}>
+              {dataset.media.render(item, {
                 ...context,
-                withCard: hasCard(dataset.glyph, hidden),
+                withCard: hasCard(dataset.media, hidden),
               })}
-            </RecordRowGlyph>
+            </RecordRowMedia>
           )}
           <RecordRowName className={nameClassName} data-anchor={anchors?.get("name")}>
             {dataset.name(item)}
@@ -209,11 +210,14 @@ export function RowParts<TItem>({
               {dataset.summary(item)}
             </RecordRowDescription>
           )}
-        </RecordRowIdentify>
-        {shownReads(dataset, hidden).map((read) => (
-          <RecordRowRead key={read.part} narrow={read.narrow} data-anchor={anchors?.get(read.part)}>
-            {read.render(item, { ...context, withCard: hasCard(read, hidden) })}
-          </RecordRowRead>
+        </RecordRowSubject>
+        {shownFacts(dataset, hidden).map((fact) => (
+          <RecordRowFact
+            key={fact.part}
+            narrow={fact.narrow}
+            data-anchor={anchors?.get(fact.part)}
+            {...factProps(fact, item, { ...context, withCard: hasCard(fact, hidden) })}
+          />
         ))}
       </RecordRowLink>
     </>

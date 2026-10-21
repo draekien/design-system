@@ -31,27 +31,27 @@ type RowCode = {
 
 function rowCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden, key: boolean): RowCode {
   const item = dataset.item
-  const reads = dataset.reads.filter((read) => !hidden.has(read.part))
-  const glyph =
-    dataset.glyph !== undefined && !hidden.has(dataset.glyph.part) ? dataset.glyph : undefined
-  const withCard = (read: (typeof reads)[number]) =>
-    read.card !== undefined && isPartShown(hidden, read.card, read.part)
+  const facts = dataset.facts.filter((fact) => !hidden.has(fact.part))
+  const media =
+    dataset.media !== undefined && !hidden.has(dataset.media.part) ? dataset.media : undefined
+  const withCard = (fact: (typeof facts)[number]) =>
+    fact.card !== undefined && isPartShown(hidden, fact.card, fact.part)
 
   const parts = [
     "RecordRow",
-    "RecordRowIdentify",
+    "RecordRowSubject",
     "RecordRowLink",
     "RecordRowName",
     ...(hidden.has("select") ? [] : ["RecordRowSelect"]),
-    ...(hidden.has("key") ? [] : ["RecordRowKey"]),
+    ...(hidden.has("key") ? [] : ["RecordRowId"]),
     ...(hidden.has("description") ? [] : ["RecordRowDescription"]),
-    ...(glyph === undefined ? [] : ["RecordRowGlyph"]),
-    ...(reads.length > 0 ? ["RecordRowRead"] : []),
+    ...(media === undefined ? [] : ["RecordRowMedia"]),
+    ...(facts.length > 0 ? ["RecordRowFact"] : []),
   ]
 
   const contentModules = new Map<string, Array<string>>()
-  for (const read of glyph === undefined ? reads : [glyph, ...reads]) {
-    for (const name of read.components(withCard(read))) {
+  for (const fact of media === undefined ? facts : [media, ...facts]) {
+    for (const name of fact.components(withCard(fact))) {
       const module = componentModule[name]
       if (module === undefined) {
         throw new Error(`No registry item exports ${name}; add it to componentModule.`)
@@ -62,32 +62,32 @@ function rowCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden, key: boolean): 
 
   const keyLine = hidden.has("key")
     ? []
-    : [`  <RecordRowKey narrow="${dataset.keyNarrow}">{${item}.id}</RecordRowKey>`]
+    : [`  <RecordRowId narrow="${dataset.keyNarrow}">{${item}.id}</RecordRowId>`]
 
-  const glyphLines =
-    glyph === undefined
+  const mediaLines =
+    media === undefined
       ? []
-      : ["<RecordRowGlyph>", ...indent(glyph.code(withCard(glyph)), 1), "</RecordRowGlyph>"]
+      : ["<RecordRowMedia>", ...indent(media.code(withCard(media)), 1), "</RecordRowMedia>"]
 
-  const readLines = reads.flatMap((read) => [
-    `<RecordRowRead narrow="${read.narrow}">`,
-    ...indent(read.code(withCard(read)), 1),
-    "</RecordRowRead>",
+  const factLines = facts.flatMap((fact) => [
+    `<RecordRowFact narrow="${fact.narrow}">`,
+    ...indent(fact.code(withCard(fact)), 1),
+    "</RecordRowFact>",
   ])
 
   const row = [
     key ? `<RecordRow key={${item}.id} value={${item}.id}>` : `<RecordRow value={${item}.id}>`,
     ...(hidden.has("select") ? [] : ["  <RecordRowSelect />"]),
     `  <RecordRowLink render={<Link to="/${dataset.noun}/$id" params={{ id: ${item}.id }} />}>`,
-    "    <RecordRowIdentify>",
+    "    <RecordRowSubject>",
     ...indent(keyLine, 2),
-    ...indent(glyphLines, 3),
+    ...indent(mediaLines, 3),
     `      <RecordRowName>{${item}.${dataset.nameField}}</RecordRowName>`,
     ...(hidden.has("description")
       ? []
       : [`      <RecordRowDescription>{${item}.${dataset.summaryField}}</RecordRowDescription>`]),
-    "    </RecordRowIdentify>",
-    ...indent(readLines, 2),
+    "    </RecordRowSubject>",
+    ...indent(factLines, 2),
     "  </RecordRowLink>",
     "</RecordRow>",
   ]
@@ -96,13 +96,13 @@ function rowCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden, key: boolean): 
     "<RecordRowLoading>",
     ...(hidden.has("select") ? [] : ["  <RecordRowSelect />"]),
     "  <RecordRowLink>",
-    "    <RecordRowIdentify>",
-    ...(hidden.has("key") ? [] : [`      <RecordRowKey narrow="${dataset.keyNarrow}" />`]),
-    ...(glyph === undefined ? [] : ["      <RecordRowGlyph />"]),
+    "    <RecordRowSubject>",
+    ...(hidden.has("key") ? [] : [`      <RecordRowId narrow="${dataset.keyNarrow}" />`]),
+    ...(media === undefined ? [] : ["      <RecordRowMedia />"]),
     "      <RecordRowName />",
     ...(hidden.has("description") ? [] : ["      <RecordRowDescription />"]),
-    "    </RecordRowIdentify>",
-    ...reads.map((read) => `    <RecordRowRead narrow="${read.narrow}" />`),
+    "    </RecordRowSubject>",
+    ...facts.map((fact) => `    <RecordRowFact narrow="${fact.narrow}" />`),
     "  </RecordRowLink>",
     "</RecordRowLoading>",
   ]

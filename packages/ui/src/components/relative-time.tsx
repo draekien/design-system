@@ -32,7 +32,7 @@ function relativeParts(dateTime: string, now: string) {
 }
 
 /**
- * A moment stated relative to `now`, such as "2 hours ago". In an abbreviated `RecordRowRead` it
+ * A moment stated relative to `now`, such as "2 hours ago". In an abbreviated `RecordRowFact` it
  * switches to the narrow form, such as "2h ago".
  */
 export function RelativeTime({

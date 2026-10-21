@@ -14,13 +14,12 @@ describe("componentItems", () => {
   it("lists every registry:ui item and no theme or lib item", () => {
     expect(componentItems.map((item) => item.name)).toEqual([
       "record-list",
-      "status-mark",
-      "person-mark",
+      "status",
+      "entity",
       "figure",
-      "track",
+      "meter",
       "relative-time",
-      "field-state",
-      "field-card",
+      "preview-card",
     ])
   })
 })
@@ -102,7 +101,7 @@ describe("changelogByDate", () => {
 })
 
 describe("lifecycleFailures", () => {
-  const itemNames = ["figure", "track"]
+  const itemNames = ["figure", "meter"]
   const beta = {
     name: "figure",
     description: "A number the caller compares down a list.",
@@ -111,8 +110,8 @@ describe("lifecycleFailures", () => {
   } as const
   const deprecated = {
     ...beta,
-    description: "Deprecated: use track.",
-    docs: "Install track instead.",
+    description: "Deprecated: use meter.",
+    docs: "Install meter instead.",
     meta: { ...beta.meta, status: "deprecated" },
   } as const
 
@@ -151,7 +150,7 @@ describe("lifecycleFailures", () => {
     ],
     [
       "deprecated without the Deprecated: prefix",
-      { ...deprecated, description: "Use track." },
+      { ...deprecated, description: "Use meter." },
       "is deprecated without naming its replacement",
     ],
     [
@@ -163,13 +162,13 @@ describe("lifecycleFailures", () => {
       "deprecated with another item named only in its Playground link",
       {
         ...deprecated,
-        docs: "No longer kept. Playground: https://design-system.wpei.me/playground/track",
+        docs: "No longer kept. Playground: https://design-system.wpei.me/playground/meter",
       },
       "is deprecated without naming its replacement",
     ],
     [
       "deprecated with another item's name inside a longer word",
-      { ...deprecated, docs: "Use sidetracked values instead." },
+      { ...deprecated, docs: "Use parameterised values instead." },
       "is deprecated without naming its replacement",
     ],
   ] as const)("fails an item with %s", (_case, item, failure) => {
@@ -188,8 +187,8 @@ describe("registryItems", () => {
 
 describe("installCommand", () => {
   it("names the tokens item before an item that depends on it, so shadcn replaces the existing colours", () => {
-    expect(installCommand("status-mark")).toBe(
-      "pnpm dlx shadcn@latest add draekien/design-system/tokens draekien/design-system/status-mark"
+    expect(installCommand("status")).toBe(
+      "pnpm dlx shadcn@latest add draekien/design-system/tokens draekien/design-system/status"
     )
   })
 

@@ -9,17 +9,18 @@ export type Rank = {
 export const ranks: ReadonlyArray<Rank> = [
   {
     rank: 1,
-    name: "Identify",
-    holds: "What the thing is: its key, glyph, name and a one-line description.",
+    name: "Subject",
+    holds: "What the row is about: its ID, media, name and a one-line description.",
     shows: "Always, at the start of the row or head.",
-    drawnAs: "Text, a status glyph, a muted description",
+    drawnAs: "Text, an icon, a status or entity, a muted description",
   },
   {
     rank: 2,
-    name: "Read",
-    holds: "The reading the surface exists for: a state, or a figure the caller compares.",
+    name: "Fact",
+    holds:
+      "One fact about the subject that the surface exists to compare: a state, a person, a figure.",
     shows: "Always, each in its own column.",
-    drawnAs: "Figure, status mark, track, person mark, relative time",
+    drawnAs: "Status, entity, figure, meter, relative time",
   },
   {
     rank: 3,
@@ -34,7 +35,7 @@ export const ranks: ReadonlyArray<Rank> = [
     holds:
       "More about one named entity or property already on screen: a person, a service, an organisation, a stage, a truncated value.",
     shows: "In an overlay on that value's own trigger.",
-    drawnAs: "Field card (a hover card)",
+    drawnAs: "Preview card (a hover card)",
   },
   {
     rank: 5,
@@ -55,7 +56,7 @@ export const rankingRules: ReadonlyArray<string> = [
   "Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks.",
   "Peek opens with Space on the focused row, so a click on the row opens rank 5.",
   "A drawer that shows peek returns focus to the row that opened it.",
-  "A description in rank 1 is one line after the name; it truncates and hides before the name does.",
+  "A description is one line after the name, in rank 1 and in a status or entity; it truncates and hides before the name does.",
   "A row is selectable only when it draws a selection checkbox.",
 ]
 

@@ -9,10 +9,10 @@ import {
 } from "@workspace/fixtures/invoices.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import {
-  FieldCard,
-  FieldCardContent,
-  FieldCardTrigger,
-} from "@workspace/ui/components/field-card.tsx"
+  PreviewCard,
+  PreviewCardContent,
+  PreviewCardTrigger,
+} from "@workspace/ui/components/preview-card.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import {
@@ -942,14 +942,14 @@ export function InvoiceRow({
           tabIndex={-1}
           className="min-w-0 after:absolute after:inset-0"
         >
-          <FieldCard>
-            <FieldCardTrigger className="relative z-10 justify-start">
+          <PreviewCard>
+            <PreviewCardTrigger className="relative z-10 justify-start">
               <CustomerName id={nameId} invoice={invoice} isFocusLook={look === "focus"} />
-            </FieldCardTrigger>
-            <FieldCardContent>
+            </PreviewCardTrigger>
+            <PreviewCardContent>
               <ContactCard invoice={invoice} />
-            </FieldCardContent>
-          </FieldCard>
+            </PreviewCardContent>
+          </PreviewCard>
           <DueLine invoice={invoice} />
         </Link>
       </CellElement>

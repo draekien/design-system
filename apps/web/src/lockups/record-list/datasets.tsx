@@ -7,23 +7,22 @@ import {
   sampleRecords,
 } from "@workspace/fixtures/records.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
-import {
-  FieldCard,
-  FieldCardContent,
-  FieldCardTrigger,
-} from "@workspace/ui/components/field-card.tsx"
-import { FieldState } from "@workspace/ui/components/field-state.tsx"
+import { Entity, EntityMedia, EntityName } from "@workspace/ui/components/entity.tsx"
 import { Figure } from "@workspace/ui/components/figure.tsx"
-import { PersonMark } from "@workspace/ui/components/person-mark.tsx"
-import type { RecordRowNarrow } from "@workspace/ui/components/record-list.tsx"
+import { Meter } from "@workspace/ui/components/meter.tsx"
+import {
+  PreviewCard,
+  PreviewCardContent,
+  PreviewCardTrigger,
+} from "@workspace/ui/components/preview-card.tsx"
+import type { RecordRowFactProps, RecordRowNarrow } from "@workspace/ui/components/record-list.tsx"
 import { RelativeTime } from "@workspace/ui/components/relative-time.tsx"
 import {
-  StatusMark,
-  StatusMarkDot,
-  type StatusMarkDotProps,
-  StatusMarkLabel,
-} from "@workspace/ui/components/status-mark.tsx"
-import { Track } from "@workspace/ui/components/track.tsx"
+  Status,
+  StatusMedia,
+  type StatusMediaProps,
+  StatusName,
+} from "@workspace/ui/components/status.tsx"
 import type * as React from "react"
 import type {
   CanvasDataset,
@@ -36,21 +35,24 @@ export type RowState = Exclude<FixtureState, "error" | "loading">
 
 export type Hidden = ReadonlySet<RecordListPart>
 
-export type ReadContext = {
+export type FactContext = {
   state: RowState
   cardOpen?: boolean
   withCard: boolean
   cardContainer?: HTMLElement | null
 }
 
-export type ReadDefinition<TItem> = {
+export type Missing = Extract<RecordRowFactProps, { missing: string }>["missing"]
+
+export type FactDefinition<TItem> = {
   part: RecordListPart
   card?: RecordListPart
   cardStates?: ReadonlyArray<RowState>
   label: string
   narrow: RecordRowNarrow
   content: string
-  render: (item: TItem, context: ReadContext) => React.ReactNode
+  missing?: (state: RowState) => Missing | undefined
+  render: (item: TItem, context: FactContext) => React.ReactNode
   code: (withCard: boolean) => ReadonlyArray<string>
   components: (withCard: boolean) => ReadonlyArray<string>
 }
@@ -70,8 +72,8 @@ export type Dataset<TItem> = {
   nameField: string
   summary: (item: TItem) => string
   summaryField: string
-  glyph?: ReadDefinition<TItem>
-  reads: ReadonlyArray<ReadDefinition<TItem>>
+  media?: FactDefinition<TItem>
+  facts: ReadonlyArray<FactDefinition<TItem>>
   fields: (item: TItem, state: RowState) => ReadonlyArray<Field>
   partialMessage: string
   partialRetry: string
@@ -83,17 +85,60 @@ export type DatasetPart = { part: RecordListPart; label: string; parent?: Record
 export function datasetParts<TItem>(dataset: Dataset<TItem>): ReadonlyArray<DatasetPart> {
   return [
     { part: "select", label: "RecordRowSelect" },
-    { part: "key", label: "RecordRowKey" },
+    { part: "key", label: "RecordRowId" },
     { part: "description", label: "RecordRowDescription" },
-    ...[...(dataset.glyph === undefined ? [] : [dataset.glyph]), ...dataset.reads].flatMap(
-      (read) => [
-        { part: read.part, label: `${read.label} · ${read.content}` },
-        ...(read.card === undefined
+    ...[...(dataset.media === undefined ? [] : [dataset.media]), ...dataset.facts].flatMap(
+      (fact) => [
+        { part: fact.part, label: `${fact.label} · ${fact.content}` },
+        ...(fact.card === undefined
           ? []
-          : [{ part: read.card, label: `${read.label} hover card`, parent: read.part }]),
+          : [{ part: fact.card, label: `${fact.label} hover card`, parent: fact.part }]),
       ]
     ),
   ]
+}
+
+export function factProps<TItem>(
+  fact: FactDefinition<TItem>,
+  item: TItem,
+  context: FactContext
+): RecordRowFactProps {
+  const missing = fact.missing?.(context.state)
+  return missing === undefined ? { children: fact.render(item, context) } : { missing }
+}
+
+const missingLabel: Readonly<Record<Missing, string>> = {
+  unavailable: "Unavailable",
+  hidden: "Hidden",
+}
+
+function missingText(missing: Missing) {
+  return <span className="text-muted-foreground">{missingLabel[missing]}</span>
+}
+
+function unloadedFact(state: RowState): Missing | undefined {
+  switch (state) {
+    case "partial":
+      return "unavailable"
+    case "no-permission":
+      return "hidden"
+    case "loaded":
+      return undefined
+  }
+}
+
+function initialsOf(name: string) {
+  const parts = name.trim().split(/\s+/)
+  return `${parts[0]?.[0] ?? ""}${parts.length > 1 ? (parts.at(-1)?.[0] ?? "") : ""}`
+}
+
+function ownerEntity(owner: string) {
+  return (
+    <Entity>
+      <EntityMedia>{initialsOf(owner)}</EntityMedia>
+      <EntityName>{owner}</EntityName>
+    </Entity>
+  )
 }
 
 export function isPartShown(hidden: Hidden, part: RecordListPart, parent?: RecordListPart) {
@@ -109,19 +154,19 @@ function withCardLines(
     return trigger
   }
   return [
-    "<FieldCard>",
-    "  <FieldCardTrigger>",
+    "<PreviewCard>",
+    "  <PreviewCardTrigger>",
     ...trigger.map((line) => `    ${line}`),
-    "  </FieldCardTrigger>",
-    "  <FieldCardContent>",
+    "  </PreviewCardTrigger>",
+    "  <PreviewCardContent>",
     ...card.map((line) => `    ${line}`),
-    "  </FieldCardContent>",
-    "</FieldCard>",
+    "  </PreviewCardContent>",
+    "</PreviewCard>",
   ]
 }
 
 function withCard(
-  context: ReadContext,
+  context: FactContext,
   trigger: React.ReactNode,
   card: React.ReactNode,
   align: "start" | "end" = "start"
@@ -130,20 +175,20 @@ function withCard(
     return trigger
   }
   return (
-    <FieldCard open={context.cardOpen}>
-      <FieldCardTrigger>{trigger}</FieldCardTrigger>
-      <FieldCardContent
+    <PreviewCard open={context.cardOpen}>
+      <PreviewCardTrigger>{trigger}</PreviewCardTrigger>
+      <PreviewCardContent
         align={align}
         container={context.cardContainer}
         collisionAvoidance={context.cardOpen === true ? { side: "none" } : undefined}
       >
         {card}
-      </FieldCardContent>
-    </FieldCard>
+      </PreviewCardContent>
+    </PreviewCard>
   )
 }
 
-const cardComponents = ["FieldCard", "FieldCardContent", "FieldCardTrigger"]
+const cardComponents = ["PreviewCard", "PreviewCardContent", "PreviewCardTrigger"]
 
 const recordStatusLabel: Readonly<Record<RecordStatus, string>> = {
   draft: "Draft",
@@ -151,40 +196,37 @@ const recordStatusLabel: Readonly<Record<RecordStatus, string>> = {
   approved: "Approved",
 }
 
-const recordStatusFill: Readonly<Record<RecordStatus, StatusMarkDotProps["fill"]>> = {
+const recordStatusFill: Readonly<Record<RecordStatus, StatusMediaProps["fill"]>> = {
   draft: "none",
   "in-review": "half",
   approved: "full",
 }
 
-function recordStatusMark(record: SampleRecord) {
+function recordStatus(record: SampleRecord) {
   return (
-    <StatusMark>
-      <StatusMarkDot fill={recordStatusFill[record.status]} />
-      <StatusMarkLabel>{recordStatusLabel[record.status]}</StatusMarkLabel>
-    </StatusMark>
+    <Status>
+      <StatusMedia fill={recordStatusFill[record.status]} />
+      <StatusName>{recordStatusLabel[record.status]}</StatusName>
+    </Status>
   )
 }
 
-function ownerValue(record: SampleRecord, state: RowState, context?: ReadContext) {
-  switch (state) {
-    case "partial":
-      return <FieldState state="unavailable" />
-    case "no-permission":
-      return <FieldState state="hidden" />
-    case "loaded":
-      return context === undefined
-        ? record.owner
-        : withCard(
-            context,
-            <PersonMark name={record.owner} />,
-            <>
-              <p className="font-medium text-sm">{record.owner}</p>
-              <p className="mt-1 text-muted-foreground">Record owner · {record.team}</p>
-            </>,
-            "end"
-          )
+function ownerValue(record: SampleRecord, state: RowState, context?: FactContext) {
+  const missing = unloadedFact(state)
+  if (missing !== undefined) {
+    return missingText(missing)
   }
+  return context === undefined
+    ? record.owner
+    : withCard(
+        context,
+        ownerEntity(record.owner),
+        <>
+          <p className="font-medium text-sm">{record.owner}</p>
+          <p className="mt-1 text-muted-foreground">Record owner · {record.team}</p>
+        </>,
+        "end"
+      )
 }
 
 export const listSurface =
@@ -194,12 +236,12 @@ export function capitalise(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
-export function shownReads<TItem>(dataset: Dataset<TItem>, hidden: Hidden) {
-  return dataset.reads.filter((read) => !hidden.has(read.part))
+export function shownFacts<TItem>(dataset: Dataset<TItem>, hidden: Hidden) {
+  return dataset.facts.filter((fact) => !hidden.has(fact.part))
 }
 
-export function hasCard<TItem>(read: ReadDefinition<TItem>, hidden: Hidden) {
-  return read.card !== undefined && isPartShown(hidden, read.card, read.part)
+export function hasCard<TItem>(fact: FactDefinition<TItem>, hidden: Hidden) {
+  return fact.card !== undefined && isPartShown(hidden, fact.card, fact.part)
 }
 
 export const recordsDataset: Dataset<SampleRecord> = {
@@ -216,16 +258,16 @@ export const recordsDataset: Dataset<SampleRecord> = {
   nameField: "title",
   summary: (record) => record.summary,
   summaryField: "summary",
-  glyph: {
+  media: {
     part: "status",
     card: "status-card",
     label: "Status",
     narrow: "keep",
-    content: "StatusMark",
+    content: "Status",
     render: (record, context) =>
       withCard(
         context,
-        recordStatusMark(record),
+        recordStatus(record),
         <>
           <p className="text-muted-foreground">Time in status</p>
           <p className="mt-1 font-medium text-sm">
@@ -237,36 +279,42 @@ export const recordsDataset: Dataset<SampleRecord> = {
       withCardLines(
         card,
         [
-          "<StatusMark>",
-          "  <StatusMarkDot fill={statusFill[record.status]} />",
-          "  <StatusMarkLabel>{statusLabel[record.status]}</StatusMarkLabel>",
-          "</StatusMark>",
+          "<Status>",
+          "  <StatusMedia fill={statusFill[record.status]} />",
+          "  <StatusName>{statusLabel[record.status]}</StatusName>",
+          "</Status>",
         ],
         ["{statusLabel[record.status]} for {record.statusAge}"]
       ),
-    components: (card) => [
-      "StatusMark",
-      "StatusMarkDot",
-      "StatusMarkLabel",
-      ...(card ? cardComponents : []),
-    ],
+    components: (card) => ["Status", "StatusMedia", "StatusName", ...(card ? cardComponents : [])],
   },
-  reads: [
+  facts: [
     {
       part: "owner",
       card: "owner-card",
       cardStates: ["loaded"],
       label: "Owner",
       narrow: "abbreviate",
-      content: "PersonMark",
+      content: "Entity",
+      missing: unloadedFact,
       render: (record, context) => ownerValue(record, context.state, context),
       code: (card) =>
         withCardLines(
           card,
-          ["<PersonMark name={record.owner} />"],
+          [
+            "<Entity>",
+            "  <EntityMedia>{initialsOf(record.owner)}</EntityMedia>",
+            "  <EntityName>{record.owner}</EntityName>",
+            "</Entity>",
+          ],
           ["{record.owner} · {record.team}"]
         ),
-      components: (card) => ["PersonMark", ...(card ? cardComponents : [])],
+      components: (card) => [
+        "Entity",
+        "EntityMedia",
+        "EntityName",
+        ...(card ? cardComponents : []),
+      ],
     },
     {
       part: "updated",
@@ -301,9 +349,14 @@ const amountFormat: Intl.NumberFormatOptions = { style: "currency", currency: "A
 
 const paidFormat: Intl.NumberFormatOptions = { style: "percent" }
 
+function hiddenAmount(state: RowState): Missing | undefined {
+  return state === "no-permission" ? "hidden" : undefined
+}
+
 function amountValue(invoice: SampleInvoice, state: RowState, inRow: boolean) {
-  if (state === "no-permission") {
-    return <FieldState state="hidden" />
+  const missing = hiddenAmount(state)
+  if (missing !== undefined) {
+    return missingText(missing)
   }
   return inRow ? (
     <Figure value={invoice.amount} format={amountFormat} locale="en-AU" />
@@ -313,18 +366,15 @@ function amountValue(invoice: SampleInvoice, state: RowState, inRow: boolean) {
 }
 
 function paidValue(invoice: SampleInvoice, state: RowState, inRow: boolean) {
-  switch (state) {
-    case "partial":
-      return <FieldState state="unavailable" />
-    case "no-permission":
-      return <FieldState state="hidden" />
-    case "loaded":
-      return inRow ? (
-        <Track value={invoice.paid} max={1} format={paidFormat} aria-label="Paid" />
-      ) : (
-        new Intl.NumberFormat("en", paidFormat).format(invoice.paid)
-      )
+  const missing = unloadedFact(state)
+  if (missing !== undefined) {
+    return missingText(missing)
   }
+  return inRow ? (
+    <Meter value={invoice.paid} max={1} format={paidFormat} aria-label="Paid" />
+  ) : (
+    new Intl.NumberFormat("en", paidFormat).format(invoice.paid)
+  )
 }
 
 export const invoicesDataset: Dataset<SampleInvoice> = {
@@ -341,31 +391,32 @@ export const invoicesDataset: Dataset<SampleInvoice> = {
   nameField: "customer",
   summary: (invoice) => invoice.summary,
   summaryField: "summary",
-  glyph: {
+  media: {
     part: "status",
     label: "Status",
     narrow: "keep",
-    content: "StatusMark",
+    content: "Status",
     render: (invoice) => (
-      <StatusMark>
-        <StatusMarkDot fill={invoiceStatusFill[invoice.status]} />
-        <StatusMarkLabel>{invoiceStatusLabel[invoice.status]}</StatusMarkLabel>
-      </StatusMark>
+      <Status>
+        <StatusMedia fill={invoiceStatusFill[invoice.status]} />
+        <StatusName>{invoiceStatusLabel[invoice.status]}</StatusName>
+      </Status>
     ),
     code: () => [
-      "<StatusMark>",
-      "  <StatusMarkDot fill={statusFill[invoice.status]} />",
-      "  <StatusMarkLabel>{statusLabel[invoice.status]}</StatusMarkLabel>",
-      "</StatusMark>",
+      "<Status>",
+      "  <StatusMedia fill={statusFill[invoice.status]} />",
+      "  <StatusName>{statusLabel[invoice.status]}</StatusName>",
+      "</Status>",
     ],
-    components: () => ["StatusMark", "StatusMarkDot", "StatusMarkLabel"],
+    components: () => ["Status", "StatusMedia", "StatusName"],
   },
-  reads: [
+  facts: [
     {
       part: "amount",
       label: "Amount",
       narrow: "abbreviate",
       content: "Figure",
+      missing: hiddenAmount,
       render: (invoice, context) => amountValue(invoice, context.state, true),
       code: () => [
         '<Figure value={invoice.amount} format={{ style: "currency", currency: "AUD" }} />',
@@ -376,12 +427,13 @@ export const invoicesDataset: Dataset<SampleInvoice> = {
       part: "paid",
       label: "Paid",
       narrow: "abbreviate",
-      content: "Track",
+      content: "Meter",
+      missing: unloadedFact,
       render: (invoice, context) => paidValue(invoice, context.state, true),
       code: () => [
-        '<Track value={invoice.paid} max={1} format={{ style: "percent" }} aria-label="Paid" />',
+        '<Meter value={invoice.paid} max={1} format={{ style: "percent" }} aria-label="Paid" />',
       ],
-      components: () => ["Track"],
+      components: () => ["Meter"],
     },
     {
       part: "due",

@@ -1,4 +1,4 @@
-import { PreviewCard } from "@base-ui/react/preview-card"
+import { PreviewCard as BasePreviewCard } from "@base-ui/react/preview-card"
 import type * as React from "react"
 // biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
 import { cn } from "@/lib/cn"
@@ -8,21 +8,21 @@ import { cn } from "@/lib/cn"
  * hover card on that value. Opens 300ms after the pointer enters its trigger and closes as soon as
  * it leaves. Every field in it must also appear in peek and on the item's page.
  */
-export function FieldCard(props: PreviewCard.Root.Props): React.ReactElement {
-  return <PreviewCard.Root {...props} />
+export function PreviewCard(props: BasePreviewCard.Root.Props): React.ReactElement {
+  return <BasePreviewCard.Root {...props} />
 }
 
 /**
- * The value that opens its `FieldCard` on hover. It is not focusable; peek and the item's page are
+ * The value that opens its `PreviewCard` on hover. It is not focusable; peek and the item's page are
  * the keyboard and touch routes to the same fields.
  */
-export function FieldCardTrigger({
+export function PreviewCardTrigger({
   className,
   ...props
-}: PreviewCard.Trigger.Props): React.ReactElement {
+}: BasePreviewCard.Trigger.Props): React.ReactElement {
   return (
-    <PreviewCard.Trigger
-      data-slot="field-card-trigger"
+    <BasePreviewCard.Trigger
+      data-slot="preview-card-trigger"
       delay={300}
       closeDelay={0}
       render={<span />}
@@ -35,17 +35,17 @@ export function FieldCardTrigger({
   )
 }
 
-/** Props for {@link FieldCardContent}. */
-export type FieldCardContentProps = PreviewCard.Popup.Props &
-  Pick<PreviewCard.Positioner.Props, "align" | "side" | "sideOffset" | "collisionAvoidance"> &
-  Pick<PreviewCard.Portal.Props, "container">
+/** Props for {@link PreviewCardContent}. */
+export type PreviewCardContentProps = BasePreviewCard.Popup.Props &
+  Pick<BasePreviewCard.Positioner.Props, "align" | "side" | "sideOffset" | "collisionAvoidance"> &
+  Pick<BasePreviewCard.Portal.Props, "container">
 
 /**
  * The card drawn below its trigger. It may hold links. It renders into `<body>` unless `container`
  * names another element, such as a scaled or panned canvas the card must move with. A click inside
  * it does not reach the trigger's ancestors, so it never activates the row link around the trigger.
  */
-export function FieldCardContent({
+export function PreviewCardContent({
   align = "start",
   side = "bottom",
   sideOffset = 6,
@@ -54,20 +54,20 @@ export function FieldCardContent({
   className,
   onClick,
   ...props
-}: FieldCardContentProps): React.ReactElement {
+}: PreviewCardContentProps): React.ReactElement {
   return (
-    <PreviewCard.Portal container={container}>
-      <PreviewCard.Positioner
+    <BasePreviewCard.Portal container={container}>
+      <BasePreviewCard.Positioner
         align={align}
         side={side}
         sideOffset={sideOffset}
         collisionAvoidance={collisionAvoidance}
         className="z-popover"
       >
-        <PreviewCard.Popup
-          data-slot="field-card-content"
+        <BasePreviewCard.Popup
+          data-slot="preview-card-content"
           className={cn(
-            "w-60 origin-(--transform-origin) rounded-lg border bg-popover p-3 text-popover-foreground text-xs shadow-popover transition-[opacity,scale] duration-quick ease-out data-ending-style:opacity-0 data-ending-style:duration-0 data-starting-style:scale-(--field-card-enter-scale) data-starting-style:opacity-0 motion-reduce:transition-none",
+            "w-60 origin-(--transform-origin) rounded-lg border bg-popover p-3 text-popover-foreground text-xs shadow-popover transition-[opacity,scale] duration-quick ease-out data-ending-style:opacity-0 data-ending-style:duration-0 data-starting-style:scale-(--preview-card-enter-scale) data-starting-style:opacity-0 motion-reduce:transition-none",
             className
           )}
           onClick={(event) => {
@@ -76,7 +76,7 @@ export function FieldCardContent({
           }}
           {...props}
         />
-      </PreviewCard.Positioner>
-    </PreviewCard.Portal>
+      </BasePreviewCard.Positioner>
+    </BasePreviewCard.Portal>
   )
 }

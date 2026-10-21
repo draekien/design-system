@@ -36,7 +36,7 @@ describe("recordListStatesCode", () => {
     const code = recordListStatesCode(recordsDataset, new Set(["select", "owner"]), "partial")
 
     expect(code).not.toContain("RecordRowSelect")
-    expect(code).not.toContain("PersonMark")
+    expect(code).not.toContain("Entity")
   })
 
   it("renders the description from the item's summary and drops it when hidden", () => {

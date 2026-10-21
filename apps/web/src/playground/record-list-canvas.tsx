@@ -5,11 +5,11 @@ import {
   RecordList,
   RecordRow,
   RecordRowDescription,
-  RecordRowGlyph,
-  RecordRowKey,
+  RecordRowFact,
+  RecordRowId,
   RecordRowLoading,
+  RecordRowMedia,
   RecordRowName,
-  RecordRowRead,
   RecordRowSelect,
 } from "@workspace/ui/components/record-list.tsx"
 import * as React from "react"
@@ -17,14 +17,15 @@ import { cn } from "@/lib/cn.ts"
 import {
   capitalise,
   type Dataset,
+  type FactDefinition,
+  factProps,
   type Hidden,
   hasCard,
   invoicesDataset,
   listSurface,
-  type ReadDefinition,
   type RowState,
   recordsDataset,
-  shownReads,
+  shownFacts,
 } from "../lockups/record-list/datasets.tsx"
 import {
   ErrorMessage,
@@ -362,13 +363,13 @@ function rowDrawing<TItem>({
 }): Drawing {
   const { parts, slots, add, link } = partNumbers()
   const value = dataset.value(item)
-  const reads = shownReads(dataset, hidden)
-  const glyph =
-    dataset.glyph !== undefined && !hidden.has(dataset.glyph.part) ? dataset.glyph : undefined
-  const carded = [...(glyph === undefined ? [] : [glyph]), ...reads].filter(
-    (read) => hasCard(read, hidden) && (read.cardStates?.includes(state) ?? true)
+  const facts = shownFacts(dataset, hidden)
+  const media =
+    dataset.media !== undefined && !hidden.has(dataset.media.part) ? dataset.media : undefined
+  const carded = [...(media === undefined ? [] : [media]), ...facts].filter(
+    (fact) => hasCard(fact, hidden) && (fact.cardStates?.includes(state) ?? true)
   )
-  const cardOf = (read: ReadDefinition<TItem>) => (carded.includes(read) ? read.card : undefined)
+  const cardOf = (fact: FactDefinition<TItem>) => (carded.includes(fact) ? fact.card : undefined)
 
   add("list", { name: "RecordList", depth: 0, note: "One tab stop; ↑ ↓ Home End, Space, X, Esc" })
   add("row", {
@@ -394,48 +395,48 @@ function rowDrawing<TItem>({
     note: "Rank 5: the row's one focus target; render your router's link through render",
     specimen: <ItemPageHead dataset={dataset} item={item} />,
   })
-  add("identify", { name: "RecordRowIdentify", depth: 3, note: "Rank 1: what the item is" })
+  add("subject", { name: "RecordRowSubject", depth: 3, note: "Rank 1: what the row is about" })
   if (!hidden.has("key")) {
     add("key", {
-      name: "RecordRowKey",
+      name: "RecordRowId",
       depth: 4,
       note: narrowNote[dataset.keyNarrow],
       specimen: (
         <PartRow dataset={dataset} item={item}>
-          <RecordRowKey>{dataset.key(item)}</RecordRowKey>
+          <RecordRowId>{dataset.key(item)}</RecordRowId>
         </PartRow>
       ),
     })
   }
-  if (glyph !== undefined) {
-    add(glyph.part, {
-      name: "RecordRowGlyph",
+  if (media !== undefined) {
+    add(media.part, {
+      name: "RecordRowMedia",
       depth: 4,
-      note: `${glyph.label}, a ${glyph.content}: 24×24, the word read by screen readers only`,
+      note: `${media.label}, a ${media.content}: 24×24, the name read by screen readers only`,
       specimen: (
         <PartRow dataset={dataset} item={item}>
-          <RecordRowGlyph>{glyph.render(item, { state, withCard: false })}</RecordRowGlyph>
+          <RecordRowMedia>{media.render(item, { state, withCard: false })}</RecordRowMedia>
         </PartRow>
       ),
     })
-    const card = cardOf(glyph)
+    const card = cardOf(media)
     if (card !== undefined) {
       add(card, {
-        name: "FieldCard",
+        name: "PreviewCard",
         depth: 5,
-        note: `Rank 4: ${glyph.label.toLowerCase()} detail, opened 300ms after the pointer enters`,
+        note: `Rank 4: ${media.label.toLowerCase()} detail, opened 300ms after the pointer enters`,
         specimen: (
           <CardSpecimen>
             {(container) => (
               <PartRow dataset={dataset} item={item}>
-                <RecordRowGlyph>
-                  {glyph.render(item, {
+                <RecordRowMedia>
+                  {media.render(item, {
                     state,
                     withCard: true,
                     cardOpen: true,
                     cardContainer: container,
                   })}
-                </RecordRowGlyph>
+                </RecordRowMedia>
               </PartRow>
             )}
           </CardSpecimen>
@@ -467,37 +468,35 @@ function rowDrawing<TItem>({
       ),
     })
   }
-  for (const read of reads) {
-    add(read.part, {
-      name: "RecordRowRead",
+  for (const fact of facts) {
+    add(fact.part, {
+      name: "RecordRowFact",
       depth: 3,
-      note: `Rank 2: ${read.label}, a ${read.content}; ${narrowNote[read.narrow]}`,
+      note: `Rank 2: ${fact.label}, a ${fact.content}; ${narrowNote[fact.narrow]}`,
       specimen: (
         <PartRow dataset={dataset} item={item}>
-          <RecordRowRead className="pl-0">
-            {read.render(item, { state, withCard: false })}
-          </RecordRowRead>
+          <RecordRowFact className="pl-0" {...factProps(fact, item, { state, withCard: false })} />
         </PartRow>
       ),
     })
-    const card = cardOf(read)
+    const card = cardOf(fact)
     if (card !== undefined) {
       add(card, {
-        name: "FieldCard",
+        name: "PreviewCard",
         depth: 4,
-        note: `Rank 4: ${read.label.toLowerCase()} detail, opened 300ms after the pointer enters`,
+        note: `Rank 4: ${fact.label.toLowerCase()} detail, opened 300ms after the pointer enters`,
         specimen: (
           <CardSpecimen>
             {(container) => (
               <PartRow dataset={dataset} item={item}>
-                <RecordRowRead className="col-span-full justify-end pl-0">
-                  {read.render(item, {
+                <RecordRowFact className="col-span-full justify-end pl-0">
+                  {fact.render(item, {
                     state,
                     withCard: true,
                     cardOpen: true,
                     cardContainer: container,
                   })}
-                </RecordRowRead>
+                </RecordRowFact>
               </PartRow>
             )}
           </CardSpecimen>
@@ -533,23 +532,23 @@ function rowDrawing<TItem>({
 
   const groups: Array<ConstellationGroup> = [
     {
-      title: "Identify",
+      title: "Subject",
       rank: 1,
       reveal: "always",
       summary: `What the ${dataset.item} is, at the start of every row`,
       links: [
         ...link("key"),
-        ...(glyph === undefined ? [] : link(glyph.part)),
+        ...(media === undefined ? [] : link(media.part)),
         ...link("name"),
         ...link("description"),
       ],
     },
     {
-      title: "Read",
+      title: "Fact",
       rank: 2,
       reveal: "always",
       summary: "What the list is scanned for, each value in its own column",
-      links: reads.flatMap((read) => link(read.part)),
+      links: facts.flatMap((fact) => link(fact.part)),
     },
     {
       title: "Enrich",
@@ -558,7 +557,7 @@ function rowDrawing<TItem>({
       gesture: "Hover 300ms",
       summary:
         "A hover card on the value it describes; peek and the page hold the same fields for keyboard and touch",
-      links: carded.flatMap((read) => (read.card === undefined ? [] : link(read.card, read.part))),
+      links: carded.flatMap((fact) => (fact.card === undefined ? [] : link(fact.card, fact.part))),
     },
     {
       title: "Elsewhere",

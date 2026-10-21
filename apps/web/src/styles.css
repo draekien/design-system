@@ -18,7 +18,7 @@
   }
 }
 
-[data-pointer="coarse"] [data-slot="field-card-trigger"] {
+[data-pointer="coarse"] [data-slot="preview-card-trigger"] {
   pointer-events: none;
 }
 

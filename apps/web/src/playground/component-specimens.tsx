@@ -1,28 +1,36 @@
+import { File01Icon, Shield01Icon, Task01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  FieldCard,
-  FieldCardContent,
-  FieldCardTrigger,
-} from "@workspace/ui/components/field-card.tsx"
-import { FieldState } from "@workspace/ui/components/field-state.tsx"
+  Entity,
+  EntityDescription,
+  EntityMedia,
+  EntityName,
+} from "@workspace/ui/components/entity.tsx"
 import { Figure } from "@workspace/ui/components/figure.tsx"
-import { PersonMark } from "@workspace/ui/components/person-mark.tsx"
+import { Meter } from "@workspace/ui/components/meter.tsx"
+import {
+  PreviewCard,
+  PreviewCardContent,
+  PreviewCardTrigger,
+} from "@workspace/ui/components/preview-card.tsx"
 import {
   RecordList,
   RecordRow,
-  RecordRowGlyph,
-  RecordRowIdentify,
-  RecordRowKey,
+  RecordRowFact,
+  RecordRowId,
   RecordRowLink,
+  RecordRowMedia,
   RecordRowName,
   RecordRowSelect,
+  RecordRowSubject,
 } from "@workspace/ui/components/record-list.tsx"
 import { RelativeTime } from "@workspace/ui/components/relative-time.tsx"
 import {
-  StatusMark,
-  StatusMarkDot,
-  StatusMarkLabel,
-} from "@workspace/ui/components/status-mark.tsx"
-import { Track } from "@workspace/ui/components/track.tsx"
+  Status,
+  StatusDescription,
+  StatusMedia,
+  StatusName,
+} from "@workspace/ui/components/status.tsx"
 import * as React from "react"
 
 export type ComponentSpecimen = {
@@ -32,9 +40,33 @@ export type ComponentSpecimen = {
 }
 
 const listRecords = [
-  { id: "REC-101", name: "Vendor onboarding checklist", fill: "none", status: "Draft" },
-  { id: "REC-104", name: "Quarterly access review", fill: "half", status: "In review" },
-  { id: "REC-109", name: "Data retention policy", fill: "full", status: "Approved" },
+  {
+    id: "REC-101",
+    name: "Vendor onboarding checklist",
+    icon: Task01Icon,
+    kind: "Checklist",
+    fill: "none",
+    status: "Draft",
+    owner: { initials: "MO", name: "Mira Okafor" },
+  },
+  {
+    id: "REC-104",
+    name: "Quarterly access review",
+    icon: Shield01Icon,
+    kind: "Review",
+    fill: "half",
+    status: "In review",
+    owner: { initials: "DP", name: "Dev Patel" },
+  },
+  {
+    id: "REC-109",
+    name: "Data retention policy",
+    icon: File01Icon,
+    kind: "Policy",
+    fill: "full",
+    status: "Approved",
+    owner: null,
+  },
 ] as const
 
 function RecordListPreview() {
@@ -46,16 +78,29 @@ function RecordListPreview() {
           <RecordRow key={record.id} value={record.id} className="last:border-b-0">
             <RecordRowSelect />
             <RecordRowLink href={`#${record.id}`}>
-              <RecordRowIdentify>
-                <RecordRowKey narrow="hide">{record.id}</RecordRowKey>
-                <RecordRowGlyph>
-                  <StatusMark>
-                    <StatusMarkDot fill={record.fill} />
-                    <StatusMarkLabel>{record.status}</StatusMarkLabel>
-                  </StatusMark>
-                </RecordRowGlyph>
+              <RecordRowSubject>
+                <RecordRowId narrow="hide">{record.id}</RecordRowId>
+                <RecordRowMedia variant="icon">
+                  <HugeiconsIcon icon={record.icon} role="img" aria-label={record.kind} />
+                </RecordRowMedia>
                 <RecordRowName>{record.name}</RecordRowName>
-              </RecordRowIdentify>
+              </RecordRowSubject>
+              <RecordRowFact>
+                <Status>
+                  <StatusMedia fill={record.fill} />
+                  <StatusName>{record.status}</StatusName>
+                </Status>
+              </RecordRowFact>
+              {record.owner === null ? (
+                <RecordRowFact narrow="abbreviate" missing="hidden" />
+              ) : (
+                <RecordRowFact narrow="abbreviate">
+                  <Entity>
+                    <EntityMedia>{record.owner.initials}</EntityMedia>
+                    <EntityName>{record.owner.name}</EntityName>
+                  </Entity>
+                </RecordRowFact>
+              )}
             </RecordRowLink>
           </RecordRow>
         ))}
@@ -67,23 +112,51 @@ function RecordListPreview() {
   )
 }
 
-const recordListCode = `import {
+const recordListCode = `import { File01Icon, Shield01Icon, Task01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Entity, EntityMedia, EntityName } from "@/components/entity"
+import {
   RecordList,
   RecordRow,
-  RecordRowGlyph,
-  RecordRowIdentify,
-  RecordRowKey,
+  RecordRowFact,
+  RecordRowId,
   RecordRowLink,
+  RecordRowMedia,
   RecordRowName,
   RecordRowSelect,
+  RecordRowSubject,
 } from "@/components/record-list"
-import { StatusMark, StatusMarkDot, StatusMarkLabel } from "@/components/status-mark"
+import { Status, StatusMedia, StatusName } from "@/components/status"
 import * as React from "react"
 
 const records = [
-  { id: "REC-101", name: "Vendor onboarding checklist", fill: "none", status: "Draft" },
-  { id: "REC-104", name: "Quarterly access review", fill: "half", status: "In review" },
-  { id: "REC-109", name: "Data retention policy", fill: "full", status: "Approved" },
+  {
+    id: "REC-101",
+    name: "Vendor onboarding checklist",
+    icon: Task01Icon,
+    kind: "Checklist",
+    fill: "none",
+    status: "Draft",
+    owner: { initials: "MO", name: "Mira Okafor" },
+  },
+  {
+    id: "REC-104",
+    name: "Quarterly access review",
+    icon: Shield01Icon,
+    kind: "Review",
+    fill: "half",
+    status: "In review",
+    owner: { initials: "DP", name: "Dev Patel" },
+  },
+  {
+    id: "REC-109",
+    name: "Data retention policy",
+    icon: File01Icon,
+    kind: "Policy",
+    fill: "full",
+    status: "Approved",
+    owner: null,
+  },
 ] as const
 
 export function RecordListExample() {
@@ -95,16 +168,29 @@ export function RecordListExample() {
           <RecordRow key={record.id} value={record.id}>
             <RecordRowSelect />
             <RecordRowLink href={\`/records/\${record.id}\`}>
-              <RecordRowIdentify>
-                <RecordRowKey narrow="hide">{record.id}</RecordRowKey>
-                <RecordRowGlyph>
-                  <StatusMark>
-                    <StatusMarkDot fill={record.fill} />
-                    <StatusMarkLabel>{record.status}</StatusMarkLabel>
-                  </StatusMark>
-                </RecordRowGlyph>
+              <RecordRowSubject>
+                <RecordRowId narrow="hide">{record.id}</RecordRowId>
+                <RecordRowMedia variant="icon">
+                  <HugeiconsIcon icon={record.icon} role="img" aria-label={record.kind} />
+                </RecordRowMedia>
                 <RecordRowName>{record.name}</RecordRowName>
-              </RecordRowIdentify>
+              </RecordRowSubject>
+              <RecordRowFact>
+                <Status>
+                  <StatusMedia fill={record.fill} />
+                  <StatusName>{record.status}</StatusName>
+                </Status>
+              </RecordRowFact>
+              {record.owner === null ? (
+                <RecordRowFact narrow="abbreviate" missing="hidden" />
+              ) : (
+                <RecordRowFact narrow="abbreviate">
+                  <Entity>
+                    <EntityMedia>{record.owner.initials}</EntityMedia>
+                    <EntityName>{record.owner.name}</EntityName>
+                  </Entity>
+                </RecordRowFact>
+              )}
             </RecordRowLink>
           </RecordRow>
         ))}
@@ -115,59 +201,71 @@ export function RecordListExample() {
 }
 `
 
-function StatusMarkPreview() {
+function StatusPreview() {
   return (
     <div className="flex flex-wrap items-center gap-6 text-sm">
-      <StatusMark>
-        <StatusMarkDot fill="none" />
-        <StatusMarkLabel>Draft</StatusMarkLabel>
-      </StatusMark>
-      <StatusMark>
-        <StatusMarkDot fill="half" />
-        <StatusMarkLabel>In review</StatusMarkLabel>
-      </StatusMark>
-      <StatusMark>
-        <StatusMarkDot fill="full" />
-        <StatusMarkLabel>Approved</StatusMarkLabel>
-      </StatusMark>
+      <Status>
+        <StatusMedia fill="none" />
+        <StatusName>Draft</StatusName>
+      </Status>
+      <Status>
+        <StatusMedia fill="half" />
+        <StatusName>In review</StatusName>
+        <StatusDescription>since 3 Oct</StatusDescription>
+      </Status>
+      <Status>
+        <StatusMedia fill="full" />
+        <StatusName>Approved</StatusName>
+      </Status>
     </div>
   )
 }
 
-const statusMarkCode = `import { StatusMark, StatusMarkDot, StatusMarkLabel } from "@/components/status-mark"
+const statusCode = `import { Status, StatusDescription, StatusMedia, StatusName } from "@/components/status"
 
-export function StatusMarkExample() {
+export function StatusExample() {
   return (
     <>
-      <StatusMark>
-        <StatusMarkDot fill="none" />
-        <StatusMarkLabel>Draft</StatusMarkLabel>
-      </StatusMark>
-      <StatusMark>
-        <StatusMarkDot fill="half" />
-        <StatusMarkLabel>In review</StatusMarkLabel>
-      </StatusMark>
-      <StatusMark>
-        <StatusMarkDot fill="full" />
-        <StatusMarkLabel>Approved</StatusMarkLabel>
-      </StatusMark>
+      <Status>
+        <StatusMedia fill="none" />
+        <StatusName>Draft</StatusName>
+      </Status>
+      <Status>
+        <StatusMedia fill="half" />
+        <StatusName>In review</StatusName>
+        <StatusDescription>since 3 Oct</StatusDescription>
+      </Status>
+      <Status>
+        <StatusMedia fill="full" />
+        <StatusName>Approved</StatusName>
+      </Status>
     </>
   )
 }
 `
 
-function PersonMarkPreview() {
+function EntityPreview() {
   return (
     <div className="text-sm">
-      <PersonMark name="Mira Okafor" />
+      <Entity>
+        <EntityMedia>MO</EntityMedia>
+        <EntityName>Mira Okafor</EntityName>
+        <EntityDescription>Security</EntityDescription>
+      </Entity>
     </div>
   )
 }
 
-const personMarkCode = `import { PersonMark } from "@/components/person-mark"
+const entityCode = `import { Entity, EntityDescription, EntityMedia, EntityName } from "@/components/entity"
 
-export function PersonMarkExample() {
-  return <PersonMark name="Mira Okafor" />
+export function EntityExample() {
+  return (
+    <Entity>
+      <EntityMedia>MO</EntityMedia>
+      <EntityName>Mira Okafor</EntityName>
+      <EntityDescription>Security</EntityDescription>
+    </Entity>
+  )
 }
 `
 
@@ -186,18 +284,18 @@ export function FigureExample() {
 }
 `
 
-function TrackPreview() {
+function MeterPreview() {
   return (
     <div className="text-sm">
-      <Track value={0.4} max={1} format={{ style: "percent" }} aria-label="Paid" />
+      <Meter value={0.4} max={1} format={{ style: "percent" }} aria-label="Paid" />
     </div>
   )
 }
 
-const trackCode = `import { Track } from "@/components/track"
+const meterCode = `import { Meter } from "@/components/meter"
 
-export function TrackExample() {
-  return <Track value={0.4} max={1} format={{ style: "percent" }} aria-label="Paid" />
+export function MeterExample() {
+  return <Meter value={0.4} max={1} format={{ style: "percent" }} aria-label="Paid" />
 }
 `
 
@@ -216,57 +314,42 @@ export function RelativeTimeExample() {
 }
 `
 
-function FieldStatePreview() {
-  return (
-    <div className="flex flex-wrap items-center gap-6 text-sm">
-      <FieldState state="unavailable" />
-      <FieldState state="hidden" />
-    </div>
-  )
-}
-
-const fieldStateCode = `import { FieldState } from "@/components/field-state"
-
-export function FieldStateExample() {
-  return (
-    <>
-      <FieldState state="unavailable" />
-      <FieldState state="hidden" />
-    </>
-  )
-}
-`
-
-function FieldCardPreview() {
+function PreviewCardPreview() {
   return (
     <div className="text-sm">
-      <FieldCard>
-        <FieldCardTrigger>
-          <PersonMark name="Mira Okafor" />
-        </FieldCardTrigger>
-        <FieldCardContent>
+      <PreviewCard>
+        <PreviewCardTrigger>
+          <Entity>
+            <EntityMedia>MO</EntityMedia>
+            <EntityName>Mira Okafor</EntityName>
+          </Entity>
+        </PreviewCardTrigger>
+        <PreviewCardContent>
           <p className="font-medium text-sm">Mira Okafor</p>
           <p className="mt-1 text-muted-foreground">Record owner · Security</p>
-        </FieldCardContent>
-      </FieldCard>
+        </PreviewCardContent>
+      </PreviewCard>
     </div>
   )
 }
 
-const fieldCardCode = `import { FieldCard, FieldCardContent, FieldCardTrigger } from "@/components/field-card"
-import { PersonMark } from "@/components/person-mark"
+const previewCardCode = `import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card"
+import { Entity, EntityMedia, EntityName } from "@/components/entity"
 
-export function FieldCardExample() {
+export function PreviewCardExample() {
   return (
-    <FieldCard>
-      <FieldCardTrigger>
-        <PersonMark name="Mira Okafor" />
-      </FieldCardTrigger>
-      <FieldCardContent>
+    <PreviewCard>
+      <PreviewCardTrigger>
+        <Entity>
+          <EntityMedia>MO</EntityMedia>
+          <EntityName>Mira Okafor</EntityName>
+        </Entity>
+      </PreviewCardTrigger>
+      <PreviewCardContent>
         <p className="font-medium text-sm">Mira Okafor</p>
         <p className="mt-1 text-muted-foreground">Record owner · Security</p>
-      </FieldCardContent>
-    </FieldCard>
+      </PreviewCardContent>
+    </PreviewCard>
   )
 }
 `
@@ -277,31 +360,18 @@ export const componentSpecimens: Readonly<Record<string, ComponentSpecimen>> = {
     code: recordListCode,
     Preview: RecordListPreview,
   },
-  "status-mark": {
-    fileName: "status-mark-example.tsx",
-    code: statusMarkCode,
-    Preview: StatusMarkPreview,
-  },
-  "person-mark": {
-    fileName: "person-mark-example.tsx",
-    code: personMarkCode,
-    Preview: PersonMarkPreview,
-  },
+  status: { fileName: "status-example.tsx", code: statusCode, Preview: StatusPreview },
+  entity: { fileName: "entity-example.tsx", code: entityCode, Preview: EntityPreview },
   figure: { fileName: "figure-example.tsx", code: figureCode, Preview: FigurePreview },
-  track: { fileName: "track-example.tsx", code: trackCode, Preview: TrackPreview },
+  meter: { fileName: "meter-example.tsx", code: meterCode, Preview: MeterPreview },
   "relative-time": {
     fileName: "relative-time-example.tsx",
     code: relativeTimeCode,
     Preview: RelativeTimePreview,
   },
-  "field-state": {
-    fileName: "field-state-example.tsx",
-    code: fieldStateCode,
-    Preview: FieldStatePreview,
-  },
-  "field-card": {
-    fileName: "field-card-example.tsx",
-    code: fieldCardCode,
-    Preview: FieldCardPreview,
+  "preview-card": {
+    fileName: "preview-card-example.tsx",
+    code: previewCardCode,
+    Preview: PreviewCardPreview,
   },
 }
