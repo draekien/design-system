@@ -175,7 +175,7 @@
       "Components declare which components they contain, sit beside and sit inside.",
       "One accent, used only on actionable elements and the focus ring.",
       "44px rows with 24×24px hit areas that grow to 44×44px on a coarse pointer.",
-      "State shown by shape and word, never by colour alone.",
+      "State shown by shape and word, never by colour alone; a shape drawn alone discloses its word.",
       "A radius builds outward from a 6px floor; --radius: 0 makes every radius 0.",
       "The container sets the gap between its children: run 0, related 8px, section 24px."
     ],
@@ -187,7 +187,7 @@
       },
       {
         "name": "The No-Colour-Alone Rule",
-        "body": "A state is carried by a shape and a word, so it reads in greyscale.",
+        "body": "A state is carried by a shape and a word, so it reads in greyscale. A shape drawn alone keeps its word in the accessible name and discloses it on hover, and by keyboard through peek or the record's page.",
         "section": "colors"
       },
       {
@@ -216,7 +216,7 @@
     ],
     "donts": [
       "Don't use Signal Orange on anything the caller cannot act on.",
-      "Don't show a state by colour alone; pair it with a shape and a word.",
+      "Don't show a state by colour alone, or draw a shape alone that does not disclose its word.",
       "Don't put a shadow on a surface that sits in the page flow.",
       "Don't add a second typeface; use Mona Sans weights and widths.",
       "Don't give a component margin or a hard-coded radius; both come from its container.",

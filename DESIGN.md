@@ -107,7 +107,7 @@ The palette is monochrome with a single orange that marks only what can be acted
 - Components declare which components they contain, sit beside and sit inside.
 - One accent, used only on actionable elements and the focus ring.
 - 44px rows with 24×24px hit areas that grow to 44×44px on a coarse pointer.
-- State shown by shape and word, never by colour alone.
+- State shown by shape and word, never by colour alone; a shape drawn alone discloses its word.
 - Flat surfaces separated by hairlines; shadows only on floating layers.
 - Revealed controls appear on hover, focus and selection, and are always visible on a coarse pointer.
 
@@ -132,7 +132,7 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 ### Named Rules
 **The Act-Only Accent Rule.** Signal Orange appears only on something the caller can act on, or on the focus ring. A status, a count or a heading is never orange.
 
-**The No-Colour-Alone Rule.** A state is carried by a shape and a word (the status mark's filled, half or hollow dot beside its label), so it reads in greyscale and to colour-blind callers.
+**The No-Colour-Alone Rule.** A state is carried by a shape and a word (the status's filled, half or hollow dot and its name), so it reads in greyscale and to colour-blind callers. The word is drawn beside the shape or disclosed by it: a dot drawn alone keeps its word in the accessible name, shows it in a preview card on hover, and peek or the record's page reaches it by keyboard.
 
 ## Typography
 
@@ -220,7 +220,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 
 ### Don't:
 - **Don't** use Signal Orange on anything the caller cannot act on.
-- **Don't** show a state by colour alone; pair it with a shape and a word.
+- **Don't** show a state by colour alone, or draw a shape alone that does not disclose its word.
 - **Don't** put a shadow on a surface that sits in the page flow.
 - **Don't** add a second typeface; use Mona Sans weights and widths.
 - **Don't** give a component margin or a hard-coded radius; both come from its container.

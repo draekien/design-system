@@ -10,6 +10,8 @@ A rule here governs disclosure (what shows, what hides, how hidden data is revea
 
 Encode a rule through component composition and Base UI capabilities, so the layout the rule forbids cannot be composed from the parts.
 
+Every rule applies at every scale: the parts inside one component follow it as the components inside a lockup do, and every specimen, example and page on the docs site follows it as a lockup does. This is this design system's own decision.
+
 Ship a component's usage guidance in its registry item's `docs` field and on the GitHub Pages site.
 
 ## Sources
@@ -43,6 +45,8 @@ A collapsed group, section or row keeps its rank 1 and 2 on screen, as a collaps
 Rank 3 never holds content the caller reads on most visits: collapsing that costs a click every visit.
 
 Name a component's parts for the rank they hold, never for a data field; a part takes any data ranked for it.
+
+A value may draw its media alone, such as a status dot or an entity's initials, only when its word is in the accessible name, a hover card on the media shows the word, and peek or the record's own page reaches it by keyboard, as Linear's status icon opens a card naming the stage.
 
 A narrow surface truncates rank 1 and 2 values first, then abbreviates them, then hides the ones the caller marks hideable; a hidden value stays reachable at rank 3 or 5.
 

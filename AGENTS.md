@@ -60,7 +60,7 @@ Before editing files for a substantial task:
 - `apps/web`: TanStack Start on Vite, React, TypeScript, Vitest. The docs site and the `/playground/<tier>/<name>` routes, prerendered to GitHub Pages.
 - A lockup lives in `apps/web/src/lockups/<name>`, composes published components to demonstrate the rules, and is never a registry item (ADR 0005).
 - `apps/web/src/experiments`: greyscale coded wireframes, one `/playground/experiments/<name>` page each, listed in the playground sidebar under Experiments and deployed with the site.
-- Every page, specimen and example in `apps/web` follows `docs/contexts/design-rules.md` and `DESIGN.md`, as an app built with this design system would.
+- Every rule in `docs/contexts/design-rules.md` and `DESIGN.md` applies at every scale: a component's own parts follow it as a lockup's components do, and every page, specimen and example in `apps/web` follows it.
 - `packages/ui` is the registry source: every component in it is installable through `packages/ui/registry.json`, and `apps/web` imports it as `@workspace/ui`.
 - Name a registry item in flat kebab-case for its role, never an `@shadcn` item name (`pnpm dlx shadcn@4.21.4 view @shadcn/<name>` fails when the name is free); item name, file name and main export match.
 - Inside `packages/ui`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/ui/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `@/lib/cn`, which `packages/tokens` generates from the token groups.
@@ -73,6 +73,7 @@ Before editing files for a substantial task:
 - Run `/impeccable shape` before every design system change: a token, a rule in `docs/contexts/design-rules.md`, `DESIGN.md`, a new component or a new lockup.
 - Run `/impeccable document` to regenerate `DESIGN.md` and `.impeccable/design.json` in the same change that alters a token or a component's visual treatment.
 - Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `packages/ui`.
+- Run the impeccable critique on every component after it is built or changed, and fix every issue it reports before its `meta.critiqued` is set.
 - Run `/simplify` and then `/code-review` on every change before committing it.
 - Show screenshots of every changed surface in a task's completion summary.
 - Every wireframe and lockup page shows its rules table, the interactive lockup and a constellation, following the `state` search param. On a playground page each part is the real `packages/ui` export.
