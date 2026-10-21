@@ -570,10 +570,6 @@ export type RecordRowMediaProps = RecordRowNarrowPartProps &
       }
   )
 
-/**
- * A 24×24px picture of the item drawn between the ID and the name, such as its status dot, its
- * owner's initials or an icon for its kind.
- */
 function mediaPartProps(props: RecordRowMediaProps): RecordRowPartProps {
   if (props.variant !== "icon") {
     const { variant: _variant, narrow: _narrow, ...rest } = props
@@ -588,6 +584,10 @@ function mediaPartProps(props: RecordRowMediaProps): RecordRowPartProps {
   }
 }
 
+/**
+ * A 24×24px picture of the item drawn between the ID and the name, such as its status dot, its
+ * owner's initials or an icon for its kind.
+ */
 export function RecordRowMedia(props: RecordRowMediaProps): React.ReactElement {
   return usePart(
     "RecordRowMedia",

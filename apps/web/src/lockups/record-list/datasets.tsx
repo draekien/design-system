@@ -44,6 +44,8 @@ export type FactContext = {
 
 export type Missing = Extract<RecordRowFactProps, { missing: string }>["missing"]
 
+type MissingByState = Partial<Readonly<Record<RowState, Missing>>>
+
 export type FactDefinition<TItem> = {
   part: RecordListPart
   card?: RecordListPart
@@ -51,7 +53,7 @@ export type FactDefinition<TItem> = {
   label: string
   narrow: RecordRowNarrow
   content: string
-  missing?: (state: RowState) => Missing | undefined
+  missing?: MissingByState
   render: (item: TItem, context: FactContext) => React.ReactNode
   code: (withCard: boolean) => ReadonlyArray<string>
   components: (withCard: boolean) => ReadonlyArray<string>
@@ -103,7 +105,7 @@ export function factProps<TItem>(
   item: TItem,
   context: FactContext
 ): RecordRowFactProps {
-  const missing = fact.missing?.(context.state)
+  const missing = fact.missing?.[context.state]
   return missing === undefined ? { children: fact.render(item, context) } : { missing }
 }
 
@@ -112,20 +114,17 @@ const missingLabel: Readonly<Record<Missing, string>> = {
   hidden: "Hidden",
 }
 
-function missingText(missing: Missing) {
-  return <span className="text-muted-foreground">{missingLabel[missing]}</span>
+function fieldValue(missing: Missing | undefined, value: React.ReactNode) {
+  return missing === undefined ? (
+    value
+  ) : (
+    <span className="text-muted-foreground">{missingLabel[missing]}</span>
+  )
 }
 
-function unloadedFact(state: RowState): Missing | undefined {
-  switch (state) {
-    case "partial":
-      return "unavailable"
-    case "no-permission":
-      return "hidden"
-    case "loaded":
-      return undefined
-  }
-}
+const missingWhenUnloaded: MissingByState = { partial: "unavailable", "no-permission": "hidden" }
+
+const missingWithoutPermission: MissingByState = { "no-permission": "hidden" }
 
 function initialsOf(name: string) {
   const parts = name.trim().split(/\s+/)
@@ -211,24 +210,6 @@ function recordStatus(record: SampleRecord) {
   )
 }
 
-function ownerValue(record: SampleRecord, state: RowState, context?: FactContext) {
-  const missing = unloadedFact(state)
-  if (missing !== undefined) {
-    return missingText(missing)
-  }
-  return context === undefined
-    ? record.owner
-    : withCard(
-        context,
-        ownerEntity(record.owner),
-        <>
-          <p className="font-medium text-sm">{record.owner}</p>
-          <p className="mt-1 text-muted-foreground">Record owner · {record.team}</p>
-        </>,
-        "end"
-      )
-}
-
 export const listSurface =
   "overflow-hidden rounded-xl border bg-card text-card-foreground shadow-[0_1px_2px_rgb(0_0_0/0.04),0_12px_32px_-12px_rgb(0_0_0/0.1)]"
 
@@ -296,8 +277,17 @@ export const recordsDataset: Dataset<SampleRecord> = {
       label: "Owner",
       narrow: "abbreviate",
       content: "Entity",
-      missing: unloadedFact,
-      render: (record, context) => ownerValue(record, context.state, context),
+      missing: missingWhenUnloaded,
+      render: (record, context) =>
+        withCard(
+          context,
+          ownerEntity(record.owner),
+          <>
+            <p className="font-medium text-sm">{record.owner}</p>
+            <p className="mt-1 text-muted-foreground">Record owner · {record.team}</p>
+          </>,
+          "end"
+        ),
       code: (card) =>
         withCardLines(
           card,
@@ -331,7 +321,7 @@ export const recordsDataset: Dataset<SampleRecord> = {
       label: "Status",
       value: `${recordStatusLabel[record.status]} for ${record.statusAge}`,
     },
-    { label: "Owner", value: ownerValue(record, state) },
+    { label: "Owner", value: fieldValue(missingWhenUnloaded[state], record.owner) },
     { label: "Team", value: record.team },
     { label: "Updated", value: `${record.updated} (${record.updatedAt})` },
   ],
@@ -348,34 +338,6 @@ const invoiceStatusFill = { draft: "none", sent: "half", paid: "full" } as const
 const amountFormat: Intl.NumberFormatOptions = { style: "currency", currency: "AUD" }
 
 const paidFormat: Intl.NumberFormatOptions = { style: "percent" }
-
-function hiddenAmount(state: RowState): Missing | undefined {
-  return state === "no-permission" ? "hidden" : undefined
-}
-
-function amountValue(invoice: SampleInvoice, state: RowState, inRow: boolean) {
-  const missing = hiddenAmount(state)
-  if (missing !== undefined) {
-    return missingText(missing)
-  }
-  return inRow ? (
-    <Figure value={invoice.amount} format={amountFormat} locale="en-AU" />
-  ) : (
-    new Intl.NumberFormat("en-AU", amountFormat).format(invoice.amount)
-  )
-}
-
-function paidValue(invoice: SampleInvoice, state: RowState, inRow: boolean) {
-  const missing = unloadedFact(state)
-  if (missing !== undefined) {
-    return missingText(missing)
-  }
-  return inRow ? (
-    <Meter value={invoice.paid} max={1} format={paidFormat} aria-label="Paid" />
-  ) : (
-    new Intl.NumberFormat("en", paidFormat).format(invoice.paid)
-  )
-}
 
 export const invoicesDataset: Dataset<SampleInvoice> = {
   id: "invoices",
@@ -416,8 +378,8 @@ export const invoicesDataset: Dataset<SampleInvoice> = {
       label: "Amount",
       narrow: "abbreviate",
       content: "Figure",
-      missing: hiddenAmount,
-      render: (invoice, context) => amountValue(invoice, context.state, true),
+      missing: missingWithoutPermission,
+      render: (invoice) => <Figure value={invoice.amount} format={amountFormat} locale="en-AU" />,
       code: () => [
         '<Figure value={invoice.amount} format={{ style: "currency", currency: "AUD" }} />',
       ],
@@ -428,8 +390,10 @@ export const invoicesDataset: Dataset<SampleInvoice> = {
       label: "Paid",
       narrow: "abbreviate",
       content: "Meter",
-      missing: unloadedFact,
-      render: (invoice, context) => paidValue(invoice, context.state, true),
+      missing: missingWhenUnloaded,
+      render: (invoice) => (
+        <Meter value={invoice.paid} max={1} format={paidFormat} aria-label="Paid" />
+      ),
       code: () => [
         '<Meter value={invoice.paid} max={1} format={{ style: "percent" }} aria-label="Paid" />',
       ],
@@ -447,8 +411,20 @@ export const invoicesDataset: Dataset<SampleInvoice> = {
   ],
   fields: (invoice, state) => [
     { label: "Status", value: invoiceStatusLabel[invoice.status] },
-    { label: "Amount", value: amountValue(invoice, state, false) },
-    { label: "Paid", value: paidValue(invoice, state, false) },
+    {
+      label: "Amount",
+      value: fieldValue(
+        missingWithoutPermission[state],
+        new Intl.NumberFormat("en-AU", amountFormat).format(invoice.amount)
+      ),
+    },
+    {
+      label: "Paid",
+      value: fieldValue(
+        missingWhenUnloaded[state],
+        new Intl.NumberFormat("en", paidFormat).format(invoice.paid)
+      ),
+    },
     { label: "Contact", value: invoice.contact },
     { label: "Due", value: invoice.dueAt },
   ],
