@@ -6,11 +6,11 @@ import {
   RecordList,
   RecordRow,
   RecordRowDescription,
-  RecordRowIdentify,
+  RecordRowFact,
   RecordRowLink,
   RecordRowName,
   RecordRowPeek,
-  RecordRowRead,
+  RecordRowSubject,
 } from "@workspace/ui/components/record-list.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
@@ -104,11 +104,11 @@ export function RelatedItems({
           {items.map(({ item, tag }) => (
             <RecordRow key={item.name} value={item.name} className="last:border-b-0">
               <RecordRowLink render={itemPageLink(item)} aria-controls={popupId}>
-                <RecordRowIdentify>
+                <RecordRowSubject>
                   <RecordRowName>{item.title}</RecordRowName>
                   <RecordRowDescription>{item.description}</RecordRowDescription>
-                </RecordRowIdentify>
-                <RecordRowRead className="text-muted-foreground">{tag}</RecordRowRead>
+                </RecordRowSubject>
+                <RecordRowFact className="text-muted-foreground">{tag}</RecordRowFact>
               </RecordRowLink>
               <RecordRowPeek aria-controls={popupId} />
             </RecordRow>

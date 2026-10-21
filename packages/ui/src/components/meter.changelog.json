@@ -1,11 +1,15 @@
 [
   {
-    "date": "2026-10-18",
-    "description": "The docs link to this item's playground page at /playground/components/status-mark."
+    "date": "2026-10-21",
+    "description": "Renamed from track: install meter and import Meter from @/components/meter. The value width token is now --meter-value-min."
   },
   {
     "date": "2026-10-18",
-    "description": "Assessed against the lifecycle criteria: beta. Its design critique is not yet clean: in forced-colours mode the in-review and approved dots look the same (issue #41)."
+    "description": "The docs link to this item's playground page at /playground/components/track."
+  },
+  {
+    "date": "2026-10-18",
+    "description": "Assessed against the lifecycle criteria: beta, with a clean design critique."
   },
   {
     "date": "2026-10-18",
@@ -17,7 +21,7 @@
   },
   {
     "date": "2026-10-18",
-    "description": "Takes its ring width from the tokens item."
+    "description": "Takes its value minimum width from the tokens item."
   },
   {
     "date": "2026-10-18",

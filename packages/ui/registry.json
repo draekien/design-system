@@ -75,9 +75,9 @@
           "container-hide": "40rem"
         },
         "light": {
-          "field-card-enter-scale": "0.97",
-          "status-mark-ring": "1.5px",
-          "track-value-min": "4ch",
+          "meter-value-min": "4ch",
+          "preview-card-enter-scale": "0.97",
+          "status-media-ring": "1.5px",
           "radius": "0.625rem",
           "accent": "oklch(0.967 0.001 286.375)",
           "accent-foreground": "oklch(0.21 0.006 285.885)",
@@ -119,7 +119,7 @@
           "secondary-foreground": "oklch(0.985 0 0)"
         }
       },
-      "docs": "Adds the light and dark colour variables, the radius, spacing and type scales, the popover shadow, the motion, z-index and container tokens, and the Mona Sans font to your CSS file. Every component item in this registry depends on it. Name it in the same shadcn add command as the item: shadcn replaces the variables you already have with these only when a theme item is named in the command, not when it arrives as a dependency, so naming it again later replaces any of these variables you have edited. The colour variables use the shadcn/ui names. Playground: https://design-system.wpei.me/playground/tokens",
+      "docs": "Adds the light and dark colour variables, the radius, spacing and type scales, the popover shadow, the motion, z-index and container tokens, and the Mona Sans font to your CSS file. Every component item in this registry depends on it. Install it once, before your first component: shadcn replaces the variables you already have with these only when a theme item is named in the command, not when it arrives as a dependency, so installing it again later replaces any of these variables you have edited. The colour variables use the shadcn/ui names. Playground: https://design-system.wpei.me/playground/tokens",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,
@@ -166,7 +166,7 @@
           "target": "@components/record-list.tsx"
         }
       ],
-      "docs": "RecordList holds RecordRow children, and every RecordRow part ships in this item. In each row, rank each value, then compose: an optional RecordRowSelect (a row without one cannot be selected), then RecordRowLink holding RecordRowIdentify (rank 1: an optional RecordRowKey, an optional RecordRowGlyph such as a status-mark drawn as its dot only, then RecordRowName, then an optional one-line RecordRowDescription) and one RecordRowRead per rank 2 reading, at most eight, then an optional RecordRowPeek, a button that toggles peek on the row so a click on RecordRowLink can open the item's page. Hold a person-mark, figure, track, relative-time, status-mark or field-state in each Read. Rank 4 is a field-card on a rank 1 or 2 value; rank 5 is the item's page, reached through RecordRowLink's render, and peek, rendered from RecordList's peekValue, previews part of it read-only. Columns line up down the list. When the list narrows the description truncates, then the name; below 640px the description is hidden; set narrow=\"abbreviate\" to switch a part to its short form below 768px, or narrow=\"hide\" to drop it below 640px, and keep a hidden value in peek and on the item's page. While loading, render RecordRowLoading with the same parts. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection on a row that has a RecordRowSelect, Esc closes peek and then clears the selection. RecordList renders no peek: read peekValue with onPeekValueChange and render a read-only preview of the item's page beside the list or in a drawer at wide widths, and under the row or in a bottom drawer at narrow ones; it holds nothing that page lacks. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/components/record-list",
+      "docs": "RecordList holds RecordRow children, and every RecordRow part ships in this item. In each row, rank each value, then compose: an optional RecordRowSelect (a row without one cannot be selected), then RecordRowLink holding RecordRowSubject (rank 1: an optional RecordRowId, an optional RecordRowMedia, then RecordRowName, then an optional one-line RecordRowDescription) and one RecordRowFact per rank 2 fact, at most eight, then an optional RecordRowPeek, a button that toggles peek on the row so a click on RecordRowLink can open the item's page. RecordRowMedia holds a status or entity and draws only its media (variant default), or one muted icon (variant icon, with a label screen readers read in place of the icon). Hold a status, entity, figure, meter or relative-time in each RecordRowFact, or set missing to unavailable when the value failed to load or hidden when the viewer's role cannot see it, and state why once outside the list. Rank 4 is a preview-card on a rank 1 or 2 value; rank 5 is the item's page, reached through RecordRowLink's render, and peek, rendered from RecordList's peekValue, previews part of it read-only. Columns line up down the list. When the list narrows the description truncates, then the name; below 640px the description is hidden; set narrow=\"abbreviate\" to switch a part to its short form below 768px, or narrow=\"hide\" to drop it below 640px, and keep a hidden value in peek and on the item's page. While loading, render RecordRowLoading with the same parts. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection on a row that has a RecordRowSelect, Esc closes peek and then clears the selection. RecordList renders no peek: read peekValue with onPeekValueChange and render a read-only preview of the item's page beside the list or in a drawer at wide widths, and under the row or in a bottom drawer at narrow ones; it holds nothing that page lacks. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/components/record-list",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,
@@ -174,22 +174,22 @@
       }
     },
     {
-      "name": "status-mark",
+      "name": "status",
       "type": "registry:ui",
-      "title": "Status mark",
-      "description": "A state drawn as a shape-coded dot and its word, for a rank 2 Read.",
+      "title": "Status",
+      "description": "A state drawn as a shape-coded dot and its name, with an optional description.",
       "registryDependencies": [
         "draekien/design-system/tokens",
         "draekien/design-system/cn"
       ],
       "files": [
         {
-          "path": "src/components/status-mark.tsx",
+          "path": "src/components/status.tsx",
           "type": "registry:ui",
-          "target": "@components/status-mark.tsx"
+          "target": "@components/status.tsx"
         }
       ],
-      "docs": "Compose StatusMarkDot (fill none, half or full) then StatusMarkLabel. The dot tells states apart by shape, not colour. In a RecordRowGlyph, and in an abbreviated RecordRowRead, only the dot is drawn and the word is read by screen readers. Playground: https://design-system.wpei.me/playground/components/status-mark",
+      "docs": "Compose StatusMedia (fill none, half or full), then StatusName, then an optional one-line StatusDescription. The dot tells states apart by shape, not colour. The description truncates before the name. In a RecordRowMedia, and in an abbreviated RecordRowFact, only the dot is drawn and the name and description are read by screen readers. Playground: https://design-system.wpei.me/playground/components/status",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,
@@ -197,26 +197,26 @@
       }
     },
     {
-      "name": "person-mark",
+      "name": "entity",
       "type": "registry:ui",
-      "title": "Person mark",
-      "description": "A person's initials in a 24px circle, then their name.",
+      "title": "Entity",
+      "description": "A person, team or organisation drawn as its initials or picture in a 24px circle, then its name.",
       "registryDependencies": [
         "draekien/design-system/tokens",
         "draekien/design-system/cn"
       ],
       "files": [
         {
-          "path": "src/components/person-mark.tsx",
+          "path": "src/components/entity.tsx",
           "type": "registry:ui",
-          "target": "@components/person-mark.tsx"
+          "target": "@components/entity.tsx"
         }
       ],
-      "docs": "Pass name; the initials come from its first and last words. In an abbreviated RecordRowRead only the initials are drawn and the name is read by screen readers. Wrap it in a field-card to show more about the person. Playground: https://design-system.wpei.me/playground/components/person-mark",
+      "docs": "Compose EntityMedia holding the initials or an img, then EntityName, then an optional one-line EntityDescription. The media is hidden from screen readers, so EntityName carries the name. The description truncates before the name. In a RecordRowMedia, and in an abbreviated RecordRowFact, only the media is drawn and the name and description are read by screen readers. Wrap it in a preview-card to show more about the entity. Playground: https://design-system.wpei.me/playground/components/entity",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,
-        "critiqued": "2026-10-18"
+        "critiqued": null
       }
     },
     {
@@ -235,7 +235,7 @@
           "target": "@components/figure.tsx"
         }
       ],
-      "docs": "Pass value and Intl.NumberFormat options in format, and a locale so server and browser render the same text. It sits at the end of its column. In an abbreviated RecordRowRead it switches to compact notation, such as $13K. Playground: https://design-system.wpei.me/playground/components/figure",
+      "docs": "Pass value and Intl.NumberFormat options in format, and a locale so server and browser render the same text. It sits at the end of its column. In an abbreviated RecordRowFact it switches to compact notation, such as $13K. Playground: https://design-system.wpei.me/playground/components/figure",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,
@@ -243,9 +243,9 @@
       }
     },
     {
-      "name": "track",
+      "name": "meter",
       "type": "registry:ui",
-      "title": "Track",
+      "title": "Meter",
       "description": "A measurement within a known range, drawn as a bar and its value, on Base UI Meter.",
       "dependencies": [
         "@base-ui/react@1.8.0"
@@ -256,12 +256,12 @@
       ],
       "files": [
         {
-          "path": "src/components/track.tsx",
+          "path": "src/components/meter.tsx",
           "type": "registry:ui",
-          "target": "@components/track.tsx"
+          "target": "@components/meter.tsx"
         }
       ],
-      "docs": "Pass value, min and max, a format and an aria-label. In an abbreviated RecordRowRead the bar is dropped and the value stays. Playground: https://design-system.wpei.me/playground/components/track",
+      "docs": "Pass value, min and max, a format and an aria-label. In an abbreviated RecordRowFact the bar is dropped and the value stays. Playground: https://design-system.wpei.me/playground/components/meter",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,
@@ -284,7 +284,7 @@
           "target": "@components/relative-time.tsx"
         }
       ],
-      "docs": "Pass dateTime and now as ISO 8601 strings; passing now keeps server and browser output the same. In an abbreviated RecordRowRead it switches to the narrow form, such as 2h ago. Playground: https://design-system.wpei.me/playground/components/relative-time",
+      "docs": "Pass dateTime and now as ISO 8601 strings; passing now keeps server and browser output the same. In an abbreviated RecordRowFact it switches to the narrow form, such as 2h ago. Playground: https://design-system.wpei.me/playground/components/relative-time",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,
@@ -292,32 +292,9 @@
       }
     },
     {
-      "name": "field-state",
+      "name": "preview-card",
       "type": "registry:ui",
-      "title": "Field state",
-      "description": "Stands in for a value that failed to load or that the viewer's role cannot see.",
-      "registryDependencies": [
-        "draekien/design-system/tokens",
-        "draekien/design-system/cn"
-      ],
-      "files": [
-        {
-          "path": "src/components/field-state.tsx",
-          "type": "registry:ui",
-          "target": "@components/field-state.tsx"
-        }
-      ],
-      "docs": "Pass state unavailable or hidden. State why, and how to get access, once outside the fields it replaces, such as in the list footer. Playground: https://design-system.wpei.me/playground/components/field-state",
-      "meta": {
-        "status": "beta",
-        "a11yReviewed": null,
-        "critiqued": "2026-10-18"
-      }
-    },
-    {
-      "name": "field-card",
-      "type": "registry:ui",
-      "title": "Field card",
+      "title": "Preview card",
       "description": "Rank 4: a hover card on a rank 1 or 2 value with more about that entity or property.",
       "dependencies": [
         "@base-ui/react@1.8.0"
@@ -328,12 +305,12 @@
       ],
       "files": [
         {
-          "path": "src/components/field-card.tsx",
+          "path": "src/components/preview-card.tsx",
           "type": "registry:ui",
-          "target": "@components/field-card.tsx"
+          "target": "@components/preview-card.tsx"
         }
       ],
-      "docs": "Compose FieldCard, FieldCardTrigger around the value, then FieldCardContent. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links. The card renders into the body; pass FieldCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/components/field-card",
+      "docs": "Compose PreviewCard, PreviewCardTrigger around the value, then PreviewCardContent. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links. The card renders into the body; pass PreviewCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/components/preview-card",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,

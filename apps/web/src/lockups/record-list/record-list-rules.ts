@@ -2,7 +2,7 @@ import type { Rule } from "../../playground/rule-notes.tsx"
 
 export const recordListRules: ReadonlyArray<Rule> = [
   {
-    rule: "Every value takes one of five ranks, decided by what the caller came to decide: 1 Identify (key, glyph, name, a one-line description) at the start of the row; 2 Read (a state or a figure the caller compares) in its own column; 4 Enrich in a hover card on a rank 1 or 2 value; 5 Elsewhere on the item's own page, which peek previews read-only.",
+    rule: "Every value takes one of five ranks, decided by what the caller came to decide: 1 Subject (ID, media, name, a one-line description) at the start of the row; 2 Fact (a state, a person or a figure the caller compares) in its own column; 4 Enrich in a hover card on a rank 1 or 2 value; 5 Elsewhere on the item's own page, which peek previews read-only.",
     source:
       "This design system's own decision (Geist Entity leads with the identifier; Saga Lists of objects ranks fields by typography)",
   },
@@ -15,7 +15,7 @@ export const recordListRules: ReadonlyArray<Rule> = [
     source: "This design system's own decision",
   },
   {
-    rule: "Each Read is its own column and lines up down the list whatever its value; a figure is right-aligned in tabular figures.",
+    rule: "Each fact is its own column and lines up down the list whatever its value; a figure is right-aligned in tabular figures.",
     source:
       "Primer DataTable (tabular-num for numbers); column alignment is this design system's own decision",
   },

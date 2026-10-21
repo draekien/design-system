@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-18T00:00:00Z",
+  "generatedAt": "2026-10-21T03:32:00Z",
   "title": "Design System: design-system",
   "extensions": {
     "colorMeta": {
@@ -92,7 +92,7 @@
         "purpose": "Easing for a layer that opens."
       },
       {
-        "name": "field-card-enter-scale",
+        "name": "preview-card-enter-scale",
         "value": "0.97",
         "purpose": "The field card's starting scale; closing is instant and reduced motion disables it."
       }
@@ -131,33 +131,41 @@
       "name": "Record Row",
       "kind": "custom",
       "refersTo": "record-row",
-      "description": "One record: rank 1 identify, then rank 2 readings; square, 44px, separated by a hairline.",
+      "description": "One record: rank 1 subject, then rank 2 facts; square, 44px, separated by a hairline.",
       "html": "<div class=\"ds-row\" tabindex=\"0\"><span class=\"ds-row-key\">INV-1042</span><span class=\"ds-row-name\">Harbour Freight Ltd</span><span class=\"ds-row-read\">$12,480.00</span></div>",
       "css": ".ds-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px; border-bottom: 1px solid var(--border); color: var(--foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-row:hover { background: color-mix(in oklch, var(--foreground) 4%, transparent); } .ds-row:focus-visible { outline: none; background: color-mix(in oklch, var(--foreground) 7%, transparent); } .ds-row-key { color: var(--muted-foreground); font-size: 0.75rem; } .ds-row-name { font-weight: 500; } .ds-row:focus-visible .ds-row-name { text-decoration: underline 2px var(--ring); } .ds-row-read { font-variant-numeric: tabular-nums; text-align: right; }"
     },
     {
-      "name": "Field Card",
+      "name": "Preview Card",
       "kind": "card",
-      "refersTo": "field-card",
+      "refersTo": "preview-card",
       "description": "Rank 4 hover card on one entity's trigger; its radius is its content's radius plus its padding.",
-      "html": "<div class=\"ds-field-card\"><strong>Dana Whitfield</strong><p>Accounts payable, Sydney</p><button class=\"ds-field-card-action\">Open profile</button></div>",
-      "css": ".ds-field-card { width: 240px; padding: 12px; border: 1px solid var(--border); border-radius: calc(var(--radius) * 0.6 + 12px); background: var(--popover); color: var(--popover-foreground); font: 400 0.75rem/1.33 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18); } .ds-field-card p { margin: 4px 0 8px; color: var(--muted-foreground); } .ds-field-card-action { height: 24px; padding: 0 8px; border: 1px solid var(--border); border-radius: calc(var(--radius) * 0.6); background: transparent; font: inherit; font-weight: 500; }"
+      "html": "<div class=\"ds-preview-card\"><strong>Dana Whitfield</strong><p>Accounts payable, Sydney</p><button class=\"ds-preview-card-action\">Open profile</button></div>",
+      "css": ".ds-preview-card { width: 240px; padding: 12px; border: 1px solid var(--border); border-radius: calc(var(--radius) * 0.6 + 12px); background: var(--popover); color: var(--popover-foreground); font: 400 0.75rem/1.33 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18); } .ds-preview-card p { margin: 4px 0 8px; color: var(--muted-foreground); } .ds-preview-card-action { height: 24px; padding: 0 8px; border: 1px solid var(--border); border-radius: calc(var(--radius) * 0.6); background: transparent; font: inherit; font-weight: 500; }"
     },
     {
-      "name": "Status Mark",
+      "name": "Status",
       "kind": "chip",
-      "refersTo": "status-mark",
-      "description": "A state as a shape and a word, readable in greyscale.",
+      "refersTo": "status",
+      "description": "A state as a shape and a name, readable in greyscale.",
       "html": "<span class=\"ds-status\"><span class=\"ds-status-dot\"></span>Paid</span>",
       "css": ".ds-status { display: inline-flex; align-items: center; gap: 8px; color: var(--foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-status-dot { width: 10px; height: 10px; border-radius: 9999px; border: 1.5px solid currentColor; background: currentColor; }"
     },
     {
-      "name": "Person Mark",
+      "name": "Entity",
       "kind": "custom",
-      "refersTo": "person-mark-initials",
-      "description": "Initials in a quiet circle, then the name.",
+      "refersTo": "entity-media",
+      "description": "Initials or a picture in a quiet circle, then the name.",
       "html": "<span class=\"ds-person\"><span class=\"ds-person-initials\">DW</span>Dana Whitfield</span>",
       "css": ".ds-person { display: inline-flex; align-items: center; gap: 8px; font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-person-initials { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 9999px; background: var(--muted); color: var(--muted-foreground); font-size: 0.625rem; font-weight: 500; }"
+    },
+    {
+      "name": "Record Row Icon Media",
+      "kind": "custom",
+      "refersTo": "record-row-media-icon",
+      "description": "One muted icon for the record's kind, with no fill behind it, between the ID and the name; its label names it for screen readers.",
+      "html": "<span class=\"ds-record-row-media-icon\" role=\"img\" aria-label=\"Invoice\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M5 3h10l4 4v14H5z\"/><path d=\"M9 12h6M9 16h4\"/></svg></span>",
+      "css": ".ds-record-row-media-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; color: var(--muted-foreground); } .ds-record-row-media-icon svg { width: 16px; height: 16px; }"
     }
   ],
   "narrative": {

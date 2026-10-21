@@ -1,6 +1,6 @@
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { componentModule } from "./component-module.ts"
-import type { Dataset, Hidden } from "./datasets.tsx"
+import type { Dataset, Hidden, RowState } from "./datasets.tsx"
 import { capitalise, isPartShown } from "./datasets.tsx"
 
 function indent(lines: ReadonlyArray<string>, depth: number) {
@@ -29,29 +29,36 @@ type RowCode = {
   loadingRow: ReadonlyArray<string>
 }
 
-function rowCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden, key: boolean): RowCode {
+function rowCode<TItem>(
+  dataset: Dataset<TItem>,
+  hidden: Hidden,
+  key: boolean,
+  state: RowState
+): RowCode {
   const item = dataset.item
-  const reads = dataset.reads.filter((read) => !hidden.has(read.part))
-  const glyph =
-    dataset.glyph !== undefined && !hidden.has(dataset.glyph.part) ? dataset.glyph : undefined
-  const withCard = (read: (typeof reads)[number]) =>
-    read.card !== undefined && isPartShown(hidden, read.card, read.part)
+  const facts = dataset.facts.filter((fact) => !hidden.has(fact.part))
+  const media =
+    dataset.media !== undefined && !hidden.has(dataset.media.part) ? dataset.media : undefined
+  const missing = (fact: (typeof facts)[number]) => fact.missing?.[state]
+  const withCard = (fact: (typeof facts)[number]) =>
+    fact.card !== undefined && isPartShown(hidden, fact.card, fact.part)
 
   const parts = [
     "RecordRow",
-    "RecordRowIdentify",
+    "RecordRowSubject",
     "RecordRowLink",
     "RecordRowName",
     ...(hidden.has("select") ? [] : ["RecordRowSelect"]),
-    ...(hidden.has("key") ? [] : ["RecordRowKey"]),
+    ...(hidden.has("key") ? [] : ["RecordRowId"]),
     ...(hidden.has("description") ? [] : ["RecordRowDescription"]),
-    ...(glyph === undefined ? [] : ["RecordRowGlyph"]),
-    ...(reads.length > 0 ? ["RecordRowRead"] : []),
+    ...(media === undefined ? [] : ["RecordRowMedia"]),
+    ...(facts.length > 0 ? ["RecordRowFact"] : []),
   ]
 
   const contentModules = new Map<string, Array<string>>()
-  for (const read of glyph === undefined ? reads : [glyph, ...reads]) {
-    for (const name of read.components(withCard(read))) {
+  const shown = facts.filter((fact) => missing(fact) === undefined)
+  for (const fact of media === undefined ? shown : [media, ...shown]) {
+    for (const name of fact.components(withCard(fact))) {
       const module = componentModule[name]
       if (module === undefined) {
         throw new Error(`No registry item exports ${name}; add it to componentModule.`)
@@ -62,32 +69,37 @@ function rowCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden, key: boolean): 
 
   const keyLine = hidden.has("key")
     ? []
-    : [`  <RecordRowKey narrow="${dataset.keyNarrow}">{${item}.id}</RecordRowKey>`]
+    : [`  <RecordRowId narrow="${dataset.keyNarrow}">{${item}.id}</RecordRowId>`]
 
-  const glyphLines =
-    glyph === undefined
+  const mediaLines =
+    media === undefined
       ? []
-      : ["<RecordRowGlyph>", ...indent(glyph.code(withCard(glyph)), 1), "</RecordRowGlyph>"]
+      : ["<RecordRowMedia>", ...indent(media.code(withCard(media)), 1), "</RecordRowMedia>"]
 
-  const readLines = reads.flatMap((read) => [
-    `<RecordRowRead narrow="${read.narrow}">`,
-    ...indent(read.code(withCard(read)), 1),
-    "</RecordRowRead>",
-  ])
+  const factLines = facts.flatMap((fact) => {
+    const factMissing = missing(fact)
+    return factMissing === undefined
+      ? [
+          `<RecordRowFact narrow="${fact.narrow}">`,
+          ...indent(fact.code(withCard(fact)), 1),
+          "</RecordRowFact>",
+        ]
+      : [`<RecordRowFact narrow="${fact.narrow}" missing="${factMissing}" />`]
+  })
 
   const row = [
     key ? `<RecordRow key={${item}.id} value={${item}.id}>` : `<RecordRow value={${item}.id}>`,
     ...(hidden.has("select") ? [] : ["  <RecordRowSelect />"]),
     `  <RecordRowLink render={<Link to="/${dataset.noun}/$id" params={{ id: ${item}.id }} />}>`,
-    "    <RecordRowIdentify>",
+    "    <RecordRowSubject>",
     ...indent(keyLine, 2),
-    ...indent(glyphLines, 3),
+    ...indent(mediaLines, 3),
     `      <RecordRowName>{${item}.${dataset.nameField}}</RecordRowName>`,
     ...(hidden.has("description")
       ? []
       : [`      <RecordRowDescription>{${item}.${dataset.summaryField}}</RecordRowDescription>`]),
-    "    </RecordRowIdentify>",
-    ...indent(readLines, 2),
+    "    </RecordRowSubject>",
+    ...indent(factLines, 2),
     "  </RecordRowLink>",
     "</RecordRow>",
   ]
@@ -96,13 +108,13 @@ function rowCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden, key: boolean): 
     "<RecordRowLoading>",
     ...(hidden.has("select") ? [] : ["  <RecordRowSelect />"]),
     "  <RecordRowLink>",
-    "    <RecordRowIdentify>",
-    ...(hidden.has("key") ? [] : [`      <RecordRowKey narrow="${dataset.keyNarrow}" />`]),
-    ...(glyph === undefined ? [] : ["      <RecordRowGlyph />"]),
+    "    <RecordRowSubject>",
+    ...(hidden.has("key") ? [] : [`      <RecordRowId narrow="${dataset.keyNarrow}" />`]),
+    ...(media === undefined ? [] : ["      <RecordRowMedia />"]),
     "      <RecordRowName />",
     ...(hidden.has("description") ? [] : ["      <RecordRowDescription />"]),
-    "    </RecordRowIdentify>",
-    ...reads.map((read) => `    <RecordRowRead narrow="${read.narrow}" />`),
+    "    </RecordRowSubject>",
+    ...facts.map((fact) => `    <RecordRowFact narrow="${fact.narrow}" />`),
     "  </RecordRowLink>",
     "</RecordRowLoading>",
   ]
@@ -118,7 +130,7 @@ function contentImports(contentModules: RowCode["contentModules"]) {
 
 export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): string {
   const item = dataset.item
-  const { parts, contentModules, row } = rowCode(dataset, hidden, true)
+  const { parts, contentModules, row } = rowCode(dataset, hidden, true, "loaded")
   const list = capitalise(dataset.noun)
 
   return [
@@ -160,7 +172,12 @@ export function recordListStatesCode<TItem>(
   hidden: Hidden,
   state: FixtureState
 ): string {
-  const { parts, contentModules, row, loadingRow } = rowCode(dataset, hidden, false)
+  const { parts, contentModules, row, loadingRow } = rowCode(
+    dataset,
+    hidden,
+    false,
+    state === "loading" || state === "error" ? "loaded" : state
+  )
   const noun = capitalise(dataset.noun)
   const item = dataset.item
 

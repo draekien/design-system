@@ -3,15 +3,15 @@ import { sampleRecords } from "@workspace/fixtures/records.ts"
 import {
   RecordList,
   RecordRow,
-  RecordRowGlyph,
-  RecordRowIdentify,
-  RecordRowKey,
+  RecordRowFact,
+  RecordRowId,
   RecordRowLink,
+  RecordRowMedia,
   RecordRowName,
-  RecordRowRead,
+  RecordRowSubject,
 } from "@workspace/ui/components/record-list.tsx"
 import * as React from "react"
-import { recordsDataset } from "../lockups/record-list/datasets.tsx"
+import { factProps, recordsDataset } from "../lockups/record-list/datasets.tsx"
 import { recordListRules } from "../lockups/record-list/record-list-rules.ts"
 import { generalRules, rankingRules, ranks, sourceRules } from "./design-rules.ts"
 import { textLink } from "./playground-styles.ts"
@@ -148,7 +148,7 @@ function RankedRow() {
     return null
   }
   const context = { state: "loaded", withCard: true } as const
-  const [owner, updated] = recordsDataset.reads
+  const [owner, updated] = recordsDataset.facts
 
   return (
     <figure className="flex flex-col gap-3 rounded-xl border bg-muted/50 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[16px_16px] p-4 sm:p-6">
@@ -158,27 +158,29 @@ function RankedRow() {
             aria-hidden="true"
             className="col-span-full grid grid-cols-subgrid border-b bg-muted/40 px-2 font-medium text-muted-foreground text-xs"
           >
-            <span className="col-[2/6] py-1.5 pl-1">1 Identify</span>
-            <span className="col-[6/-1] py-1.5 pl-1">2 Read</span>
+            <span className="col-[2/6] py-1.5 pl-1">1 Subject</span>
+            <span className="col-[6/-1] py-1.5 pl-1">2 Fact</span>
           </li>
           <RecordRow value={exampleRecord.id}>
             <RecordRowLink href="#rank-5" onClick={(event) => event.preventDefault()}>
-              <RecordRowIdentify>
-                <RecordRowKey narrow={recordsDataset.keyNarrow}>
+              <RecordRowSubject>
+                <RecordRowId narrow={recordsDataset.keyNarrow}>
                   {recordsDataset.key(exampleRecord)}
-                </RecordRowKey>
-                {recordsDataset.glyph === undefined ? null : (
-                  <RecordRowGlyph>
-                    {recordsDataset.glyph.render(exampleRecord, context)}
-                  </RecordRowGlyph>
+                </RecordRowId>
+                {recordsDataset.media === undefined ? null : (
+                  <RecordRowMedia>
+                    {recordsDataset.media.render(exampleRecord, context)}
+                  </RecordRowMedia>
                 )}
                 <RecordRowName>{recordsDataset.name(exampleRecord)}</RecordRowName>
-              </RecordRowIdentify>
-              {[owner, updated].map((read) =>
-                read === undefined ? null : (
-                  <RecordRowRead key={read.part} narrow={read.narrow}>
-                    {read.render(exampleRecord, context)}
-                  </RecordRowRead>
+              </RecordRowSubject>
+              {[owner, updated].map((fact) =>
+                fact === undefined ? null : (
+                  <RecordRowFact
+                    key={fact.part}
+                    narrow={fact.narrow}
+                    {...factProps(fact, exampleRecord, context)}
+                  />
                 )
               )}
             </RecordRowLink>
@@ -187,12 +189,12 @@ function RankedRow() {
       </div>
       <figcaption className="grid gap-x-6 gap-y-1 text-pretty text-muted-foreground text-sm sm:grid-cols-3">
         <p>
-          <span className="font-medium text-foreground">1 Identify</span> ends in a one-line
+          <span className="font-medium text-foreground">1 Subject</span> ends in a one-line
           description that truncates before the name.
         </p>
         <p>
           <span className="font-medium text-foreground">4 Enrich</span> opens in a hover card on the
-          owner and on the status glyph.
+          owner and on the status dot.
         </p>
         <p>
           <span className="font-medium text-foreground">5 Elsewhere</span> is the record's own page,

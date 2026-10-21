@@ -271,9 +271,9 @@ export type RecordRowProps = useRender.ComponentProps<"li"> & {
 
 /**
  * One item in a `RecordList`. Its parts are named for the rank of the information they hold:
- * `RecordRowIdentify` (rank 1: what the item is), one `RecordRowRead` per reading the list exists
- * for (rank 2), and `RecordRowLink` to the item's own page (rank 5). Peek, rendered from
- * `RecordList`'s `peekValue`, previews part of that page read-only; rank 4 is a `field-card` on a
+ * `RecordRowSubject` (rank 1: what the row is about), one `RecordRowFact` per fact the list exists
+ * to compare (rank 2), and `RecordRowLink` to the item's own page (rank 5). Peek, rendered from
+ * `RecordList`'s `peekValue`, previews part of that page read-only; rank 4 is a `preview-card` on a
  * rank 1 or 2 value.
  * Columns line up down the list whatever the values are.
  */
@@ -450,7 +450,7 @@ export function RecordRowPeek({ className, ...props }: RecordRowPeekProps): Reac
 }
 
 /**
- * The link to the item's own page (rank 5), holding `RecordRowIdentify` and the `RecordRowRead`s.
+ * The link to the item's own page (rank 5), holding `RecordRowSubject` and the `RecordRowFact`s.
  * Pass your router's link through `render`. It is the row's one focus target and handles the
  * `RecordList` keys.
  */
@@ -520,51 +520,89 @@ function usePart(
 }
 
 /**
- * Rank 1: what the item is. Holds an optional `RecordRowKey` and `RecordRowGlyph`, then one
+ * Rank 1: what the row is about. Holds an optional `RecordRowId` and `RecordRowMedia`, then one
  * `RecordRowName` and an optional `RecordRowDescription`, at the start of the row.
  */
-export function RecordRowIdentify({ children, ...props }: RecordRowPartProps): React.ReactElement {
+export function RecordRowSubject({ children, ...props }: RecordRowPartProps): React.ReactElement {
   return usePart(
-    "RecordRowIdentify",
-    "record-row-identify",
+    "RecordRowSubject",
+    "record-row-subject",
     "col-[1/5] grid min-w-0 grid-cols-subgrid items-center",
     children,
     { ...props, children }
   )
 }
 
-/** The item's key, such as `REC-104`, in muted tabular figures. */
-export function RecordRowKey({
+/** The item's ID, such as `REC-104`, in muted tabular figures. */
+export function RecordRowId({
   narrow = "keep",
   ...props
 }: RecordRowNarrowPartProps): React.ReactElement {
   return usePart(
-    "RecordRowKey",
-    "record-row-key",
+    "RecordRowId",
+    "record-row-id",
     cn("col-start-1 truncate pr-3 text-muted-foreground text-xs tabular-nums", narrowClass[narrow]),
     <Bar className="w-12" />,
     props
   )
 }
 
+const mediaVariantClass = {
+  default: "**:data-[abbreviation=long]:sr-only",
+  icon: "text-muted-foreground [&_svg]:size-4",
+} as const
+
+/** Props for {@link RecordRowMedia}. */
+export type RecordRowMediaProps = RecordRowNarrowPartProps &
+  (
+    | {
+        /**
+         * `"default"` holds a `status` or `entity` and draws only its media, with its name and
+         * description read by screen readers only. `"icon"` holds one muted icon.
+         * Defaults to `"default"`.
+         */
+        variant?: "default"
+      }
+    | {
+        variant: "icon"
+        /** What the icon stands for, such as "Invoice"; read by screen readers in place of the icon. */
+        label: string
+      }
+  )
+
+function mediaPartProps(props: RecordRowMediaProps): RecordRowPartProps {
+  if (props.variant !== "icon") {
+    const { variant: _variant, narrow: _narrow, ...rest } = props
+    return rest
+  }
+  const { variant: _variant, narrow: _narrow, label, children, ...rest } = props
+  return {
+    ...rest,
+    role: "img",
+    "aria-label": label,
+    children: <span aria-hidden="true">{children}</span>,
+  }
+}
+
 /**
- * A 24×24px glyph drawn between the key and the name, such as a status dot or the item's kind.
- * Only the glyph is drawn: a word inside it, such as a `StatusMarkLabel`, is read by screen
- * readers only, so pair every glyph with its word.
+ * A 24×24px picture of the item drawn between the ID and the name, such as its status dot, its
+ * owner's initials or an icon for its kind.
  */
-export function RecordRowGlyph({
-  narrow = "keep",
-  ...props
-}: RecordRowNarrowPartProps): React.ReactElement {
+export function RecordRowMedia(props: RecordRowMediaProps): React.ReactElement {
   return usePart(
-    "RecordRowGlyph",
-    "record-row-glyph",
+    "RecordRowMedia",
+    "record-row-media",
     cn(
-      "col-start-2 mr-2 flex size-6 items-center justify-center **:data-[abbreviation=long]:sr-only",
-      narrowClass[narrow]
+      "col-start-2 mr-2 flex size-6 items-center justify-center",
+      mediaVariantClass[props.variant ?? "default"],
+      narrowClass[props.narrow ?? "keep"]
     ),
-    <span className="size-2.5 rounded-full bg-muted" />,
-    props
+    props.variant === "icon" ? (
+      <span className="size-4 rounded-floor bg-muted" />
+    ) : (
+      <span className="size-2.5 rounded-full bg-muted" />
+    ),
+    mediaPartProps(props)
   )
 }
 
@@ -599,20 +637,43 @@ export function RecordRowDescription(props: RecordRowPartProps): React.ReactElem
   )
 }
 
+const missingLabel = { unavailable: "Unavailable", hidden: "Hidden" } as const
+
+/** Props for {@link RecordRowFact}. */
+export type RecordRowFactProps =
+  | (RecordRowNarrowPartProps & { missing?: undefined })
+  | (Omit<RecordRowNarrowPartProps, "children" | "render"> & {
+      /**
+       * Why the fact cannot be shown: `"unavailable"` when it failed to load, `"hidden"` when the
+       * viewer's role cannot see it. The fact then draws that word in muted text instead of a
+       * value. State why, and how to get access, outside the list, once for every fact it replaces.
+       */
+      missing: keyof typeof missingLabel
+    })
+
+function missingFactProps({
+  missing,
+  className,
+  ...props
+}: Extract<RecordRowFactProps, { missing: string }>): RecordRowPartProps {
+  return {
+    ...props,
+    className: cn("text-muted-foreground", className),
+    children: <span className="truncate">{missingLabel[missing]}</span>,
+  }
+}
+
 /**
- * Rank 2: one reading the list exists for, such as a state or a figure the caller compares. Each
- * `RecordRowRead` is its own column, and the row holds at most eight. Hold one content item in it:
- * a `person-mark`, `figure`, `track`, `relative-time`, `status-mark` or `field-state`.
+ * Rank 2: one fact about the subject that the list exists to compare, such as a state or a figure.
+ * Each `RecordRowFact` is its own column, and the row holds at most eight. Hold one `status`,
+ * `entity`, `figure`, `meter` or `relative-time` in it, or set `missing` when the value cannot be
+ * shown.
  */
-export function RecordRowRead({
+export function RecordRowFact({
   narrow = "keep",
   ...props
-}: RecordRowNarrowPartProps): React.ReactElement {
-  return usePart(
-    "RecordRowRead",
-    "record-row-read",
-    cn("flex min-w-0 items-center pl-4 text-sm", narrowClass[narrow]),
-    <Bar className="w-16" />,
-    props
-  )
+}: RecordRowFactProps): React.ReactElement {
+  const factClass = cn("flex min-w-0 items-center pl-4 text-sm", narrowClass[narrow])
+  const partProps = props.missing === undefined ? props : missingFactProps(props)
+  return usePart("RecordRowFact", "record-row-fact", factClass, <Bar className="w-16" />, partProps)
 }

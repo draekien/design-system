@@ -6,13 +6,12 @@ describe("recordListLockup", () => {
   it("is built from record-list and every content component", () => {
     expect(recordListLockup.components.map((item) => item.name)).toEqual([
       "record-list",
-      "field-card",
-      "field-state",
+      "entity",
       "figure",
-      "person-mark",
+      "meter",
+      "preview-card",
       "relative-time",
-      "status-mark",
-      "track",
+      "status",
     ])
   })
 })

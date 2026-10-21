@@ -44,7 +44,7 @@ describe("untokenisedValues", () => {
     "transition-[opacity,scale]",
     "translate-z-0",
     "duration-0",
-    "min-w-(--track-value-min)",
+    "min-w-(--meter-value-min)",
     "parts[0]",
   ])("allows %s", (className) => {
     expect(untokenisedValues(`<span className="${className}" />`)).toEqual([])

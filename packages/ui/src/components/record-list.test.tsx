@@ -6,17 +6,17 @@ import {
   RecordList,
   RecordRow,
   RecordRowDescription,
-  RecordRowGlyph,
-  RecordRowIdentify,
-  RecordRowKey,
+  RecordRowFact,
+  RecordRowId,
   RecordRowLink,
   RecordRowLoading,
+  RecordRowMedia,
   RecordRowName,
   RecordRowPeek,
-  RecordRowRead,
   RecordRowSelect,
+  RecordRowSubject,
 } from "@/components/record-list.tsx"
-import { StatusMark, StatusMarkDot, StatusMarkLabel } from "@/components/status-mark.tsx"
+import { Status, StatusMedia, StatusName } from "@/components/status.tsx"
 
 const records = [
   { id: "REC-104", title: "Quarterly access review" },
@@ -39,9 +39,9 @@ function renderList(defaultSelectedValues: ReadonlyArray<string> = []) {
           <RecordRow key={record.id} value={record.id}>
             <RecordRowSelect />
             <RecordRowLink href={`/records/${record.id}`}>
-              <RecordRowIdentify>
+              <RecordRowSubject>
                 <RecordRowName>{record.title}</RecordRowName>
-              </RecordRowIdentify>
+              </RecordRowSubject>
             </RecordRowLink>
           </RecordRow>
         ))}
@@ -64,9 +64,9 @@ function renderPeekList() {
       {records.map((record) => (
         <RecordRow key={record.id} value={record.id}>
           <RecordRowLink href={`/records/${record.id}`}>
-            <RecordRowIdentify>
+            <RecordRowSubject>
               <RecordRowName>{record.title}</RecordRowName>
-            </RecordRowIdentify>
+            </RecordRowSubject>
           </RecordRowLink>
           <RecordRowPeek />
         </RecordRow>
@@ -239,10 +239,10 @@ describe("RecordList", () => {
         <RecordRowLoading>
           <RecordRowSelect />
           <RecordRowLink href="/records/REC-104">
-            <RecordRowIdentify>
+            <RecordRowSubject>
               <RecordRowName>Quarterly access review</RecordRowName>
               <RecordRowDescription>Confirm who can open finance records</RecordRowDescription>
-            </RecordRowIdentify>
+            </RecordRowSubject>
           </RecordRowLink>
         </RecordRowLoading>
       </RecordList>
@@ -276,21 +276,21 @@ function renderRow(link: React.ReactNode) {
 }
 
 describe("RecordRow", () => {
-  it("names the link with every rank 1 part and each reading, in order", () => {
+  it("names the link with every rank 1 part and each fact, in order", () => {
     renderRow(
       <RecordRowLink href="/records/REC-104">
-        <RecordRowIdentify>
-          <RecordRowKey>REC-104</RecordRowKey>
-          <RecordRowGlyph>
-            <StatusMark>
-              <StatusMarkDot fill="half" />
-              <StatusMarkLabel>In review</StatusMarkLabel>
-            </StatusMark>
-          </RecordRowGlyph>
+        <RecordRowSubject>
+          <RecordRowId>REC-104</RecordRowId>
+          <RecordRowMedia>
+            <Status>
+              <StatusMedia fill="half" />
+              <StatusName>In review</StatusName>
+            </Status>
+          </RecordRowMedia>
           <RecordRowName>Quarterly access review</RecordRowName>
           <RecordRowDescription>Confirm who can open finance records</RecordRowDescription>
-        </RecordRowIdentify>
-        <RecordRowRead>Mara Okafor</RecordRowRead>
+        </RecordRowSubject>
+        <RecordRowFact>Mara Okafor</RecordRowFact>
       </RecordRowLink>
     )
 
@@ -302,14 +302,51 @@ describe("RecordRow", () => {
     ).toBeTruthy()
   })
 
+  it.each([
+    ["unavailable", "Unavailable"],
+    ["hidden", "Hidden"],
+  ] as const)("names a %s fact with the word %s", (missing, word) => {
+    renderRow(
+      <RecordRowLink href="/records/REC-104">
+        <RecordRowSubject>
+          <RecordRowName>Quarterly access review</RecordRowName>
+        </RecordRowSubject>
+        <RecordRowFact missing={missing} />
+      </RecordRowLink>
+    )
+
+    const expected = withoutSpaces(`Quarterly access review ${word}`)
+    expect(
+      screen.getByRole("link", { name: (name) => withoutSpaces(name) === expected })
+    ).toBeTruthy()
+  })
+
+  it("names the link with the label of icon media", () => {
+    renderRow(
+      <RecordRowLink href="/records/REC-104">
+        <RecordRowSubject>
+          <RecordRowMedia variant="icon" label="Review">
+            <svg />
+          </RecordRowMedia>
+          <RecordRowName>Quarterly access review</RecordRowName>
+        </RecordRowSubject>
+      </RecordRowLink>
+    )
+
+    const expected = withoutSpaces("Review Quarterly access review")
+    expect(
+      screen.getByRole("link", { name: (name) => withoutSpaces(name) === expected })
+    ).toBeTruthy()
+  })
+
   it("opens the item's page through the router link passed to render", async () => {
     const user = userEvent.setup()
     const handleNavigate = vi.fn((event: React.MouseEvent) => event.preventDefault())
     renderRow(
       <RecordRowLink render={<a href="/records/REC-104" onClick={handleNavigate} />}>
-        <RecordRowIdentify>
+        <RecordRowSubject>
           <RecordRowName>Quarterly access review</RecordRowName>
-        </RecordRowIdentify>
+        </RecordRowSubject>
       </RecordRowLink>
     )
 

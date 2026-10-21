@@ -23,7 +23,7 @@ The design system encodes its own disclosure and composition rules and does not 
 
 ## Decision
 
-We will name each registry item in kebab-case for its role in this design system, never reuse an item name from the `@shadcn` registry, and keep item names flat, with no `/`. An item's name, its file name and its main export match: item `record-row` installs `record-row.tsx`, which exports `RecordRow`.
+We will name each registry item in kebab-case with the common UI word for what it renders (`status`, `meter`, `preview-card`), never this system's internal vocabulary such as rank names, never reuse an item name from the `@shadcn` registry, never shadow a JavaScript global such as `Number`, and keep item names flat, with no `/`. Exported parts follow the same rule: `RecordRowSubject`, not `RecordRowIdentify`. An item's name, its file name and its main export match: item `record-list` installs `record-list.tsx`, which exports `RecordList`.
 
 ## Consequences
 
@@ -41,3 +41,5 @@ We will name each registry item in kebab-case for its role in this design system
 - **Group names with a slash (`records/row`)**: rejected because no family of items exists yet to group, and flat names are shorter in every install command.
 
 ## Amendments
+
+- 2026-10-19: "Role" now means the common UI word for what the item renders. Names drawn from this system's own vocabulary (`status-mark`, `RecordRowRead`) made the API harder for developers and agents to read, so every item and part was renamed while the registry had no consumers. Never shadowing a JavaScript global was added, and the example moved from `record-row`, which no longer exists, to `record-list`.

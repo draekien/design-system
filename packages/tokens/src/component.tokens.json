@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
   "component": {
-    "status-mark": {
+    "status-media": {
       "ring": {
         "$type": "dimension",
         "$value": {
@@ -10,14 +10,14 @@
         }
       }
     },
-    "track": {
+    "meter": {
       "value-min": {
         "$type": "number",
         "$value": 4,
         "$extensions": { "me.wpei.unit": "ch" }
       }
     },
-    "field-card": {
+    "preview-card": {
       "enter-scale": {
         "$type": "number",
         "$value": 0.97

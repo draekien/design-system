@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-10-21",
+    "description": "The docs name RecordRowFact, the new name of RecordRowRead."
+  },
+  {
     "date": "2026-10-18",
     "description": "The docs link to this item's playground page at /playground/components/figure."
   },

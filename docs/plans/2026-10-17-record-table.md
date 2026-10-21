@@ -30,7 +30,7 @@ A caller compares values down a column and acts on many records at once.
 | Item | Status | Exports |
 | --- | --- | --- |
 | `record-table` | new | `RecordTable`, `RecordTableHead`, `RecordTableColumn` |
-| `record-group` | new, used by list and table | `RecordGroup`, `RecordGroupHeader`, `RecordGroupToggle`, `RecordGroupSelect`, `RecordGroupName`, `RecordGroupRead` |
+| `record-group` | new, used by list and table | `RecordGroup`, `RecordGroupHeader`, `RecordGroupToggle`, `RecordGroupSelect`, `RecordGroupName`, `RecordGroupFact` |
 | `selection-bar` | new, used by list and table | `SelectionBar`, `SelectionBarCount`, `SelectionBarAction`, `SelectionBarMenu`, `SelectionBarClear` |
 | `use-record-rows` | new `registry:hook` | `useRecordRows`, the row keyboard and state model moved out of `record-list` |
 | `record-row` | changed | adds `RecordRowExpand`, `RecordRowChildren` |

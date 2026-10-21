@@ -26,9 +26,9 @@ Build on Base UI primitives only; never add or import Radix (`@radix-ui/*`).
 
 ## Contexts
 
-Read docs/contexts/design-rules.md before designing, building or changing a component, its composition or its usage docs, and before writing user-facing copy in a component or example.
+Read docs/contexts/design-rules.md before designing, building or changing a component, its composition, its usage docs or any page of the docs site, and before writing user-facing copy in a component, example or page.
 
-Read DESIGN.md before building or styling any UI in `packages/ui`, an experiment or a playground page.
+Read DESIGN.md before building or styling any UI in `packages/ui` or `apps/web`.
 
 Read docs/references/shadcn-registry-index.md before changing `registry.json`, a registry item, or how the registry is published.
 
@@ -60,6 +60,7 @@ Before editing files for a substantial task:
 - `apps/web`: TanStack Start on Vite, React, TypeScript, Vitest. The docs site and the `/playground/<tier>/<name>` routes, prerendered to GitHub Pages.
 - A lockup lives in `apps/web/src/lockups/<name>`, composes published components to demonstrate the rules, and is never a registry item (ADR 0005).
 - `apps/web/src/experiments`: greyscale coded wireframes, one `/playground/experiments/<name>` page each, listed in the playground sidebar under Experiments and deployed with the site.
+- Every page, specimen and example in `apps/web` follows `docs/contexts/design-rules.md` and `DESIGN.md`, as an app built with this design system would.
 - `packages/ui` is the registry source: every component in it is installable through `packages/ui/registry.json`, and `apps/web` imports it as `@workspace/ui`.
 - Name a registry item in flat kebab-case for its role, never an `@shadcn` item name (`pnpm dlx shadcn@4.21.4 view @shadcn/<name>` fails when the name is free); item name, file name and main export match.
 - Inside `packages/ui`, import another registry file as `@/components/…`, `@/hooks/…` or `@/lib/…`, never `@workspace/ui/…` or a relative path; `shadcn add` rewrites only `@/` imports. Import `cn` from `@/lib/cn`, which `packages/tokens` generates from the token groups.

@@ -1,0 +1,34 @@
+[
+  {
+    "date": "2026-10-21",
+    "description": "Renamed from status-mark: install status and import Status, StatusMedia (was StatusMarkDot) and StatusName (was StatusMarkLabel) from @/components/status. Adds StatusDescription, one muted line after the name. The ring width token is now --status-media-ring."
+  },
+  {
+    "date": "2026-10-18",
+    "description": "The docs link to this item's playground page at /playground/components/status-mark."
+  },
+  {
+    "date": "2026-10-18",
+    "description": "Assessed against the lifecycle criteria: beta. Its design critique is not yet clean: in forced-colours mode the in-review and approved dots look the same (issue #41)."
+  },
+  {
+    "date": "2026-10-18",
+    "description": "Installs into your components folder, so import it from @/components."
+  },
+  {
+    "date": "2026-10-18",
+    "description": "Merges class names with the cn item, so a className override replaces a token utility."
+  },
+  {
+    "date": "2026-10-18",
+    "description": "Takes its ring width from the tokens item."
+  },
+  {
+    "date": "2026-10-18",
+    "description": "Depends on the tokens item."
+  },
+  {
+    "date": "2026-10-16",
+    "description": "Component introduced."
+  }
+]

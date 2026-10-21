@@ -14,7 +14,7 @@ export type FigureProps = Omit<React.ComponentProps<"data">, "children" | "value
 
 /**
  * A number the caller compares down a list, in tabular figures and pushed to the end of its
- * column. In an abbreviated `RecordRowRead` it switches to compact notation, such as `$13K`.
+ * column. In an abbreviated `RecordRowFact` it switches to compact notation, such as `$13K`.
  */
 export function Figure({
   value,

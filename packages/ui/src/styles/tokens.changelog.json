@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-10-21",
+    "description": "The docs say to install this item once, before your first component, instead of naming it in every component's add command."
+  },
+  {
+    "date": "2026-10-21",
+    "description": "Renames component variables to match the renamed items: --field-card-enter-scale is --preview-card-enter-scale, --status-mark-ring is --status-media-ring and --track-value-min is --meter-value-min."
+  },
+  {
     "date": "2026-10-18",
     "description": "The docs link to this item's playground page at /playground/tokens."
   },
