@@ -211,7 +211,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** take every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `packages/tokens/src` and generated into `packages/ui/src/styles/tokens.gen.css` and `theme.gen.css`.
+- **Do** take every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `registry/tokens` and generated into `registry/styles/tokens.gen.css` and `theme.gen.css`.
 - **Do** derive a container's radius from its content's radius plus its padding.
 - **Do** let the container set the gap between its children from `--spacing-run`, `--spacing-related` or `--spacing-section`.
 - **Do** keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer.

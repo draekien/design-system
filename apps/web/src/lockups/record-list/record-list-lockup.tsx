@@ -14,7 +14,7 @@ import {
   RecordRowName,
   RecordRowSelect,
   RecordRowSubject,
-} from "@workspace/ui/components/record-list.tsx"
+} from "@workspace/registry/components/record-list.tsx"
 import * as React from "react"
 import { flushSync } from "react-dom"
 import { cn } from "@/lib/cn.ts"

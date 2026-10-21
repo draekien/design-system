@@ -2,8 +2,8 @@
 paths:
   - "apps/*/src/**/*.gen.*"
   - "apps/*/src/**/*.g.*"
-  - "packages/*/src/**/*.gen.*"
-  - "packages/*/src/**/*.g.*"
+  - "registry/**/*.gen.*"
+  - "registry/**/*.g.*"
 ---
 
 # Generated files

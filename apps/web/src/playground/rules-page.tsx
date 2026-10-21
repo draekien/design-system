@@ -9,7 +9,7 @@ import {
   RecordRowMedia,
   RecordRowName,
   RecordRowSubject,
-} from "@workspace/ui/components/record-list.tsx"
+} from "@workspace/registry/components/record-list.tsx"
 import * as React from "react"
 import { factProps, recordsDataset } from "../lockups/record-list/datasets.tsx"
 import { recordListRules } from "../lockups/record-list/record-list-rules.ts"

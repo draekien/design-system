@@ -4,10 +4,9 @@
   "compilerOptions": {
     "types": ["vite/client", "node"],
     "paths": {
-      "@workspace/ui/registry.json": ["../../packages/ui/registry.json"],
-      "@workspace/ui/*": ["../../packages/ui/src/*"],
+      "@workspace/registry/*": ["../../registry/*"],
       "@workspace/fixtures/*": ["../../packages/fixtures/src/*"],
-      "@/*": ["../../packages/ui/src/*"]
+      "@/*": ["../../registry/*"]
     },
     "noUnusedLocals": true,
     "noUnusedParameters": true,

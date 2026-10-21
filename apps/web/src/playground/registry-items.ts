@@ -1,4 +1,4 @@
-import registry from "@workspace/ui/registry.json" with { type: "json" }
+import registry from "@workspace/registry/registry.json" with { type: "json" }
 import { z } from "zod"
 
 export const itemStatuses = ["experiment", "beta", "stable", "deprecated"] as const
@@ -53,7 +53,7 @@ export type RegistryItem = {
 }
 
 const changelogFiles: Readonly<Record<string, unknown>> = import.meta.glob(
-  "../../../../packages/ui/src/**/*.changelog.json",
+  "../../../../registry/*/*.changelog.json",
   { eager: true, import: "default" }
 )
 

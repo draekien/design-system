@@ -25,7 +25,7 @@ import {
   PreviewCard,
   PreviewCardContent,
   PreviewCardTrigger,
-} from "@workspace/ui/components/preview-card.tsx"
+} from "@workspace/registry/components/preview-card.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import { PeopleGroup, PeoplePopup } from "./avatar.tsx"

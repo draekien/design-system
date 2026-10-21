@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/mona-sans/wdth.css";
+@import "./theme.gen.css";
+@import "./tokens.gen.css";
+
+@custom-variant dark (&:is(.dark *));
+@source "../../apps/**/*.{ts,tsx}";
+@source "../**/*.{ts,tsx}";
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+  ::selection {
+    @apply bg-primary/25 text-foreground;
+  }
+  html {
+    caret-color: var(--primary);
+    scrollbar-color: var(--border) transparent;
+  }
+}

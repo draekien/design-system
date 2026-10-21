@@ -1,6 +1,6 @@
 # Component lifecycle
 
-Read this before setting or changing an item's `meta.status` in `packages/ui/registry.json`, and before proposing an item for `stable` or deprecating it.
+Read this before setting or changing an item's `meta.status` in `registry/registry.json`, and before proposing an item for `stable` or deprecating it.
 
 ## Statuses
 
@@ -17,8 +17,8 @@ Each criterion is proved by the test or CI job beside it, or recorded as a date 
 
 | Status | Criterion | Proof |
 | --- | --- | --- |
-| `beta` | Every value comes from a token | `packages/ui/src/components/arbitrary-values.test.ts` |
-| `beta` | Behaviour tests sit beside the source | `packages/ui/src/registry.test.ts` |
+| `beta` | Every value comes from a token | `registry/components/arbitrary-values.test.ts` |
+| `beta` | Behaviour tests sit beside the source | `registry/registry.test.ts` |
 | `beta` | axe passes in every fixture state, canvas width and colour scheme | CI `test:a11y`, on a `/canvas` route that renders the item |
 | `beta` | Registry `docs` state how to compose the item | `lifecycleFailures` |
 | `beta` | A clean impeccable critique of the item's specimen | `meta.critiqued`: the date of the last critique that reported no P0 or P1 issue, or `null` |

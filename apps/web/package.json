@@ -29,7 +29,7 @@
     "@tanstack/react-start": "1.168.60",
     "@tanstack/react-table": "9.2.8",
     "@workspace/fixtures": "workspace:*",
-    "@workspace/ui": "workspace:*",
+    "@workspace/registry": "workspace:*",
     "cn": "0.4.0",
     "motion": "14.0.0",
     "react": "19.3.0",

@@ -11,7 +11,7 @@ import {
   RecordRowMedia,
   RecordRowName,
   RecordRowSelect,
-} from "@workspace/ui/components/record-list.tsx"
+} from "@workspace/registry/components/record-list.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import {

@@ -5,11 +5,11 @@ import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import { recordListLockup } from "../lockups/lockups.ts"
 import { CanvasFrame } from "./canvas-frame.tsx"
+import { ItemPageLink } from "./item-page-link.tsx"
 import { CopyButton } from "./playground-controls.tsx"
 import { playgroundSearch } from "./playground-search.ts"
 import { focusRing, textLink } from "./playground-styles.ts"
 import { installCommand, registryItems } from "./registry-items.ts"
-import { ItemPageLink } from "./related-items.tsx"
 import { usePlaygroundTheme } from "./theme-store.ts"
 
 const previewSearch = playgroundSearch.parse({})

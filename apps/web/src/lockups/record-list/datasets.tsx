@@ -7,22 +7,25 @@ import {
   sampleRecords,
 } from "@workspace/fixtures/records.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
-import { Entity, EntityMedia, EntityName } from "@workspace/ui/components/entity.tsx"
-import { Figure } from "@workspace/ui/components/figure.tsx"
-import { Meter } from "@workspace/ui/components/meter.tsx"
+import { Entity, EntityMedia, EntityName } from "@workspace/registry/components/entity.tsx"
+import { Figure } from "@workspace/registry/components/figure.tsx"
+import { Meter } from "@workspace/registry/components/meter.tsx"
 import {
   PreviewCard,
   PreviewCardContent,
   PreviewCardTrigger,
-} from "@workspace/ui/components/preview-card.tsx"
-import type { RecordRowFactProps, RecordRowNarrow } from "@workspace/ui/components/record-list.tsx"
-import { RelativeTime } from "@workspace/ui/components/relative-time.tsx"
+} from "@workspace/registry/components/preview-card.tsx"
+import type {
+  RecordRowFactProps,
+  RecordRowNarrow,
+} from "@workspace/registry/components/record-list.tsx"
+import { RelativeTime } from "@workspace/registry/components/relative-time.tsx"
 import {
   Status,
   StatusMedia,
   type StatusMediaProps,
   StatusName,
-} from "@workspace/ui/components/status.tsx"
+} from "@workspace/registry/components/status.tsx"
 import type * as React from "react"
 import type {
   CanvasDataset,

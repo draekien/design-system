@@ -15,17 +15,14 @@ import { fixtureStates } from "@workspace/fixtures/state.ts"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import { recordListLockup } from "../lockups/lockups.ts"
-import {
-  capitalise,
-  datasetParts,
-  invoicesDataset,
-  recordsDataset,
-} from "../lockups/record-list/datasets.tsx"
+import { datasetParts, invoicesDataset, recordsDataset } from "../lockups/record-list/datasets.tsx"
+import { recordListLockupDocs } from "../lockups/record-list/record-list.docs.ts"
 import { recordListCode, recordListStatesCode } from "../lockups/record-list/record-list-code.ts"
 import { recordListRules } from "../lockups/record-list/record-list-rules.ts"
 import { CanvasFrame, type CanvasMessageSearch } from "./canvas-frame.tsx"
 import { CodeBlock } from "./code-block.tsx"
-import { ControlGroup, Segmented } from "./playground-controls.tsx"
+import { ApiReference, CompositionTree, ExampleList, UsageContent } from "./item-docs-sections.tsx"
+import { ControlGroup, PageSection, Segmented } from "./playground-controls.tsx"
 import {
   type CanvasPointer,
   type CanvasWidth,
@@ -37,18 +34,14 @@ import {
   recordListParts,
   type SectionTab,
 } from "./playground-search.ts"
-import { focusRing, segmentItem } from "./playground-styles.ts"
+import { focusRing, frameSurface, segmentItem } from "./playground-styles.ts"
 import { RecordListConstellation } from "./record-list-canvas.tsx"
-import { RelatedItems } from "./related-items.tsx"
 import { RuleNotes } from "./rule-notes.tsx"
 import { savePlaygroundTheme, usePlaygroundTheme } from "./theme-store.ts"
 
 const route = getRouteApi("/playground/lockups/record-list")
 
-const builtFromItems = recordListLockup.components.map((item) => ({
-  item,
-  tag: capitalise(item.meta.status),
-}))
+const docs = recordListLockupDocs
 
 const stateLabel = {
   loaded: "Loaded",
@@ -118,7 +111,7 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
       </header>
 
       <div className="flex min-w-0 flex-col gap-12 xl:col-start-1 xl:row-start-2">
-        <ViewSection
+        <PageSection
           id={sectionId.lockup}
           title="Lockup"
           description="The list as an app renders it, at the width and pointer you pick."
@@ -152,9 +145,9 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
               </div>
             )}
           </div>
-        </ViewSection>
+        </PageSection>
 
-        <ViewSection
+        <PageSection
           id={sectionId.states}
           title="States"
           description="One row in each interaction state, then at each narrow width."
@@ -192,9 +185,9 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
               </div>
             )}
           </div>
-        </ViewSection>
+        </PageSection>
 
-        <ViewSection
+        <PageSection
           id={sectionId.constellation}
           title="Constellation"
           description="How the row encodes the rules: each part sits with its information rank and connects to where it shows or is revealed in the row."
@@ -205,23 +198,35 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
           >
             <RecordListConstellation options={search} />
           </div>
-        </ViewSection>
+        </PageSection>
 
-        <ViewSection
-          id={sectionId.builtFrom}
-          title="Built from"
-          description="The components the lockup is composed from. Install these; the lockup itself is not installed."
+        <PageSection id={sectionId.usage} title="Usage">
+          <UsageContent usage={docs.usage} />
+        </PageSection>
+
+        <PageSection
+          id={sectionId.composition}
+          title="Composition"
+          description="Each linked part is a component to install; the lockup itself is not installed."
         >
-          <RelatedItems label="Built from" items={builtFromItems} />
-        </ViewSection>
+          <CompositionTree root={docs.composition} />
+        </PageSection>
 
-        <ViewSection
+        <PageSection id={sectionId.examples} title="Examples">
+          <ExampleList examples={docs.examples} />
+        </PageSection>
+
+        <PageSection id={sectionId.api} title="API Reference">
+          <ApiReference entries={docs.api} />
+        </PageSection>
+
+        <PageSection
           id={sectionId.rules}
           title="Rules"
           description="The disclosure and composition rules the lockup encodes, each with its source."
         >
           <RuleNotes rules={recordListRules} />
-        </ViewSection>
+        </PageSection>
       </div>
 
       <aside
@@ -234,9 +239,6 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
     </div>
   )
 }
-
-const frameSurface =
-  "overflow-hidden rounded-xl border bg-card shadow-[0_1px_2px_rgb(0_0_0/0.04),0_16px_40px_-20px_rgb(0_0_0/0.14)]"
 
 function frameGround(width: CanvasWidth): string {
   return width === "fill"
@@ -254,7 +256,10 @@ const sectionId = {
   lockup: "lockup",
   states: "states",
   constellation: "constellation",
-  builtFrom: "built-from",
+  usage: "usage",
+  composition: "composition",
+  examples: "examples",
+  api: "api-reference",
   rules: "rules",
 } as const
 
@@ -262,7 +267,10 @@ const pageSections = [
   { id: sectionId.lockup, label: "Lockup" },
   { id: sectionId.states, label: "States" },
   { id: sectionId.constellation, label: "Constellation" },
-  { id: sectionId.builtFrom, label: "Built from" },
+  { id: sectionId.usage, label: "Usage" },
+  { id: sectionId.composition, label: "Composition" },
+  { id: sectionId.examples, label: "Examples" },
+  { id: sectionId.api, label: "API Reference" },
   { id: sectionId.rules, label: "Rules" },
 ] as const
 
@@ -289,31 +297,6 @@ function PageNav() {
         ))}
       </ul>
     </nav>
-  )
-}
-
-function ViewSection({
-  id,
-  title,
-  description,
-  children,
-}: {
-  id: string
-  title: string
-  description: string
-  children: React.ReactNode
-}) {
-  const headingId = React.useId()
-  return (
-    <section id={id} aria-labelledby={headingId} className="flex scroll-mt-8 flex-col gap-3">
-      <header>
-        <h2 id={headingId} className="font-semibold text-lg tracking-tight">
-          {title}
-        </h2>
-        <p className="mt-0.5 max-w-2xl text-pretty text-muted-foreground text-sm">{description}</p>
-      </header>
-      {children}
-    </section>
   )
 }
 

@@ -10,9 +10,9 @@
       "**",
       "!**/routeTree.gen.ts",
       "!**/*.gen.css",
-      "!packages/tokens/theme.template.css",
-      "!packages/ui/registry.json",
-      "!packages/ui/src/lib/cn.ts",
+      "!registry/tokens/theme.template.css",
+      "!registry/registry.json",
+      "!registry/lib/cn.ts",
       "!.biome",
       "!.intent",
       "!.claude",
@@ -210,7 +210,7 @@
   },
   "overrides": [
     {
-      "includes": ["packages/ui/**"],
+      "includes": ["registry/**"],
       "linter": {
         "rules": {
           "style": {
@@ -225,8 +225,8 @@
                 },
                 "patterns": [
                   {
-                    "group": ["@workspace/ui", "@workspace/ui/**"],
-                    "message": "Inside packages/ui, import registry files as @/components/…, @/hooks/… or @/lib/…. shadcn add rewrites only @/ imports, so an @workspace/ui import breaks the installed file."
+                    "group": ["@workspace/registry", "@workspace/registry/**"],
+                    "message": "Inside registry/, import registry files as @/components/…, @/hooks/… or @/lib/…. shadcn add rewrites only @/ imports, so an @workspace/registry import breaks the installed file."
                   }
                 ]
               }
