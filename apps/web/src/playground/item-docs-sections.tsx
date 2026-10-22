@@ -1,4 +1,14 @@
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@workspace/registry/components/table.tsx"
 import * as React from "react"
+import { cn } from "@/lib/cn.ts"
 import {
   type ApiFunction,
   type ApiPart,
@@ -104,6 +114,8 @@ export function ExampleList({
   )
 }
 
+const propCell = "whitespace-normal py-2.5 align-top"
+
 function PartReference({ part }: { part: ApiPart }): React.ReactElement {
   const props = Object.entries(part.props)
   const headingId = React.useId()
@@ -114,37 +126,44 @@ function PartReference({ part }: { part: ApiPart }): React.ReactElement {
       </h3>
       <p className="max-w-2xl text-pretty text-sm">{part.description}</p>
       {props.length === 0 ? null : (
-        <div className="overflow-x-auto rounded-xl border">
-          <table className="w-full min-w-2xl text-left text-sm">
-            <thead className="border-b text-muted-foreground text-xs">
-              <tr>
-                {["Prop", "Type", "Default", "Description"].map((heading) => (
-                  <th key={heading} scope="col" className="px-3 py-2 font-medium">
-                    {heading}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
+        <div className="overflow-hidden rounded-card border bg-card text-card-foreground">
+          <Table className="min-w-2xl text-sm">
+            <TableCaption className="sr-only">{part.name} props</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-0">Prop</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead className="w-0">Default</TableHead>
+                <TableHead className="w-1/2">Description</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {props.map(([name, prop]) => (
-                <tr key={name} className="border-b align-top last:border-b-0">
-                  <th scope="row" className="px-3 py-2 font-medium font-mono text-[0.8125rem]">
+                <TableRow key={name}>
+                  <TableHead
+                    className={cn(
+                      propCell,
+                      "w-auto max-w-none whitespace-nowrap font-medium font-mono text-[0.8125rem]"
+                    )}
+                  >
                     {name}
                     {prop.required ? (
-                      <span className="ml-1 font-sans font-normal text-muted-foreground text-xs">
+                      <span className="ml-1 font-normal font-sans text-muted-foreground text-xs">
                         required
                       </span>
                     ) : null}
-                  </th>
-                  <td className="px-3 py-2 font-mono text-[0.8125rem]">{prop.type}</td>
-                  <td className="px-3 py-2 font-mono text-[0.8125rem]">
+                  </TableHead>
+                  <TableCell className={cn(propCell, "font-mono text-[0.8125rem]")}>
+                    {prop.type}
+                  </TableCell>
+                  <TableCell className={cn(propCell, "font-mono text-[0.8125rem]")}>
                     {prop.default ?? <span className="text-muted-foreground">—</span>}
-                  </td>
-                  <td className="text-pretty px-3 py-2">{prop.description}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell className={cn(propCell, "text-pretty")}>{prop.description}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
       <p className="text-muted-foreground text-sm">
