@@ -83,4 +83,8 @@ export const tableRules: ReadonlyArray<Rule> = [
     rule: "Every hit area is at least 24×24px; checkboxes and the expand control grow to 44×44px on a coarse pointer.",
     source: "Primer designer checklist; 44px is this design system's own decision",
   },
+  {
+    rule: "The footer starts on the first data column, past the checkbox and chevron columns, so its text shares a left edge with the rows.",
+    source: "This design system's own decision (Precise principle)",
+  },
 ]

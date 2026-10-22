@@ -332,6 +332,7 @@ function loadingDrawing<TItem>({
           count={count}
           hintId={hintId}
           selectedCount={0}
+          isSelectable={!hidden.has("select")}
           anchor={slots.get("footer")}
           onClearSelection={handleSpecimenChange}
         />
@@ -515,6 +516,7 @@ function rowDrawing<TItem>({
         count={count}
         hintId={hintIds.specimen}
         selectedCount={1}
+        isSelectable={!hidden.has("select")}
         onClearSelection={handleSpecimenChange}
       />
     ),
@@ -606,6 +608,7 @@ function rowDrawing<TItem>({
           count={count}
           hintId={hintIds.centre}
           selectedCount={selectedValues.length}
+          isSelectable={!hidden.has("select")}
           anchor={slots.get("footer")}
           onClearSelection={() => onSelectedValuesChange([])}
         />

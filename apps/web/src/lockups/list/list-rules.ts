@@ -85,4 +85,8 @@ export const listRules: ReadonlyArray<Rule> = [
     rule: "The accent colour marks only what can be acted on: the checked checkbox and the focused row's name underline.",
     source: "This design system's own decision",
   },
+  {
+    rule: "The footer starts on the first data column, past the checkbox column, so its text shares a left edge with the rows.",
+    source: "This design system's own decision (Precise principle)",
+  },
 ]
