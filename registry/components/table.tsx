@@ -780,7 +780,7 @@ export function TableHead({
           cellClass({ align, narrow }),
           isColumnHeader
             ? "h-9 font-medium text-muted-foreground text-xs"
-            : "w-full max-w-0 font-normal",
+            : "font-normal has-data-[slot=table-row-link]:w-full has-data-[slot=table-row-link]:max-w-0",
           className
         ),
         children:
