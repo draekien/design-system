@@ -36,6 +36,7 @@ typography:
 rounded:
   checkbox: "5px"
   floor: "6px"
+  lg: "10px"
   card: "18px"
   panel: "34px"
   full: "9999px"
@@ -116,17 +117,30 @@ The system is defined by the relationships between components, not by the compon
 | Nesting | Groups do not nest; records nest one level deep | `docs/contexts/design-rules.md`, `List` |
 | Adjacency | A selection bar holds at most two actions, then a ⋯ menu | `docs/contexts/design-rules.md` |
 | Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px | `docs/contexts/design-rules.md`; the `--spacing-run`, `--spacing-related` and `--spacing-section` tokens |
-| Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; the `--radius-floor`, `--radius-card` and `--radius-panel` tokens; list rows, table header and footer fills, and the card around a table use the floor and card radii |
+| Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; the `--radius-floor`, `--radius-lg`, `--radius-card` and `--radius-panel` tokens; list rows, table header and footer fills, and the card around a table use the floor and card radii |
+
+Four principles decide any case no rule covers, in this order:
+
+| Principle | Rule | Test |
+| --- | --- | --- |
+| Quiet | Nothing draws at rest that the caller does not need at rest; what they need only sometimes is revealed on hover, focus or selection | Remove the element at rest: if the caller loses nothing, it stays removed or becomes revealed |
+| Clear | Every value carries its meaning: a figure names its unit, a state shows its word, a control names its action | A first-time reader names the value and its unit or state without a hover card |
+| Precise | Every part sits in the column and on the edge it belongs to | The part shares a left edge or a baseline with the part above or below it |
+| Sleek | A container is no thicker than its contents need: 4px of padding around controls, 12px around content | Its padding and radius match one row of the container table in Shapes |
+
+Clear overrules Quiet: a unit, a state's word or an action's name is never hidden to draw less.
 
 The palette is monochrome with a single orange that marks only what can be acted on. Density is high: 44px rows, 10–14px type, no line between rows and no decorative fills, so a list of hundreds of records stays scannable. Depth is flat; only layers that float above the page (hover cards, menus, peek panels) cast a shadow.
 
 **Key Characteristics:**
+- Quiet, Clear, Precise and Sleek, in that order, decide what the rules do not.
 - Components declare which components they contain, sit beside and sit inside.
 - One accent, used only on actionable elements and the focus ring.
 - 44px rows with 24×24px hit areas that grow to 44×44px on a coarse pointer.
 - State shown by shape and word, never by colour alone; a shape drawn alone discloses its word.
 - Rows separated by nothing; a hover, focus or peek tint marks a row. A list and a table draw no surface of their own; shadows only on floating layers.
 - Revealed controls appear on hover, focus and selection, and are always visible on a coarse pointer.
+- Chrome is thin: a bar or menu adds 4px around its controls, so a bar of 32px buttons is 42px high.
 
 ## Colors
 
@@ -184,7 +198,15 @@ Surfaces are flat and separated by Hairline borders and Paper/Sheet contrast. Sh
 
 ## Shapes
 
-A radius builds outward from a floor. A leaf control (button, input) takes the floor, `{rounded.floor}` (`--radius-floor`, 6px). The selection checkbox is the one exception: at 16px square it takes `{rounded.checkbox}` (`--radius-checkbox`, 5px). A container's radius is its content's radius plus its padding: a field card with 12px padding around a leaf control is `{rounded.card}` (18px), and a panel with 16px padding around a card is `{rounded.panel}` (34px). A list row's tint is a leaf shape and takes the floor. A table row is square; the header fill's top corners and the footer fill's bottom corners take the floor. A card that holds a table has no padding, takes `{rounded.card}` and clips the header and footer fills to its corners.
+A radius builds outward from a floor. A leaf control (button, input) takes the floor, `{rounded.floor}` (`--radius-floor`, 6px). The selection checkbox is the one exception: at 16px square it takes `{rounded.checkbox}` (`--radius-checkbox`, 5px). A container's radius is its content's radius plus its padding:
+
+| Container holds | Padding | Radius |
+| --- | --- | --- |
+| only controls: a selection bar, a menu | 4px | `{rounded.lg}` (10px) |
+| content: a peek panel, a hover card, a dialog | 12px | `{rounded.card}` (18px) |
+| cards | 16px | `{rounded.panel}` (34px) |
+
+A divider between controls in a bar is 16px tall with 4px on each side; a divider in a menu runs its full width with 4px above and below. A list row's tint is a leaf shape and takes the floor. A table row is square; the header fill's top corners and the footer fill's bottom corners take the floor. A card that holds a table has no padding, takes `{rounded.card}` and clips the header and footer fills to its corners.
 
 Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and turns off nesting. Circles are reserved for status dots and initials.
 
@@ -221,6 +243,12 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **List:** no surface; its rows sit on the page.
 - **Table in a card:** Sheet with one Hairline border, no padding and `{rounded.card}` (18px), clipping the header and footer fills to its corners; no shadow.
 
+### Selection bar
+- **Shape:** Sheet with one Hairline border, 4px padding around its controls and `{rounded.lg}` (10px); the popover shadow, since it floats.
+- **Size:** 32px controls, so the bar is 42px high; 44px controls on a coarse pointer.
+- **Contents:** the count, at most two actions, a ⋯ menu, then Clear with its Esc key, with a 16px divider after the count and before Clear.
+- **Menu:** the ⋯ menu takes the same 4px padding and `{rounded.lg}`; its items are 32px high with the floor radius.
+
 ### Preview card (hover card)
 - **Corner Style:** its content's radius plus its 12px padding (`{rounded.card}`).
 - **Background:** Sheet with a Hairline border and the popover shadow.
@@ -245,12 +273,15 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 ### Do:
 - **Do** take every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `registry/tokens` and generated into `registry/styles/tokens.gen.css` and `theme.gen.css`.
 - **Do** derive a container's radius from its content's radius plus its padding.
+- **Do** pad a container of controls by 4px with `{rounded.lg}`, and a container of content by 12px with `{rounded.card}`.
+- **Do** name a figure's unit in its column header, such as Amount (AUD).
 - **Do** let the container set the gap between its children from `--spacing-run`, `--spacing-related` or `--spacing-section`.
 - **Do** keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer.
 - **Do** give every hit area at least 24×24px, and 44×44px on a coarse pointer.
 - **Do** use tabular figures for any number compared down a column.
 
 ### Don't:
+- **Don't** draw a line, border, fill or hint at rest that the caller does not need at rest.
 - **Don't** use Signal Orange on anything the caller cannot act on.
 - **Don't** show a state by colour alone, or draw a shape alone that does not disclose its word.
 - **Don't** put a shadow on a surface that sits in the page flow.
