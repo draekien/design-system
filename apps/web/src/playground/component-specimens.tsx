@@ -30,6 +30,9 @@ import {
   StatusName,
 } from "@workspace/registry/components/status.tsx"
 import * as React from "react"
+import { consumerSource, requireSource } from "../components/item-docs.ts"
+import { tableSources } from "../components/table/table.docs.ts"
+import { TableSortable } from "../components/table/table-sortable.tsx"
 
 export type ComponentSpecimen = {
   fileName: string
@@ -344,6 +347,11 @@ export const componentSpecimens: Readonly<Record<string, ComponentSpecimen>> = {
     fileName: "list-example.tsx",
     code: listCode,
     Preview: ListPreview,
+  },
+  table: {
+    fileName: "table-example.tsx",
+    code: consumerSource(requireSource(tableSources, "./table-sortable.tsx")),
+    Preview: TableSortable,
   },
   status: { fileName: "status-example.tsx", code: statusCode, Preview: StatusPreview },
   entity: { fileName: "entity-example.tsx", code: entityCode, Preview: EntityPreview },

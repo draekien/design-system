@@ -863,3 +863,10 @@ function PartsList({
     </aside>
   )
 }
+
+/** A constellation's parts, their rank groups and the component drawn at its centre. */
+export type Drawing = {
+  parts: ReadonlyArray<ConstellationPart>
+  groups: ReadonlyArray<ConstellationGroup>
+  centre: React.ReactNode
+}

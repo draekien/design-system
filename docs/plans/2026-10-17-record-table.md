@@ -1,7 +1,7 @@
 ---
 title: Record table, record groups, child rows and the selection bar
 date: 2026-10-17
-status: active
+status: superseded
 supersedes:
 ---
 

@@ -101,12 +101,12 @@
       {
         "name": "abbreviate",
         "value": "48rem",
-        "purpose": "Container width below which a list row column shows its short form."
+        "purpose": "Container width below which a list row or table column shows its short form."
       },
       {
         "name": "hide",
         "value": "40rem",
-        "purpose": "Container width below which a list row column marked to hide disappears."
+        "purpose": "Container width below which a list row or table column marked to hide disappears."
       }
     ]
   },
@@ -134,6 +134,14 @@
       "description": "One record: rank 1 subject, then rank 2 facts; square, 44px, separated by a hairline.",
       "html": "<div class=\"ds-row\" tabindex=\"0\"><span class=\"ds-row-key\">INV-1042</span><span class=\"ds-row-name\">Harbour Freight Ltd</span><span class=\"ds-row-read\">$12,480.00</span></div>",
       "css": ".ds-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px; border-bottom: 1px solid var(--border); color: var(--foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-row:hover { background: color-mix(in oklch, var(--foreground) 4%, transparent); } .ds-row:focus-visible { outline: none; background: color-mix(in oklch, var(--foreground) 7%, transparent); } .ds-row-key { color: var(--muted-foreground); font-size: 0.75rem; } .ds-row-name { font-weight: 500; } .ds-row:focus-visible .ds-row-name { text-decoration: underline 2px var(--ring); } .ds-row-read { font-variant-numeric: tabular-nums; text-align: right; }"
+    },
+    {
+      "name": "Table Row",
+      "kind": "custom",
+      "refersTo": "table-row",
+      "description": "One record in a table: 44px, a hairline below, a group row at 36px on a quiet fill above its records, a click anywhere following its link.",
+      "html": "<table class=\"ds-table\"><thead><tr><th scope=\"col\">Invoice</th><th scope=\"col\" class=\"ds-table-end\">Amount</th></tr></thead><tbody><tr class=\"ds-table-group\"><th scope=\"row\">Overdue</th><td class=\"ds-table-end\">$12,480.00</td></tr><tr class=\"ds-table-row\" tabindex=\"0\"><th scope=\"row\">INV-1042</th><td class=\"ds-table-end\">$12,480.00</td></tr></tbody></table>",
+      "css": ".ds-table { width: 100%; border-collapse: collapse; font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-table th, .ds-table td { padding: 0 8px; text-align: left; white-space: nowrap; vertical-align: middle; } .ds-table thead { border-bottom: 1px solid var(--border); } .ds-table thead th { height: 36px; color: var(--muted-foreground); font-size: 0.75rem; font-weight: 500; } .ds-table tbody tr { border-bottom: 1px solid var(--border); } .ds-table-row { height: 44px; } .ds-table-row:hover { background: color-mix(in oklch, var(--foreground) 4%, transparent); } .ds-table-row:focus-visible { outline: none; background: color-mix(in oklch, var(--foreground) 7%, transparent); } .ds-table-group { height: 36px; background: color-mix(in oklch, var(--muted) 40%, transparent); } .ds-table-end { text-align: right; font-variant-numeric: tabular-nums; } @media (pointer: coarse) { .ds-table-group { height: 44px; } }"
     },
     {
       "name": "Preview Card",

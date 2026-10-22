@@ -14,6 +14,7 @@ describe("componentItems", () => {
   it("lists every registry:ui item and no theme or lib item", () => {
     expect(componentItems.map((item) => item.name)).toEqual([
       "list",
+      "table",
       "status",
       "entity",
       "figure",

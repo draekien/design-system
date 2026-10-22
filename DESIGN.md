@@ -66,6 +66,20 @@ components:
     typography: "{typography.body}"
     padding: "0 {spacing.row-inset}"
     height: "{spacing.row}"
+  table-row:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    height: "{spacing.row}"
+  table-group-row:
+    backgroundColor: "{colors.quiet-grey}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    height: "36px"
+  table-head:
+    textColor: "{colors.muted-ink}"
+    typography: "{typography.label}"
+    height: "36px"
   preview-card:
     backgroundColor: "{colors.sheet}"
     textColor: "{colors.ink}"
@@ -188,6 +202,17 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Shape:** square, 44px high, Hairline bottom border.
 - **States:** hover tints the row with Ink at 4%; a focused or peeked row with Ink at 7%; the row name underlines in Signal Ring on keyboard focus.
 - **Revealed controls:** the selection checkbox and peek button are invisible at rest and appear on row hover, focus or selection; on a coarse pointer they are always visible and 44×44px.
+
+### Table
+- **Shape:** square, a Hairline bottom border under every row; the table fills its container, which scrolls sideways when the columns do not fit.
+- **Record row:** 44px high, hover tints it with Ink at 4%, a focused or peeked row with Ink at 7%; the row name underlines in Signal Ring on keyboard focus. A click anywhere on the row follows its `TableRowLink`, except on its checkbox, chevron or other controls and while text is selected; Enter on the focused row does too.
+- **Group row:** 36px high on Quiet Grey at 40%, 44px on a coarse pointer; hover deepens the fill to 70%.
+- **Column header:** 36px high, 12px medium Muted Ink; a sortable header is a button with an arrow, drawn on hover and focus until the column is sorted, then always, turned over when descending, and the sorted header takes Ink; the sorted column carries `aria-sort`. The button is 24px high, 44px on a coarse pointer.
+- **Caption:** above the table, 14px medium; it names the table for screen readers and may be hidden when a heading beside the table does.
+- **Footer:** Quiet Grey at 40% with a Hairline top border and medium weight.
+- **Revealed controls:** the selection checkbox and the expand chevron are 24×24px, 44×44px on a coarse pointer; the checkbox is invisible at rest and shows on row hover, focus or selection, and is always visible on a coarse pointer.
+- **Narrow:** below the `abbreviate` container width (48rem) a column marked `abbreviate` or `hide` shows its short form; below the `hide` container width (40rem) a column marked `hide` disappears and the `TableCellDetail` line, 12px Muted Ink, appears under the cell's value to carry it.
+- **Loading:** a loading row is 44px and draws a pulsing Quiet Grey bar in place of each cell's content; no pulse under reduced motion.
 
 ### Preview card (hover card)
 - **Corner Style:** its content's radius plus its 12px padding (`{rounded.card}`).

@@ -18,6 +18,8 @@ import {
 import * as React from "react"
 import { flushSync } from "react-dom"
 import { cn } from "@/lib/cn.ts"
+import { Kbd } from "../kbd.tsx"
+import { textLink } from "../lockup-styles.ts"
 import {
   capitalise,
   type Dataset,
@@ -30,9 +32,6 @@ import {
 } from "./datasets.tsx"
 
 export type ListState = Exclude<FixtureState, "error">
-
-const textLink =
-  "inline-flex min-h-6 items-center rounded-sm font-medium underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-ring"
 
 export function ListLockup<TItem>({
   dataset,
@@ -462,14 +461,6 @@ export function ErrorMessage<TItem>({
         Retry
       </Link>
     </section>
-  )
-}
-
-function Kbd({ children }: { children: React.ReactNode }) {
-  return (
-    <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-background px-1 font-sans text-[0.6875rem] text-foreground shadow-[0_1px_0_var(--border)]">
-      {children}
-    </kbd>
   )
 }
 

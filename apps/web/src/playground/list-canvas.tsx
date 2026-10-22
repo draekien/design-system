@@ -34,8 +34,15 @@ import {
   PeekContent,
   RowParts,
 } from "../lockups/list/list-lockup.tsx"
-import { Constellation, type ConstellationGroup, type ConstellationPart } from "./constellation.tsx"
+import { CardSpecimen } from "./card-specimen.tsx"
+import {
+  Constellation,
+  type ConstellationGroup,
+  type ConstellationPart,
+  type Drawing,
+} from "./constellation.tsx"
 import type { CanvasOptions } from "./playground-search.ts"
+import { StatesSection } from "./states-section.tsx"
 
 /** The list constellation, drawn in the docs page rather than in a canvas frame. */
 export function ListConstellation({
@@ -155,12 +162,6 @@ const narrowNote = {
   abbreviate: 'narrow="abbreviate": short form below 768px',
   hide: 'narrow="hide": short form below 768px, removed below 640px',
 } as const
-
-type Drawing = {
-  parts: ReadonlyArray<ConstellationPart>
-  groups: ReadonlyArray<ConstellationGroup>
-  centre: React.ReactNode
-}
 
 function partNumbers() {
   const parts: Array<ConstellationPart> = []
@@ -614,19 +615,6 @@ function rowDrawing<TItem>({
   }
 }
 
-function CardSpecimen({
-  children,
-}: {
-  children: (container: HTMLElement | null) => React.ReactNode
-}) {
-  const [container, setContainer] = React.useState<HTMLDivElement | null>(null)
-  return (
-    <div ref={setContainer} className="relative pb-24">
-      {children(container)}
-    </div>
-  )
-}
-
 function ItemPageHead<TItem>({ dataset, item }: { dataset: Dataset<TItem>; item: TItem }) {
   return (
     <div className="flex flex-col gap-1 py-1">
@@ -717,29 +705,6 @@ function StatesView<TItem>({
         </div>
       )
   }
-}
-
-function StatesSection({
-  title,
-  description,
-  children,
-}: {
-  title: string
-  description: string
-  children: React.ReactNode
-}) {
-  const headingId = React.useId()
-  return (
-    <section aria-labelledby={headingId} className="flex flex-col gap-4">
-      <header>
-        <h2 id={headingId} className="font-semibold text-base tracking-tight">
-          {title}
-        </h2>
-        <p className="mt-1 text-pretty text-muted-foreground text-sm">{description}</p>
-      </header>
-      {children}
-    </section>
-  )
 }
 
 function Specimen<TItem>({

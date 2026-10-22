@@ -174,6 +174,32 @@
       }
     },
     {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "A table for comparing values down a column, replacing shadcn/ui's Table: every table element as a part, sortable headers, child and group rows, selection and peek, with one tab stop.",
+      "dependencies": [
+        "@base-ui/react@1.8.0"
+      ],
+      "registryDependencies": [
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
+      ],
+      "files": [
+        {
+          "path": "components/table.tsx",
+          "type": "registry:ui",
+          "target": "@components/table.tsx"
+        }
+      ],
+      "docs": "Use it where shadcn/ui's Table goes: Table holds TableCaption, then TableColumnGroup with TableColumn, then TableHeader, TableBody and TableFooter, each holding TableRow with TableHead and TableCell. TableCaption names the table. A TableHead in TableHeader names a column; in a body or footer row it names the row. Set align=\"end\" on a numeric column's head and cells to right-align it in tabular figures, and narrow=\"abbreviate\" or narrow=\"hide\" on a column's head and cells alike to shorten it below 768px or remove it below 640px; keep a hidden value in peek, on the row's page or in a TableCellDetail under the row's name. Pass sort, expandedValues, selectedValues or peekValue (or their default and on...Change props) and the table becomes a treegrid with one tab stop on its rows: give every body TableRow a value and a level. A TableHead with a column then sorts by it; one column is sorted at a time and you sort the rows yourself. A record row holds TableRowLink, to its page, inside its row header, an optional TableRowSelect (a row without one cannot be selected) and a TableRowExpand when it has child rows; render child rows after it with level one higher, only while it is expanded. TableGroupRow heads a group: give it values, the rows it selects together, and keep its counts and sums when collapsed. While loading, render TableRowLoading with the same cells. Keys: up and down, Home and End move between rows; right expands, then moves in; left collapses, then moves to the parent; up from the first row reaches the headers. Enter opens the row's link, Space peeks it, and both toggle a group; X or Shift+Space selects; Esc closes peek, then clears the selection. The table renders no peek: read peekValue and render a read-only preview beside the table or under the row. Playground: https://design-system.wpei.me/playground/components/table",
+      "meta": {
+        "status": "beta",
+        "a11yReviewed": null,
+        "critiqued": "2026-10-22"
+      }
+    },
+    {
       "name": "status",
       "type": "registry:ui",
       "title": "Status",
