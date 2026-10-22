@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-10-22",
+    "description": "Rows have no line between them: the hover, focus and peek tints mark a row, and the tint takes the floor radius (6px). The selection checkbox and peek button take the floor radius in place of rounded-md. A List draws no surface; its rows sit on the page. A selected row is tinted with the foreground at 4%, 7% under the pointer, and a peeked row adds a 2px inset ring at 15%, as a peeked table row does."
+  },
+  {
     "date": "2026-10-21",
     "description": "Renames the item from record-list to list: RecordList is List, useRecordList is useList, and every RecordRow part is ListRow, such as ListRowLink and ListRowFact. Install it with the name list and import it from @/components/list."
   },

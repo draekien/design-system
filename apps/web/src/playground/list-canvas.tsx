@@ -22,7 +22,6 @@ import {
   type Hidden,
   hasCard,
   invoicesDataset,
-  listSurface,
   type RowState,
   recordsDataset,
   shownFacts,
@@ -41,7 +40,7 @@ import {
   type ConstellationPart,
   type Drawing,
 } from "./constellation.tsx"
-import type { CanvasOptions } from "./playground-search.ts"
+import { type CanvasOptions, hiddenParts, listParts } from "./playground-search.ts"
 import { StatesSection } from "./states-section.tsx"
 
 /** The list constellation, drawn in the docs page rather than in a canvas frame. */
@@ -50,7 +49,7 @@ export function ListConstellation({
 }: {
   options: Omit<CanvasOptions, "view">
 }): React.ReactElement {
-  const hidden = React.useMemo(() => new Set(options.hide), [options.hide])
+  const hidden = React.useMemo(() => hiddenParts(options.hide, listParts), [options.hide])
   return options.dataset === "invoices" ? (
     <DatasetConstellation dataset={invoicesDataset} options={options} hidden={hidden} />
   ) : (
@@ -81,7 +80,7 @@ function DatasetConstellation<TItem>({
 }
 
 export function ListCanvas({ options }: { options: CanvasOptions }): React.ReactElement {
-  const hidden = React.useMemo(() => new Set(options.hide), [options.hide])
+  const hidden = React.useMemo(() => hiddenParts(options.hide, listParts), [options.hide])
   return (
     <main className="p-4 sm:p-6">
       <h1 className="sr-only">List</h1>
@@ -286,7 +285,7 @@ function loadingDrawing<TItem>({
     note: "Same parts as ListRow; each part draws a bar in its own column",
     specimen: (
       <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
-        <ListRowLoading className="border-b-0 px-0">
+        <ListRowLoading className="px-0">
           <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
         </ListRowLoading>
       </List>
@@ -321,7 +320,7 @@ function loadingDrawing<TItem>({
       },
     ],
     centre: (
-      <div data-anchor={slots.get("list")} className={cn(listSurface, "w-[52rem]")}>
+      <div data-anchor={slots.get("list")} className="w-[52rem]">
         <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
           <ListRowLoading data-anchor={slots.get("row")}>
             <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
@@ -582,7 +581,7 @@ function rowDrawing<TItem>({
     parts,
     groups: groups.filter((group) => group.links.length > 0),
     centre: (
-      <div data-anchor={slots.get("list")} className={cn(listSurface, "w-[52rem]")}>
+      <div data-anchor={slots.get("list")} className="w-[52rem]">
         <List
           aria-label={capitalise(dataset.noun)}
           aria-describedby={hintIds.centre}
@@ -652,9 +651,9 @@ function StatesView<TItem>({
           title="Loading"
           description="One ListRowLoading per expected item; each part draws a bar in its own column"
         >
-          <div className={listSurface}>
+          <div>
             <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
-              <ListRowLoading className="border-b-0">
+              <ListRowLoading>
                 <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
               </ListRowLoading>
             </List>
@@ -691,9 +690,9 @@ function StatesView<TItem>({
                   className={cn("flex shrink-0 flex-col gap-1.5", specimen.width)}
                 >
                   <p className="text-muted-foreground text-xs">{specimen.label}</p>
-                  <div className={listSurface}>
+                  <div>
                     <List aria-label={`${capitalise(dataset.item)} row, ${specimen.label}`}>
-                      <ListRow value={dataset.value(item)} className="border-b-0">
+                      <ListRow value={dataset.value(item)}>
                         <RowParts dataset={dataset} item={item} state={state} hidden={hidden} />
                       </ListRow>
                     </List>
@@ -725,7 +724,7 @@ function Specimen<TItem>({
   return (
     <div className="flex flex-col gap-1.5">
       <p className="text-muted-foreground text-xs">{specimen.label}</p>
-      <div className={listSurface}>
+      <div>
         <List
           aria-label={`${capitalise(dataset.item)} row, ${specimen.label.toLowerCase()}`}
           selectedValues={specimen.isSelected ? [value] : []}
@@ -733,7 +732,7 @@ function Specimen<TItem>({
           peekValue={specimen.isPeeked ? value : null}
           onPeekValueChange={handleSpecimenChange}
         >
-          <ListRow value={value} className={cn("border-b-0", specimen.rowClassName)}>
+          <ListRow value={value} className={specimen.rowClassName}>
             <RowParts
               dataset={dataset}
               item={item}
@@ -767,7 +766,7 @@ function PartRow<TItem>({
       selectedValues={selected ? [value] : []}
       onSelectedValuesChange={handleSpecimenChange}
     >
-      <ListRow value={value} className="min-h-11 border-b-0 px-0 hover:bg-transparent">
+      <ListRow value={value} className="min-h-11 px-0 hover:bg-transparent">
         {children}
       </ListRow>
     </List>

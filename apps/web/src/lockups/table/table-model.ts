@@ -7,6 +7,8 @@ import {
 } from "@workspace/fixtures/invoices.ts"
 import { fixtureNow } from "@workspace/fixtures/records.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import { randomInvoiceLines } from "../list/random-records.ts"
+import { type TablePart, tableParts } from "./table-parts.ts"
 
 export type RowState = Exclude<FixtureState, "error" | "loading">
 
@@ -26,7 +28,7 @@ export const columnLabel: Readonly<Record<Column, string>> = {
   invoice: "Invoice",
   customer: "Customer",
   lines: "Lines",
-  amount: "Amount",
+  amount: "Amount (AUD)",
   paid: "Paid %",
   due: "Due",
 }
@@ -70,8 +72,17 @@ const linesByInvoice = sampleInvoiceLines.reduce((map, line) => {
   return map
 }, new Map<string, ReadonlyArray<SampleInvoiceLine>>())
 
+const sampleIds = new Set(sampleInvoices.map((invoice) => invoice.id))
+
+const randomLines = new WeakMap<SampleInvoice, ReadonlyArray<SampleInvoiceLine>>()
+
 export function linesOf(invoice: SampleInvoice): ReadonlyArray<SampleInvoiceLine> {
-  return linesByInvoice.get(invoice.id) ?? []
+  if (sampleIds.has(invoice.id)) {
+    return linesByInvoice.get(invoice.id) ?? []
+  }
+  const lines = randomLines.get(invoice) ?? randomInvoiceLines(invoice)
+  randomLines.set(invoice, lines)
+  return lines
 }
 
 export function compareInvoices(column: Column, a: SampleInvoice, b: SampleInvoice): number {
@@ -119,12 +130,15 @@ export type StatusGroup = {
   invoices: ReadonlyArray<SampleInvoice>
 }
 
-export function statusGroups(sort: Sort): ReadonlyArray<StatusGroup> {
+export function statusGroups(
+  invoices: ReadonlyArray<SampleInvoice>,
+  sort: Sort
+): ReadonlyArray<StatusGroup> {
   return statusOrder
     .map((status) => ({
       status,
       invoices: sorted(
-        sampleInvoices.filter((invoice) => invoice.status === status),
+        invoices.filter((invoice) => invoice.status === status),
         sort,
         compareInvoices
       ),
@@ -148,6 +162,10 @@ export const columns: ReadonlyArray<Column> = [
   "paid",
   "due",
 ]
+
+export function shownColumns(hidden: ReadonlySet<TablePart>): ReadonlyArray<Column> {
+  return columns.filter((column) => !tableParts.some((part) => part === column && hidden.has(part)))
+}
 
 export function isColumn(value: string): value is Column {
   return columns.some((column) => column === value)

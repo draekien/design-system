@@ -42,10 +42,10 @@ const invoices = [
 
 export function ListFigures(): React.ReactElement {
   return (
-    <div className="w-full overflow-hidden rounded-xl border bg-card text-card-foreground">
+    <div className="w-full">
       <List aria-label="Invoices">
         {invoices.map((invoice) => (
-          <ListRow key={invoice.id} value={invoice.id} className="last:border-b-0">
+          <ListRow key={invoice.id} value={invoice.id}>
             <ListRowLink href={`#${invoice.id}`}>
               <ListRowSubject>
                 <ListRowId narrow="hide">{invoice.id}</ListRowId>

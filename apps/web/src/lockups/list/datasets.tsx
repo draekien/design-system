@@ -206,8 +206,7 @@ function recordStatus(record: SampleRecord) {
   )
 }
 
-export const listSurface =
-  "overflow-hidden rounded-xl border bg-card text-card-foreground shadow-[0_1px_2px_rgb(0_0_0/0.04),0_12px_32px_-12px_rgb(0_0_0/0.1)]"
+export const listSurface = "rounded-card border bg-card p-3 text-card-foreground"
 
 export function capitalise(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1)

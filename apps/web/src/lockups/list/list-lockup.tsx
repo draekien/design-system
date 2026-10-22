@@ -74,9 +74,9 @@ export function ListLockup<TItem>({
       <div
         ref={listRef}
         hidden={opened !== null}
-        className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]"
+        className="grid grid-cols-[minmax(0,1fr)] items-start gap-section lg:grid-cols-[minmax(0,1fr)_20rem]"
       >
-        <div className={listSurface}>
+        <div>
           {state === "loading" ? (
             <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
               {items.map((item) => (
@@ -109,7 +109,7 @@ export function ListLockup<TItem>({
                   {dataset.value(item) === peekValue && (
                     <li
                       id={inlinePeekId}
-                      className="col-span-full border-b bg-foreground/[0.025] px-4 py-4 lg:hidden"
+                      className="col-span-full rounded-floor bg-foreground/4 p-3 lg:hidden"
                     >
                       <PeekContent
                         dataset={dataset}
@@ -135,7 +135,7 @@ export function ListLockup<TItem>({
         <aside
           id={panelPeekId}
           aria-label="Peek"
-          className="hidden rounded-xl border bg-card p-4 text-card-foreground text-sm lg:sticky lg:top-6 lg:block lg:max-h-[calc(100svh-3rem)] lg:overflow-y-auto"
+          className="hidden rounded-card border bg-card p-3 text-card-foreground text-sm lg:sticky lg:top-section lg:block lg:max-h-[calc(100svh-3rem)] lg:overflow-y-auto"
         >
           <PeekPanelBody dataset={dataset} item={peeked} state={state} onOpen={setOpenValue} />
         </aside>
@@ -243,7 +243,7 @@ export function ListFooter<TItem>({
   return (
     <div
       data-anchor={anchor}
-      className="flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1.5 px-3 py-2.5 text-muted-foreground text-xs"
+      className="flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1.5 px-2 text-muted-foreground text-xs"
     >
       <FooterMessage dataset={dataset} state={state} count={count} />
       {selectedCount > 0 && (
@@ -384,7 +384,7 @@ function ItemPage<TItem>({
   }, [])
 
   return (
-    <article className={cn(listSurface, "max-w-2xl p-5 text-sm sm:p-6")}>
+    <article className={cn(listSurface, "max-w-2xl text-sm")}>
       <button
         type="button"
         onClick={onBack}
@@ -456,7 +456,7 @@ export function ErrorMessage<TItem>({
         to="."
         search={(previous) => ({ ...previous, state: "loaded" })}
         data-anchor={anchors?.retry}
-        className="mt-5 inline-flex min-h-9 items-center rounded-lg border bg-background px-4 font-medium text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
+        className="mt-5 inline-flex min-h-9 items-center rounded-floor border bg-background px-4 font-medium text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
       >
         Retry
       </Link>

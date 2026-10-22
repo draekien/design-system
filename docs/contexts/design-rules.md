@@ -100,7 +100,7 @@ A radius builds outward from the floor: a leaf control (button, input) takes the
 
 The selection checkbox is the one leaf control below the floor: it takes `--radius-checkbox` (5px). This is this design system's own decision.
 
-A container with no padding between it and its content, such as a row, is square.
+A table row is square. A list row's tint is a leaf shape and takes the floor. A card that clips a table with no padding is the one container whose corners its content follows.
 
 Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and turns off nesting.
 

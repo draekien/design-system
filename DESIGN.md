@@ -64,6 +64,7 @@ components:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
     typography: "{typography.body}"
+    rounded: "{rounded.floor}"
     padding: "0 {spacing.row-inset}"
     height: "{spacing.row}"
   table-row:
@@ -77,6 +78,8 @@ components:
     typography: "{typography.body}"
     height: "36px"
   table-head:
+    backgroundColor: "{colors.quiet-grey}"
+    rounded: "{rounded.floor}"
     textColor: "{colors.muted-ink}"
     typography: "{typography.label}"
     height: "36px"
@@ -112,17 +115,17 @@ The system is defined by the relationships between components, not by the compon
 | Placement | A table where the caller compares down a column, a list where they scan for one record | `docs/contexts/design-rules.md` |
 | Nesting | Groups do not nest; records nest one level deep | `docs/contexts/design-rules.md`, `List` |
 | Adjacency | A selection bar holds at most two actions, then a ⋯ menu | `docs/contexts/design-rules.md` |
-| Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px | `docs/contexts/design-rules.md`; the `--spacing-run`, `--spacing-related` and `--spacing-section` tokens, which no component uses yet |
-| Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; the `--radius-floor`, `--radius-card` and `--radius-panel` tokens, which no component uses yet |
+| Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px | `docs/contexts/design-rules.md`; the `--spacing-run`, `--spacing-related` and `--spacing-section` tokens |
+| Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; the `--radius-floor`, `--radius-card` and `--radius-panel` tokens; list rows, table header and footer fills, and the card around a table use the floor and card radii |
 
-The palette is monochrome with a single orange that marks only what can be acted on. Density is high: 44px rows, 10–14px type, hairline borders and no decorative fills, so a list of hundreds of records stays scannable. Depth is flat; only layers that float above the page (hover cards, menus, peek panels) cast a shadow.
+The palette is monochrome with a single orange that marks only what can be acted on. Density is high: 44px rows, 10–14px type, no line between rows and no decorative fills, so a list of hundreds of records stays scannable. Depth is flat; only layers that float above the page (hover cards, menus, peek panels) cast a shadow.
 
 **Key Characteristics:**
 - Components declare which components they contain, sit beside and sit inside.
 - One accent, used only on actionable elements and the focus ring.
 - 44px rows with 24×24px hit areas that grow to 44×44px on a coarse pointer.
 - State shown by shape and word, never by colour alone; a shape drawn alone discloses its word.
-- Flat surfaces separated by hairlines; shadows only on floating layers.
+- Rows separated by nothing; a hover, focus or peek tint marks a row. A list and a table draw no surface of their own; shadows only on floating layers.
 - Revealed controls appear on hover, focus and selection, and are always visible on a coarse pointer.
 
 ## Colors
@@ -140,7 +143,7 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 - **Quiet Grey** (`{colors.quiet-grey}`): muted fills: skeletons, initials circles, secondary buttons.
 - **Slate Ink** (`{colors.slate-ink}`): text on Quiet Grey.
 - **Muted Ink** (`{colors.muted-ink}`): secondary text, column headers, timestamps and hints.
-- **Hairline** (`{colors.hairline}`): borders, row dividers and input strokes.
+- **Hairline** (`{colors.hairline}`): card and popover borders and input strokes; never a line between rows.
 - **Alert Red** (`{colors.alert-red}`): destructive actions and invalid inputs only.
 
 ### Named Rules
@@ -167,7 +170,7 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 
 Lists are CSS grids whose rows are subgrids, so every row's columns align with the header without fixed widths. A row is 44px high with an 8px inset. Columns respond to the list's width, not the viewport's: below the `abbreviate` container width (48rem) a column shows its short form, and below the `hide` container width (40rem) a column marked to hide disappears. Columns that hold rank 3 values hide first; the record's name truncates before it wraps. Interactive targets are at least 24×24px, and 44×44px on a coarse pointer.
 
-The container sets the gap between its children by how the two neighbours relate: `{spacing.run}` between the same component in a run (row after row; the border separates them), `{spacing.related}` between parts of one record or control (a status dot and its word), `{spacing.section}` between separate sections (two stacked lists). A component never sets margin on itself.
+The container sets the gap between its children by how the two neighbours relate: `{spacing.run}` between the same component in a run (row after row, with no line between them), `{spacing.related}` between parts of one record or control (a status dot and its word), `{spacing.section}` between separate sections (two stacked lists). A component never sets margin on itself.
 
 ## Elevation & Depth
 
@@ -181,7 +184,7 @@ Surfaces are flat and separated by Hairline borders and Paper/Sheet contrast. Sh
 
 ## Shapes
 
-A radius builds outward from a floor. A leaf control (button, input) takes the floor, `{rounded.floor}` (`--radius-floor`, 6px). The selection checkbox is the one exception: at 16px square it takes `{rounded.checkbox}` (`--radius-checkbox`, 5px). A container's radius is its content's radius plus its padding: a field card with 12px padding around a leaf control is `{rounded.card}` (18px), and a panel with 16px padding around a card is `{rounded.panel}` (34px). A container with no padding between it and its content, such as a row, is square.
+A radius builds outward from a floor. A leaf control (button, input) takes the floor, `{rounded.floor}` (`--radius-floor`, 6px). The selection checkbox is the one exception: at 16px square it takes `{rounded.checkbox}` (`--radius-checkbox`, 5px). A container's radius is its content's radius plus its padding: a field card with 12px padding around a leaf control is `{rounded.card}` (18px), and a panel with 16px padding around a card is `{rounded.panel}` (34px). A list row's tint is a leaf shape and takes the floor. A table row is square; the header fill's top corners and the footer fill's bottom corners take the floor. A card that holds a table has no padding, takes `{rounded.card}` and clips the header and footer fills to its corners.
 
 Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and turns off nesting. Circles are reserved for status dots and initials.
 
@@ -199,20 +202,24 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Hover / Focus:** primary fades to 80%; focus draws a 2px Signal Ring at 30% and a ring-coloured border. Pressed buttons move down 1px.
 
 ### List row
-- **Shape:** square, 44px high, Hairline bottom border.
-- **States:** hover tints the row with Ink at 4%; a focused or peeked row with Ink at 7%; the row name underlines in Signal Ring on keyboard focus.
+- **Shape:** 44px high with no line under it; its tint takes the floor radius (`{rounded.floor}`).
+- **States:** hover and selection tint the row with Ink at 4%, a selected row under the pointer at 7%; a focused or peeked row with Ink at 7%, and a peeked row adds a 2px inset ring of Ink at 15%; the row name underlines in Signal Ring on keyboard focus.
 - **Revealed controls:** the selection checkbox and peek button are invisible at rest and appear on row hover, focus or selection; on a coarse pointer they are always visible and 44×44px.
 
 ### Table
-- **Shape:** square, a Hairline bottom border under every row; the table fills its container, which scrolls sideways when the columns do not fit.
-- **Record row:** 44px high, hover tints it with Ink at 4%, a focused or peeked row with Ink at 7%; the row name underlines in Signal Ring on keyboard focus. A click anywhere on the row follows its `TableRowLink`, except on its checkbox, chevron or other controls and while text is selected; Enter on the focused row does too.
-- **Group row:** 36px high on Quiet Grey at 40%, 44px on a coarse pointer; hover deepens the fill to 70%.
+- **Shape:** no line under the header or between rows, and no surface of its own. A body row's tint is square; the header row draws a Quiet Grey fill rounded at its top corners with the floor radius (`{rounded.floor}`), and the footer row one rounded at its bottom corners. Each fill is drawn on the row's first cell's `::before` across the row, below the cell content, so it draws in every engine and when the last column hides. The table fills its container, which scrolls sideways when the columns do not fit.
+- **Record row:** 44px high, hover and selection tint it with Ink at 4%, a selected row under the pointer at 7%, a focused or peeked row with Ink at 7%, and a peeked row adds a 2px inset ring of Ink at 15%; the row name underlines in Signal Ring on keyboard focus. A click anywhere on the row follows its `TableRowLink`, except on its checkbox, chevron or other controls and while text is selected; Enter on the focused row does too.
+- **Group row:** 36px high on Quiet Grey at 40%, square, 44px on a coarse pointer; hover deepens the fill to 70%, and keyboard focus draws a 2px inset Signal Ring. Its name starts in the first data column, not under a column it does not belong to, and its sums stay in their columns.
 - **Column header:** 36px high, 12px medium Muted Ink; a sortable header is a button with an arrow, drawn on hover and focus until the column is sorted, then always, turned over when descending, and the sorted header takes Ink; the sorted column carries `aria-sort`. The button is 24px high, 44px on a coarse pointer.
 - **Caption:** above the table, 14px medium; it names the table for screen readers and may be hidden when a heading beside the table does.
-- **Footer:** Quiet Grey at 40% with a Hairline top border and medium weight.
+- **Footer:** Quiet Grey fill, its bottom corners at the floor radius, medium weight, no line above it.
 - **Revealed controls:** the selection checkbox and the expand chevron are 24×24px, 44×44px on a coarse pointer; the checkbox is invisible at rest and shows on row hover, focus or selection, and is always visible on a coarse pointer.
 - **Narrow:** below the `abbreviate` container width (48rem) a column marked `abbreviate` or `hide` shows its short form; below the `hide` container width (40rem) a column marked `hide` disappears and the `TableCellDetail` line, 12px Muted Ink, appears under the cell's value to carry it.
 - **Loading:** a loading row is 44px and draws a pulsing Quiet Grey bar in place of each cell's content; no pulse under reduced motion.
+
+### List and table surface
+- **List:** no surface; its rows sit on the page.
+- **Table in a card:** Sheet with one Hairline border, no padding and `{rounded.card}` (18px), clipping the header and footer fills to its corners; no shadow.
 
 ### Preview card (hover card)
 - **Corner Style:** its content's radius plus its 12px padding (`{rounded.card}`).

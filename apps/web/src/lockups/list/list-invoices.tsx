@@ -43,10 +43,10 @@ const invoices = [
 export function ListInvoices(): React.ReactElement {
   const hintId = React.useId()
   return (
-    <div className="w-full overflow-hidden rounded-xl border bg-card text-card-foreground">
+    <div className="w-full">
       <List aria-label="Invoices" aria-describedby={hintId}>
         {invoices.map((invoice) => (
-          <ListRow key={invoice.id} value={invoice.id} className="last:border-b-0">
+          <ListRow key={invoice.id} value={invoice.id}>
             <ListRowSelect />
             <ListRowLink href={`#${invoice.id}`}>
               <ListRowSubject>
@@ -89,7 +89,7 @@ export function ListInvoices(): React.ReactElement {
           </ListRow>
         ))}
       </List>
-      <p id={hintId} className="border-t px-3 py-2 text-muted-foreground text-xs">
+      <p id={hintId} className="px-2 pt-3 text-muted-foreground text-xs">
         ↑ ↓ move between rows · X selects the focused row
       </p>
     </div>

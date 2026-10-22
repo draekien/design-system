@@ -28,10 +28,10 @@ const invoices = [
 
 export function ListNarrow(): React.ReactElement {
   return (
-    <div className="w-full max-w-xs overflow-hidden rounded-xl border bg-card text-card-foreground">
+    <div className="w-full max-w-xs">
       <List aria-label="Invoices">
         {invoices.map((invoice) => (
-          <ListRow key={invoice.id} value={invoice.id} className="last:border-b-0">
+          <ListRow key={invoice.id} value={invoice.id}>
             <ListRowLink href={`#${invoice.id}`}>
               <ListRowSubject>
                 <ListRowId narrow="hide">{invoice.id}</ListRowId>
