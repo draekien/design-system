@@ -131,17 +131,17 @@
       "name": "List Row",
       "kind": "custom",
       "refersTo": "list-row",
-      "description": "One record: rank 1 subject, then rank 2 facts; square, 44px, separated by a hairline.",
+      "description": "One record: rank 1 subject, then rank 2 facts; 44px, no line between rows, a floor-radius tint on hover and focus.",
       "html": "<div class=\"ds-row\" tabindex=\"0\"><span class=\"ds-row-key\">INV-1042</span><span class=\"ds-row-name\">Harbour Freight Ltd</span><span class=\"ds-row-read\">$12,480.00</span></div>",
-      "css": ".ds-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px; border-bottom: 1px solid var(--border); color: var(--foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-row:hover { background: color-mix(in oklch, var(--foreground) 4%, transparent); } .ds-row:focus-visible { outline: none; background: color-mix(in oklch, var(--foreground) 7%, transparent); } .ds-row-key { color: var(--muted-foreground); font-size: 0.75rem; } .ds-row-name { font-weight: 500; } .ds-row:focus-visible .ds-row-name { text-decoration: underline 2px var(--ring); } .ds-row-read { font-variant-numeric: tabular-nums; text-align: right; }"
+      "css": ".ds-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px; border-radius: calc(var(--radius) * 0.6); color: var(--foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-row:hover { background: color-mix(in oklch, var(--foreground) 4%, transparent); } .ds-row:focus-visible { outline: none; background: color-mix(in oklch, var(--foreground) 7%, transparent); } .ds-row-key { color: var(--muted-foreground); font-size: 0.75rem; } .ds-row-name { font-weight: 500; } .ds-row:focus-visible .ds-row-name { text-decoration: underline 2px var(--ring); } .ds-row-read { font-variant-numeric: tabular-nums; text-align: right; }"
     },
     {
       "name": "Table Row",
       "kind": "custom",
       "refersTo": "table-row",
-      "description": "One record in a table: 44px, a hairline below, a group row at 36px on a quiet fill above its records, a click anywhere following its link.",
+      "description": "One record in a table: 44px, square, no line between rows, a tint on hover and focus, a group row at 36px on a quiet fill above its records, a header on a quiet fill rounded at its top corners, a click anywhere following its link.",
       "html": "<table class=\"ds-table\"><thead><tr><th scope=\"col\">Invoice</th><th scope=\"col\" class=\"ds-table-end\">Amount</th></tr></thead><tbody><tr class=\"ds-table-group\"><th scope=\"row\">Overdue</th><td class=\"ds-table-end\">$12,480.00</td></tr><tr class=\"ds-table-row\" tabindex=\"0\"><th scope=\"row\">INV-1042</th><td class=\"ds-table-end\">$12,480.00</td></tr></tbody></table>",
-      "css": ".ds-table { width: 100%; border-collapse: collapse; font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-table th, .ds-table td { padding: 0 8px; text-align: left; white-space: nowrap; vertical-align: middle; } .ds-table thead { border-bottom: 1px solid var(--border); } .ds-table thead th { height: 36px; color: var(--muted-foreground); font-size: 0.75rem; font-weight: 500; } .ds-table tbody tr { border-bottom: 1px solid var(--border); } .ds-table-row { height: 44px; } .ds-table-row:hover { background: color-mix(in oklch, var(--foreground) 4%, transparent); } .ds-table-row:focus-visible { outline: none; background: color-mix(in oklch, var(--foreground) 7%, transparent); } .ds-table-group { height: 36px; background: color-mix(in oklch, var(--muted) 40%, transparent); } .ds-table-end { text-align: right; font-variant-numeric: tabular-nums; } @media (pointer: coarse) { .ds-table-group { height: 44px; } }"
+      "css": ".ds-table { width: 100%; border-collapse: collapse; font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-table th, .ds-table td { padding: 0 8px; text-align: left; white-space: nowrap; vertical-align: middle; } .ds-table thead th { height: 36px; color: var(--muted-foreground); font-size: 0.75rem; font-weight: 500; } .ds-table tr { position: relative; isolation: isolate; } .ds-table tr > :first-child::before { content: \"\"; position: absolute; inset: 0; z-index: -1; pointer-events: none; } .ds-table thead tr > :first-child::before { border-radius: calc(var(--radius) * 0.6) calc(var(--radius) * 0.6) 0 0; background: var(--muted); } .ds-table-row { height: 44px; } .ds-table-row:hover > :first-child::before { background: color-mix(in oklch, var(--foreground) 4%, transparent); } .ds-table-row:focus-visible { outline: none; } .ds-table-row:focus-visible > :first-child::before { background: color-mix(in oklch, var(--foreground) 7%, transparent); } .ds-table-group { height: 36px; } .ds-table-group > :first-child::before { background: color-mix(in oklch, var(--muted) 40%, transparent); } .ds-table-group:focus-visible > :first-child::before { box-shadow: inset 0 0 0 2px var(--ring); } .ds-table-end { text-align: right; font-variant-numeric: tabular-nums; } @media (pointer: coarse) { .ds-table-group { height: 44px; } }"
     },
     {
       "name": "Preview Card",
@@ -174,20 +174,50 @@
       "description": "One muted icon for the record's kind, with no fill behind it, between the ID and the name; its label names it for screen readers.",
       "html": "<span class=\"ds-list-row-media-icon\" role=\"img\" aria-label=\"Invoice\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M5 3h10l4 4v14H5z\"/><path d=\"M9 12h6M9 16h4\"/></svg></span>",
       "css": ".ds-list-row-media-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; color: var(--muted-foreground); } .ds-list-row-media-icon svg { width: 16px; height: 16px; }"
+    },
+    {
+      "name": "Selection Bar",
+      "kind": "custom",
+      "refersTo": "selection-bar",
+      "description": "Floats at the bottom while records are selected: the count, at most two actions, a more menu and Clear, padded 4px with the lg radius (10px).",
+      "html": "<section class=\"ds-bar\" aria-label=\"Selected invoices\"><span class=\"ds-bar-count\">2 selected</span><span class=\"ds-bar-divider\" aria-hidden=\"true\"></span><button class=\"ds-bar-btn\">Send reminder</button><button class=\"ds-bar-btn\">Export</button><span class=\"ds-bar-divider\" aria-hidden=\"true\"></span><button class=\"ds-bar-btn ds-bar-clear\">Clear</button></section>",
+      "css": ".ds-bar { display: inline-flex; align-items: center; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius-lg, var(--radius)); background: var(--background); box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-bar-count { padding: 0 10px; font-variant-numeric: tabular-nums; } .ds-bar-divider { width: 1px; height: 16px; margin: 0 4px; background: var(--border); } .ds-bar-btn { min-height: 32px; padding: 0 10px; border: 0; border-radius: calc(var(--radius) * 0.6); background: transparent; color: var(--foreground); font: inherit; font-weight: 500; cursor: pointer; } .ds-bar-btn:hover { background: var(--muted); } .ds-bar-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; } .ds-bar-clear { color: var(--muted-foreground); } .ds-bar-clear:hover { color: var(--foreground); }"
     }
   ],
   "narrative": {
     "northStar": "Rules Between Components",
-    "overview": "The system is defined by the relationships between components, not by the components alone: how data is ranked, which parts fit into which slots, which components render on which surface, which sit next to each other, how much space separates one type from another, and how a radius builds outward from its content. Each component encodes the relationships it takes part in, so callers assemble new surfaces freely and every assembly stays consistent. The palette is monochrome with one orange that marks only what can be acted on; density is high and depth is flat.",
+    "overview": "The system is defined by the relationships between components, not by the components alone: how data is ranked, which parts fit into which slots, which components render on which surface, which sit next to each other, how much space separates one type from another, and how a radius builds outward from its content. Each component encodes the relationships it takes part in, so callers assemble new surfaces freely and every assembly stays consistent. The palette is monochrome with one orange that marks only what can be acted on; density is high and depth is flat. Four principles decide any case no rule covers, in this order: Quiet, Clear, Precise and Sleek.",
     "keyCharacteristics": [
+      "Quiet, Clear, Precise and Sleek, in that order, decide what the rules do not.",
       "Components declare which components they contain, sit beside and sit inside.",
       "One accent, used only on actionable elements and the focus ring.",
       "44px rows with 24×24px hit areas that grow to 44×44px on a coarse pointer.",
       "State shown by shape and word, never by colour alone; a shape drawn alone discloses its word.",
-      "A radius builds outward from a 6px floor; --radius: 0 makes every radius 0.",
-      "The container sets the gap between its children: run 0, related 8px, section 24px."
+      "Rows separated by nothing; a hover, focus or peek tint marks a row. A list and a table draw no surface of their own; shadows only on floating layers.",
+      "Revealed controls appear on hover, focus and selection, and are always visible on a coarse pointer.",
+      "Chrome is thin: a bar or menu adds 4px around its controls, so a bar of 32px buttons is 42px high."
     ],
     "rules": [
+      {
+        "name": "The Quiet Rule",
+        "body": "Nothing draws at rest that the caller does not need at rest; what they need only sometimes is revealed on hover, focus or selection.",
+        "section": "overview"
+      },
+      {
+        "name": "The Clear Rule",
+        "body": "Every value carries its meaning: a figure names its unit, a state shows its word, a control names its action. Clear overrules Quiet.",
+        "section": "overview"
+      },
+      {
+        "name": "The Precise Rule",
+        "body": "Every part sits in the column and on the edge it belongs to.",
+        "section": "overview"
+      },
+      {
+        "name": "The Sleek Rule",
+        "body": "A container is no thicker than its contents need: 4px of padding around controls, 12px around content.",
+        "section": "overview"
+      },
       {
         "name": "The Act-Only Accent Rule",
         "body": "Signal Orange appears only on something the caller can act on, or on the focus ring.",
@@ -215,20 +245,23 @@
       }
     ],
     "dos": [
-      "Do take every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in registry/tokens and generated into registry/styles/tokens.gen.css and theme.gen.css.",
-      "Do derive a container's radius from its content's radius plus its padding.",
-      "Do let the container set the gap between its children from --spacing-run, --spacing-related or --spacing-section.",
-      "Do keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer.",
-      "Do give every hit area at least 24×24px, and 44×44px on a coarse pointer.",
-      "Do use tabular figures for any number compared down a column."
+      "**Do** take every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `registry/tokens` and generated into `registry/styles/tokens.gen.css` and `theme.gen.css`.",
+      "**Do** derive a container's radius from its content's radius plus its padding.",
+      "**Do** pad a container of controls by 4px with `{rounded.lg}`, and a container of content by 12px with `{rounded.card}`.",
+      "**Do** name a figure's unit in its column header, such as Amount (AUD).",
+      "**Do** let the container set the gap between its children from `--spacing-run`, `--spacing-related` or `--spacing-section`.",
+      "**Do** keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer.",
+      "**Do** give every hit area at least 24×24px, and 44×44px on a coarse pointer.",
+      "**Do** use tabular figures for any number compared down a column."
     ],
     "donts": [
-      "Don't use Signal Orange on anything the caller cannot act on.",
-      "Don't show a state by colour alone, or draw a shape alone that does not disclose its word.",
-      "Don't put a shadow on a surface that sits in the page flow.",
-      "Don't add a second typeface; use Mona Sans weights and widths.",
-      "Don't give a component margin or a hard-coded radius; both come from its container.",
-      "Don't write an untokenised value such as text-[0.625rem], z-50 or duration-150 in a published component; add a token instead."
+      "**Don't** draw a line, border, fill or hint at rest that the caller does not need at rest.",
+      "**Don't** use Signal Orange on anything the caller cannot act on.",
+      "**Don't** show a state by colour alone, or draw a shape alone that does not disclose its word.",
+      "**Don't** put a shadow on a surface that sits in the page flow.",
+      "**Don't** add a second typeface; use Mona Sans weights and widths.",
+      "**Don't** give a component margin or a hard-coded radius; both come from its container.",
+      "**Don't** write an untokenised value such as `text-[0.625rem]`, `z-50` or `duration-150` in a published component; add a token instead."
     ]
   }
 }

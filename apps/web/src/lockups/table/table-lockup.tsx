@@ -43,7 +43,6 @@ import { Kbd } from "../kbd.tsx"
 import { textLink } from "../lockup-styles.ts"
 import {
   columnLabel,
-  columns,
   compareLines,
   formatAmount,
   formatPaid,
@@ -57,32 +56,74 @@ import {
   readDue,
   type Sort,
   type StatusGroup,
+  shownColumns,
   sorted,
   statusGroups,
   statusLabel,
 } from "./table-model.ts"
+import type { TablePart } from "./table-parts.ts"
 import { controlCell, tableSurface } from "./table-styles.ts"
 
 const defaultSort: Sort = { column: "due", direction: "ascending" }
 
+const HiddenPartsContext = React.createContext<ReadonlySet<TablePart>>(new Set())
+
+/** Hides the given parts in every table row rendered inside it. */
+export function TableParts({
+  hidden,
+  children,
+}: {
+  hidden: ReadonlySet<TablePart>
+  children: React.ReactNode
+}): React.ReactElement {
+  return <HiddenPartsContext.Provider value={hidden}>{children}</HiddenPartsContext.Provider>
+}
+
+function useShown() {
+  const hidden = React.useContext(HiddenPartsContext)
+  return (part: TablePart) => !hidden.has(part)
+}
+
+function useColumnSpan(isSelectable: boolean) {
+  const hidden = React.useContext(HiddenPartsContext)
+  return shownColumns(hidden).length + (isSelectable ? 2 : 1)
+}
+
 /** The invoices table lockup in one fixture state. */
-export function TableLockup({ state }: { state: FixtureState }): React.ReactElement {
+export function TableLockup({
+  state,
+  invoices = sampleInvoices,
+}: {
+  state: FixtureState
+  invoices?: ReadonlyArray<SampleInvoice>
+}): React.ReactElement {
   switch (state) {
     case "error":
       return <TableError />
     case "loading":
-      return <LoadingInvoices />
+      return <LoadingInvoices invoices={invoices} />
     case "loaded":
     case "partial":
     case "no-permission":
-      return <Invoices key={state} state={state} />
+      return <Invoices key={state} state={state} invoices={invoices} />
   }
 }
 
-function Invoices({ state }: { state: RowState }) {
-  const [sort, setSort] = React.useState<Sort>(defaultSort)
+function Invoices({
+  state,
+  invoices,
+}: {
+  state: RowState
+  invoices: ReadonlyArray<SampleInvoice>
+}) {
+  const shown = useShown()
+  const hidden = React.useContext(HiddenPartsContext)
+  const [chosenSort, setSort] = React.useState<Sort>(defaultSort)
+  const sort: Sort = shownColumns(hidden).includes(chosenSort.column)
+    ? chosenSort
+    : { column: "customer", direction: "ascending" }
   const [expandedValues, setExpandedValues] = React.useState<ReadonlyArray<string>>(() =>
-    statusGroups(defaultSort).map((group) => groupValue(group.status))
+    statusGroups(invoices, defaultSort).map((group) => groupValue(group.status))
   )
   const [selectedValues, setSelectedValues] = React.useState<ReadonlyArray<string>>([])
   const [peekValue, setPeekValue] = React.useState<string | null>(null)
@@ -93,10 +134,11 @@ function Invoices({ state }: { state: RowState }) {
   const hintId = React.useId()
   const inlinePeekId = React.useId()
   const panelPeekId = React.useId()
-  const isSelectable = state !== "no-permission"
-  const groups = statusGroups(sort)
-  const peeked = sampleInvoices.find((invoice) => invoice.id === peekValue) ?? null
-  const opened = sampleInvoices.find((invoice) => invoice.id === openValue) ?? null
+  const isSelectable = state !== "no-permission" && shown("select")
+  const columnSpan = useColumnSpan(isSelectable)
+  const groups = statusGroups(invoices, sort)
+  const peeked = invoices.find((invoice) => invoice.id === peekValue) ?? null
+  const opened = invoices.find((invoice) => invoice.id === openValue) ?? null
 
   function focusRow(value: string) {
     tableRef.current?.querySelector<HTMLElement>(`tr[data-value="${value}"]`)?.focus()
@@ -123,7 +165,7 @@ function Invoices({ state }: { state: RowState }) {
   }
 
   function handlePeekValueChange(next: string | null) {
-    if (next === null || sampleInvoices.some((invoice) => invoice.id === next)) {
+    if (next === null || invoices.some((invoice) => invoice.id === next)) {
       setPeekValue(next)
     }
   }
@@ -189,7 +231,7 @@ function Invoices({ state }: { state: RowState }) {
                             }
                             onOpen={handleOpen}
                           />
-                          {expandedValues.includes(invoice.id) ? (
+                          {shown("child-rows") && expandedValues.includes(invoice.id) ? (
                             <InvoiceChildRows
                               invoice={invoice}
                               sort={sort}
@@ -198,11 +240,11 @@ function Invoices({ state }: { state: RowState }) {
                             />
                           ) : null}
                           {peekValue === invoice.id ? (
-                            <tr className="border-b bg-foreground/4 lg:hidden">
+                            <tr className="lg:hidden">
                               <td
                                 id={inlinePeekId}
-                                colSpan={columns.length + (isSelectable ? 2 : 1)}
-                                className="p-3 text-sm"
+                                colSpan={columnSpan}
+                                className="bg-foreground/4 p-3 text-sm"
                               >
                                 <PeekContent
                                   invoice={invoice}
@@ -221,6 +263,7 @@ function Invoices({ state }: { state: RowState }) {
           </Table>
           <InvoicesFooter
             state={state}
+            count={invoices.length}
             sort={sort}
             sortId={sortId}
             hintId={hintId}
@@ -247,16 +290,17 @@ function Invoices({ state }: { state: RowState }) {
   )
 }
 
-function LoadingInvoices() {
+function LoadingInvoices({ invoices }: { invoices: ReadonlyArray<SampleInvoice> }) {
+  const isSelectable = useShown()("select")
   return (
     <div className={tableSurface}>
       <Table aria-busy="true">
         <TableCaption className="sr-only">Invoices, loading</TableCaption>
         <TableHeader>
-          <InvoiceHeaderRow isSelectable={true} />
+          <InvoiceHeaderRow isSelectable={isSelectable} />
         </TableHeader>
         <TableBody>
-          {statusGroups(defaultSort).map((group) => (
+          {statusGroups(invoices, defaultSort).map((group) => (
             <React.Fragment key={group.status}>
               <LoadingGroupRow />
               {group.invoices.map((invoice) => (
@@ -266,11 +310,8 @@ function LoadingInvoices() {
           ))}
         </TableBody>
       </Table>
-      <p
-        role="status"
-        className="flex min-h-11 items-center px-3 py-2.5 text-muted-foreground text-xs"
-      >
-        Loading {invoiceCount(sampleInvoices.length)}…
+      <p role="status" className="flex min-h-11 items-center px-3 text-muted-foreground text-xs">
+        Loading {invoiceCount(invoices.length)}…
       </p>
     </div>
   )
@@ -284,6 +325,7 @@ export function InvoiceHeaderRow({
   isSelectable: boolean
   anchors?: { column?: number }
 }): React.ReactElement {
+  const shown = useShown()
   return (
     <TableRow>
       {isSelectable ? (
@@ -294,24 +336,32 @@ export function InvoiceHeaderRow({
       <TableHead className={controlCell}>
         <span className="sr-only">Lines</span>
       </TableHead>
-      <TableHead column="invoice" narrow="hide">
-        {columnLabel.invoice}
-      </TableHead>
+      {shown("invoice") ? (
+        <TableHead column="invoice" narrow="hide">
+          {columnLabel.invoice}
+        </TableHead>
+      ) : null}
       <TableHead column="customer" className="w-full">
         {columnLabel.customer}
       </TableHead>
-      <TableHead column="lines" align="end" narrow="hide">
-        {columnLabel.lines}
-      </TableHead>
+      {shown("lines") ? (
+        <TableHead column="lines" align="end" narrow="hide">
+          {columnLabel.lines}
+        </TableHead>
+      ) : null}
       <TableHead column="amount" align="end" data-anchor={anchors?.column}>
         {columnLabel.amount}
       </TableHead>
-      <TableHead column="paid" align="end" narrow="hide">
-        {columnLabel.paid}
-      </TableHead>
-      <TableHead column="due" narrow="hide" className="pr-3">
-        {columnLabel.due}
-      </TableHead>
+      {shown("paid") ? (
+        <TableHead column="paid" align="end" narrow="hide">
+          {columnLabel.paid}
+        </TableHead>
+      ) : null}
+      {shown("due") ? (
+        <TableHead column="due" narrow="hide" className="pr-3">
+          {columnLabel.due}
+        </TableHead>
+      ) : null}
     </TableRow>
   )
 }
@@ -342,6 +392,7 @@ export function InvoiceGroupRow({
   anchors?: GroupAnchors
   className?: string
 }): React.ReactElement {
+  const shown = useShown()
   return (
     <TableGroupRow
       value={groupValue(group.status)}
@@ -357,10 +408,9 @@ export function InvoiceGroupRow({
       <TableCell className={controlCell} data-anchor={anchors?.toggle}>
         <TableRowExpand />
       </TableCell>
-      <TableCell narrow="hide" />
-      <TableHead data-anchor={anchors?.name}>
-        <span className="flex min-w-0 items-baseline gap-related">
-          <Status className="min-w-0 font-medium">
+      <TableHead data-anchor={anchors?.name} className="relative w-0">
+        <span className="absolute inset-y-0 left-2 flex items-center gap-related whitespace-nowrap">
+          <Status className="font-medium">
             <StatusMedia fill={statusFill[group.status]} />
             <StatusName>{statusLabel[group.status]}</StatusName>
           </Status>
@@ -370,20 +420,19 @@ export function InvoiceGroupRow({
           </span>
         </span>
       </TableHead>
-      <TableCell align="end" narrow="hide">
-        {groupLineCount(group) > 0 ? (
-          <>
-            {groupLineCount(group)}
-            <span className="sr-only"> lines</span>
-          </>
-        ) : null}
-      </TableCell>
+      {shown("invoice") ? <TableCell narrow="hide" /> : null}
+      {shown("lines") ? (
+        <TableCell align="end" narrow="hide">
+          {groupLineCount(group)}
+          <span className="sr-only"> lines</span>
+        </TableCell>
+      ) : null}
       <TableCell align="end" data-anchor={anchors?.sum}>
         <span className="sr-only">total </span>
         {formatAmount(groupSum(group))}
       </TableCell>
-      <TableCell narrow="hide" />
-      <TableCell narrow="hide" />
+      {shown("paid") ? <TableCell narrow="hide" /> : null}
+      {shown("due") ? <TableCell narrow="hide" /> : null}
     </TableGroupRow>
   )
 }
@@ -416,7 +465,9 @@ export function InvoiceRow({
   className?: string
   onOpen?: (value: string) => void
 }): React.ReactElement {
+  const shown = useShown()
   const lineCount = linesOf(invoice).length
+  const customer = <span className="truncate">{invoice.customer}</span>
   return (
     <TableRow
       value={invoice.id}
@@ -431,11 +482,13 @@ export function InvoiceRow({
         </TableCell>
       ) : null}
       <TableCell className={controlCell} data-anchor={anchors?.expand}>
-        {lineCount > 0 ? <TableRowExpand /> : null}
+        {shown("child-rows") && lineCount > 0 ? <TableRowExpand /> : null}
       </TableCell>
-      <TableCell narrow="hide" className="text-muted-foreground text-xs tabular-nums">
-        {invoice.id}
-      </TableCell>
+      {shown("invoice") ? (
+        <TableCell narrow="hide" className="text-muted-foreground text-xs tabular-nums">
+          {invoice.id}
+        </TableCell>
+      ) : null}
       <TableHead data-anchor={anchors?.link}>
         <TableRowLink
           href={`#${invoice.id}`}
@@ -446,27 +499,35 @@ export function InvoiceRow({
             }
           }}
         >
-          <PreviewCard open={cardOpen}>
-            <PreviewCardTrigger className="justify-start">
-              <span className="truncate">{invoice.customer}</span>
-            </PreviewCardTrigger>
-            <PreviewCardContent container={cardContainer}>
-              <ContactCard invoice={invoice} />
-            </PreviewCardContent>
-          </PreviewCard>
+          {shown("customer-card") ? (
+            <PreviewCard open={cardOpen}>
+              <PreviewCardTrigger className="justify-start">{customer}</PreviewCardTrigger>
+              <PreviewCardContent container={cardContainer}>
+                <ContactCard invoice={invoice} />
+              </PreviewCardContent>
+            </PreviewCard>
+          ) : (
+            customer
+          )}
         </TableRowLink>
-        <DueDetail invoice={invoice} />
+        {shown("due") ? <DueDetail invoice={invoice} /> : null}
       </TableHead>
-      <TableCell align="end" narrow="hide" data-anchor={anchors?.reads}>
-        {lineCount}
-      </TableCell>
+      {shown("lines") ? (
+        <TableCell align="end" narrow="hide" data-anchor={anchors?.reads}>
+          {lineCount}
+        </TableCell>
+      ) : null}
       <TableCell align="end">{formatAmount(invoice.amount)}</TableCell>
-      <TableCell align="end" narrow="hide">
-        {formatPaid(invoice.paid)}
-      </TableCell>
-      <TableCell narrow="hide" className="pr-3">
-        <DueText invoice={invoice} />
-      </TableCell>
+      {shown("paid") ? (
+        <TableCell align="end" narrow="hide">
+          {formatPaid(invoice.paid)}
+        </TableCell>
+      ) : null}
+      {shown("due") ? (
+        <TableCell narrow="hide" className="pr-3">
+          <DueText invoice={invoice} />
+        </TableCell>
+      ) : null}
     </TableRow>
   )
 }
@@ -491,7 +552,7 @@ function InvoiceChildRows({
   )
 }
 
-const childRowClass = "h-9 border-dashed hover:bg-foreground/4 pointer-coarse:h-11"
+const childRowClass = "h-9 pointer-coarse:h-11"
 
 /** One line of an invoice, drawn under it in the invoice's columns. */
 export function LineRow({
@@ -503,20 +564,21 @@ export function LineRow({
   isSelectable: boolean
   anchor?: number
 }): React.ReactElement {
+  const shown = useShown()
   return (
     <TableRow value={line.id} level={3} data-anchor={anchor} className={childRowClass}>
       {isSelectable ? <TableCell className={controlCell} /> : null}
       <TableCell className={controlCell} />
-      <TableCell narrow="hide" />
+      {shown("invoice") ? <TableCell narrow="hide" /> : null}
       <TableHead className="text-muted-foreground">
         <span className="block truncate">{line.description}</span>
       </TableHead>
-      <TableCell narrow="hide" />
+      {shown("lines") ? <TableCell narrow="hide" /> : null}
       <TableCell align="end" className="text-muted-foreground">
         {formatAmount(line.amount)}
       </TableCell>
-      <TableCell narrow="hide" />
-      <TableCell narrow="hide" />
+      {shown("paid") ? <TableCell narrow="hide" /> : null}
+      {shown("due") ? <TableCell narrow="hide" /> : null}
     </TableRow>
   )
 }
@@ -531,6 +593,7 @@ export function LinesErrorRow({
   isSelectable: boolean
   anchor?: number
 }): React.ReactElement {
+  const shown = useShown()
   return (
     <TableRow
       value={`${invoice.id}:lines-error`}
@@ -540,7 +603,7 @@ export function LinesErrorRow({
     >
       {isSelectable ? <TableCell className={controlCell} /> : null}
       <TableCell className={controlCell} />
-      <TableCell narrow="hide" />
+      {shown("invoice") ? <TableCell narrow="hide" /> : null}
       <TableHead className="whitespace-normal py-1.5 text-muted-foreground text-xs">
         Lines for {invoice.id} could not load: the billing service did not respond.{" "}
         <TableRowLink
@@ -550,54 +613,64 @@ export function LinesErrorRow({
           Retry lines
         </TableRowLink>
       </TableHead>
-      <TableCell narrow="hide" />
+      {shown("lines") ? <TableCell narrow="hide" /> : null}
       <TableCell align="end" />
-      <TableCell narrow="hide" />
-      <TableCell narrow="hide" />
+      {shown("paid") ? <TableCell narrow="hide" /> : null}
+      {shown("due") ? <TableCell narrow="hide" /> : null}
     </TableRow>
   )
 }
 
 /** A loading group header: a bar where the status and the sum will be. */
 export function LoadingGroupRow(): React.ReactElement {
+  const shown = useShown()
   return (
-    <TableRowLoading className="h-9 bg-muted/40">
-      <TableCell className={controlCell}>
-        <TableRowSelect />
-      </TableCell>
+    <TableRowLoading className="h-9 *:first:before:bg-muted/40">
+      {shown("select") ? (
+        <TableCell className={controlCell}>
+          <TableRowSelect />
+        </TableCell>
+      ) : null}
       <TableCell className={controlCell}>
         <TableRowExpand />
       </TableCell>
-      <TableCell narrow="hide" />
+      {shown("invoice") ? <TableCell narrow="hide" /> : null}
       <TableHead>Status</TableHead>
-      <TableCell narrow="hide" />
+      {shown("lines") ? <TableCell narrow="hide" /> : null}
       <TableCell align="end">Sum</TableCell>
-      <TableCell narrow="hide" />
-      <TableCell narrow="hide" />
+      {shown("paid") ? <TableCell narrow="hide" /> : null}
+      {shown("due") ? <TableCell narrow="hide" /> : null}
     </TableRowLoading>
   )
 }
 
 /** A loading invoice: a bar in each column at the width of its values. */
 export function LoadingInvoiceRow(): React.ReactElement {
+  const shown = useShown()
   return (
     <TableRowLoading>
-      <TableCell className={controlCell}>
-        <TableRowSelect />
-      </TableCell>
+      {shown("select") ? (
+        <TableCell className={controlCell}>
+          <TableRowSelect />
+        </TableCell>
+      ) : null}
       <TableCell className={controlCell}>
         <TableRowExpand />
       </TableCell>
-      <TableCell narrow="hide">ID</TableCell>
+      {shown("invoice") ? <TableCell narrow="hide">ID</TableCell> : null}
       <TableHead>Customer</TableHead>
-      <TableCell align="end" narrow="hide">
-        Lines
-      </TableCell>
+      {shown("lines") ? (
+        <TableCell align="end" narrow="hide">
+          Lines
+        </TableCell>
+      ) : null}
       <TableCell align="end">Amount</TableCell>
-      <TableCell align="end" narrow="hide">
-        Paid
-      </TableCell>
-      <TableCell narrow="hide">Due</TableCell>
+      {shown("paid") ? (
+        <TableCell align="end" narrow="hide">
+          Paid
+        </TableCell>
+      ) : null}
+      {shown("due") ? <TableCell narrow="hide">Due</TableCell> : null}
     </TableRowLoading>
   )
 }
@@ -643,6 +716,7 @@ function ContactCard({ invoice }: { invoice: SampleInvoice }): React.ReactElemen
 /** The text under the table: the invoice count, the sort, and the key hints. */
 export function InvoicesFooter({
   state,
+  count,
   sort,
   sortId,
   hintId,
@@ -650,6 +724,7 @@ export function InvoicesFooter({
   anchor,
 }: {
   state: RowState
+  count: number
   sort: Sort
   sortId?: string
   hintId?: string
@@ -659,10 +734,10 @@ export function InvoicesFooter({
   return (
     <div
       data-anchor={anchor}
-      className="flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1.5 border-t px-3 py-2.5 text-muted-foreground text-xs"
+      className="flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1.5 px-3 text-muted-foreground text-xs"
     >
       <span>
-        {invoiceCount(sampleInvoices.length)}
+        {invoiceCount(count)}
         {state === "no-permission"
           ? ". Selecting invoices needs the Billing admin role. Ask a workspace admin for it."
           : null}
@@ -760,10 +835,7 @@ function InvoicePage({
 
   return (
     <article
-      className={cn(
-        tableSurface,
-        "flex max-w-2xl flex-col items-start gap-section rounded-card p-3 text-sm"
-      )}
+      className={cn(tableSurface, "flex max-w-2xl flex-col items-start gap-section p-3 text-sm")}
     >
       <button
         type="button"
@@ -831,7 +903,7 @@ function TableError() {
       role="alert"
       className={cn(
         tableSurface,
-        "flex min-h-56 flex-col items-center justify-center gap-related rounded-card p-3 text-center"
+        "flex min-h-56 flex-col items-center justify-center gap-related p-3 text-center"
       )}
     >
       <p className="font-medium">The invoices could not load.</p>
@@ -919,10 +991,10 @@ export function SelectionBarBody({
           onClear()
         }
       }}
-      className="pointer-events-auto relative flex max-w-full items-center gap-related rounded-card border bg-background p-3 shadow-popover"
+      className="pointer-events-auto relative flex max-w-full items-center gap-run rounded-lg border bg-background p-1 shadow-popover"
     >
-      <span className="shrink-0 text-sm tabular-nums">{count} selected</span>
-      <span aria-hidden="true" className="h-5 w-px shrink-0 bg-border" />
+      <span className="shrink-0 px-2.5 text-sm tabular-nums">{count} selected</span>
+      <span aria-hidden="true" className="mx-1 h-4 w-px shrink-0 bg-border" />
       <button type="button" className={cn(barButton, focusRing)}>
         Send reminder
       </button>
@@ -932,7 +1004,7 @@ export function SelectionBarBody({
         </button>
       ) : null}
       {menu}
-      <span aria-hidden="true" className="h-5 w-px shrink-0 bg-border" />
+      <span aria-hidden="true" className="mx-1 h-4 w-px shrink-0 bg-border" />
       <button
         type="button"
         onClick={onClear}
@@ -974,12 +1046,12 @@ function MoreIcon() {
 }
 
 const menuSurface =
-  "flex w-48 flex-col gap-run rounded-card border bg-background p-3 shadow-popover outline-hidden"
+  "flex w-48 flex-col gap-run rounded-lg border bg-background p-1 shadow-popover outline-hidden"
 
 const menuItem =
   "flex min-h-8 w-full cursor-default items-center rounded-floor px-2 text-left text-sm outline-hidden data-highlighted:bg-muted pointer-coarse:min-h-11"
 
-const menuDivider = "h-px bg-border"
+const menuDivider = "-mx-1 my-1 h-px bg-border"
 
 function SelectionMenu({ isWide, onVoid }: { isWide: boolean; onVoid: () => void }) {
   return (

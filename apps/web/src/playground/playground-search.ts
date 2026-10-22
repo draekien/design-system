@@ -1,5 +1,6 @@
 import { fixtureStateSearch } from "@workspace/fixtures/state.ts"
 import { z } from "zod"
+import { tableParts } from "../lockups/table/table-parts.ts"
 
 export const canvasViews = ["lockup", "states"] as const
 
@@ -56,7 +57,10 @@ export const canvasSearch = fixtureStateSearch.extend({
     .union([z.literal(4), z.literal(25), z.literal(200)])
     .default(4)
     .catch(4),
-  hide: z.array(z.enum(listParts)).default([]).catch([]),
+  hide: z
+    .array(z.enum([...listParts, ...tableParts]))
+    .default([])
+    .catch([]),
 })
 
 export type CanvasOptions = z.output<typeof canvasSearch>
@@ -81,3 +85,21 @@ export const playgroundSearch = canvasSearch.omit({ view: true }).extend({
 export type PlaygroundSearch = z.output<typeof playgroundSearch>
 
 export const playgroundSearchDefaults: PlaygroundSearch = playgroundSearch.parse({})
+
+export function hiddenParts<TPart extends string>(
+  hide: ReadonlyArray<string>,
+  parts: ReadonlyArray<TPart>
+): ReadonlySet<TPart> {
+  return new Set(parts.filter((part) => hide.includes(part)))
+}
+
+/** The `hide` list after toggling one part, kept in the order of `parts`. */
+export function toggledParts<TPart extends string>(
+  parts: ReadonlyArray<TPart>,
+  hidden: ReadonlySet<TPart>,
+  part: TPart
+): ReadonlyArray<TPart> {
+  return parts.filter((candidate) =>
+    candidate === part ? !hidden.has(candidate) : hidden.has(candidate)
+  )
+}

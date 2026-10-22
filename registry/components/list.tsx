@@ -255,7 +255,7 @@ const narrowClass: Readonly<Record<ListRowNarrow, string>> = {
 }
 
 const rowClass =
-  "group/list-row col-span-full grid min-h-11 grid-cols-subgrid items-center border-b px-2"
+  "group/list-row col-span-full grid min-h-11 grid-cols-subgrid items-center rounded-floor px-2"
 
 function Bar({ className }: { className: string }) {
   return (
@@ -291,7 +291,7 @@ export function ListRow({ value, render, className, ...props }: ListRowProps): R
       {
         className: cn(
           rowClass,
-          "hover:bg-foreground/4 has-[[data-slot=list-row-link]:focus-visible]:bg-foreground/7 data-peeked:bg-foreground/7 data-peeked:hover:bg-foreground/7",
+          "hover:bg-foreground/4 data-[selected]:bg-foreground/4 data-[selected]:hover:bg-foreground/7 has-[[data-slot=list-row-link]:focus-visible]:bg-foreground/7 data-peeked:bg-foreground/7 data-peeked:inset-ring-2 data-peeked:inset-ring-foreground/15 data-peeked:hover:bg-foreground/7",
           className
         ),
       },
@@ -356,7 +356,7 @@ export function ListRowSelect({ className, ...props }: ListRowSelectProps): Reac
       aria-labelledby={`${labelId} ${row.nameId}`}
       className={cn(
         selectClass,
-        "group/select invisible cursor-pointer rounded-md outline-none data-checked:visible pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible",
+        "group/select invisible cursor-pointer rounded-floor outline-none data-checked:visible pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible",
         className
       )}
       {...props}
@@ -385,7 +385,7 @@ export function ListRowSelect({ className, ...props }: ListRowSelectProps): Reac
 const linkClass = "col-[2/-2] grid h-full min-h-11 grid-cols-subgrid items-center pl-1"
 
 const peekClass =
-  "col-[-2/-1] ml-1 flex size-6 shrink-0 items-center justify-center rounded-md pointer-coarse:size-11"
+  "col-[-2/-1] ml-1 flex size-6 shrink-0 items-center justify-center rounded-floor pointer-coarse:size-11"
 
 /** Props for {@link ListRowPeek}. */
 export type ListRowPeekProps = Omit<React.ComponentProps<"button">, "children" | "type">

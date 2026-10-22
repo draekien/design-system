@@ -67,10 +67,10 @@ const listRecords = [
 function ListPreview() {
   const hintId = React.useId()
   return (
-    <div className="w-full overflow-hidden rounded-xl border bg-card text-card-foreground">
+    <div className="w-full">
       <List aria-label="Records" aria-describedby={hintId}>
         {listRecords.map((record) => (
-          <ListRow key={record.id} value={record.id} className="last:border-b-0">
+          <ListRow key={record.id} value={record.id}>
             <ListRowSelect />
             <ListRowLink href={`#${record.id}`}>
               <ListRowSubject>
@@ -100,7 +100,7 @@ function ListPreview() {
           </ListRow>
         ))}
       </List>
-      <p id={hintId} className="border-t px-3 py-2 text-muted-foreground text-xs">
+      <p id={hintId} className="px-2 pt-3 text-muted-foreground text-xs">
         ↑ ↓ move between rows · X selects the focused row
       </p>
     </div>

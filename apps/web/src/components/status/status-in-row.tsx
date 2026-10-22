@@ -12,9 +12,9 @@ import { Status, StatusMedia, StatusName } from "@/components/status.tsx"
 
 export function StatusInRow(): React.ReactElement {
   return (
-    <div className="w-full max-w-md overflow-hidden rounded-xl border bg-card text-card-foreground">
+    <div className="w-full max-w-md">
       <List aria-label="Records">
-        <ListRow value="REC-104" className="border-b-0">
+        <ListRow value="REC-104">
           <ListRowLink href="#REC-104">
             <ListRowSubject>
               <ListRowMedia>

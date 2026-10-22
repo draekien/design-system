@@ -30,7 +30,7 @@ export function TableSortable(): React.ReactElement {
   )
 
   return (
-    <div className="w-full max-w-lg border bg-card text-card-foreground">
+    <div className="w-full max-w-lg overflow-hidden rounded-card border bg-card text-card-foreground">
       <Table sort={sort} onSortChange={setSort} defaultSelectedValues={[]}>
         <TableCaption className="sr-only">Invoices</TableCaption>
         <TableHeader>
@@ -46,7 +46,7 @@ export function TableSortable(): React.ReactElement {
         </TableHeader>
         <TableBody>
           {rows.map((invoice) => (
-            <TableRow key={invoice.id} value={invoice.id} className="last:border-b-0">
+            <TableRow key={invoice.id} value={invoice.id}>
               <TableCell className="w-0 px-1 first:pl-2">
                 <TableRowSelect />
               </TableCell>

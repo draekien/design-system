@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-10-22",
+    "description": "Rows have no line between them, and the header has none under it. Body rows are square: a row's hover, focus, peek and group tints are drawn on its first cell's ::before across the row, so they draw in Chromium, Firefox and WebKit and when the last column hides. The peek ring now draws in WebKit. TableHeader rows draw a muted fill with the floor radius (6px) on its top corners, and TableFooter rows one on its bottom corners, and TableFooter drops its line above the totals. Each fill sits below the cell content, so text placed directly in a row's first cell, such as a header label or a footer's Total, is no longer covered. A focused group row draws a 2px inset ring. A Table draws no surface; a card with overflow-hidden and no padding clips the header and footer fills to its corners. A selected row is tinted with the foreground at 4%, 7% under the pointer. The keyboard focus underline now draws under a TableRowLink whose text sits in an inline-flex child, such as a PreviewCardTrigger."
+  },
+  {
+    "date": "2026-10-22",
     "description": "Adds table, which replaces shadcn/ui's Table: a part for each table element, sortable headers, child and group rows, selection, peek and one tab stop, built from the record table experiment."
   }
 ]

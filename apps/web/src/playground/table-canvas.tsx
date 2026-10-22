@@ -1,4 +1,8 @@
-import { type SampleInvoice, sampleInvoiceLines } from "@workspace/fixtures/invoices.ts"
+import {
+  type SampleInvoice,
+  sampleInvoiceLines,
+  sampleInvoices,
+} from "@workspace/fixtures/invoices.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import {
   Table,
@@ -14,6 +18,7 @@ import {
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import { clipSpecimen } from "../experiments/clip-specimen.tsx"
+import { randomInvoices } from "../lockups/list/random-records.ts"
 import {
   DueText,
   type GroupAnchors,
@@ -31,6 +36,7 @@ import {
   SelectionMenuButtonDrawing,
   SelectionMenuDrawing,
   TableLockup,
+  TableParts,
 } from "../lockups/table/table-lockup.tsx"
 import {
   formatAmount,
@@ -44,6 +50,7 @@ import {
   statusGroups,
   statusLabel,
 } from "../lockups/table/table-model.ts"
+import { tableParts } from "../lockups/table/table-parts.ts"
 import { controlCell, tableSurface } from "../lockups/table/table-styles.ts"
 import { CardSpecimen } from "./card-specimen.tsx"
 import {
@@ -52,7 +59,7 @@ import {
   type ConstellationPart,
   type Drawing,
 } from "./constellation.tsx"
-import type { CanvasOptions } from "./playground-search.ts"
+import { type CanvasOptions, hiddenParts } from "./playground-search.ts"
 import { StatesSection } from "./states-section.tsx"
 
 function handleIgnore() {
@@ -64,7 +71,9 @@ const drawingSort: Sort = { column: "amount", direction: "descending" }
 const drawingSubject = sentInvoiceWithLines()
 
 function sentInvoiceWithLines(): { group: StatusGroup; invoice: SampleInvoice } {
-  const group = statusGroups(drawingSort).find((candidate) => candidate.status === "sent")
+  const group = statusGroups(sampleInvoices, drawingSort).find(
+    (candidate) => candidate.status === "sent"
+  )
   const invoice = group?.invoices.find((candidate) => linesOf(candidate).length > 0)
   if (group === undefined || invoice === undefined) {
     throw new Error("The table drawings need a sent invoice with lines in the fixtures.")
@@ -76,14 +85,30 @@ const drawingWidth = "w-[48rem]"
 
 /** The table lockup canvas: the lockup or its States view, in one fixture state. */
 export function TableCanvas({ options }: { options: CanvasOptions }): React.ReactElement {
+  const hidden = React.useMemo(() => hiddenParts(options.hide, tableParts), [options.hide])
+  const invoices = React.useMemo(
+    () =>
+      options.data === "random" ? randomInvoices(options.seed, options.count) : sampleInvoices,
+    [options.data, options.seed, options.count]
+  )
   return (
     <main className="p-4 sm:p-6">
       <h1 className="sr-only">Table</h1>
-      {options.view === "states" ? (
-        <StatesView state={options.state} />
-      ) : (
-        <TableLockup key={options.state} state={options.state} />
-      )}
+      <TableParts hidden={hidden}>
+        {options.view === "states" ? (
+          <StatesView
+            state={options.state}
+            isSelectable={!hidden.has("select")}
+            isExpandable={!hidden.has("child-rows")}
+          />
+        ) : (
+          <TableLockup
+            key={`${options.state}-${options.data}-${options.seed}-${options.count}`}
+            state={options.state}
+            invoices={invoices}
+          />
+        )}
+      </TableParts>
     </main>
   )
 }
@@ -115,7 +140,7 @@ function SpecimenTable({
 }) {
   const { group, invoice } = drawingSubject
   return (
-    <div data-anchor={anchor} className={cn(tableSurface, className)}>
+    <div data-anchor={anchor} className={cn(header && tableSurface, className)}>
       <Table
         sort={drawingSort}
         onSortChange={handleIgnore}
@@ -146,11 +171,14 @@ const rowSpecimens: ReadonlyArray<{
   expanded?: boolean
 }> = [
   { label: "At rest" },
-  { label: "Hovered", className: "bg-foreground/4 [&_[data-slot=table-row-select]]:visible" },
+  {
+    label: "Hovered",
+    className: "*:first:before:bg-foreground/4 [&_[data-slot=table-row-select]]:visible",
+  },
   {
     label: "Focused",
     className:
-      "bg-foreground/7 [&_[data-slot=table-row-link]]:underline [&_[data-slot=table-row-select]]:visible",
+      "*:first:before:bg-foreground/7 [&_[data-slot=table-row-link]]:underline [&_[data-slot=table-row-link]_*]:underline [&_[data-slot=table-row-select]]:visible",
   },
   { label: "Selected", selected: true },
   { label: "Peeked", peeked: true },
@@ -166,7 +194,15 @@ const narrowSpecimens = [
   },
 ] as const
 
-function StatesView({ state }: { state: FixtureState }) {
+function StatesView({
+  state,
+  isSelectable,
+  isExpandable,
+}: {
+  state: FixtureState
+  isSelectable: boolean
+  isExpandable: boolean
+}) {
   const { group, invoice } = drawingSubject
   switch (state) {
     case "error":
@@ -181,7 +217,7 @@ function StatesView({ state }: { state: FixtureState }) {
             <Table aria-busy="true">
               <TableCaption className="sr-only">Invoices, loading</TableCaption>
               <TableHeader>
-                <InvoiceHeaderRow isSelectable={true} />
+                <InvoiceHeaderRow isSelectable={isSelectable} />
               </TableHeader>
               <TableBody>
                 <LoadingGroupRow />
@@ -194,7 +230,7 @@ function StatesView({ state }: { state: FixtureState }) {
     case "loaded":
     case "partial":
     case "no-permission": {
-      const isSelectable = state !== "no-permission"
+      const isRowSelectable = isSelectable && state !== "no-permission"
       return (
         <div className="flex flex-col gap-12">
           <StatesSection
@@ -207,7 +243,7 @@ function StatesView({ state }: { state: FixtureState }) {
                   <p className="text-muted-foreground text-xs">{specimen.label}</p>
                   <SpecimenTable
                     label={`Invoice row, ${specimen.label.toLowerCase()}`}
-                    isSelectable={isSelectable}
+                    isSelectable={isRowSelectable}
                     selected={specimen.selected}
                     peeked={specimen.peeked}
                     expanded={specimen.expanded}
@@ -215,11 +251,11 @@ function StatesView({ state }: { state: FixtureState }) {
                   >
                     <InvoiceRow
                       invoice={invoice}
-                      isSelectable={isSelectable}
-                      className={cn("border-b-0", specimen.className)}
+                      isSelectable={isRowSelectable}
+                      className={specimen.className}
                     />
-                    {specimen.expanded ? (
-                      <ChildRows invoice={invoice} state={state} isSelectable={isSelectable} />
+                    {specimen.expanded && isExpandable ? (
+                      <ChildRows invoice={invoice} state={state} isSelectable={isRowSelectable} />
                     ) : null}
                   </SpecimenTable>
                 </div>
@@ -237,13 +273,12 @@ function StatesView({ state }: { state: FixtureState }) {
                   className={cn("flex shrink-0 flex-col gap-1.5", specimen.width)}
                 >
                   <p className="text-muted-foreground text-xs">{specimen.label}</p>
-                  <SpecimenTable label={`Invoices, ${specimen.label}`} isSelectable={isSelectable}>
-                    <InvoiceGroupRow group={group} isSelectable={isSelectable} />
-                    <InvoiceRow
-                      invoice={invoice}
-                      isSelectable={isSelectable}
-                      className="border-b-0"
-                    />
+                  <SpecimenTable
+                    label={`Invoices, ${specimen.label}`}
+                    isSelectable={isRowSelectable}
+                  >
+                    <InvoiceGroupRow group={group} isSelectable={isRowSelectable} />
+                    <InvoiceRow invoice={invoice} isSelectable={isRowSelectable} />
                   </SpecimenTable>
                 </div>
               ))}
@@ -463,7 +498,7 @@ function partSpecs(state: RowState): ReadonlyArray<PartSpec> {
           header={false}
           className={drawingWidth}
         >
-          <InvoiceGroupRow group={group} isSelectable={isSelectable} className="border-b-0" />
+          <InvoiceGroupRow group={group} isSelectable={isSelectable} />
         </SpecimenTable>
       ),
     },
@@ -526,7 +561,7 @@ function partSpecs(state: RowState): ReadonlyArray<PartSpec> {
           <InvoiceRow
             invoice={invoice}
             isSelectable={isSelectable}
-            className="border-b-0 bg-foreground/7 [&_[data-slot=table-row-link]]:underline"
+            className="*:first:before:bg-foreground/7 [&_[data-slot=table-row-link]]:underline [&_[data-slot=table-row-link]_*]:underline"
           />
         </SpecimenTable>
       ),
@@ -579,7 +614,6 @@ function partSpecs(state: RowState): ReadonlyArray<PartSpec> {
                 isSelectable={isSelectable}
                 cardOpen={true}
                 cardContainer={container}
-                className="border-b-0"
               />
             </SpecimenTable>
           )}
@@ -630,7 +664,12 @@ function partSpecs(state: RowState): ReadonlyArray<PartSpec> {
           : "Counts the invoices, names the sort, and lists the keys",
       specimen: (
         <div className={drawingWidth}>
-          <InvoicesFooter state={state} sort={drawingSort} isSelectable={isSelectable} />
+          <InvoicesFooter
+            state={state}
+            count={sampleInvoices.length}
+            sort={drawingSort}
+            isSelectable={isSelectable}
+          />
         </div>
       ),
     },
@@ -640,7 +679,7 @@ function partSpecs(state: RowState): ReadonlyArray<PartSpec> {
       depth: 0,
       note: "Beside the table at lg and wider; under the peeked row below lg",
       specimen: (
-        <div className="w-64 rounded-xl border bg-card p-4 text-card-foreground text-sm">
+        <div className="w-64 rounded-card border bg-card p-3 text-card-foreground text-sm">
           <PeekContent invoice={invoice} onOpen={handleIgnore} onClose={handleIgnore} />
         </div>
       ),
@@ -702,14 +741,11 @@ function ControlSpecimen({
         <TableGroupRow
           value={groupValue(group.status)}
           values={group.invoices.map((each) => each.id)}
-          className="border-b-0"
         >
           {cell}
         </TableGroupRow>
       ) : (
-        <TableRow value={invoice.id} className="border-b-0">
-          {cell}
-        </TableRow>
+        <TableRow value={invoice.id}>{cell}</TableRow>
       )}
     </SpecimenTable>
   )
@@ -737,16 +773,12 @@ function DrawnTable({ state, anchors }: { state: RowState; anchors?: Anchors }) 
         </TableHeader>
         <TableBody>
           <InvoiceGroupRow group={group} isSelectable={isSelectable} anchors={anchors?.group} />
-          <InvoiceRow
-            invoice={invoice}
-            isSelectable={isSelectable}
-            anchors={anchors?.invoice}
-            className="border-b-0"
-          />
+          <InvoiceRow invoice={invoice} isSelectable={isSelectable} anchors={anchors?.invoice} />
         </TableBody>
       </Table>
       <InvoicesFooter
         state={state}
+        count={sampleInvoices.length}
         sort={drawingSort}
         isSelectable={isSelectable}
         anchor={anchors?.footer}

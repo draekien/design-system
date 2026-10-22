@@ -64,7 +64,7 @@ export function TableInvoices(): React.ReactElement {
   const sign = sort.direction === "ascending" ? 1 : -1
 
   return (
-    <div className="w-full border bg-card text-card-foreground">
+    <div className="w-full overflow-hidden rounded-card border bg-card text-card-foreground">
       <Table
         sort={sort}
         onSortChange={setSort}
@@ -155,7 +155,7 @@ export function TableInvoices(): React.ReactElement {
           })}
         </TableBody>
       </Table>
-      <p id={hintId} className="border-t px-3 py-2 text-muted-foreground text-xs">
+      <p id={hintId} className="px-3 py-2 text-muted-foreground text-xs">
         ↑ ↓ move between rows · → ← expand and collapse · X selects the focused row
       </p>
     </div>

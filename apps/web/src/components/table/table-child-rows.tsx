@@ -28,7 +28,7 @@ export function TableChildRows(): React.ReactElement {
   const [expanded, setExpanded] = React.useState<ReadonlyArray<string>>(["INV-2041"])
 
   return (
-    <div className="w-full max-w-lg border bg-card text-card-foreground">
+    <div className="w-full max-w-lg overflow-hidden rounded-card border bg-card text-card-foreground">
       <Table expandedValues={expanded} onExpandedValuesChange={setExpanded}>
         <TableCaption className="sr-only">Invoices</TableCaption>
         <TableHeader>
@@ -46,7 +46,7 @@ export function TableChildRows(): React.ReactElement {
         <TableBody>
           {invoices.map((invoice) => (
             <React.Fragment key={invoice.id}>
-              <TableRow value={invoice.id} className="last:border-b-0">
+              <TableRow value={invoice.id}>
                 <TableCell className="w-0 px-1 first:pl-2">
                   {invoice.lines.length > 0 ? <TableRowExpand /> : null}
                 </TableCell>

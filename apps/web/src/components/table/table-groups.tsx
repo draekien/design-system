@@ -36,7 +36,7 @@ export function TableGroups(): React.ReactElement {
   const [expanded, setExpanded] = React.useState<ReadonlyArray<string>>(["Sent", "Paid"])
 
   return (
-    <div className="w-full max-w-lg border bg-card text-card-foreground">
+    <div className="w-full max-w-lg overflow-hidden rounded-card border bg-card text-card-foreground">
       <Table
         expandedValues={expanded}
         onExpandedValuesChange={setExpanded}

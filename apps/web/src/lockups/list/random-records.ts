@@ -1,5 +1,9 @@
 import { base, en, Faker } from "@faker-js/faker"
-import type { InvoiceStatus, SampleInvoice } from "@workspace/fixtures/invoices.ts"
+import type {
+  InvoiceStatus,
+  SampleInvoice,
+  SampleInvoiceLine,
+} from "@workspace/fixtures/invoices.ts"
 import { fixtureNow, type RecordStatus, type SampleRecord } from "@workspace/fixtures/records.ts"
 
 const referenceTime = Date.parse(fixtureNow)
@@ -87,7 +91,7 @@ export function randomInvoices(seed: number, count: number): ReadonlyArray<Sampl
 
   return dayOffsets.map((days, index) => {
     const status = faker.helpers.arrayElement(invoiceStatuses)
-    const due = referenceTime + days * 24 * 60 * 60_000
+    const due = referenceTime + (status === "draft" ? Math.abs(days) : days) * 24 * 60 * 60_000
     return {
       id: `INV-${3000 + count - index}`,
       customer: faker.company.name(),
@@ -100,4 +104,24 @@ export function randomInvoices(seed: number, count: number): ReadonlyArray<Sampl
       summary: `${sentenceCase(faker.commerce.productDescription())}`,
     }
   })
+}
+
+const lineFaker = new Faker({ locale: [en, base] })
+
+export function randomInvoiceLines(invoice: SampleInvoice): ReadonlyArray<SampleInvoiceLine> {
+  lineFaker.seed(Number(invoice.id.replace(/\D/g, "")))
+  const weights = Array.from({ length: lineFaker.number.int({ min: 0, max: 4 }) }, () =>
+    lineFaker.number.int({ min: 1, max: 9 })
+  )
+  const total = weights.reduce((sum, weight) => sum + weight, 0)
+  const cents = Math.round(invoice.amount * 100)
+  const shares = weights.map((weight) => Math.floor((cents * weight) / total))
+  const remainder = cents - shares.reduce((sum, share) => sum + share, 0)
+
+  return shares.map((share, index) => ({
+    id: `${invoice.id}-L${index + 1}`,
+    invoiceId: invoice.id,
+    description: sentenceCase(lineFaker.commerce.productName()),
+    amount: (share + (index === 0 ? remainder : 0)) / 100,
+  }))
 }

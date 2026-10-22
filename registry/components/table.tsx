@@ -454,7 +454,7 @@ export function TableHeader({
     defaultTagName: "thead",
     render,
     state: { slot: "table-header" },
-    props: mergeProps<"thead">({ className: cn("border-b", className) }, props),
+    props: mergeProps<"thead">({ className }, props),
   })
   return <SectionContext.Provider value="head">{element}</SectionContext.Provider>
 }
@@ -483,10 +483,7 @@ export function TableFooter({
     defaultTagName: "tfoot",
     render,
     state: { slot: "table-footer" },
-    props: mergeProps<"tfoot">(
-      { className: cn("border-t bg-muted/40 font-medium", className) },
-      props
-    ),
+    props: mergeProps<"tfoot">({ className: cn("font-medium", className) }, props),
   })
   return <SectionContext.Provider value="foot">{element}</SectionContext.Provider>
 }
@@ -510,7 +507,17 @@ const RowContext = React.createContext<RowContextValue>({ kind: "static" })
 const rowKeyShortcuts =
   "Space Shift+Space X Enter ArrowUp ArrowDown ArrowLeft ArrowRight Home End Escape"
 
-const rowClass = "group/table-row relative border-b"
+const rowClass =
+  "group/table-row relative isolate *:first:before:pointer-events-none *:first:before:absolute *:first:before:inset-0 *:first:before:-z-1"
+
+const edgeRowClass =
+  "relative isolate *:first:before:pointer-events-none *:first:before:absolute *:first:before:inset-0 *:first:before:-z-1 *:first:before:bg-muted"
+
+const staticRowClass: Record<Section, string> = {
+  head: cn(edgeRowClass, "*:first:before:rounded-t-floor"),
+  body: rowClass,
+  foot: cn(edgeRowClass, "*:first:before:rounded-b-floor"),
+}
 
 function handleRowClick(event: React.MouseEvent<HTMLTableRowElement>) {
   const isControl =
@@ -602,10 +609,7 @@ function StaticRow({ render, className, ...props }: useRender.ComponentProps<"tr
     defaultTagName: "tr",
     render,
     state: { slot: "table-row" },
-    props: mergeProps<"tr">(
-      { className: cn(section === "body" ? rowClass : undefined, className) },
-      props
-    ),
+    props: mergeProps<"tr">({ className: cn(staticRowClass[section], className) }, props),
   })
 }
 
@@ -634,10 +638,10 @@ function BodyRow({
         onClick: handleRowClick,
         className: cn(
           rowClass,
-          "has-data-[slot=table-row-link]:cursor-pointer outline-none focus-visible:bg-foreground/7 data-peeked:bg-foreground/7 data-peeked:inset-ring-2 data-peeked:inset-ring-foreground/15",
+          "has-data-[slot=table-row-link]:cursor-pointer outline-none focus-visible:*:first:before:bg-foreground/7 data-peeked:*:first:before:bg-foreground/7 data-peeked:*:first:before:inset-ring-2 data-peeked:*:first:before:inset-ring-foreground/15",
           kind === "group"
-            ? "h-9 bg-muted/40 hover:bg-muted/70 pointer-coarse:h-11"
-            : "h-11 hover:bg-foreground/4",
+            ? "h-9 *:first:before:bg-muted/40 hover:*:first:before:bg-muted/70 focus-visible:*:first:before:inset-ring-2 focus-visible:*:first:before:inset-ring-ring pointer-coarse:h-11"
+            : "h-11 hover:*:first:before:bg-foreground/4 aria-selected:*:first:before:bg-foreground/4 aria-selected:hover:*:first:before:bg-foreground/7",
           className
         ),
       },
@@ -1093,7 +1097,7 @@ export function TableRowLink({
           {
             tabIndex: -1,
             className: cn(
-              "block truncate font-medium outline-none decoration-2 decoration-ring underline-offset-3 group-focus-visible/table-row:underline",
+              "block truncate font-medium outline-none decoration-2 decoration-ring underline-offset-3 **:decoration-2 **:decoration-ring group-focus-visible/table-row:underline group-focus-visible/table-row:**:underline",
               className
             ),
             children,

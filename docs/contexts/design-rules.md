@@ -14,6 +14,19 @@ Every rule applies at every scale: the parts inside one component follow it as t
 
 Ship a component's usage guidance in its registry item's `docs` field and on the GitHub Pages site.
 
+## Principles
+
+Four principles decide any case no rule covers, in this order: Quiet first, then Clear, Precise and Sleek. This is this design system's own decision.
+
+| Principle | Rule | Test |
+| --- | --- | --- |
+| Quiet | Nothing draws at rest that the caller does not need at rest; a line, border, fill, control or hint the caller needs only sometimes is revealed on hover, focus or selection. | Remove the element at rest: if the caller loses nothing, it stays removed or becomes revealed. |
+| Clear | Every value carries its meaning: a figure names its unit, a state shows its word, a control names its action. | A first-time reader names what the value is and its unit or state without a hover card. |
+| Precise | Every part sits in the column and on the edge it belongs to. | The part shares a left edge or a baseline with the part above or below it. |
+| Sleek | A container is no thicker than its contents need: 4px of padding around controls, 12px around content. | The container's padding and radius match one row of the container table under Radius. |
+
+Clear overrules Quiet: never hide a unit, a state's word or an action's name to draw less.
+
 ## Sources
 
 The evidence is [docs/references/ux-references.md](../references/ux-references.md).
@@ -100,13 +113,21 @@ A radius builds outward from the floor: a leaf control (button, input) takes the
 
 The selection checkbox is the one leaf control below the floor: it takes `--radius-checkbox` (5px). This is this design system's own decision.
 
-A container with no padding between it and its content, such as a row, is square.
+A table row is square. A list row's tint is a leaf shape and takes the floor. A card that clips a table with no padding is the one container whose corners its content follows.
 
 Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and turns off nesting.
 
 Circles (`rounded-full`) are exempt: status dots and initials.
 
-A container's radius is a token: `--radius-card` (18px) for 12px of padding around a leaf control, `--radius-panel` (34px) for 16px of padding around a card.
+A container's radius is a token:
+
+| Container holds | Padding | Radius |
+| --- | --- | --- |
+| only controls, such as a selection bar or a menu | 4px | `--radius-lg` (10px) |
+| content, such as a peek panel, hover card or dialog | 12px | `--radius-card` (18px) |
+| cards | 16px | `--radius-panel` (34px) |
+
+A divider between controls in a bar is 16px tall with 4px on each side; a divider between items in a menu runs the menu's full width with 4px above and below.
 
 ## Spacing between components
 
