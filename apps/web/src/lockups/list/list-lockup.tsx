@@ -129,6 +129,7 @@ export function ListLockup<TItem>({
             count={items.length}
             hintId={hintId}
             selectedCount={selectedValues.length}
+            isSelectable={!hidden.has("select")}
             onClearSelection={() => setSelectedValues([])}
           />
         </div>
@@ -229,6 +230,7 @@ export function ListFooter<TItem>({
   count,
   hintId,
   selectedCount,
+  isSelectable,
   anchor,
   onClearSelection,
 }: {
@@ -237,13 +239,17 @@ export function ListFooter<TItem>({
   count: number
   hintId: string
   selectedCount: number
+  isSelectable: boolean
   anchor?: number
   onClearSelection: () => void
 }) {
   return (
     <div
       data-anchor={anchor}
-      className="flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1.5 px-2 text-muted-foreground text-xs"
+      className={cn(
+        "flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1.5 pr-2 text-muted-foreground text-xs",
+        isSelectable ? "pl-9 pointer-coarse:pl-14" : "pl-3"
+      )}
     >
       <FooterMessage dataset={dataset} state={state} count={count} />
       {selectedCount > 0 && (

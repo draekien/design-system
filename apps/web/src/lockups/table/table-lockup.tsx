@@ -62,7 +62,7 @@ import {
   statusLabel,
 } from "./table-model.ts"
 import type { TablePart } from "./table-parts.ts"
-import { controlCell, tableSurface } from "./table-styles.ts"
+import { controlCell, firstColumnInset, tableSurface } from "./table-styles.ts"
 
 const defaultSort: Sort = { column: "due", direction: "ascending" }
 
@@ -310,7 +310,13 @@ function LoadingInvoices({ invoices }: { invoices: ReadonlyArray<SampleInvoice> 
           ))}
         </TableBody>
       </Table>
-      <p role="status" className="flex min-h-11 items-center px-3 text-muted-foreground text-xs">
+      <p
+        role="status"
+        className={cn(
+          "flex min-h-11 items-center pr-2 text-muted-foreground text-xs",
+          firstColumnInset(isSelectable)
+        )}
+      >
         Loading {invoiceCount(invoices.length)}…
       </p>
     </div>
@@ -734,7 +740,10 @@ export function InvoicesFooter({
   return (
     <div
       data-anchor={anchor}
-      className="flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1.5 px-3 text-muted-foreground text-xs"
+      className={cn(
+        "flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1.5 pr-2 text-muted-foreground text-xs",
+        firstColumnInset(isSelectable)
+      )}
     >
       <span>
         {invoiceCount(count)}
