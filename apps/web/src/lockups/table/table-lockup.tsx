@@ -991,10 +991,10 @@ export function SelectionBarBody({
           onClear()
         }
       }}
-      className="pointer-events-auto relative flex max-w-full items-center gap-related rounded-card border bg-background p-3 shadow-popover"
+      className="pointer-events-auto relative flex max-w-full items-center gap-run rounded-lg border bg-background p-1 shadow-popover"
     >
-      <span className="shrink-0 text-sm tabular-nums">{count} selected</span>
-      <span aria-hidden="true" className="h-5 w-px shrink-0 bg-border" />
+      <span className="shrink-0 px-2.5 text-sm tabular-nums">{count} selected</span>
+      <span aria-hidden="true" className="mx-1 h-4 w-px shrink-0 bg-border" />
       <button type="button" className={cn(barButton, focusRing)}>
         Send reminder
       </button>
@@ -1004,7 +1004,7 @@ export function SelectionBarBody({
         </button>
       ) : null}
       {menu}
-      <span aria-hidden="true" className="h-5 w-px shrink-0 bg-border" />
+      <span aria-hidden="true" className="mx-1 h-4 w-px shrink-0 bg-border" />
       <button
         type="button"
         onClick={onClear}
@@ -1046,12 +1046,12 @@ function MoreIcon() {
 }
 
 const menuSurface =
-  "flex w-48 flex-col gap-run rounded-card border bg-background p-3 shadow-popover outline-hidden"
+  "flex w-48 flex-col gap-run rounded-lg border bg-background p-1 shadow-popover outline-hidden"
 
 const menuItem =
   "flex min-h-8 w-full cursor-default items-center rounded-floor px-2 text-left text-sm outline-hidden data-highlighted:bg-muted pointer-coarse:min-h-11"
 
-const menuDivider = "h-px bg-border"
+const menuDivider = "-mx-1 my-1 h-px bg-border"
 
 function SelectionMenu({ isWide, onVoid }: { isWide: boolean; onVoid: () => void }) {
   return (
