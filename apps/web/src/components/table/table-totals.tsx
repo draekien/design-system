@@ -29,7 +29,7 @@ export function TableTotals(): React.ReactElement {
         </TableColumnGroup>
         <TableHeader>
           <TableRow>
-            <TableHead>Description</TableHead>
+            <TableHead className="w-full">Description</TableHead>
             <TableHead align="end">Hours</TableHead>
             <TableHead align="end">Amount</TableHead>
           </TableRow>

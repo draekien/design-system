@@ -143,7 +143,7 @@ function PartReference({ part }: { part: ApiPart }): React.ReactElement {
                   <TableHead
                     className={cn(
                       propCell,
-                      "w-auto max-w-none whitespace-nowrap font-medium font-mono text-[0.8125rem]"
+                      "whitespace-nowrap font-medium font-mono text-[0.8125rem]"
                     )}
                   >
                     {name}
