@@ -101,12 +101,12 @@
       {
         "name": "abbreviate",
         "value": "48rem",
-        "purpose": "Container width below which a record row column shows its short form."
+        "purpose": "Container width below which a list row column shows its short form."
       },
       {
         "name": "hide",
         "value": "40rem",
-        "purpose": "Container width below which a record row column marked to hide disappears."
+        "purpose": "Container width below which a list row column marked to hide disappears."
       }
     ]
   },
@@ -128,9 +128,9 @@
       "css": ".ds-btn-ghost { display: inline-flex; align-items: center; height: 28px; padding: 0 8px; border: 1px solid transparent; border-radius: calc(var(--radius) * 0.6); background: transparent; color: var(--foreground); font: 500 0.75rem/1.625 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-ghost:hover { background: var(--muted); } .ds-btn-ghost:focus-visible { outline: none; border-color: var(--ring); box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent); }"
     },
     {
-      "name": "Record Row",
+      "name": "List Row",
       "kind": "custom",
-      "refersTo": "record-row",
+      "refersTo": "list-row",
       "description": "One record: rank 1 subject, then rank 2 facts; square, 44px, separated by a hairline.",
       "html": "<div class=\"ds-row\" tabindex=\"0\"><span class=\"ds-row-key\">INV-1042</span><span class=\"ds-row-name\">Harbour Freight Ltd</span><span class=\"ds-row-read\">$12,480.00</span></div>",
       "css": ".ds-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px; border-bottom: 1px solid var(--border); color: var(--foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-row:hover { background: color-mix(in oklch, var(--foreground) 4%, transparent); } .ds-row:focus-visible { outline: none; background: color-mix(in oklch, var(--foreground) 7%, transparent); } .ds-row-key { color: var(--muted-foreground); font-size: 0.75rem; } .ds-row-name { font-weight: 500; } .ds-row:focus-visible .ds-row-name { text-decoration: underline 2px var(--ring); } .ds-row-read { font-variant-numeric: tabular-nums; text-align: right; }"
@@ -160,12 +160,12 @@
       "css": ".ds-person { display: inline-flex; align-items: center; gap: 8px; font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-person-initials { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 9999px; background: var(--muted); color: var(--muted-foreground); font-size: 0.625rem; font-weight: 500; }"
     },
     {
-      "name": "Record Row Icon Media",
+      "name": "List Row Icon Media",
       "kind": "custom",
-      "refersTo": "record-row-media-icon",
+      "refersTo": "list-row-media-icon",
       "description": "One muted icon for the record's kind, with no fill behind it, between the ID and the name; its label names it for screen readers.",
-      "html": "<span class=\"ds-record-row-media-icon\" role=\"img\" aria-label=\"Invoice\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M5 3h10l4 4v14H5z\"/><path d=\"M9 12h6M9 16h4\"/></svg></span>",
-      "css": ".ds-record-row-media-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; color: var(--muted-foreground); } .ds-record-row-media-icon svg { width: 16px; height: 16px; }"
+      "html": "<span class=\"ds-list-row-media-icon\" role=\"img\" aria-label=\"Invoice\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M5 3h10l4 4v14H5z\"/><path d=\"M9 12h6M9 16h4\"/></svg></span>",
+      "css": ".ds-list-row-media-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; color: var(--muted-foreground); } .ds-list-row-media-icon svg { width: 16px; height: 16px; }"
     }
   ],
   "narrative": {

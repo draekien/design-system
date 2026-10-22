@@ -9,16 +9,13 @@ import {
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { Entity, EntityMedia, EntityName } from "@workspace/registry/components/entity.tsx"
 import { Figure } from "@workspace/registry/components/figure.tsx"
+import type { ListRowFactProps, ListRowNarrow } from "@workspace/registry/components/list.tsx"
 import { Meter } from "@workspace/registry/components/meter.tsx"
 import {
   PreviewCard,
   PreviewCardContent,
   PreviewCardTrigger,
 } from "@workspace/registry/components/preview-card.tsx"
-import type {
-  RecordRowFactProps,
-  RecordRowNarrow,
-} from "@workspace/registry/components/record-list.tsx"
 import { RelativeTime } from "@workspace/registry/components/relative-time.tsx"
 import {
   Status,
@@ -27,16 +24,12 @@ import {
   StatusName,
 } from "@workspace/registry/components/status.tsx"
 import type * as React from "react"
-import type {
-  CanvasDataset,
-  CanvasOptions,
-  RecordListPart,
-} from "../../playground/playground-search.ts"
+import type { CanvasDataset, CanvasOptions, ListPart } from "../../playground/playground-search.ts"
 import { randomInvoices, randomRecords } from "./random-records.ts"
 
 export type RowState = Exclude<FixtureState, "error" | "loading">
 
-export type Hidden = ReadonlySet<RecordListPart>
+export type Hidden = ReadonlySet<ListPart>
 
 export type FactContext = {
   state: RowState
@@ -45,16 +38,16 @@ export type FactContext = {
   cardContainer?: HTMLElement | null
 }
 
-export type Missing = Extract<RecordRowFactProps, { missing: string }>["missing"]
+export type Missing = Extract<ListRowFactProps, { missing: string }>["missing"]
 
 type MissingByState = Partial<Readonly<Record<RowState, Missing>>>
 
 export type FactDefinition<TItem> = {
-  part: RecordListPart
-  card?: RecordListPart
+  part: ListPart
+  card?: ListPart
   cardStates?: ReadonlyArray<RowState>
   label: string
-  narrow: RecordRowNarrow
+  narrow: ListRowNarrow
   content: string
   missing?: MissingByState
   render: (item: TItem, context: FactContext) => React.ReactNode
@@ -69,7 +62,7 @@ export type Dataset<TItem> = {
   noun: string
   item: string
   sampleHint: string
-  keyNarrow: RecordRowNarrow
+  keyNarrow: ListRowNarrow
   items: (options: Pick<CanvasOptions, "data" | "seed" | "count">) => ReadonlyArray<TItem>
   value: (item: TItem) => string
   key: (item: TItem) => string
@@ -85,13 +78,13 @@ export type Dataset<TItem> = {
   noPermissionMessage: string
 }
 
-export type DatasetPart = { part: RecordListPart; label: string; parent?: RecordListPart }
+export type DatasetPart = { part: ListPart; label: string; parent?: ListPart }
 
 export function datasetParts<TItem>(dataset: Dataset<TItem>): ReadonlyArray<DatasetPart> {
   return [
-    { part: "select", label: "RecordRowSelect" },
-    { part: "key", label: "RecordRowId" },
-    { part: "description", label: "RecordRowDescription" },
+    { part: "select", label: "ListRowSelect" },
+    { part: "key", label: "ListRowId" },
+    { part: "description", label: "ListRowDescription" },
     ...[...(dataset.media === undefined ? [] : [dataset.media]), ...dataset.facts].flatMap(
       (fact) => [
         { part: fact.part, label: `${fact.label} · ${fact.content}` },
@@ -107,7 +100,7 @@ export function factProps<TItem>(
   fact: FactDefinition<TItem>,
   item: TItem,
   context: FactContext
-): RecordRowFactProps {
+): ListRowFactProps {
   const missing = fact.missing?.[context.state]
   return missing === undefined ? { children: fact.render(item, context) } : { missing }
 }
@@ -143,7 +136,7 @@ function ownerEntity(owner: string) {
   )
 }
 
-export function isPartShown(hidden: Hidden, part: RecordListPart, parent?: RecordListPart) {
+export function isPartShown(hidden: Hidden, part: ListPart, parent?: ListPart) {
   return !hidden.has(part) && (parent === undefined || !hidden.has(parent))
 }
 

@@ -1,15 +1,15 @@
 import * as React from "react"
 import { Figure } from "@/components/figure.tsx"
 import {
-  RecordList,
-  RecordRow,
-  RecordRowFact,
-  RecordRowId,
-  RecordRowLink,
-  RecordRowName,
-  RecordRowPeek,
-  RecordRowSubject,
-} from "@/components/record-list.tsx"
+  List,
+  ListRow,
+  ListRowFact,
+  ListRowId,
+  ListRowLink,
+  ListRowName,
+  ListRowPeek,
+  ListRowSubject,
+} from "@/components/list.tsx"
 
 const invoices = [
   { id: "INV-2041", name: "Harbour Print Co.", total: 12_840.5, missing: null },
@@ -17,34 +17,34 @@ const invoices = [
   { id: "INV-2043", name: "Lumen Studio", total: 8_400, missing: "hidden" },
 ] as const
 
-export function RecordListMissing(): React.ReactElement {
+export function ListMissing(): React.ReactElement {
   const hintId = React.useId()
   return (
     <div className="w-full overflow-hidden rounded-xl border bg-card text-card-foreground">
-      <RecordList aria-label="Invoices" aria-describedby={hintId}>
+      <List aria-label="Invoices" aria-describedby={hintId}>
         {invoices.map((invoice) => (
-          <RecordRow key={invoice.id} value={invoice.id} className="last:border-b-0">
-            <RecordRowLink href={`#${invoice.id}`}>
-              <RecordRowSubject>
-                <RecordRowId narrow="hide">{invoice.id}</RecordRowId>
-                <RecordRowName>{invoice.name}</RecordRowName>
-              </RecordRowSubject>
+          <ListRow key={invoice.id} value={invoice.id} className="last:border-b-0">
+            <ListRowLink href={`#${invoice.id}`}>
+              <ListRowSubject>
+                <ListRowId narrow="hide">{invoice.id}</ListRowId>
+                <ListRowName>{invoice.name}</ListRowName>
+              </ListRowSubject>
               {invoice.missing === null ? (
-                <RecordRowFact>
+                <ListRowFact>
                   <Figure
                     value={invoice.total}
                     format={{ style: "currency", currency: "AUD" }}
                     locale="en-AU"
                   />
-                </RecordRowFact>
+                </ListRowFact>
               ) : (
-                <RecordRowFact missing={invoice.missing} />
+                <ListRowFact missing={invoice.missing} />
               )}
-            </RecordRowLink>
-            <RecordRowPeek />
-          </RecordRow>
+            </ListRowLink>
+            <ListRowPeek />
+          </ListRow>
         ))}
-      </RecordList>
+      </List>
       <p id={hintId} className="border-t px-3 py-2 text-muted-foreground text-xs">
         ↑ ↓ move between rows · Space peeks the focused row
       </p>

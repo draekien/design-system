@@ -1,6 +1,6 @@
 import type { Rule } from "../../playground/rule-notes.tsx"
 
-export const recordListRules: ReadonlyArray<Rule> = [
+export const listRules: ReadonlyArray<Rule> = [
   {
     rule: "Every value takes one of five ranks, decided by what the caller came to decide: 1 Subject (ID, media, name, a one-line description) at the start of the row; 2 Fact (a state, a person or a figure the caller compares) in its own column; 4 Enrich in a hover card on a rank 1 or 2 value; 5 Elsewhere on the item's own page, which peek previews read-only.",
     source:

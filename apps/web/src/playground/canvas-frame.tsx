@@ -61,7 +61,7 @@ export function CanvasFrame({
   className,
   onCanvasNavigate,
 }: {
-  to: "/canvas/lockups/record-list"
+  to: "/canvas/lockups/list"
   view: CanvasView
   search: PlaygroundSearch
   title: string

@@ -3,19 +3,19 @@ import userEvent from "@testing-library/user-event"
 import type * as React from "react"
 import { describe, expect, it, vi } from "vitest"
 import {
-  RecordList,
-  RecordRow,
-  RecordRowDescription,
-  RecordRowFact,
-  RecordRowId,
-  RecordRowLink,
-  RecordRowLoading,
-  RecordRowMedia,
-  RecordRowName,
-  RecordRowPeek,
-  RecordRowSelect,
-  RecordRowSubject,
-} from "@/components/record-list.tsx"
+  List,
+  ListRow,
+  ListRowDescription,
+  ListRowFact,
+  ListRowId,
+  ListRowLink,
+  ListRowLoading,
+  ListRowMedia,
+  ListRowName,
+  ListRowPeek,
+  ListRowSelect,
+  ListRowSubject,
+} from "@/components/list.tsx"
 import { Status, StatusMedia, StatusName } from "@/components/status.tsx"
 
 const records = [
@@ -29,23 +29,23 @@ function renderList(defaultSelectedValues: ReadonlyArray<string> = []) {
   const onSelectedValuesChange = vi.fn()
   render(
     <>
-      <RecordList
+      <List
         aria-label="Records"
         defaultSelectedValues={defaultSelectedValues}
         onPeekValueChange={onPeekValueChange}
         onSelectedValuesChange={onSelectedValuesChange}
       >
         {records.map((record) => (
-          <RecordRow key={record.id} value={record.id}>
-            <RecordRowSelect />
-            <RecordRowLink href={`/records/${record.id}`}>
-              <RecordRowSubject>
-                <RecordRowName>{record.title}</RecordRowName>
-              </RecordRowSubject>
-            </RecordRowLink>
-          </RecordRow>
+          <ListRow key={record.id} value={record.id}>
+            <ListRowSelect />
+            <ListRowLink href={`/records/${record.id}`}>
+              <ListRowSubject>
+                <ListRowName>{record.title}</ListRowName>
+              </ListRowSubject>
+            </ListRowLink>
+          </ListRow>
         ))}
-      </RecordList>
+      </List>
       <button type="button">After the list</button>
     </>
   )
@@ -56,22 +56,22 @@ function renderPeekList() {
   const onPeekValueChange = vi.fn()
   const onSelectedValuesChange = vi.fn()
   render(
-    <RecordList
+    <List
       aria-label="Records"
       onPeekValueChange={onPeekValueChange}
       onSelectedValuesChange={onSelectedValuesChange}
     >
       {records.map((record) => (
-        <RecordRow key={record.id} value={record.id}>
-          <RecordRowLink href={`/records/${record.id}`}>
-            <RecordRowSubject>
-              <RecordRowName>{record.title}</RecordRowName>
-            </RecordRowSubject>
-          </RecordRowLink>
-          <RecordRowPeek />
-        </RecordRow>
+        <ListRow key={record.id} value={record.id}>
+          <ListRowLink href={`/records/${record.id}`}>
+            <ListRowSubject>
+              <ListRowName>{record.title}</ListRowName>
+            </ListRowSubject>
+          </ListRowLink>
+          <ListRowPeek />
+        </ListRow>
       ))}
-    </RecordList>
+    </List>
   )
   return { onPeekValueChange, onSelectedValuesChange }
 }
@@ -84,7 +84,7 @@ function checkbox(title: string) {
   return screen.getByRole("checkbox", { name: `Select ${title}` })
 }
 
-describe("RecordList", () => {
+describe("List", () => {
   it("makes the first row the list's one tab stop", async () => {
     const user = userEvent.setup()
     renderList()
@@ -235,17 +235,17 @@ describe("RecordList", () => {
 
   it("renders loading rows with no links, checkboxes or record text", () => {
     render(
-      <RecordList aria-label="Records, loading" aria-busy="true">
-        <RecordRowLoading>
-          <RecordRowSelect />
-          <RecordRowLink href="/records/REC-104">
-            <RecordRowSubject>
-              <RecordRowName>Quarterly access review</RecordRowName>
-              <RecordRowDescription>Confirm who can open finance records</RecordRowDescription>
-            </RecordRowSubject>
-          </RecordRowLink>
-        </RecordRowLoading>
-      </RecordList>
+      <List aria-label="Records, loading" aria-busy="true">
+        <ListRowLoading>
+          <ListRowSelect />
+          <ListRowLink href="/records/REC-104">
+            <ListRowSubject>
+              <ListRowName>Quarterly access review</ListRowName>
+              <ListRowDescription>Confirm who can open finance records</ListRowDescription>
+            </ListRowSubject>
+          </ListRowLink>
+        </ListRowLoading>
+      </List>
     )
 
     expect(screen.queryByRole("link")).toBeNull()
@@ -257,8 +257,8 @@ describe("RecordList", () => {
   it("throws a named error when a row is rendered outside a list", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined)
 
-    expect(() => render(<RecordRow value="REC-104" />)).toThrow(
-      "RecordRow must be rendered inside a RecordList."
+    expect(() => render(<ListRow value="REC-104" />)).toThrow(
+      "ListRow must be rendered inside a List."
     )
   })
 })
@@ -269,29 +269,29 @@ function withoutSpaces(text: string) {
 
 function renderRow(link: React.ReactNode) {
   render(
-    <RecordList aria-label="Records">
-      <RecordRow value="REC-104">{link}</RecordRow>
-    </RecordList>
+    <List aria-label="Records">
+      <ListRow value="REC-104">{link}</ListRow>
+    </List>
   )
 }
 
-describe("RecordRow", () => {
+describe("ListRow", () => {
   it("names the link with every rank 1 part and each fact, in order", () => {
     renderRow(
-      <RecordRowLink href="/records/REC-104">
-        <RecordRowSubject>
-          <RecordRowId>REC-104</RecordRowId>
-          <RecordRowMedia>
+      <ListRowLink href="/records/REC-104">
+        <ListRowSubject>
+          <ListRowId>REC-104</ListRowId>
+          <ListRowMedia>
             <Status>
               <StatusMedia fill="half" />
               <StatusName>In review</StatusName>
             </Status>
-          </RecordRowMedia>
-          <RecordRowName>Quarterly access review</RecordRowName>
-          <RecordRowDescription>Confirm who can open finance records</RecordRowDescription>
-        </RecordRowSubject>
-        <RecordRowFact>Mara Okafor</RecordRowFact>
-      </RecordRowLink>
+          </ListRowMedia>
+          <ListRowName>Quarterly access review</ListRowName>
+          <ListRowDescription>Confirm who can open finance records</ListRowDescription>
+        </ListRowSubject>
+        <ListRowFact>Mara Okafor</ListRowFact>
+      </ListRowLink>
     )
 
     const expected = withoutSpaces(
@@ -307,12 +307,12 @@ describe("RecordRow", () => {
     ["hidden", "Hidden"],
   ] as const)("names a %s fact with the word %s", (missing, word) => {
     renderRow(
-      <RecordRowLink href="/records/REC-104">
-        <RecordRowSubject>
-          <RecordRowName>Quarterly access review</RecordRowName>
-        </RecordRowSubject>
-        <RecordRowFact missing={missing} />
-      </RecordRowLink>
+      <ListRowLink href="/records/REC-104">
+        <ListRowSubject>
+          <ListRowName>Quarterly access review</ListRowName>
+        </ListRowSubject>
+        <ListRowFact missing={missing} />
+      </ListRowLink>
     )
 
     const expected = withoutSpaces(`Quarterly access review ${word}`)
@@ -323,14 +323,14 @@ describe("RecordRow", () => {
 
   it("names the link with the label of icon media", () => {
     renderRow(
-      <RecordRowLink href="/records/REC-104">
-        <RecordRowSubject>
-          <RecordRowMedia variant="icon" label="Review">
+      <ListRowLink href="/records/REC-104">
+        <ListRowSubject>
+          <ListRowMedia variant="icon" label="Review">
             <svg />
-          </RecordRowMedia>
-          <RecordRowName>Quarterly access review</RecordRowName>
-        </RecordRowSubject>
-      </RecordRowLink>
+          </ListRowMedia>
+          <ListRowName>Quarterly access review</ListRowName>
+        </ListRowSubject>
+      </ListRowLink>
     )
 
     const expected = withoutSpaces("Review Quarterly access review")
@@ -343,11 +343,11 @@ describe("RecordRow", () => {
     const user = userEvent.setup()
     const handleNavigate = vi.fn((event: React.MouseEvent) => event.preventDefault())
     renderRow(
-      <RecordRowLink render={<a href="/records/REC-104" onClick={handleNavigate} />}>
-        <RecordRowSubject>
-          <RecordRowName>Quarterly access review</RecordRowName>
-        </RecordRowSubject>
-      </RecordRowLink>
+      <ListRowLink render={<a href="/records/REC-104" onClick={handleNavigate} />}>
+        <ListRowSubject>
+          <ListRowName>Quarterly access review</ListRowName>
+        </ListRowSubject>
+      </ListRowLink>
     )
 
     await user.click(screen.getByRole("link", { name: "Quarterly access review" }))
@@ -358,8 +358,8 @@ describe("RecordRow", () => {
   it("throws a named error when a part is rendered outside a row", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined)
 
-    expect(() => render(<RecordRowName>Quarterly access review</RecordRowName>)).toThrow(
-      "RecordRowName must be rendered inside a RecordRow or RecordRowLoading."
+    expect(() => render(<ListRowName>Quarterly access review</ListRowName>)).toThrow(
+      "ListRowName must be rendered inside a ListRow or ListRowLoading."
     )
   })
 })

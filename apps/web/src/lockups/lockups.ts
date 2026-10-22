@@ -1,6 +1,6 @@
 import { type RegistryItem, requireRegistryItem } from "../playground/registry-items.ts"
 import type { FileRoutesByTo } from "../routeTree.gen.ts"
-import { componentModule } from "./record-list/component-module.ts"
+import { componentModule } from "./list/component-module.ts"
 
 export type Lockup = {
   name: string
@@ -10,18 +10,16 @@ export type Lockup = {
   components: ReadonlyArray<RegistryItem>
 }
 
-export const recordListLockup: Lockup = {
-  name: "record-list",
-  title: "Record list",
+export const listLockup: Lockup = {
+  name: "list",
+  title: "List",
   description:
     "Rows for any data: rank each value, and the row decides where it goes, how it reads and what it does when the list is narrow.",
-  page: "/playground/lockups/record-list",
-  components: [...new Set(["record-list", ...Object.values(componentModule)])].map(
-    requireRegistryItem
-  ),
+  page: "/playground/lockups/list",
+  components: [...new Set(["list", ...Object.values(componentModule)])].map(requireRegistryItem),
 }
 
-export const lockups: ReadonlyArray<Lockup> = [recordListLockup]
+export const lockups: ReadonlyArray<Lockup> = [listLockup]
 
 export function usedIn(component: RegistryItem): ReadonlyArray<Lockup> {
   return lockups.filter((lockup) => lockup.components.some((part) => part.name === component.name))

@@ -55,7 +55,7 @@ export function RecordDemo({ state }: { state: FixtureState }) {
               </th>
             </tr>
           </thead>
-          <RecordRows key={state} state={state} />
+          <ListRows key={state} state={state} />
         </table>
         <TableFooter state={state} />
       </div>
@@ -87,7 +87,7 @@ function StateSwitcher({ state }: { state: FixtureState }) {
   )
 }
 
-function RecordRows({ state }: { state: FixtureState }) {
+function ListRows({ state }: { state: FixtureState }) {
   const [peekedId, setPeekedId] = React.useState<string | null>(null)
 
   if (state === "error") {
@@ -154,7 +154,7 @@ function RecordRows({ state }: { state: FixtureState }) {
     const rows = Array.from(
       event.currentTarget
         .closest("tbody")
-        ?.querySelectorAll<HTMLTableRowElement>("[data-record-row]") ?? []
+        ?.querySelectorAll<HTMLTableRowElement>("[data-list-row]") ?? []
     )
     const next = rows[rows.indexOf(event.currentTarget) + (event.key === "ArrowDown" ? 1 : -1)]
     if (next === undefined) {
@@ -162,7 +162,7 @@ function RecordRows({ state }: { state: FixtureState }) {
     }
     next.focus()
     if (peekedId !== null) {
-      setPeekedId(next.dataset.recordRow ?? null)
+      setPeekedId(next.dataset.listRow ?? null)
     }
   }
 
@@ -175,7 +175,7 @@ function RecordRows({ state }: { state: FixtureState }) {
       {sampleRecords.map((record) => (
         <React.Fragment key={record.id}>
           <tr
-            data-record-row={record.id}
+            data-list-row={record.id}
             tabIndex={0}
             aria-expanded={peekedId === record.id}
             onKeyDown={(event) => handleRowKeyDown(event, record.id)}

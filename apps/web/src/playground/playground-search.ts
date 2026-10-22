@@ -25,7 +25,7 @@ export const canvasDatasets = ["records", "invoices"] as const
 
 export type CanvasDataset = (typeof canvasDatasets)[number]
 
-export const recordListParts = [
+export const listParts = [
   "select",
   "key",
   "description",
@@ -39,7 +39,7 @@ export const recordListParts = [
   "due",
 ] as const
 
-export type RecordListPart = (typeof recordListParts)[number]
+export type ListPart = (typeof listParts)[number]
 
 export const maxSeed = 999_999
 
@@ -56,7 +56,7 @@ export const canvasSearch = fixtureStateSearch.extend({
     .union([z.literal(4), z.literal(25), z.literal(200)])
     .default(4)
     .catch(4),
-  hide: z.array(z.enum(recordListParts)).default([]).catch([]),
+  hide: z.array(z.enum(listParts)).default([]).catch([]),
 })
 
 export type CanvasOptions = z.output<typeof canvasSearch>

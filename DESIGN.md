@@ -60,7 +60,7 @@ components:
     rounded: "{rounded.floor}"
     padding: "0 8px"
     height: "28px"
-  record-row:
+  list-row:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
     typography: "{typography.body}"
@@ -78,7 +78,7 @@ components:
     typography: "{typography.micro}"
     rounded: "{rounded.full}"
     size: "24px"
-  record-row-media-icon:
+  list-row-media-icon:
     textColor: "{colors.muted-ink}"
     size: "{spacing.hit-min}"
 ---
@@ -94,9 +94,9 @@ The system is defined by the relationships between components, not by the compon
 | Relationship | Example rule | Where it is encoded today |
 | --- | --- | --- |
 | Rank | Ranks 1 and 2 show for every record before rank 3 shows for any | `docs/contexts/design-rules.md` |
-| Fit | A row holds one `RecordRowSubject` and at most eight `RecordRowFact` columns, each holding one status, entity, figure, meter or relative time | `RecordRow` parts |
-| Placement | A record table where the caller compares down a column, a record list where they scan for one record | `docs/contexts/design-rules.md` |
-| Nesting | Groups do not nest; records nest one level deep | `docs/contexts/design-rules.md`, `RecordList` |
+| Fit | A row holds one `ListRowSubject` and at most eight `ListRowFact` columns, each holding one status, entity, figure, meter or relative time | `ListRow` parts |
+| Placement | A table where the caller compares down a column, a list where they scan for one record | `docs/contexts/design-rules.md` |
+| Nesting | Groups do not nest; records nest one level deep | `docs/contexts/design-rules.md`, `List` |
 | Adjacency | A selection bar holds at most two actions, then a ⋯ menu | `docs/contexts/design-rules.md` |
 | Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px | `docs/contexts/design-rules.md`; the `--spacing-run`, `--spacing-related` and `--spacing-section` tokens, which no component uses yet |
 | Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; the `--radius-floor`, `--radius-card` and `--radius-panel` tokens, which no component uses yet |
@@ -153,7 +153,7 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 
 Lists are CSS grids whose rows are subgrids, so every row's columns align with the header without fixed widths. A row is 44px high with an 8px inset. Columns respond to the list's width, not the viewport's: below the `abbreviate` container width (48rem) a column shows its short form, and below the `hide` container width (40rem) a column marked to hide disappears. Columns that hold rank 3 values hide first; the record's name truncates before it wraps. Interactive targets are at least 24×24px, and 44×44px on a coarse pointer.
 
-The container sets the gap between its children by how the two neighbours relate: `{spacing.run}` between the same component in a run (row after row; the border separates them), `{spacing.related}` between parts of one record or control (a status dot and its word), `{spacing.section}` between separate sections (two stacked record lists). A component never sets margin on itself.
+The container sets the gap between its children by how the two neighbours relate: `{spacing.run}` between the same component in a run (row after row; the border separates them), `{spacing.related}` between parts of one record or control (a status dot and its word), `{spacing.section}` between separate sections (two stacked lists). A component never sets margin on itself.
 
 ## Elevation & Depth
 
@@ -184,7 +184,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Ghost / Outline:** transparent with Ink text; outline adds a Hairline border.
 - **Hover / Focus:** primary fades to 80%; focus draws a 2px Signal Ring at 30% and a ring-coloured border. Pressed buttons move down 1px.
 
-### Record row
+### List row
 - **Shape:** square, 44px high, Hairline bottom border.
 - **States:** hover tints the row with Ink at 4%; a focused or peeked row with Ink at 7%; the row name underlines in Signal Ring on keyboard focus.
 - **Revealed controls:** the selection checkbox and peek button are invisible at rest and appear on row hover, focus or selection; on a coarse pointer they are always visible and 44×44px.
@@ -195,7 +195,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Size:** 240px wide, 12px padding, 12px text.
 - **Motion:** opens over `--transition-duration-quick` (150ms) with `--ease-out`, from `--preview-card-enter-scale` (97%), and fades out instantly; no motion under reduced motion.
 
-### Record row media
+### List row media
 - **Default:** a 24×24px slot that draws only the dot of a status or the circle of an entity; the name and description beside it are read by screen readers only.
 - **Icon:** one 16px Muted Ink icon centred in the 24×24px slot, with no fill behind it; its required `label` names it for screen readers.
 

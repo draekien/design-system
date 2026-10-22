@@ -3,7 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Link } from "@tanstack/react-router"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
-import { recordListLockup } from "../lockups/lockups.ts"
+import { listLockup } from "../lockups/lockups.ts"
 import { CanvasFrame } from "./canvas-frame.tsx"
 import { ItemPageLink } from "./item-page-link.tsx"
 import { CopyButton } from "./playground-controls.tsx"
@@ -38,14 +38,14 @@ export function PlaygroundIndex(): React.ReactElement {
         </h2>
         <div className="grid overflow-hidden rounded-xl border bg-card lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
           <div className="flex flex-col gap-4 p-6">
-            <h3 className="font-semibold text-xl tracking-[-0.02em]">{recordListLockup.title}</h3>
+            <h3 className="font-semibold text-xl tracking-[-0.02em]">{listLockup.title}</h3>
             <p className="text-pretty text-muted-foreground text-sm leading-relaxed">
-              {recordListLockup.description}
+              {listLockup.description}
             </p>
             <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-sm">
               <dt className="text-muted-foreground">Built from</dt>
               <dd className="font-mono text-xs leading-5">
-                {recordListLockup.components.map((item) => item.name).join(", ")}
+                {listLockup.components.map((item) => item.name).join(", ")}
               </dd>
               <dt className="text-muted-foreground">States</dt>
               <dd>Loaded, loading, partial, error, no permission</dd>
@@ -53,13 +53,13 @@ export function PlaygroundIndex(): React.ReactElement {
               <dd>Records, invoices, seeded random rows</dd>
             </dl>
             <Link
-              to="/playground/lockups/record-list"
+              to="/playground/lockups/list"
               className={cn(
                 "mt-auto inline-flex min-h-9 items-center gap-2 self-start rounded-lg bg-primary px-4 font-semibold text-primary-foreground text-sm shadow-[0_1px_0_rgb(255_255_255/0.25)_inset,0_4px_12px_-4px_rgb(242_111_33/0.55)] transition-colors hover:bg-[#e4621a]",
                 focusRing
               )}
             >
-              Open the record list
+              Open the list
               <HugeiconsIcon
                 icon={ArrowRight02Icon}
                 size={16}
@@ -70,9 +70,9 @@ export function PlaygroundIndex(): React.ReactElement {
           </div>
           <div className="flex h-80 border-t bg-muted/50 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[16px_16px] p-3 lg:h-auto lg:min-h-80 lg:border-t-0 lg:border-l">
             <CanvasFrame
-              to="/canvas/lockups/record-list"
+              to="/canvas/lockups/list"
               view="lockup"
-              title="Record list preview"
+              title="List preview"
               search={previewSearch}
               className="h-full w-full rounded-lg border"
             />

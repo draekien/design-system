@@ -44,15 +44,15 @@ function rowCode<TItem>(
     fact.card !== undefined && isPartShown(hidden, fact.card, fact.part)
 
   const parts = [
-    "RecordRow",
-    "RecordRowSubject",
-    "RecordRowLink",
-    "RecordRowName",
-    ...(hidden.has("select") ? [] : ["RecordRowSelect"]),
-    ...(hidden.has("key") ? [] : ["RecordRowId"]),
-    ...(hidden.has("description") ? [] : ["RecordRowDescription"]),
-    ...(media === undefined ? [] : ["RecordRowMedia"]),
-    ...(facts.length > 0 ? ["RecordRowFact"] : []),
+    "ListRow",
+    "ListRowSubject",
+    "ListRowLink",
+    "ListRowName",
+    ...(hidden.has("select") ? [] : ["ListRowSelect"]),
+    ...(hidden.has("key") ? [] : ["ListRowId"]),
+    ...(hidden.has("description") ? [] : ["ListRowDescription"]),
+    ...(media === undefined ? [] : ["ListRowMedia"]),
+    ...(facts.length > 0 ? ["ListRowFact"] : []),
   ]
 
   const contentModules = new Map<string, Array<string>>()
@@ -69,54 +69,54 @@ function rowCode<TItem>(
 
   const keyLine = hidden.has("key")
     ? []
-    : [`  <RecordRowId narrow="${dataset.keyNarrow}">{${item}.id}</RecordRowId>`]
+    : [`  <ListRowId narrow="${dataset.keyNarrow}">{${item}.id}</ListRowId>`]
 
   const mediaLines =
     media === undefined
       ? []
-      : ["<RecordRowMedia>", ...indent(media.code(withCard(media)), 1), "</RecordRowMedia>"]
+      : ["<ListRowMedia>", ...indent(media.code(withCard(media)), 1), "</ListRowMedia>"]
 
   const factLines = facts.flatMap((fact) => {
     const factMissing = missing(fact)
     return factMissing === undefined
       ? [
-          `<RecordRowFact narrow="${fact.narrow}">`,
+          `<ListRowFact narrow="${fact.narrow}">`,
           ...indent(fact.code(withCard(fact)), 1),
-          "</RecordRowFact>",
+          "</ListRowFact>",
         ]
-      : [`<RecordRowFact narrow="${fact.narrow}" missing="${factMissing}" />`]
+      : [`<ListRowFact narrow="${fact.narrow}" missing="${factMissing}" />`]
   })
 
   const row = [
-    key ? `<RecordRow key={${item}.id} value={${item}.id}>` : `<RecordRow value={${item}.id}>`,
-    ...(hidden.has("select") ? [] : ["  <RecordRowSelect />"]),
-    `  <RecordRowLink render={<Link to="/${dataset.noun}/$id" params={{ id: ${item}.id }} />}>`,
-    "    <RecordRowSubject>",
+    key ? `<ListRow key={${item}.id} value={${item}.id}>` : `<ListRow value={${item}.id}>`,
+    ...(hidden.has("select") ? [] : ["  <ListRowSelect />"]),
+    `  <ListRowLink render={<Link to="/${dataset.noun}/$id" params={{ id: ${item}.id }} />}>`,
+    "    <ListRowSubject>",
     ...indent(keyLine, 2),
     ...indent(mediaLines, 3),
-    `      <RecordRowName>{${item}.${dataset.nameField}}</RecordRowName>`,
+    `      <ListRowName>{${item}.${dataset.nameField}}</ListRowName>`,
     ...(hidden.has("description")
       ? []
-      : [`      <RecordRowDescription>{${item}.${dataset.summaryField}}</RecordRowDescription>`]),
-    "    </RecordRowSubject>",
+      : [`      <ListRowDescription>{${item}.${dataset.summaryField}}</ListRowDescription>`]),
+    "    </ListRowSubject>",
     ...indent(factLines, 2),
-    "  </RecordRowLink>",
-    "</RecordRow>",
+    "  </ListRowLink>",
+    "</ListRow>",
   ]
 
   const loadingRow = [
-    "<RecordRowLoading>",
-    ...(hidden.has("select") ? [] : ["  <RecordRowSelect />"]),
-    "  <RecordRowLink>",
-    "    <RecordRowSubject>",
-    ...(hidden.has("key") ? [] : [`      <RecordRowId narrow="${dataset.keyNarrow}" />`]),
-    ...(media === undefined ? [] : ["      <RecordRowMedia />"]),
-    "      <RecordRowName />",
-    ...(hidden.has("description") ? [] : ["      <RecordRowDescription />"]),
-    "    </RecordRowSubject>",
-    ...facts.map((fact) => `    <RecordRowFact narrow="${fact.narrow}" />`),
-    "  </RecordRowLink>",
-    "</RecordRowLoading>",
+    "<ListRowLoading>",
+    ...(hidden.has("select") ? [] : ["  <ListRowSelect />"]),
+    "  <ListRowLink>",
+    "    <ListRowSubject>",
+    ...(hidden.has("key") ? [] : [`      <ListRowId narrow="${dataset.keyNarrow}" />`]),
+    ...(media === undefined ? [] : ["      <ListRowMedia />"]),
+    "      <ListRowName />",
+    ...(hidden.has("description") ? [] : ["      <ListRowDescription />"]),
+    "    </ListRowSubject>",
+    ...facts.map((fact) => `    <ListRowFact narrow="${fact.narrow}" />`),
+    "  </ListRowLink>",
+    "</ListRowLoading>",
   ]
 
   return { parts, contentModules, row, loadingRow }
@@ -128,7 +128,7 @@ function contentImports(contentModules: RowCode["contentModules"]) {
     .flatMap(([module, names]) => importLines(module, names))
 }
 
-export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): string {
+export function listCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): string {
   const item = dataset.item
   const { parts, contentModules, row } = rowCode(dataset, hidden, true, "loaded")
   const list = capitalise(dataset.noun)
@@ -137,14 +137,14 @@ export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): 
     'import { Link } from "@tanstack/react-router"',
     'import * as React from "react"',
     ...contentImports(contentModules),
-    ...importLines("record-list", ["RecordList", ...parts]),
+    ...importLines("list", ["List", ...parts]),
     "",
     `export function ${list}({ ${dataset.noun}, now }: ${list}Props) {`,
     "  const [peekValue, setPeekValue] = React.useState<string | null>(null)",
     "  const [selectedValues, setSelectedValues] = React.useState<ReadonlyArray<string>>([])",
     "",
     "  return (",
-    "    <RecordList",
+    "    <List",
     `      aria-label="${list}"`,
     "      peekValue={peekValue}",
     "      onPeekValueChange={setPeekValue}",
@@ -154,7 +154,7 @@ export function recordListCode<TItem>(dataset: Dataset<TItem>, hidden: Hidden): 
     `      {${dataset.noun}.map((${item}) => (`,
     ...indent(row, 4),
     "      ))}",
-    "    </RecordList>",
+    "    </List>",
     "  )",
     "}",
     "",
@@ -167,7 +167,7 @@ const narrowWidths = [
   { label: "narrower than 640px", width: "w-[34rem]" },
 ] as const
 
-export function recordListStatesCode<TItem>(
+export function listStatesCode<TItem>(
   dataset: Dataset<TItem>,
   hidden: Hidden,
   state: FixtureState
@@ -183,17 +183,17 @@ export function recordListStatesCode<TItem>(
 
   if (state === "loading") {
     return [
-      ...importLines("record-list", [
-        "RecordList",
-        ...parts.filter((part) => part !== "RecordRow"),
-        "RecordRowLoading",
+      ...importLines("list", [
+        "List",
+        ...parts.filter((part) => part !== "ListRow"),
+        "ListRowLoading",
       ]),
       "",
       `export function ${noun}Loading() {`,
       "  return (",
-      `    <RecordList aria-label="${noun}, loading" aria-busy="true">`,
+      `    <List aria-label="${noun}, loading" aria-busy="true">`,
       ...indent(loadingRow, 3),
-      "    </RecordList>",
+      "    </List>",
       "  )",
       "}",
       "",
@@ -203,17 +203,13 @@ export function recordListStatesCode<TItem>(
   const label = `${capitalise(item)} row`
   const list = (name: string, props: ReadonlyArray<string>) =>
     props.length === 0
-      ? [`<RecordList aria-label="${label}, ${name}">{row}</RecordList>`]
-      : [
-          `<RecordList aria-label="${label}, ${name}" ${props.join(" ")}>`,
-          "  {row}",
-          "</RecordList>",
-        ]
+      ? [`<List aria-label="${label}, ${name}">{row}</List>`]
+      : [`<List aria-label="${label}, ${name}" ${props.join(" ")}>`, "  {row}", "</List>"]
 
   return [
     'import { Link } from "@tanstack/react-router"',
     ...contentImports(contentModules),
-    ...importLines("record-list", ["RecordList", ...parts]),
+    ...importLines("list", ["List", ...parts]),
     "",
     `export function ${capitalise(item)}RowStates({ ${item}, now }: ${capitalise(item)}RowStatesProps) {`,
     "  const row = (",

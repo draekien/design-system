@@ -2,16 +2,16 @@ import { ArrowLeft01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import {
-  RecordList,
-  RecordRow,
-  RecordRowDescription,
-  RecordRowFact,
-  RecordRowId,
-  RecordRowLoading,
-  RecordRowMedia,
-  RecordRowName,
-  RecordRowSelect,
-} from "@workspace/registry/components/record-list.tsx"
+  List,
+  ListRow,
+  ListRowDescription,
+  ListRowFact,
+  ListRowId,
+  ListRowLoading,
+  ListRowMedia,
+  ListRowName,
+  ListRowSelect,
+} from "@workspace/registry/components/list.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import {
@@ -26,19 +26,19 @@ import {
   type RowState,
   recordsDataset,
   shownFacts,
-} from "../lockups/record-list/datasets.tsx"
+} from "../lockups/list/datasets.tsx"
 import {
   ErrorMessage,
   ListFooter,
+  ListLockup,
   PeekContent,
-  RecordListLockup,
   RowParts,
-} from "../lockups/record-list/record-list-lockup.tsx"
+} from "../lockups/list/list-lockup.tsx"
 import { Constellation, type ConstellationGroup, type ConstellationPart } from "./constellation.tsx"
 import type { CanvasOptions } from "./playground-search.ts"
 
-/** The record list constellation, drawn in the docs page rather than in a canvas frame. */
-export function RecordListConstellation({
+/** The list constellation, drawn in the docs page rather than in a canvas frame. */
+export function ListConstellation({
   options,
 }: {
   options: Omit<CanvasOptions, "view">
@@ -73,11 +73,11 @@ function DatasetConstellation<TItem>({
   )
 }
 
-export function RecordListCanvas({ options }: { options: CanvasOptions }): React.ReactElement {
+export function ListCanvas({ options }: { options: CanvasOptions }): React.ReactElement {
   const hidden = React.useMemo(() => new Set(options.hide), [options.hide])
   return (
     <main className="p-4 sm:p-6">
-      <h1 className="sr-only">Record list</h1>
+      <h1 className="sr-only">List</h1>
       {options.dataset === "invoices" ? (
         <DatasetCanvas dataset={invoicesDataset} options={options} hidden={hidden} />
       ) : (
@@ -106,7 +106,7 @@ function DatasetCanvas<TItem>({
       return options.state === "error" ? (
         <ErrorMessage dataset={dataset} />
       ) : (
-        <RecordListLockup
+        <ListLockup
           key={`${dataset.id}-${options.state}`}
           dataset={dataset}
           state={options.state}
@@ -275,20 +275,20 @@ function loadingDrawing<TItem>({
 }): Drawing {
   const { parts, slots, add, link } = partNumbers()
   add("list", {
-    name: "RecordList",
+    name: "List",
     depth: 0,
-    note: "aria-busy; one RecordRowLoading per expected item",
+    note: "aria-busy; one ListRowLoading per expected item",
   })
   add("row", {
-    name: "RecordRowLoading",
+    name: "ListRowLoading",
     depth: 1,
-    note: "Same parts as RecordRow; each part draws a bar in its own column",
+    note: "Same parts as ListRow; each part draws a bar in its own column",
     specimen: (
-      <RecordList aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
-        <RecordRowLoading className="border-b-0 px-0">
+      <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
+        <ListRowLoading className="border-b-0 px-0">
           <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
-        </RecordRowLoading>
-      </RecordList>
+        </ListRowLoading>
+      </List>
     ),
   })
   add("footer", {
@@ -321,11 +321,11 @@ function loadingDrawing<TItem>({
     ],
     centre: (
       <div data-anchor={slots.get("list")} className={cn(listSurface, "w-[52rem]")}>
-        <RecordList aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
-          <RecordRowLoading data-anchor={slots.get("row")}>
+        <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
+          <ListRowLoading data-anchor={slots.get("row")}>
             <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
-          </RecordRowLoading>
-        </RecordList>
+          </ListRowLoading>
+        </List>
         <ListFooter
           dataset={dataset}
           state="loading"
@@ -371,51 +371,51 @@ function rowDrawing<TItem>({
   )
   const cardOf = (fact: FactDefinition<TItem>) => (carded.includes(fact) ? fact.card : undefined)
 
-  add("list", { name: "RecordList", depth: 0, note: "One tab stop; ↑ ↓ Home End, Space, X, Esc" })
+  add("list", { name: "List", depth: 0, note: "One tab stop; ↑ ↓ Home End, Space, X, Esc" })
   add("row", {
-    name: "RecordRow",
+    name: "ListRow",
     depth: 1,
     note: "One item: the select slot, then the link holding ranks 1 and 2",
   })
   if (!hidden.has("select")) {
     add("select", {
-      name: "RecordRowSelect",
+      name: "ListRowSelect",
       depth: 2,
       note: "24×24, 44×44 on a coarse pointer; not a tab stop",
       specimen: (
         <PartRow dataset={dataset} item={item} selected>
-          <RecordRowSelect className="visible" />
+          <ListRowSelect className="visible" />
         </PartRow>
       ),
     })
   }
   add("link", {
-    name: "RecordRowLink",
+    name: "ListRowLink",
     depth: 2,
     note: "Rank 5: the row's one focus target; render your router's link through render",
     specimen: <ItemPageHead dataset={dataset} item={item} />,
   })
-  add("subject", { name: "RecordRowSubject", depth: 3, note: "Rank 1: what the row is about" })
+  add("subject", { name: "ListRowSubject", depth: 3, note: "Rank 1: what the row is about" })
   if (!hidden.has("key")) {
     add("key", {
-      name: "RecordRowId",
+      name: "ListRowId",
       depth: 4,
       note: narrowNote[dataset.keyNarrow],
       specimen: (
         <PartRow dataset={dataset} item={item}>
-          <RecordRowId>{dataset.key(item)}</RecordRowId>
+          <ListRowId>{dataset.key(item)}</ListRowId>
         </PartRow>
       ),
     })
   }
   if (media !== undefined) {
     add(media.part, {
-      name: "RecordRowMedia",
+      name: "ListRowMedia",
       depth: 4,
       note: `${media.label}, a ${media.content}: 24×24, the name read by screen readers only`,
       specimen: (
         <PartRow dataset={dataset} item={item}>
-          <RecordRowMedia>{media.render(item, { state, withCard: false })}</RecordRowMedia>
+          <ListRowMedia>{media.render(item, { state, withCard: false })}</ListRowMedia>
         </PartRow>
       ),
     })
@@ -429,14 +429,14 @@ function rowDrawing<TItem>({
           <CardSpecimen>
             {(container) => (
               <PartRow dataset={dataset} item={item}>
-                <RecordRowMedia>
+                <ListRowMedia>
                   {media.render(item, {
                     state,
                     withCard: true,
                     cardOpen: true,
                     cardContainer: container,
                   })}
-                </RecordRowMedia>
+                </ListRowMedia>
               </PartRow>
             )}
           </CardSpecimen>
@@ -445,37 +445,37 @@ function rowDrawing<TItem>({
     }
   }
   add("name", {
-    name: "RecordRowName",
+    name: "ListRowName",
     depth: 4,
     note: "Takes the width it needs; truncates after the description; never hidden",
     specimen: (
       <PartRow dataset={dataset} item={item}>
-        <RecordRowName>{dataset.name(item)}</RecordRowName>
+        <ListRowName>{dataset.name(item)}</ListRowName>
       </PartRow>
     ),
   })
   if (!hidden.has("description")) {
     add("description", {
-      name: "RecordRowDescription",
+      name: "ListRowDescription",
       depth: 4,
       note: "One muted line; fills the remaining width, truncates first, hidden below 640px",
       specimen: (
         <PartRow dataset={dataset} item={item}>
-          <RecordRowDescription className="col-span-full pl-0">
+          <ListRowDescription className="col-span-full pl-0">
             {dataset.summary(item)}
-          </RecordRowDescription>
+          </ListRowDescription>
         </PartRow>
       ),
     })
   }
   for (const fact of facts) {
     add(fact.part, {
-      name: "RecordRowFact",
+      name: "ListRowFact",
       depth: 3,
       note: `Rank 2: ${fact.label}, a ${fact.content}; ${narrowNote[fact.narrow]}`,
       specimen: (
         <PartRow dataset={dataset} item={item}>
-          <RecordRowFact className="pl-0" {...factProps(fact, item, { state, withCard: false })} />
+          <ListRowFact className="pl-0" {...factProps(fact, item, { state, withCard: false })} />
         </PartRow>
       ),
     })
@@ -489,14 +489,14 @@ function rowDrawing<TItem>({
           <CardSpecimen>
             {(container) => (
               <PartRow dataset={dataset} item={item}>
-                <RecordRowFact className="col-span-full justify-end pl-0">
+                <ListRowFact className="col-span-full justify-end pl-0">
                   {fact.render(item, {
                     state,
                     withCard: true,
                     cardOpen: true,
                     cardContainer: container,
                   })}
-                </RecordRowFact>
+                </ListRowFact>
               </PartRow>
             )}
           </CardSpecimen>
@@ -582,13 +582,13 @@ function rowDrawing<TItem>({
     groups: groups.filter((group) => group.links.length > 0),
     centre: (
       <div data-anchor={slots.get("list")} className={cn(listSurface, "w-[52rem]")}>
-        <RecordList
+        <List
           aria-label={capitalise(dataset.noun)}
           aria-describedby={hintIds.centre}
           selectedValues={selectedValues}
           onSelectedValuesChange={onSelectedValuesChange}
         >
-          <RecordRow value={value} data-anchor={slots.get("row")}>
+          <ListRow value={value} data-anchor={slots.get("row")}>
             <RowParts
               dataset={dataset}
               item={item}
@@ -598,8 +598,8 @@ function rowDrawing<TItem>({
               cardContainer={stage}
               onOpen={handleSpecimenChange}
             />
-          </RecordRow>
-        </RecordList>
+          </ListRow>
+        </List>
         <ListFooter
           dataset={dataset}
           state={state}
@@ -662,14 +662,14 @@ function StatesView<TItem>({
       return (
         <StatesSection
           title="Loading"
-          description="One RecordRowLoading per expected item; each part draws a bar in its own column"
+          description="One ListRowLoading per expected item; each part draws a bar in its own column"
         >
           <div className={listSurface}>
-            <RecordList aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
-              <RecordRowLoading className="border-b-0">
+            <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
+              <ListRowLoading className="border-b-0">
                 <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
-              </RecordRowLoading>
-            </RecordList>
+              </ListRowLoading>
+            </List>
           </div>
         </StatesSection>
       )
@@ -704,11 +704,11 @@ function StatesView<TItem>({
                 >
                   <p className="text-muted-foreground text-xs">{specimen.label}</p>
                   <div className={listSurface}>
-                    <RecordList aria-label={`${capitalise(dataset.item)} row, ${specimen.label}`}>
-                      <RecordRow value={dataset.value(item)} className="border-b-0">
+                    <List aria-label={`${capitalise(dataset.item)} row, ${specimen.label}`}>
+                      <ListRow value={dataset.value(item)} className="border-b-0">
                         <RowParts dataset={dataset} item={item} state={state} hidden={hidden} />
-                      </RecordRow>
-                    </RecordList>
+                      </ListRow>
+                    </List>
                   </div>
                 </div>
               ))}
@@ -761,14 +761,14 @@ function Specimen<TItem>({
     <div className="flex flex-col gap-1.5">
       <p className="text-muted-foreground text-xs">{specimen.label}</p>
       <div className={listSurface}>
-        <RecordList
+        <List
           aria-label={`${capitalise(dataset.item)} row, ${specimen.label.toLowerCase()}`}
           selectedValues={specimen.isSelected ? [value] : []}
           onSelectedValuesChange={handleSpecimenChange}
           peekValue={specimen.isPeeked ? value : null}
           onPeekValueChange={handleSpecimenChange}
         >
-          <RecordRow value={value} className={cn("border-b-0", specimen.rowClassName)}>
+          <ListRow value={value} className={cn("border-b-0", specimen.rowClassName)}>
             <RowParts
               dataset={dataset}
               item={item}
@@ -777,8 +777,8 @@ function Specimen<TItem>({
               nameClassName={specimen.nameClassName}
               selectClassName={isHighlighted ? "visible" : undefined}
             />
-          </RecordRow>
-        </RecordList>
+          </ListRow>
+        </List>
       </div>
     </div>
   )
@@ -797,14 +797,14 @@ function PartRow<TItem>({
 }) {
   const value = dataset.value(item)
   return (
-    <RecordList
+    <List
       aria-label={`${dataset.name(item)}, one part`}
       selectedValues={selected ? [value] : []}
       onSelectedValuesChange={handleSpecimenChange}
     >
-      <RecordRow value={value} className="min-h-11 border-b-0 px-0 hover:bg-transparent">
+      <ListRow value={value} className="min-h-11 border-b-0 px-0 hover:bg-transparent">
         {children}
-      </RecordRow>
-    </RecordList>
+      </ListRow>
+    </List>
   )
 }

@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-10-21",
+    "description": "Renames the item from record-list to list: RecordList is List, useRecordList is useList, and every RecordRow part is ListRow, such as ListRowLink and ListRowFact. Install it with the name list and import it from @/components/list."
+  },
+  {
+    "date": "2026-10-21",
     "description": "The docs say media drawn alone, such as a status dot, needs a PreviewCard that shows its word, and peek or the item's page to reach it by keyboard. The default media's child fills the 24×24px slot, so a card trigger in it takes the whole slot as its hover target."
   },
   {

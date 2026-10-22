@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn"
 /**
  * A person, team or organisation drawn as its initials or picture, then its name. Compose
  * `EntityMedia`, then `EntityName`, then an optional `EntityDescription`. In an abbreviated
- * `RecordRowFact` and in a `RecordRowMedia` only the media is drawn, and the name and description
+ * `ListRowFact` and in a `ListRowMedia` only the media is drawn, and the name and description
  * are read by screen readers only.
  */
 export function Entity({ className, ...props }: React.ComponentProps<"span">): React.ReactElement {

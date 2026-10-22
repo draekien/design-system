@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest"
 import { componentItems, requireRegistryItem } from "../playground/registry-items.ts"
-import { lockups, recordListLockup, usedIn } from "./lockups.ts"
+import { listLockup, lockups, usedIn } from "./lockups.ts"
 
-describe("recordListLockup", () => {
-  it("is built from record-list and every content component", () => {
-    expect(recordListLockup.components.map((item) => item.name)).toEqual([
-      "record-list",
+describe("listLockup", () => {
+  it("is built from list and every content component", () => {
+    expect(listLockup.components.map((item) => item.name)).toEqual([
+      "list",
       "entity",
       "figure",
       "meter",

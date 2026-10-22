@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest"
-import { recordListLockupDocs } from "../lockups/record-list/record-list.docs.ts"
+import { listLockupDocs } from "../lockups/list/list.docs.ts"
 import { componentItems, libItems, registryItems } from "../playground/registry-items.ts"
 import { itemDocs } from "./docs-index.ts"
 import type { CompositionNode, ItemDocs } from "./item-docs.ts"
 
 const allDocs: ReadonlyArray<readonly [string, ItemDocs]> = [
   ...Object.entries(itemDocs),
-  ["record-list lockup", recordListLockupDocs],
+  ["list lockup", listLockupDocs],
 ]
 
 function linkedItems(node: CompositionNode): ReadonlyArray<string> {

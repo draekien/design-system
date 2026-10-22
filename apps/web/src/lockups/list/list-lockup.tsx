@@ -3,18 +3,18 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Link } from "@tanstack/react-router"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import {
-  RecordList,
-  RecordRow,
-  RecordRowDescription,
-  RecordRowFact,
-  RecordRowId,
-  RecordRowLink,
-  RecordRowLoading,
-  RecordRowMedia,
-  RecordRowName,
-  RecordRowSelect,
-  RecordRowSubject,
-} from "@workspace/registry/components/record-list.tsx"
+  List,
+  ListRow,
+  ListRowDescription,
+  ListRowFact,
+  ListRowId,
+  ListRowLink,
+  ListRowLoading,
+  ListRowMedia,
+  ListRowName,
+  ListRowSelect,
+  ListRowSubject,
+} from "@workspace/registry/components/list.tsx"
 import * as React from "react"
 import { flushSync } from "react-dom"
 import { cn } from "@/lib/cn.ts"
@@ -34,7 +34,7 @@ export type ListState = Exclude<FixtureState, "error">
 const textLink =
   "inline-flex min-h-6 items-center rounded-sm font-medium underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-ring"
 
-export function RecordListLockup<TItem>({
+export function ListLockup<TItem>({
   dataset,
   state,
   items,
@@ -58,7 +58,7 @@ export function RecordListLockup<TItem>({
   function handleBack(value: string) {
     flushSync(() => setOpenValue(null))
     listRef.current
-      ?.querySelector<HTMLElement>(`[data-slot="record-row-link"][data-value="${value}"]`)
+      ?.querySelector<HTMLElement>(`[data-slot="list-row-link"][data-value="${value}"]`)
       ?.focus()
   }
 
@@ -79,15 +79,15 @@ export function RecordListLockup<TItem>({
       >
         <div className={listSurface}>
           {state === "loading" ? (
-            <RecordList aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
+            <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
               {items.map((item) => (
-                <RecordRowLoading key={dataset.value(item)}>
+                <ListRowLoading key={dataset.value(item)}>
                   <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
-                </RecordRowLoading>
+                </ListRowLoading>
               ))}
-            </RecordList>
+            </List>
           ) : (
-            <RecordList
+            <List
               aria-label={capitalise(dataset.noun)}
               aria-describedby={hintId}
               peekValue={peekValue}
@@ -97,7 +97,7 @@ export function RecordListLockup<TItem>({
             >
               {items.map((item) => (
                 <React.Fragment key={dataset.value(item)}>
-                  <RecordRow value={dataset.value(item)}>
+                  <ListRow value={dataset.value(item)}>
                     <RowParts
                       dataset={dataset}
                       item={item}
@@ -106,7 +106,7 @@ export function RecordListLockup<TItem>({
                       peekIds={`${inlinePeekId} ${panelPeekId}`}
                       onOpen={setOpenValue}
                     />
-                  </RecordRow>
+                  </ListRow>
                   {dataset.value(item) === peekValue && (
                     <li
                       id={inlinePeekId}
@@ -122,7 +122,7 @@ export function RecordListLockup<TItem>({
                   )}
                 </React.Fragment>
               ))}
-            </RecordList>
+            </List>
           )}
           <ListFooter
             dataset={dataset}
@@ -175,9 +175,9 @@ export function RowParts<TItem>({
   return (
     <>
       {!hidden.has("select") && (
-        <RecordRowSelect className={selectClassName} data-anchor={anchors?.get("select")} />
+        <ListRowSelect className={selectClassName} data-anchor={anchors?.get("select")} />
       )}
-      <RecordRowLink
+      <ListRowLink
         href={`#${value}`}
         data-anchor={anchors?.get("link")}
         aria-controls={peekIds === "" ? undefined : peekIds}
@@ -188,38 +188,38 @@ export function RowParts<TItem>({
           }
         }}
       >
-        <RecordRowSubject data-anchor={anchors?.get("subject")}>
+        <ListRowSubject data-anchor={anchors?.get("subject")}>
           {!hidden.has("key") && (
-            <RecordRowId narrow={dataset.keyNarrow} data-anchor={anchors?.get("key")}>
+            <ListRowId narrow={dataset.keyNarrow} data-anchor={anchors?.get("key")}>
               {dataset.key(item)}
-            </RecordRowId>
+            </ListRowId>
           )}
           {dataset.media !== undefined && !hidden.has(dataset.media.part) && (
-            <RecordRowMedia data-anchor={anchors?.get(dataset.media.part)}>
+            <ListRowMedia data-anchor={anchors?.get(dataset.media.part)}>
               {dataset.media.render(item, {
                 ...context,
                 withCard: hasCard(dataset.media, hidden),
               })}
-            </RecordRowMedia>
+            </ListRowMedia>
           )}
-          <RecordRowName className={nameClassName} data-anchor={anchors?.get("name")}>
+          <ListRowName className={nameClassName} data-anchor={anchors?.get("name")}>
             {dataset.name(item)}
-          </RecordRowName>
+          </ListRowName>
           {!hidden.has("description") && (
-            <RecordRowDescription data-anchor={anchors?.get("description")}>
+            <ListRowDescription data-anchor={anchors?.get("description")}>
               {dataset.summary(item)}
-            </RecordRowDescription>
+            </ListRowDescription>
           )}
-        </RecordRowSubject>
+        </ListRowSubject>
         {shownFacts(dataset, hidden).map((fact) => (
-          <RecordRowFact
+          <ListRowFact
             key={fact.part}
             narrow={fact.narrow}
             data-anchor={anchors?.get(fact.part)}
             {...factProps(fact, item, { ...context, withCard: hasCard(fact, hidden) })}
           />
         ))}
-      </RecordRowLink>
+      </ListRowLink>
     </>
   )
 }

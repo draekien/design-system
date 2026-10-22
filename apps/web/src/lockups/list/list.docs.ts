@@ -5,15 +5,15 @@ import {
   type CompositionNode,
   requireSource,
 } from "../../components/item-docs.ts"
+import { listDocs } from "../../components/list/list.docs.ts"
 import { meterDocs } from "../../components/meter/meter.docs.ts"
 import { previewCardDocs } from "../../components/preview-card/preview-card.docs.ts"
-import { recordListDocs } from "../../components/record-list/record-list.docs.ts"
 import { relativeTimeDocs } from "../../components/relative-time/relative-time.docs.ts"
 import { statusDocs } from "../../components/status/status.docs.ts"
-import { RecordListInvoices } from "./record-list-invoices.tsx"
-import { RecordListRecords } from "./record-list-records.tsx"
+import { ListInvoices } from "./list-invoices.tsx"
+import { ListRecords } from "./list-records.tsx"
 
-const sources = import.meta.glob<string>("./record-list-{records,invoices}.tsx", {
+const sources = import.meta.glob<string>("./list-{records,invoices}.tsx", {
   query: "?raw",
   import: "default",
   eager: true,
@@ -31,7 +31,7 @@ const previewCard = (trigger: ReadonlyArray<CompositionNode>): CompositionNode =
 const status: CompositionNode = { name: "Status", item: "status", children: [] }
 const entity: CompositionNode = { name: "Entity", item: "entity", children: [] }
 
-export const recordListLockupDocs: ComponentDocs = {
+export const listLockupDocs: ComponentDocs = {
   kind: "component",
   usage: {
     imports: `import { Entity, EntityMedia, EntityName } from "@/components/entity"
@@ -41,20 +41,20 @@ import {
   PreviewCardTrigger,
 } from "@/components/preview-card"
 import {
-  RecordList,
-  RecordRow,
-  RecordRowFact,
-  RecordRowLink,
-  RecordRowMedia,
-  RecordRowName,
-  RecordRowSubject,
-} from "@/components/record-list"
+  List,
+  ListRow,
+  ListRowFact,
+  ListRowLink,
+  ListRowMedia,
+  ListRowName,
+  ListRowSubject,
+} from "@/components/list"
 import { Status, StatusMedia, StatusName } from "@/components/status"`,
-    code: `<RecordList aria-label="Records">
-  <RecordRow value="REC-104">
-    <RecordRowLink href="/records/REC-104">
-      <RecordRowSubject>
-        <RecordRowMedia>
+    code: `<List aria-label="Records">
+  <ListRow value="REC-104">
+    <ListRowLink href="/records/REC-104">
+      <ListRowSubject>
+        <ListRowMedia>
           <PreviewCard>
             <PreviewCardTrigger>
               <Status>
@@ -64,10 +64,10 @@ import { Status, StatusMedia, StatusName } from "@/components/status"`,
             </PreviewCardTrigger>
             <PreviewCardContent>In review since 3 Oct</PreviewCardContent>
           </PreviewCard>
-        </RecordRowMedia>
-        <RecordRowName>Quarterly access review</RecordRowName>
-      </RecordRowSubject>
-      <RecordRowFact>
+        </ListRowMedia>
+        <ListRowName>Quarterly access review</ListRowName>
+      </ListRowSubject>
+      <ListRowFact>
         <PreviewCard>
           <PreviewCardTrigger>
             <Entity>
@@ -77,38 +77,38 @@ import { Status, StatusMedia, StatusName } from "@/components/status"`,
           </PreviewCardTrigger>
           <PreviewCardContent>Record owner · Platform</PreviewCardContent>
         </PreviewCard>
-      </RecordRowFact>
-    </RecordRowLink>
-  </RecordRow>
-</RecordList>`,
+      </ListRowFact>
+    </ListRowLink>
+  </ListRow>
+</List>`,
     description:
-      "Use a record list when people scan for one record, and a table when they compare values down a column.",
+      "Use a list when people scan for one record, and a table when they compare values down a column.",
   },
   composition: {
-    name: "RecordList",
-    item: "record-list",
+    name: "List",
+    item: "list",
     children: [
       {
-        name: "RecordRow",
+        name: "ListRow",
         item: null,
         children: [
-          { name: "RecordRowSelect", item: null, children: [] },
+          { name: "ListRowSelect", item: null, children: [] },
           {
-            name: "RecordRowLink",
+            name: "ListRowLink",
             item: null,
             children: [
               {
-                name: "RecordRowSubject",
+                name: "ListRowSubject",
                 item: null,
                 children: [
-                  { name: "RecordRowId", item: null, children: [] },
-                  { name: "RecordRowMedia", item: null, children: [previewCard([status, entity])] },
-                  { name: "RecordRowName", item: null, children: [] },
-                  { name: "RecordRowDescription", item: null, children: [] },
+                  { name: "ListRowId", item: null, children: [] },
+                  { name: "ListRowMedia", item: null, children: [previewCard([status, entity])] },
+                  { name: "ListRowName", item: null, children: [] },
+                  { name: "ListRowDescription", item: null, children: [] },
                 ],
               },
               {
-                name: "RecordRowFact",
+                name: "ListRowFact",
                 item: null,
                 children: [
                   previewCard([entity]),
@@ -125,22 +125,22 @@ import { Status, StatusMedia, StatusName } from "@/components/status"`,
   },
   examples: [
     {
-      name: "record-list-records",
+      name: "list-records",
       title: "Records",
       description: "A status dot and an owner, each with a preview card.",
-      Preview: RecordListRecords,
-      source: requireSource(sources, "./record-list-records.tsx"),
+      Preview: ListRecords,
+      source: requireSource(sources, "./list-records.tsx"),
     },
     {
-      name: "record-list-invoices",
+      name: "list-invoices",
       title: "Invoices",
       description: "The customer, then the total, the amount paid and the due date.",
-      Preview: RecordListInvoices,
-      source: requireSource(sources, "./record-list-invoices.tsx"),
+      Preview: ListInvoices,
+      source: requireSource(sources, "./list-invoices.tsx"),
     },
   ],
   api: [
-    ...recordListDocs.api,
+    ...listDocs.api,
     ...statusDocs.api,
     ...entityDocs.api,
     ...figureDocs.api,

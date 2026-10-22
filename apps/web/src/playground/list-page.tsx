@@ -14,34 +14,34 @@ import { getRouteApi, Link } from "@tanstack/react-router"
 import { fixtureStates } from "@workspace/fixtures/state.ts"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
-import { recordListLockup } from "../lockups/lockups.ts"
-import { datasetParts, invoicesDataset, recordsDataset } from "../lockups/record-list/datasets.tsx"
-import { recordListLockupDocs } from "../lockups/record-list/record-list.docs.ts"
-import { recordListCode, recordListStatesCode } from "../lockups/record-list/record-list-code.ts"
-import { recordListRules } from "../lockups/record-list/record-list-rules.ts"
+import { datasetParts, invoicesDataset, recordsDataset } from "../lockups/list/datasets.tsx"
+import { listLockupDocs } from "../lockups/list/list.docs.ts"
+import { listCode, listStatesCode } from "../lockups/list/list-code.ts"
+import { listRules } from "../lockups/list/list-rules.ts"
+import { listLockup } from "../lockups/lockups.ts"
 import { CanvasFrame, type CanvasMessageSearch } from "./canvas-frame.tsx"
 import { CodeBlock } from "./code-block.tsx"
 import { ApiReference, CompositionTree, ExampleList, UsageContent } from "./item-docs-sections.tsx"
+import { ListConstellation } from "./list-canvas.tsx"
 import { ControlGroup, PageSection, Segmented } from "./playground-controls.tsx"
 import {
   type CanvasPointer,
   type CanvasWidth,
   canvasCounts,
   canvasWidths,
+  type ListPart,
+  listParts,
   maxSeed,
   type PlaygroundSearch,
-  type RecordListPart,
-  recordListParts,
   type SectionTab,
 } from "./playground-search.ts"
 import { focusRing, frameSurface, segmentItem } from "./playground-styles.ts"
-import { RecordListConstellation } from "./record-list-canvas.tsx"
 import { RuleNotes } from "./rule-notes.tsx"
 import { savePlaygroundTheme, usePlaygroundTheme } from "./theme-store.ts"
 
-const route = getRouteApi("/playground/lockups/record-list")
+const route = getRouteApi("/playground/lockups/list")
 
-const docs = recordListLockupDocs
+const docs = listLockupDocs
 
 const stateLabel = {
   loaded: "Loaded",
@@ -74,18 +74,18 @@ function useSetSearch() {
     })
 }
 
-export function RecordListPage({ search }: { search: PlaygroundSearch }): React.ReactElement {
+export function ListPage({ search }: { search: PlaygroundSearch }): React.ReactElement {
   const setSearch = useSetSearch()
   const hidden = new Set(search.hide)
   const dataset = datasets[search.dataset]
   const lockupCode =
     search.dataset === "invoices"
-      ? recordListCode(invoicesDataset, hidden)
-      : recordListCode(recordsDataset, hidden)
+      ? listCode(invoicesDataset, hidden)
+      : listCode(recordsDataset, hidden)
   const statesCode =
     search.dataset === "invoices"
-      ? recordListStatesCode(invoicesDataset, hidden, search.state)
-      : recordListStatesCode(recordsDataset, hidden, search.state)
+      ? listStatesCode(invoicesDataset, hidden, search.state)
+      : listStatesCode(recordsDataset, hidden, search.state)
 
   function handleCanvasNavigate({ view: _view, ...next }: CanvasMessageSearch) {
     setSearch(next)
@@ -99,14 +99,13 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
     <div className="mx-auto grid max-w-[100rem] grid-cols-[minmax(0,1fr)] gap-8 px-5 py-8 sm:px-8 lg:py-10 xl:grid-cols-[minmax(0,1fr)_17rem] xl:gap-x-10">
       <header className="xl:col-start-1 xl:row-start-1">
         <h1 className="font-semibold text-3xl tracking-[-0.03em] [font-stretch:108%]">
-          {recordListLockup.title}
+          {listLockup.title}
         </h1>
         <p className="mt-2 max-w-2xl text-pretty text-muted-foreground leading-relaxed">
-          {recordListLockup.description}{" "}
-          <code className="font-mono text-[0.875em] text-foreground">RecordList</code> holds the
-          keyboard model,{" "}
-          <code className="font-mono text-[0.875em] text-foreground">RecordRow</code> the ranked
-          parts.
+          {listLockup.description}{" "}
+          <code className="font-mono text-[0.875em] text-foreground">List</code> holds the keyboard
+          model, <code className="font-mono text-[0.875em] text-foreground">ListRow</code> the
+          ranked parts.
         </p>
       </header>
 
@@ -135,9 +134,9 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
             ) : (
               <div className={cn(frameGround(search.width), "h-[clamp(28rem,68vh,46rem)]")}>
                 <CanvasFrame
-                  to="/canvas/lockups/record-list"
+                  to="/canvas/lockups/list"
                   view="lockup"
-                  title="Record list lockup"
+                  title="List lockup"
                   search={search}
                   onCanvasNavigate={handleCanvasNavigate}
                   className={frameClass(search.width)}
@@ -175,9 +174,9 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
             ) : (
               <div className={cn(frameGround(search.statesWidth), "h-[clamp(28rem,80vh,56rem)]")}>
                 <CanvasFrame
-                  to="/canvas/lockups/record-list"
+                  to="/canvas/lockups/list"
                   view="states"
-                  title="Record list states"
+                  title="List states"
                   search={{ ...search, width: search.statesWidth, pointer: search.statesPointer }}
                   onCanvasNavigate={handleStatesNavigate}
                   className={frameClass(search.statesWidth)}
@@ -196,7 +195,7 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
             data-pointer={search.pointer}
             className={cn(frameSurface, "h-[clamp(32rem,80vh,52rem)]")}
           >
-            <RecordListConstellation options={search} />
+            <ListConstellation options={search} />
           </div>
         </PageSection>
 
@@ -225,7 +224,7 @@ export function RecordListPage({ search }: { search: PlaygroundSearch }): React.
           title="Rules"
           description="The disclosure and composition rules the lockup encodes, each with its source."
         >
-          <RuleNotes rules={recordListRules} />
+          <RuleNotes rules={listRules} />
         </PageSection>
       </div>
 
@@ -455,16 +454,16 @@ function CanvasControls({
   hidden,
 }: {
   search: PlaygroundSearch
-  hidden: ReadonlySet<RecordListPart>
+  hidden: ReadonlySet<ListPart>
 }) {
   const setSearch = useSetSearch()
   const dataset = datasets[search.dataset]
   const parts =
     search.dataset === "invoices" ? datasetParts(invoicesDataset) : datasetParts(recordsDataset)
 
-  function togglePart(part: RecordListPart) {
+  function togglePart(part: ListPart) {
     setSearch({
-      hide: recordListParts.filter((candidate) =>
+      hide: listParts.filter((candidate) =>
         candidate === part ? !hidden.has(candidate) : hidden.has(candidate)
       ),
     })
@@ -542,7 +541,7 @@ function CanvasControls({
 
       <ControlGroup
         label="Parts"
-        hint="RecordRowLink, RecordRowSubject and RecordRowName are required. The code follows these choices."
+        hint="ListRowLink, ListRowSubject and ListRowName are required. The code follows these choices."
       >
         <div className="flex flex-col gap-0.5">
           {parts.map(({ part, label, parent }) => {

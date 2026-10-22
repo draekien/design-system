@@ -1,16 +1,16 @@
 import type * as React from "react"
 import { Figure } from "@/components/figure.tsx"
-import { Meter } from "@/components/meter.tsx"
 import {
-  RecordList,
-  RecordRow,
-  RecordRowDescription,
-  RecordRowFact,
-  RecordRowId,
-  RecordRowLink,
-  RecordRowName,
-  RecordRowSubject,
-} from "@/components/record-list.tsx"
+  List,
+  ListRow,
+  ListRowDescription,
+  ListRowFact,
+  ListRowId,
+  ListRowLink,
+  ListRowName,
+  ListRowSubject,
+} from "@/components/list.tsx"
+import { Meter } from "@/components/meter.tsx"
 import { RelativeTime } from "@/components/relative-time.tsx"
 
 const invoices = [
@@ -40,40 +40,40 @@ const invoices = [
   },
 ] as const
 
-export function RecordListFigures(): React.ReactElement {
+export function ListFigures(): React.ReactElement {
   return (
     <div className="w-full overflow-hidden rounded-xl border bg-card text-card-foreground">
-      <RecordList aria-label="Invoices">
+      <List aria-label="Invoices">
         {invoices.map((invoice) => (
-          <RecordRow key={invoice.id} value={invoice.id} className="last:border-b-0">
-            <RecordRowLink href={`#${invoice.id}`}>
-              <RecordRowSubject>
-                <RecordRowId narrow="hide">{invoice.id}</RecordRowId>
-                <RecordRowName>{invoice.name}</RecordRowName>
-                <RecordRowDescription>{invoice.description}</RecordRowDescription>
-              </RecordRowSubject>
-              <RecordRowFact narrow="abbreviate">
+          <ListRow key={invoice.id} value={invoice.id} className="last:border-b-0">
+            <ListRowLink href={`#${invoice.id}`}>
+              <ListRowSubject>
+                <ListRowId narrow="hide">{invoice.id}</ListRowId>
+                <ListRowName>{invoice.name}</ListRowName>
+                <ListRowDescription>{invoice.description}</ListRowDescription>
+              </ListRowSubject>
+              <ListRowFact narrow="abbreviate">
                 <Figure
                   value={invoice.total}
                   format={{ style: "currency", currency: "AUD" }}
                   locale="en-AU"
                 />
-              </RecordRowFact>
-              <RecordRowFact narrow="abbreviate">
+              </ListRowFact>
+              <ListRowFact narrow="abbreviate">
                 <Meter
                   value={invoice.paid}
                   max={1}
                   format={{ style: "percent" }}
                   aria-label="Paid"
                 />
-              </RecordRowFact>
-              <RecordRowFact narrow="hide">
+              </ListRowFact>
+              <ListRowFact narrow="hide">
                 <RelativeTime dateTime={invoice.issued} now="2026-10-15T11:12:00Z" />
-              </RecordRowFact>
-            </RecordRowLink>
-          </RecordRow>
+              </ListRowFact>
+            </ListRowLink>
+          </ListRow>
         ))}
-      </RecordList>
+      </List>
     </div>
   )
 }

@@ -11,7 +11,7 @@ export type MeterProps = Omit<BaseMeter.Root.Props, "children" | "locale"> & {
 
 /**
  * A measurement within a known range, drawn as a 64px bar and its value, such as how much of an
- * invoice is paid. Name it with `aria-label`. In an abbreviated `RecordRowFact` the bar is dropped
+ * invoice is paid. Name it with `aria-label`. In an abbreviated `ListRowFact` the bar is dropped
  * and the value stays.
  */
 export function Meter({ locale = "en", className, ...props }: MeterProps): React.ReactElement {

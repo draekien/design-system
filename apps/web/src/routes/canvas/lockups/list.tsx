@@ -1,20 +1,20 @@
 import { createFileRoute, stripSearchParams, useHydrated } from "@tanstack/react-router"
 import { CanvasDocument, type CanvasMessageSearch } from "../../../playground/canvas-frame.tsx"
+import { ListCanvas } from "../../../playground/list-canvas.tsx"
 import { canvasPointerSearch, canvasSearch } from "../../../playground/playground-search.ts"
-import { RecordListCanvas } from "../../../playground/record-list-canvas.tsx"
 
 const search = canvasSearch.extend(canvasPointerSearch.shape)
 
 const defaults = search.parse({})
 
-export const Route = createFileRoute("/canvas/lockups/record-list")({
+export const Route = createFileRoute("/canvas/lockups/list")({
   validateSearch: search,
   search: { middlewares: [stripSearchParams(defaults)] },
-  head: () => ({ meta: [{ title: "Record list canvas" }, { name: "robots", content: "noindex" }] }),
-  component: RecordListCanvasRoute,
+  head: () => ({ meta: [{ title: "List canvas" }, { name: "robots", content: "noindex" }] }),
+  component: ListCanvasRoute,
 })
 
-function RecordListCanvasRoute() {
+function ListCanvasRoute() {
   const current = Route.useSearch()
   const navigate = Route.useNavigate()
   const hydrated = useHydrated()
@@ -26,7 +26,7 @@ function RecordListCanvasRoute() {
 
   return (
     <CanvasDocument search={options} schema={search} onFrameNavigate={handleFrameNavigate}>
-      <RecordListCanvas options={options} />
+      <ListCanvas options={options} />
     </CanvasDocument>
   )
 }
