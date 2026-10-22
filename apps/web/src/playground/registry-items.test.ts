@@ -13,7 +13,7 @@ import {
 describe("componentItems", () => {
   it("lists every registry:ui item and no theme or lib item", () => {
     expect(componentItems.map((item) => item.name)).toEqual([
-      "record-list",
+      "list",
       "status",
       "entity",
       "figure",

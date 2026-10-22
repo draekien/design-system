@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn"
 
 /**
  * A state drawn as a dot and its name. Compose `StatusMedia`, then `StatusName`, then an optional
- * `StatusDescription`. In an abbreviated `RecordRowFact` and in a `RecordRowMedia` only the dot is
+ * `StatusDescription`. In an abbreviated `ListRowFact` and in a `ListRowMedia` only the dot is
  * drawn, and the name and description are read by screen readers only.
  */
 export function Status({ className, ...props }: React.ComponentProps<"span">): React.ReactElement {

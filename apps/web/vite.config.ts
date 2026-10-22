@@ -20,11 +20,11 @@ export default defineConfig({
       tanstackStart({
         importProtection: { behavior: "error" },
         pages: [
-          { path: "/playground/lockups/record-list" },
+          { path: "/playground/lockups/list" },
           { path: "/playground/tokens" },
           { path: "/playground/theme" },
           { path: "/playground/rules" },
-          { path: "/canvas/lockups/record-list" },
+          { path: "/canvas/lockups/list" },
           { path: "/canvas/experiments/avatar" },
           { path: "/canvas/experiments/bullet" },
           { path: "/canvas/experiments/record-table" },

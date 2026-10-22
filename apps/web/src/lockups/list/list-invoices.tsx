@@ -1,19 +1,19 @@
 import * as React from "react"
 import { Entity, EntityMedia, EntityName } from "@/components/entity.tsx"
 import { Figure } from "@/components/figure.tsx"
+import {
+  List,
+  ListRow,
+  ListRowFact,
+  ListRowId,
+  ListRowLink,
+  ListRowMedia,
+  ListRowName,
+  ListRowSelect,
+  ListRowSubject,
+} from "@/components/list.tsx"
 import { Meter } from "@/components/meter.tsx"
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
-import {
-  RecordList,
-  RecordRow,
-  RecordRowFact,
-  RecordRowId,
-  RecordRowLink,
-  RecordRowMedia,
-  RecordRowName,
-  RecordRowSelect,
-  RecordRowSubject,
-} from "@/components/record-list.tsx"
 import { RelativeTime } from "@/components/relative-time.tsx"
 
 const invoices = [
@@ -40,18 +40,18 @@ const invoices = [
   },
 ] as const
 
-export function RecordListInvoices(): React.ReactElement {
+export function ListInvoices(): React.ReactElement {
   const hintId = React.useId()
   return (
     <div className="w-full overflow-hidden rounded-xl border bg-card text-card-foreground">
-      <RecordList aria-label="Invoices" aria-describedby={hintId}>
+      <List aria-label="Invoices" aria-describedby={hintId}>
         {invoices.map((invoice) => (
-          <RecordRow key={invoice.id} value={invoice.id} className="last:border-b-0">
-            <RecordRowSelect />
-            <RecordRowLink href={`#${invoice.id}`}>
-              <RecordRowSubject>
-                <RecordRowId narrow="hide">{invoice.id}</RecordRowId>
-                <RecordRowMedia>
+          <ListRow key={invoice.id} value={invoice.id} className="last:border-b-0">
+            <ListRowSelect />
+            <ListRowLink href={`#${invoice.id}`}>
+              <ListRowSubject>
+                <ListRowId narrow="hide">{invoice.id}</ListRowId>
+                <ListRowMedia>
                   <PreviewCard>
                     <PreviewCardTrigger>
                       <Entity>
@@ -64,31 +64,31 @@ export function RecordListInvoices(): React.ReactElement {
                       <p className="text-muted-foreground">Customer · {invoice.customer.city}</p>
                     </PreviewCardContent>
                   </PreviewCard>
-                </RecordRowMedia>
-                <RecordRowName>{invoice.customer.name}</RecordRowName>
-              </RecordRowSubject>
-              <RecordRowFact narrow="abbreviate">
+                </ListRowMedia>
+                <ListRowName>{invoice.customer.name}</ListRowName>
+              </ListRowSubject>
+              <ListRowFact narrow="abbreviate">
                 <Figure
                   value={invoice.total}
                   format={{ style: "currency", currency: "AUD" }}
                   locale="en-AU"
                 />
-              </RecordRowFact>
-              <RecordRowFact narrow="abbreviate">
+              </ListRowFact>
+              <ListRowFact narrow="abbreviate">
                 <Meter
                   value={invoice.paid}
                   max={1}
                   format={{ style: "percent" }}
                   aria-label="Paid"
                 />
-              </RecordRowFact>
-              <RecordRowFact narrow="hide">
+              </ListRowFact>
+              <ListRowFact narrow="hide">
                 <RelativeTime dateTime={invoice.due} now="2026-10-15T11:12:00Z" />
-              </RecordRowFact>
-            </RecordRowLink>
-          </RecordRow>
+              </ListRowFact>
+            </ListRowLink>
+          </ListRow>
         ))}
-      </RecordList>
+      </List>
       <p id={hintId} className="border-t px-3 py-2 text-muted-foreground text-xs">
         ↑ ↓ move between rows · X selects the focused row
       </p>

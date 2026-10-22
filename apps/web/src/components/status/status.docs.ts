@@ -33,8 +33,8 @@ export const statusDocs: ComponentDocs = {
   examples: [
     {
       name: "status-in-row",
-      title: "In a record row",
-      description: "RecordRowMedia draws the dot alone. Hover it to read the state.",
+      title: "In a list row",
+      description: "ListRowMedia draws the dot alone. Hover it to read the state.",
       Preview: StatusInRow,
       source: requireSource(sources, "./status-in-row.tsx"),
     },

@@ -1,18 +1,18 @@
 import { Link } from "@tanstack/react-router"
 import { sampleRecords } from "@workspace/fixtures/records.ts"
 import {
-  RecordList,
-  RecordRow,
-  RecordRowFact,
-  RecordRowId,
-  RecordRowLink,
-  RecordRowMedia,
-  RecordRowName,
-  RecordRowSubject,
-} from "@workspace/registry/components/record-list.tsx"
+  List,
+  ListRow,
+  ListRowFact,
+  ListRowId,
+  ListRowLink,
+  ListRowMedia,
+  ListRowName,
+  ListRowSubject,
+} from "@workspace/registry/components/list.tsx"
 import * as React from "react"
-import { factProps, recordsDataset } from "../lockups/record-list/datasets.tsx"
-import { recordListRules } from "../lockups/record-list/record-list-rules.ts"
+import { factProps, recordsDataset } from "../lockups/list/datasets.tsx"
+import { listRules } from "../lockups/list/list-rules.ts"
 import { generalRules, rankingRules, ranks, sourceRules } from "./design-rules.ts"
 import { textLink } from "./playground-styles.ts"
 import { RuleNotes } from "./rule-notes.tsx"
@@ -24,7 +24,7 @@ export function RulesPage(): React.ReactElement {
   const scopeId = React.useId()
   const sourcesId = React.useId()
   const generalId = React.useId()
-  const recordListId = React.useId()
+  const listId = React.useId()
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-16 px-5 py-8 sm:px-8 lg:py-10">
@@ -115,19 +115,19 @@ export function RulesPage(): React.ReactElement {
         <RuleList rules={generalRules} />
       </section>
 
-      <section aria-labelledby={recordListId} className="flex flex-col gap-3">
+      <section aria-labelledby={listId} className="flex flex-col gap-3">
         <div className="max-w-2xl">
-          <h2 id={recordListId} className="font-semibold text-xl tracking-[-0.02em]">
-            Record list
+          <h2 id={listId} className="font-semibold text-xl tracking-[-0.02em]">
+            List
           </h2>
           <p className="mt-2 text-pretty text-muted-foreground leading-relaxed">
-            The rules the record list and record row encode, with their sources.{" "}
-            <Link to="/playground/lockups/record-list" className={textLink}>
+            The rules the list and list row encode, with their sources.{" "}
+            <Link to="/playground/lockups/list" className={textLink}>
               Try them in the playground
             </Link>
           </p>
         </div>
-        <RuleNotes rules={recordListRules} />
+        <RuleNotes rules={listRules} />
       </section>
     </div>
   )
@@ -153,7 +153,7 @@ function RankedRow() {
   return (
     <figure className="flex flex-col gap-3 rounded-xl border bg-muted/50 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[16px_16px] p-4 sm:p-6">
       <div className="overflow-hidden rounded-lg border bg-card">
-        <RecordList aria-label="Example record, labelled by rank">
+        <List aria-label="Example record, labelled by rank">
           <li
             aria-hidden="true"
             className="col-span-full grid grid-cols-subgrid border-b bg-muted/40 px-2 font-medium text-muted-foreground text-xs"
@@ -161,31 +161,29 @@ function RankedRow() {
             <span className="col-[2/6] py-1.5 pl-1">1 Subject</span>
             <span className="col-[6/-1] py-1.5 pl-1">2 Fact</span>
           </li>
-          <RecordRow value={exampleRecord.id}>
-            <RecordRowLink href="#rank-5" onClick={(event) => event.preventDefault()}>
-              <RecordRowSubject>
-                <RecordRowId narrow={recordsDataset.keyNarrow}>
+          <ListRow value={exampleRecord.id}>
+            <ListRowLink href="#rank-5" onClick={(event) => event.preventDefault()}>
+              <ListRowSubject>
+                <ListRowId narrow={recordsDataset.keyNarrow}>
                   {recordsDataset.key(exampleRecord)}
-                </RecordRowId>
+                </ListRowId>
                 {recordsDataset.media === undefined ? null : (
-                  <RecordRowMedia>
-                    {recordsDataset.media.render(exampleRecord, context)}
-                  </RecordRowMedia>
+                  <ListRowMedia>{recordsDataset.media.render(exampleRecord, context)}</ListRowMedia>
                 )}
-                <RecordRowName>{recordsDataset.name(exampleRecord)}</RecordRowName>
-              </RecordRowSubject>
+                <ListRowName>{recordsDataset.name(exampleRecord)}</ListRowName>
+              </ListRowSubject>
               {[owner, updated].map((fact) =>
                 fact === undefined ? null : (
-                  <RecordRowFact
+                  <ListRowFact
                     key={fact.part}
                     narrow={fact.narrow}
                     {...factProps(fact, exampleRecord, context)}
                   />
                 )
               )}
-            </RecordRowLink>
-          </RecordRow>
-        </RecordList>
+            </ListRowLink>
+          </ListRow>
+        </List>
       </div>
       <figcaption className="grid gap-x-6 gap-y-1 text-pretty text-muted-foreground text-sm sm:grid-cols-3">
         <p>

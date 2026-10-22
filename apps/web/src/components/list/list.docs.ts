@@ -1,22 +1,22 @@
 import type { Checkbox } from "@base-ui/react/checkbox"
 import type {
-  RecordList,
-  RecordRow,
-  RecordRowDescription,
-  RecordRowFact,
-  RecordRowId,
-  RecordRowLink,
-  RecordRowLoading,
-  RecordRowMedia,
-  RecordRowName,
-  RecordRowPeek,
-  RecordRowSelect,
-  RecordRowSubject,
-} from "@/components/record-list.tsx"
+  List,
+  ListRow,
+  ListRowDescription,
+  ListRowFact,
+  ListRowId,
+  ListRowLink,
+  ListRowLoading,
+  ListRowMedia,
+  ListRowName,
+  ListRowPeek,
+  ListRowSelect,
+  ListRowSubject,
+} from "@/components/list.tsx"
 import { type ApiTable, type ComponentDocs, requireSource } from "../item-docs.ts"
-import { RecordListFigures } from "./record-list-figures.tsx"
-import { RecordListMissing } from "./record-list-missing.tsx"
-import { RecordListNarrow } from "./record-list-narrow.tsx"
+import { ListFigures } from "./list-figures.tsx"
+import { ListMissing } from "./list-missing.tsx"
+import { ListNarrow } from "./list-narrow.tsx"
 
 const sources = import.meta.glob<string>("./*.tsx", {
   query: "?raw",
@@ -42,60 +42,60 @@ const narrowProp = {
     "How the part behaves when the list is narrow: keep draws it in full, abbreviate swaps it for its short form below 768px, hide also removes it below 640px.",
 } as const
 
-export const recordListDocs: ComponentDocs = {
+export const listDocs: ComponentDocs = {
   kind: "component",
   usage: {
     imports: `import {
-  RecordList,
-  RecordRow,
-  RecordRowLink,
-  RecordRowName,
-  RecordRowSubject,
-} from "@/components/record-list"`,
-    code: `<RecordList aria-label="Records">
-  <RecordRow value="REC-104">
-    <RecordRowLink href="/records/REC-104">
-      <RecordRowSubject>
-        <RecordRowName>Quarterly access review</RecordRowName>
-      </RecordRowSubject>
-    </RecordRowLink>
-  </RecordRow>
-</RecordList>`,
+  List,
+  ListRow,
+  ListRowLink,
+  ListRowName,
+  ListRowSubject,
+} from "@/components/list"`,
+    code: `<List aria-label="Records">
+  <ListRow value="REC-104">
+    <ListRowLink href="/records/REC-104">
+      <ListRowSubject>
+        <ListRowName>Quarterly access review</ListRowName>
+      </ListRowSubject>
+    </ListRowLink>
+  </ListRow>
+</List>`,
     description:
-      "Put one value in each RecordRowFact, at most eight per row. Show the keyboard hints near the list and point aria-describedby at them.",
+      "Put one value in each ListRowFact, at most eight per row. Show the keyboard hints near the list and point aria-describedby at them.",
   },
   composition: {
-    name: "RecordList",
+    name: "List",
     item: null,
     children: [
       {
-        name: "RecordRow",
+        name: "ListRow",
         item: null,
         children: [
-          { name: "RecordRowSelect", item: null, children: [] },
+          { name: "ListRowSelect", item: null, children: [] },
           {
-            name: "RecordRowLink",
+            name: "ListRowLink",
             item: null,
             children: [
               {
-                name: "RecordRowSubject",
+                name: "ListRowSubject",
                 item: null,
                 children: [
-                  { name: "RecordRowId", item: null, children: [] },
+                  { name: "ListRowId", item: null, children: [] },
                   {
-                    name: "RecordRowMedia",
+                    name: "ListRowMedia",
                     item: null,
                     children: [
                       { name: "Status", item: "status", children: [] },
                       { name: "Entity", item: "entity", children: [] },
                     ],
                   },
-                  { name: "RecordRowName", item: null, children: [] },
-                  { name: "RecordRowDescription", item: null, children: [] },
+                  { name: "ListRowName", item: null, children: [] },
+                  { name: "ListRowDescription", item: null, children: [] },
                 ],
               },
               {
-                name: "RecordRowFact",
+                name: "ListRowFact",
                 item: null,
                 children: [
                   { name: "Status", item: "status", children: [] },
@@ -107,39 +107,39 @@ export const recordListDocs: ComponentDocs = {
               },
             ],
           },
-          { name: "RecordRowPeek", item: null, children: [] },
+          { name: "ListRowPeek", item: null, children: [] },
         ],
       },
-      { name: "RecordRowLoading", item: null, children: [] },
+      { name: "ListRowLoading", item: null, children: [] },
     ],
   },
   examples: [
     {
-      name: "record-list-figures",
+      name: "list-figures",
       title: "Figures",
       description: "Each fact lines up in its own column.",
-      Preview: RecordListFigures,
-      source: requireSource(sources, "./record-list-figures.tsx"),
+      Preview: ListFigures,
+      source: requireSource(sources, "./list-figures.tsx"),
     },
     {
-      name: "record-list-narrow",
+      name: "list-narrow",
       title: "Narrow list",
       description: "abbreviate shortens the total; hide removes the ID and the date.",
-      Preview: RecordListNarrow,
-      source: requireSource(sources, "./record-list-narrow.tsx"),
+      Preview: ListNarrow,
+      source: requireSource(sources, "./list-narrow.tsx"),
     },
     {
-      name: "record-list-missing",
+      name: "list-missing",
       title: "Missing facts and peek",
       description: "missing draws a word in place of the value. Hover a row for its peek button.",
-      Preview: RecordListMissing,
-      source: requireSource(sources, "./record-list-missing.tsx"),
+      Preview: ListMissing,
+      source: requireSource(sources, "./list-missing.tsx"),
     },
   ],
   api: [
     {
       kind: "part",
-      name: "RecordList",
+      name: "List",
       description:
         "The list, and its keyboard model: one tab stop, arrow keys between rows, Space to peek, X to select, Esc to close peek then clear selection.",
       spreads: { label: "<ul>", href: null },
@@ -182,13 +182,13 @@ export const recordListDocs: ComponentDocs = {
           required: false,
           default: null,
           description:
-            "Called when Space or a RecordRowPeek toggles peek, Esc closes it, or peek follows focus to another row.",
+            "Called when Space or a ListRowPeek toggles peek, Esc closes it, or peek follows focus to another row.",
         },
-      } satisfies ApiTable<typeof RecordList, "ul">,
+      } satisfies ApiTable<typeof List, "ul">,
     },
     {
       kind: "part",
-      name: "RecordRow",
+      name: "ListRow",
       description: "One item in the list, named by its value.",
       spreads: li,
       props: {
@@ -199,47 +199,47 @@ export const recordListDocs: ComponentDocs = {
           default: null,
           description: "The item's unique value, which list selection and peek refer to.",
         },
-      } satisfies ApiTable<typeof RecordRow, "li">,
+      } satisfies ApiTable<typeof ListRow, "li">,
     },
     {
       kind: "part",
-      name: "RecordRowSelect",
+      name: "ListRowSelect",
       description:
         "The selection checkbox, drawn on a hovered, focused or selected row and always on a coarse pointer.",
       spreads: {
         label: "Base UI Checkbox.Root",
         href: "https://base-ui.com/react/components/checkbox#api-reference",
       },
-      props: {} satisfies ApiTable<typeof RecordRowSelect, typeof Checkbox.Root>,
+      props: {} satisfies ApiTable<typeof ListRowSelect, typeof Checkbox.Root>,
     },
     {
       kind: "part",
-      name: "RecordRowLink",
+      name: "ListRowLink",
       description:
         "The link to the item's own page, which holds the subject and the facts and is the row's one focus target.",
       spreads: { label: "<a>", href: null },
-      props: { render: renderProp } satisfies ApiTable<typeof RecordRowLink, "a">,
+      props: { render: renderProp } satisfies ApiTable<typeof ListRowLink, "a">,
     },
     {
       kind: "part",
-      name: "RecordRowSubject",
+      name: "ListRowSubject",
       description: "Rank 1: what the row is about, at the start of the row.",
       spreads: span,
-      props: { render: renderProp } satisfies ApiTable<typeof RecordRowSubject, "span">,
+      props: { render: renderProp } satisfies ApiTable<typeof ListRowSubject, "span">,
     },
     {
       kind: "part",
-      name: "RecordRowId",
+      name: "ListRowId",
       description: "The item's ID, in muted tabular figures.",
       spreads: span,
       props: { render: renderProp, narrow: narrowProp } satisfies ApiTable<
-        typeof RecordRowId,
+        typeof ListRowId,
         "span"
       >,
     },
     {
       kind: "part",
-      name: "RecordRowMedia",
+      name: "ListRowMedia",
       description:
         "A 24px picture of the item, such as its status dot, its owner's initials or a kind icon.",
       spreads: span,
@@ -260,26 +260,26 @@ export const recordListDocs: ComponentDocs = {
           description:
             'Required with variant="icon": what the icon stands for, read by screen readers in place of the icon.',
         },
-      } satisfies ApiTable<typeof RecordRowMedia, "span">,
+      } satisfies ApiTable<typeof ListRowMedia, "span">,
     },
     {
       kind: "part",
-      name: "RecordRowName",
+      name: "ListRowName",
       description: "The item's name. It truncates and is never hidden.",
       spreads: span,
-      props: { render: renderProp } satisfies ApiTable<typeof RecordRowName, "span">,
+      props: { render: renderProp } satisfies ApiTable<typeof ListRowName, "span">,
     },
     {
       kind: "part",
-      name: "RecordRowDescription",
+      name: "ListRowDescription",
       description:
         "One muted line after the name. It truncates before the name does and is hidden below 640px.",
       spreads: span,
-      props: { render: renderProp } satisfies ApiTable<typeof RecordRowDescription, "span">,
+      props: { render: renderProp } satisfies ApiTable<typeof ListRowDescription, "span">,
     },
     {
       kind: "part",
-      name: "RecordRowFact",
+      name: "ListRowFact",
       description:
         "Rank 2: one fact the list exists to compare, in its own column. A row holds at most eight.",
       spreads: span,
@@ -296,23 +296,23 @@ export const recordListDocs: ComponentDocs = {
           description:
             "Why the fact cannot be shown: unavailable when it failed to load, hidden when the viewer's role cannot see it.",
         },
-      } satisfies ApiTable<typeof RecordRowFact, "span">,
+      } satisfies ApiTable<typeof ListRowFact, "span">,
     },
     {
       kind: "part",
-      name: "RecordRowPeek",
+      name: "ListRowPeek",
       description:
         "A button at the end of the row that toggles peek by pointer, drawn on a hovered, focused or peeked row.",
       spreads: { label: "<button>", href: null },
-      props: {} satisfies ApiTable<typeof RecordRowPeek, "button">,
+      props: {} satisfies ApiTable<typeof ListRowPeek, "button">,
     },
     {
       kind: "part",
-      name: "RecordRowLoading",
+      name: "ListRowLoading",
       description:
         "A placeholder row for loading items; each part inside draws a bar so the columns match the rows that replace it.",
       spreads: li,
-      props: { render: renderProp } satisfies ApiTable<typeof RecordRowLoading, "li">,
+      props: { render: renderProp } satisfies ApiTable<typeof ListRowLoading, "li">,
     },
   ],
 }

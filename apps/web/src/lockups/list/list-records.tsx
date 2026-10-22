@@ -1,18 +1,18 @@
 import * as React from "react"
 import { Entity, EntityDescription, EntityMedia, EntityName } from "@/components/entity.tsx"
-import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
 import {
-  RecordList,
-  RecordRow,
-  RecordRowDescription,
-  RecordRowFact,
-  RecordRowId,
-  RecordRowLink,
-  RecordRowMedia,
-  RecordRowName,
-  RecordRowSelect,
-  RecordRowSubject,
-} from "@/components/record-list.tsx"
+  List,
+  ListRow,
+  ListRowDescription,
+  ListRowFact,
+  ListRowId,
+  ListRowLink,
+  ListRowMedia,
+  ListRowName,
+  ListRowSelect,
+  ListRowSubject,
+} from "@/components/list.tsx"
+import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
 import { RelativeTime } from "@/components/relative-time.tsx"
 import { Status, StatusDescription, StatusMedia, StatusName } from "@/components/status.tsx"
 
@@ -49,18 +49,18 @@ const records = [
   },
 ] as const
 
-export function RecordListRecords(): React.ReactElement {
+export function ListRecords(): React.ReactElement {
   const hintId = React.useId()
   return (
     <div className="w-full overflow-hidden rounded-xl border bg-card text-card-foreground">
-      <RecordList aria-label="Records" aria-describedby={hintId}>
+      <List aria-label="Records" aria-describedby={hintId}>
         {records.map((record) => (
-          <RecordRow key={record.id} value={record.id} className="last:border-b-0">
-            <RecordRowSelect />
-            <RecordRowLink href={`#${record.id}`}>
-              <RecordRowSubject>
-                <RecordRowId narrow="hide">{record.id}</RecordRowId>
-                <RecordRowMedia>
+          <ListRow key={record.id} value={record.id} className="last:border-b-0">
+            <ListRowSelect />
+            <ListRowLink href={`#${record.id}`}>
+              <ListRowSubject>
+                <ListRowId narrow="hide">{record.id}</ListRowId>
+                <ListRowMedia>
                   <PreviewCard>
                     <PreviewCardTrigger>
                       <Status>
@@ -74,11 +74,11 @@ export function RecordListRecords(): React.ReactElement {
                       <p className="text-muted-foreground">{record.since}</p>
                     </PreviewCardContent>
                   </PreviewCard>
-                </RecordRowMedia>
-                <RecordRowName>{record.name}</RecordRowName>
-                <RecordRowDescription>{record.description}</RecordRowDescription>
-              </RecordRowSubject>
-              <RecordRowFact narrow="abbreviate">
+                </ListRowMedia>
+                <ListRowName>{record.name}</ListRowName>
+                <ListRowDescription>{record.description}</ListRowDescription>
+              </ListRowSubject>
+              <ListRowFact narrow="abbreviate">
                 <PreviewCard>
                   <PreviewCardTrigger>
                     <Entity>
@@ -92,14 +92,14 @@ export function RecordListRecords(): React.ReactElement {
                     <p className="text-muted-foreground">Record owner · {record.owner.team}</p>
                   </PreviewCardContent>
                 </PreviewCard>
-              </RecordRowFact>
-              <RecordRowFact narrow="hide">
+              </ListRowFact>
+              <ListRowFact narrow="hide">
                 <RelativeTime dateTime={record.updated} now="2026-10-15T11:12:00Z" />
-              </RecordRowFact>
-            </RecordRowLink>
-          </RecordRow>
+              </ListRowFact>
+            </ListRowLink>
+          </ListRow>
         ))}
-      </RecordList>
+      </List>
       <p id={hintId} className="border-t px-3 py-2 text-muted-foreground text-xs">
         ↑ ↓ move between rows · X selects the focused row
       </p>

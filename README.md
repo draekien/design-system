@@ -22,7 +22,7 @@ shadcn replaces the CSS variables you already have only when a theme item is nam
 
 | Item | Description |
 | --- | --- |
-| `record-list` | A list of 44px record rows, each part named for the rank of what it holds, with one tab stop, arrow-key focus, keyboard peek and keyboard selection. |
+| `list` | A list of 44px rows, each part named for the rank of what it holds, with one tab stop, arrow-key focus, keyboard peek and keyboard selection. |
 | `status` | A state drawn as a shape-coded dot and its name, with an optional description. |
 | `entity` | A person, team or organisation drawn as its initials or picture in a 24px circle, then its name. |
 | `figure` | A number the caller compares down a list, in tabular figures, with a compact short form. |

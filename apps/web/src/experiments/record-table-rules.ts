@@ -2,7 +2,7 @@ import type { Rule } from "../playground/rule-notes.tsx"
 
 export const recordTableRules: ReadonlyArray<Rule> = [
   {
-    rule: "A table suits invoices because the caller compares amount, paid and due down each column; a record list suits a caller who scans for one record.",
+    rule: "A table suits invoices because the caller compares amount, paid and due down each column; a list suits a caller who scans for one record.",
     source: "This design system's own decision",
   },
   {
@@ -44,7 +44,7 @@ export const recordTableRules: ReadonlyArray<Rule> = [
     source: "This design system's own decision",
   },
   {
-    rule: "A click on an invoice row opens its page; the checkbox and the expand control sit above the row's link. Peek opens only with Space on the focused invoice, as in the record list.",
+    rule: "A click on an invoice row opens its page; the checkbox and the expand control sit above the row's link. Peek opens only with Space on the focused invoice, as in the list.",
     source: "This design system's own decision",
   },
   {

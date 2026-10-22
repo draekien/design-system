@@ -31,7 +31,7 @@ export const bulletRules: ReadonlyArray<Rule> = [
   {
     rule: "A bullet that is a button or link tints Ink at 4% on hover and 7% while its popup is open; a hover card trigger draws no tint. The tint and the focus outline extend 4px past each side, so its first icon lines up with a bullet that opens nothing.",
     source:
-      "The 4% and 7% tints match the record row; the 4px extension is this design system's own decision",
+      "The 4% and 7% tints match the list row; the 4px extension is this design system's own decision",
   },
   {
     rule: "Priority's picker ticks the current value; choosing one closes the picker and the bullet shows it.",

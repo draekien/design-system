@@ -5,7 +5,7 @@ import * as React from "react"
 // biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
 import { cn } from "@/lib/cn"
 
-type RecordListContextValue = {
+type ListContextValue = {
   activeValue: string | null
   peekValue: string | null
   selectedValues: ReadonlyArray<string>
@@ -15,16 +15,16 @@ type RecordListContextValue = {
   onTogglePeek: (value: string) => void
 }
 
-const RecordListContext = React.createContext<RecordListContextValue | null>(null)
+const ListContext = React.createContext<ListContextValue | null>(null)
 
-const linkSelector = '[data-slot="record-row-link"]'
+const linkSelector = '[data-slot="list-row-link"]'
 
-const rowSelector = '[data-slot="record-row"]'
+const rowSelector = '[data-slot="list-row"]'
 
-const selectSelector = '[data-slot="record-row-select"]'
+const selectSelector = '[data-slot="list-row-select"]'
 
-/** Props for {@link RecordList}. */
-export type RecordListProps = Omit<useRender.ComponentProps<"ul">, "defaultValue"> & {
+/** Props for {@link List}. */
+export type ListProps = Omit<useRender.ComponentProps<"ul">, "defaultValue"> & {
   /** The values of the selected rows. Pass with `onSelectedValuesChange` to control selection. */
   selectedValues?: ReadonlyArray<string>
   /** The values selected on first render when selection is uncontrolled. */
@@ -35,7 +35,7 @@ export type RecordListProps = Omit<useRender.ComponentProps<"ul">, "defaultValue
   peekValue?: string | null
   /** The row peeked on first render when peek is uncontrolled. */
   defaultPeekValue?: string | null
-  /** Called when Space or a `RecordRowPeek` toggles peek, Esc closes it, or peek follows focus to another row. */
+  /** Called when Space or a `ListRowPeek` toggles peek, Esc closes it, or peek follows focus to another row. */
   onPeekValueChange?: (value: string | null) => void
 }
 
@@ -61,16 +61,16 @@ function rowLinks(root: HTMLElement | null): ReadonlyArray<HTMLElement> {
 }
 
 /**
- * A list of records, one `RecordRow` per record. Owns the row keyboard model: the list is one
+ * A list of records, one `ListRow` per record. Owns the row keyboard model: the list is one
  * tab stop; ↑ ↓ Home End move focus between rows; Space toggles peek on the focused row and an
- * open peek follows focus; X toggles selection on a row that has a `RecordRowSelect`; Esc closes
- * peek, then clears the selection. A `RecordRowPeek` toggles peek by pointer.
+ * open peek follows focus; X toggles selection on a row that has a `ListRowSelect`; Esc closes
+ * peek, then clears the selection. A `ListRowPeek` toggles peek by pointer.
  * Peek renders nothing itself: read `peekValue` and render a read-only preview of the record's
  * page beside the list, under the row or in a drawer.
  * The list is a grid that its rows share, so their columns line up. Give any other child, such as an
  * inline peek, `col-span-full`.
  */
-export function RecordList({
+export function List({
   selectedValues: selectedValuesProp,
   defaultSelectedValues = [],
   onSelectedValuesChange,
@@ -81,7 +81,7 @@ export function RecordList({
   className,
   ref,
   ...props
-}: RecordListProps): React.ReactElement {
+}: ListProps): React.ReactElement {
   const rootRef = React.useRef<HTMLUListElement>(null)
   const [activeValue, setActiveValue] = React.useState<string | null>(null)
   const [selectedValues, setSelectedValues] = useControllable(
@@ -181,7 +181,7 @@ export function RecordList({
     setPeekValue(peekValue === value ? null : value)
   }
 
-  const context: RecordListContextValue = {
+  const context: ListContextValue = {
     activeValue,
     peekValue,
     selectedValues,
@@ -195,7 +195,7 @@ export function RecordList({
     defaultTagName: "ul",
     render,
     ref: ref === undefined ? rootRef : [ref, rootRef],
-    state: { slot: "record-list" },
+    state: { slot: "list" },
     props: mergeProps<"ul">(
       {
         className: cn(
@@ -207,20 +207,20 @@ export function RecordList({
     ),
   })
 
-  return <RecordListContext.Provider value={context}>{element}</RecordListContext.Provider>
+  return <ListContext.Provider value={context}>{element}</ListContext.Provider>
 }
 
-/** Reads the enclosing `RecordList`'s state. Throws when called outside a `RecordList`. */
-// biome-ignore lint/style/useComponentExportOnlyModules: the RecordRow parts and custom row parts read the list state through this hook
-export function useRecordList(): RecordListContextValue {
-  const context = React.useContext(RecordListContext)
+/** Reads the enclosing `List`'s state. Throws when called outside a `List`. */
+// biome-ignore lint/style/useComponentExportOnlyModules: the ListRow parts and custom row parts read the list state through this hook
+export function useList(): ListContextValue {
+  const context = React.useContext(ListContext)
   if (context === null) {
-    throw new Error("RecordRow must be rendered inside a RecordList.")
+    throw new Error("ListRow must be rendered inside a List.")
   }
   return context
 }
 
-type RecordRowContextValue =
+type ListRowContextValue =
   | {
       kind: "record"
       value: string
@@ -230,12 +230,12 @@ type RecordRowContextValue =
     }
   | { kind: "loading" }
 
-const RecordRowContext = React.createContext<RecordRowContextValue | null>(null)
+const ListRowContext = React.createContext<ListRowContextValue | null>(null)
 
-function useRecordRow(part: string): RecordRowContextValue {
-  const context = React.useContext(RecordRowContext)
+function useListRow(part: string): ListRowContextValue {
+  const context = React.useContext(ListRowContext)
   if (context === null) {
-    throw new Error(`${part} must be rendered inside a RecordRow or RecordRowLoading.`)
+    throw new Error(`${part} must be rendered inside a ListRow or ListRowLoading.`)
   }
   return context
 }
@@ -245,9 +245,9 @@ function useRecordRow(part: string): RecordRowContextValue {
  * swaps it for its short form when the list is narrower than 768px. `"hide"` abbreviates it below
  * 768px and removes it below 640px; a hidden value must still appear in peek and on the item's page.
  */
-export type RecordRowNarrow = "keep" | "abbreviate" | "hide"
+export type ListRowNarrow = "keep" | "abbreviate" | "hide"
 
-const narrowClass: Readonly<Record<RecordRowNarrow, string>> = {
+const narrowClass: Readonly<Record<ListRowNarrow, string>> = {
   keep: "",
   abbreviate:
     "@max-abbreviate:**:data-[abbreviation=long]:sr-only @max-abbreviate:**:data-[abbreviation=short]:inline",
@@ -255,7 +255,7 @@ const narrowClass: Readonly<Record<RecordRowNarrow, string>> = {
 }
 
 const rowClass =
-  "group/record-row col-span-full grid min-h-11 grid-cols-subgrid items-center border-b px-2"
+  "group/list-row col-span-full grid min-h-11 grid-cols-subgrid items-center border-b px-2"
 
 function Bar({ className }: { className: string }) {
   return (
@@ -263,27 +263,22 @@ function Bar({ className }: { className: string }) {
   )
 }
 
-/** Props for {@link RecordRow}. */
-export type RecordRowProps = useRender.ComponentProps<"li"> & {
-  /** The item's unique value. `RecordList` selection and peek refer to rows by this value. */
+/** Props for {@link ListRow}. */
+export type ListRowProps = useRender.ComponentProps<"li"> & {
+  /** The item's unique value. `List` selection and peek refer to rows by this value. */
   value: string
 }
 
 /**
- * One item in a `RecordList`. Its parts are named for the rank of the information they hold:
- * `RecordRowSubject` (rank 1: what the row is about), one `RecordRowFact` per fact the list exists
- * to compare (rank 2), and `RecordRowLink` to the item's own page (rank 5). Peek, rendered from
- * `RecordList`'s `peekValue`, previews part of that page read-only; rank 4 is a `preview-card` on a
+ * One item in a `List`. Its parts are named for the rank of the information they hold:
+ * `ListRowSubject` (rank 1: what the row is about), one `ListRowFact` per fact the list exists
+ * to compare (rank 2), and `ListRowLink` to the item's own page (rank 5). Peek, rendered from
+ * `List`'s `peekValue`, previews part of that page read-only; rank 4 is a `preview-card` on a
  * rank 1 or 2 value.
  * Columns line up down the list whatever the values are.
  */
-export function RecordRow({
-  value,
-  render,
-  className,
-  ...props
-}: RecordRowProps): React.ReactElement {
-  const list = useRecordList()
+export function ListRow({ value, render, className, ...props }: ListRowProps): React.ReactElement {
+  const list = useList()
   const nameId = React.useId()
   const isSelected = list.selectedValues.includes(value)
   const isPeeked = list.peekValue === value
@@ -291,12 +286,12 @@ export function RecordRow({
   const element = useRender({
     defaultTagName: "li",
     render,
-    state: { slot: "record-row", selected: isSelected, peeked: isPeeked },
+    state: { slot: "list-row", selected: isSelected, peeked: isPeeked },
     props: mergeProps<"li">(
       {
         className: cn(
           rowClass,
-          "hover:bg-foreground/4 has-[[data-slot=record-row-link]:focus-visible]:bg-foreground/7 data-peeked:bg-foreground/7 data-peeked:hover:bg-foreground/7",
+          "hover:bg-foreground/4 has-[[data-slot=list-row-link]:focus-visible]:bg-foreground/7 data-peeked:bg-foreground/7 data-peeked:hover:bg-foreground/7",
           className
         ),
       },
@@ -305,17 +300,17 @@ export function RecordRow({
   })
 
   return (
-    <RecordRowContext.Provider value={{ kind: "record", value, nameId, isSelected, isPeeked }}>
+    <ListRowContext.Provider value={{ kind: "record", value, nameId, isSelected, isPeeked }}>
       {element}
-    </RecordRowContext.Provider>
+    </ListRowContext.Provider>
   )
 }
 
 /**
- * A placeholder row shown while items load. Compose the same parts as `RecordRow`; each part draws
+ * A placeholder row shown while items load. Compose the same parts as `ListRow`; each part draws
  * a bar and ignores its children, so the loading row has the columns of the rows that replace it.
  */
-export function RecordRowLoading({
+export function ListRowLoading({
   render,
   className,
   ...props
@@ -323,16 +318,14 @@ export function RecordRowLoading({
   const element = useRender({
     defaultTagName: "li",
     render,
-    state: { slot: "record-row-loading" },
+    state: { slot: "list-row-loading" },
     props: mergeProps<"li">({ className: cn(rowClass, className), "aria-hidden": true }, props),
   })
-  return (
-    <RecordRowContext.Provider value={{ kind: "loading" }}>{element}</RecordRowContext.Provider>
-  )
+  return <ListRowContext.Provider value={{ kind: "loading" }}>{element}</ListRowContext.Provider>
 }
 
-/** Props for {@link RecordRowSelect}. */
-export type RecordRowSelectProps = Omit<
+/** Props for {@link ListRowSelect}. */
+export type ListRowSelectProps = Omit<
   Checkbox.Root.Props,
   "checked" | "defaultChecked" | "onCheckedChange" | "children"
 >
@@ -345,25 +338,25 @@ const selectClass =
  * a hovered, focused or selected row, and always on a coarse pointer. It is not a tab stop: X on
  * the focused row toggles it. Its accessible name is "Select" followed by the row's name.
  */
-export function RecordRowSelect({ className, ...props }: RecordRowSelectProps): React.ReactElement {
-  const row = useRecordRow("RecordRowSelect")
-  const list = useRecordList()
+export function ListRowSelect({ className, ...props }: ListRowSelectProps): React.ReactElement {
+  const row = useListRow("ListRowSelect")
+  const list = useList()
   const labelId = React.useId()
 
   if (row.kind === "loading") {
-    return <span data-slot="record-row-select" className={selectClass} />
+    return <span data-slot="list-row-select" className={selectClass} />
   }
 
   return (
     <Checkbox.Root
-      data-slot="record-row-select"
+      data-slot="list-row-select"
       tabIndex={-1}
       checked={row.isSelected}
       onCheckedChange={() => list.onToggleSelected(row.value)}
       aria-labelledby={`${labelId} ${row.nameId}`}
       className={cn(
         selectClass,
-        "group/select invisible cursor-pointer rounded-md outline-none data-checked:visible pointer-coarse:visible group-hover/record-row:visible group-has-[[data-slot=record-row-link]:focus-visible]/record-row:visible",
+        "group/select invisible cursor-pointer rounded-md outline-none data-checked:visible pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible",
         className
       )}
       {...props}
@@ -394,23 +387,23 @@ const linkClass = "col-[2/-2] grid h-full min-h-11 grid-cols-subgrid items-cente
 const peekClass =
   "col-[-2/-1] ml-1 flex size-6 shrink-0 items-center justify-center rounded-md pointer-coarse:size-11"
 
-/** Props for {@link RecordRowPeek}. */
-export type RecordRowPeekProps = Omit<React.ComponentProps<"button">, "children" | "type">
+/** Props for {@link ListRowPeek}. */
+export type ListRowPeekProps = Omit<React.ComponentProps<"button">, "children" | "type">
 
 /**
  * A button at the end of the row that toggles peek on it, so a pointer reaches peek while a click
- * on `RecordRowLink` opens the item's page. It is 24×24px, 44×44px on a coarse pointer, and is
+ * on `ListRowLink` opens the item's page. It is 24×24px, 44×44px on a coarse pointer, and is
  * drawn only on a hovered, focused or peeked row, and always on a coarse pointer. It is not a tab
  * stop: Space on the focused row toggles peek. Its accessible name is "Peek" followed by the row's
  * name; pass `aria-controls` the id of the element that renders peek.
  */
-export function RecordRowPeek({ className, ...props }: RecordRowPeekProps): React.ReactElement {
-  const row = useRecordRow("RecordRowPeek")
-  const list = useRecordList()
+export function ListRowPeek({ className, ...props }: ListRowPeekProps): React.ReactElement {
+  const row = useListRow("ListRowPeek")
+  const list = useList()
   const labelId = React.useId()
 
   if (row.kind === "loading") {
-    return <span data-slot="record-row-peek" className={peekClass} />
+    return <span data-slot="list-row-peek" className={peekClass} />
   }
 
   return (
@@ -424,13 +417,13 @@ export function RecordRowPeek({ className, ...props }: RecordRowPeekProps): Reac
           onClick: () => list.onTogglePeek(row.value),
           className: cn(
             peekClass,
-            "invisible cursor-pointer text-muted-foreground outline-none transition-colors hover:bg-foreground/7 hover:text-foreground aria-expanded:visible aria-expanded:text-foreground pointer-coarse:visible group-hover/record-row:visible group-has-[[data-slot=record-row-link]:focus-visible]/record-row:visible",
+            "invisible cursor-pointer text-muted-foreground outline-none transition-colors hover:bg-foreground/7 hover:text-foreground aria-expanded:visible aria-expanded:text-foreground pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible",
             className
           ),
         },
         props
       )}
-      data-slot="record-row-peek"
+      data-slot="list-row-peek"
     >
       <span id={labelId} className="sr-only">
         Peek
@@ -450,28 +443,28 @@ export function RecordRowPeek({ className, ...props }: RecordRowPeekProps): Reac
 }
 
 /**
- * The link to the item's own page (rank 5), holding `RecordRowSubject` and the `RecordRowFact`s.
+ * The link to the item's own page (rank 5), holding `ListRowSubject` and the `ListRowFact`s.
  * Pass your router's link through `render`. It is the row's one focus target and handles the
- * `RecordList` keys.
+ * `List` keys.
  */
-export function RecordRowLink({
+export function ListRowLink({
   render,
   className,
   children,
   ...props
 }: useRender.ComponentProps<"a">): React.ReactElement {
-  const row = useRecordRow("RecordRowLink")
-  const list = useRecordList()
+  const row = useListRow("ListRowLink")
+  const list = useList()
   const isRecord = row.kind === "record"
 
   return useRender({
     defaultTagName: "a",
     render: isRecord ? render : <span />,
-    state: isRecord ? { slot: "record-row-link", value: row.value } : { slot: "record-row-link" },
+    state: isRecord ? { slot: "list-row-link", value: row.value } : { slot: "list-row-link" },
     props: isRecord
       ? mergeProps<"a">(
           {
-            className: cn(linkClass, "group/record-row-link outline-none", className),
+            className: cn(linkClass, "group/list-row-link outline-none", className),
             tabIndex: list.activeValue === row.value ? 0 : -1,
             "aria-expanded": row.isPeeked,
             "aria-keyshortcuts": "Space X ArrowUp ArrowDown Home End Escape",
@@ -491,12 +484,12 @@ export function RecordRowLink({
 }
 
 /** Props for a row part. */
-export type RecordRowPartProps = useRender.ComponentProps<"span">
+export type ListRowPartProps = useRender.ComponentProps<"span">
 
 /** Props for a row part whose narrow behaviour the caller chooses. */
-export type RecordRowNarrowPartProps = RecordRowPartProps & {
+export type ListRowNarrowPartProps = ListRowPartProps & {
   /** How the part behaves when the list is narrow. Defaults to `"keep"`. */
-  narrow?: RecordRowNarrow
+  narrow?: ListRowNarrow
 }
 
 function usePart(
@@ -504,9 +497,9 @@ function usePart(
   slot: string,
   partClassName: string,
   placeholder: React.ReactNode,
-  { render, className, children, ...props }: RecordRowPartProps
+  { render, className, children, ...props }: ListRowPartProps
 ) {
-  const row = useRecordRow(part)
+  const row = useListRow(part)
   const isRecord = row.kind === "record"
   return useRender({
     defaultTagName: "span",
@@ -520,13 +513,13 @@ function usePart(
 }
 
 /**
- * Rank 1: what the row is about. Holds an optional `RecordRowId` and `RecordRowMedia`, then one
- * `RecordRowName` and an optional `RecordRowDescription`, at the start of the row.
+ * Rank 1: what the row is about. Holds an optional `ListRowId` and `ListRowMedia`, then one
+ * `ListRowName` and an optional `ListRowDescription`, at the start of the row.
  */
-export function RecordRowSubject({ children, ...props }: RecordRowPartProps): React.ReactElement {
+export function ListRowSubject({ children, ...props }: ListRowPartProps): React.ReactElement {
   return usePart(
-    "RecordRowSubject",
-    "record-row-subject",
+    "ListRowSubject",
+    "list-row-subject",
     "col-[1/5] grid min-w-0 grid-cols-subgrid items-center",
     children,
     { ...props, children }
@@ -534,13 +527,13 @@ export function RecordRowSubject({ children, ...props }: RecordRowPartProps): Re
 }
 
 /** The item's ID, such as `REC-104`, in muted tabular figures. */
-export function RecordRowId({
+export function ListRowId({
   narrow = "keep",
   ...props
-}: RecordRowNarrowPartProps): React.ReactElement {
+}: ListRowNarrowPartProps): React.ReactElement {
   return usePart(
-    "RecordRowId",
-    "record-row-id",
+    "ListRowId",
+    "list-row-id",
     cn("col-start-1 truncate pr-3 text-muted-foreground text-xs tabular-nums", narrowClass[narrow]),
     <Bar className="w-12" />,
     props
@@ -552,8 +545,8 @@ const mediaVariantClass = {
   icon: "text-muted-foreground [&_svg]:size-4",
 } as const
 
-/** Props for {@link RecordRowMedia}. */
-export type RecordRowMediaProps = RecordRowNarrowPartProps &
+/** Props for {@link ListRowMedia}. */
+export type ListRowMediaProps = ListRowNarrowPartProps &
   (
     | {
         /**
@@ -570,7 +563,7 @@ export type RecordRowMediaProps = RecordRowNarrowPartProps &
       }
   )
 
-function mediaPartProps(props: RecordRowMediaProps): RecordRowPartProps {
+function mediaPartProps(props: ListRowMediaProps): ListRowPartProps {
   if (props.variant !== "icon") {
     const { variant: _variant, narrow: _narrow, ...rest } = props
     return rest
@@ -588,10 +581,10 @@ function mediaPartProps(props: RecordRowMediaProps): RecordRowPartProps {
  * A 24×24px picture of the item drawn between the ID and the name, such as its status dot, its
  * owner's initials or an icon for its kind.
  */
-export function RecordRowMedia(props: RecordRowMediaProps): React.ReactElement {
+export function ListRowMedia(props: ListRowMediaProps): React.ReactElement {
   return usePart(
-    "RecordRowMedia",
-    "record-row-media",
+    "ListRowMedia",
+    "list-row-media",
     cn(
       "col-start-2 mr-2 flex size-6 items-center justify-center",
       mediaVariantClass[props.variant ?? "default"],
@@ -611,12 +604,12 @@ export function RecordRowMedia(props: RecordRowMediaProps): React.ReactElement {
  * it is never hidden.
  * The row's focus underline is drawn under it.
  */
-export function RecordRowName(props: RecordRowPartProps): React.ReactElement {
-  const row = useRecordRow("RecordRowName")
+export function ListRowName(props: ListRowPartProps): React.ReactElement {
+  const row = useListRow("ListRowName")
   return usePart(
-    "RecordRowName",
-    "record-row-name",
-    "col-start-3 min-w-0 truncate font-medium text-sm decoration-2 decoration-ring underline-offset-3 group-focus-visible/record-row-link:underline",
+    "ListRowName",
+    "list-row-name",
+    "col-start-3 min-w-0 truncate font-medium text-sm decoration-2 decoration-ring underline-offset-3 group-focus-visible/list-row-link:underline",
     <Bar className="w-40 max-w-full" />,
     { ...props, id: row.kind === "record" ? row.nameId : undefined }
   )
@@ -627,10 +620,10 @@ export function RecordRowName(props: RecordRowPartProps): React.ReactElement {
  * other columns leave, truncates before the name does, and is hidden when the list is narrower
  * than 640px.
  */
-export function RecordRowDescription(props: RecordRowPartProps): React.ReactElement {
+export function ListRowDescription(props: ListRowPartProps): React.ReactElement {
   return usePart(
-    "RecordRowDescription",
-    "record-row-description",
+    "ListRowDescription",
+    "list-row-description",
     "col-start-4 min-w-0 truncate pl-3 text-muted-foreground text-sm @max-hide:hidden",
     <Bar className="w-2/3" />,
     props
@@ -639,10 +632,10 @@ export function RecordRowDescription(props: RecordRowPartProps): React.ReactElem
 
 const missingLabel = { unavailable: "Unavailable", hidden: "Hidden" } as const
 
-/** Props for {@link RecordRowFact}. */
-export type RecordRowFactProps =
-  | (RecordRowNarrowPartProps & { missing?: undefined })
-  | (Omit<RecordRowNarrowPartProps, "children" | "render"> & {
+/** Props for {@link ListRowFact}. */
+export type ListRowFactProps =
+  | (ListRowNarrowPartProps & { missing?: undefined })
+  | (Omit<ListRowNarrowPartProps, "children" | "render"> & {
       /**
        * Why the fact cannot be shown: `"unavailable"` when it failed to load, `"hidden"` when the
        * viewer's role cannot see it. The fact then draws that word in muted text instead of a
@@ -655,7 +648,7 @@ function missingFactProps({
   missing,
   className,
   ...props
-}: Extract<RecordRowFactProps, { missing: string }>): RecordRowPartProps {
+}: Extract<ListRowFactProps, { missing: string }>): ListRowPartProps {
   return {
     ...props,
     className: cn("text-muted-foreground", className),
@@ -665,15 +658,12 @@ function missingFactProps({
 
 /**
  * Rank 2: one fact about the subject that the list exists to compare, such as a state or a figure.
- * Each `RecordRowFact` is its own column, and the row holds at most eight. Hold one `status`,
+ * Each `ListRowFact` is its own column, and the row holds at most eight. Hold one `status`,
  * `entity`, `figure`, `meter` or `relative-time` in it, or set `missing` when the value cannot be
  * shown.
  */
-export function RecordRowFact({
-  narrow = "keep",
-  ...props
-}: RecordRowFactProps): React.ReactElement {
+export function ListRowFact({ narrow = "keep", ...props }: ListRowFactProps): React.ReactElement {
   const factClass = cn("flex min-w-0 items-center pl-4 text-sm", narrowClass[narrow])
   const partProps = props.missing === undefined ? props : missingFactProps(props)
-  return usePart("RecordRowFact", "record-row-fact", factClass, <Bar className="w-16" />, partProps)
+  return usePart("ListRowFact", "list-row-fact", factClass, <Bar className="w-16" />, partProps)
 }

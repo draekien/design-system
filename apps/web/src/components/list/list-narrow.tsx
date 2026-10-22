@@ -1,14 +1,14 @@
 import type * as React from "react"
 import { Figure } from "@/components/figure.tsx"
 import {
-  RecordList,
-  RecordRow,
-  RecordRowFact,
-  RecordRowId,
-  RecordRowLink,
-  RecordRowName,
-  RecordRowSubject,
-} from "@/components/record-list.tsx"
+  List,
+  ListRow,
+  ListRowFact,
+  ListRowId,
+  ListRowLink,
+  ListRowName,
+  ListRowSubject,
+} from "@/components/list.tsx"
 import { RelativeTime } from "@/components/relative-time.tsx"
 
 const invoices = [
@@ -26,31 +26,31 @@ const invoices = [
   },
 ] as const
 
-export function RecordListNarrow(): React.ReactElement {
+export function ListNarrow(): React.ReactElement {
   return (
     <div className="w-full max-w-xs overflow-hidden rounded-xl border bg-card text-card-foreground">
-      <RecordList aria-label="Invoices">
+      <List aria-label="Invoices">
         {invoices.map((invoice) => (
-          <RecordRow key={invoice.id} value={invoice.id} className="last:border-b-0">
-            <RecordRowLink href={`#${invoice.id}`}>
-              <RecordRowSubject>
-                <RecordRowId narrow="hide">{invoice.id}</RecordRowId>
-                <RecordRowName>{invoice.name}</RecordRowName>
-              </RecordRowSubject>
-              <RecordRowFact narrow="abbreviate">
+          <ListRow key={invoice.id} value={invoice.id} className="last:border-b-0">
+            <ListRowLink href={`#${invoice.id}`}>
+              <ListRowSubject>
+                <ListRowId narrow="hide">{invoice.id}</ListRowId>
+                <ListRowName>{invoice.name}</ListRowName>
+              </ListRowSubject>
+              <ListRowFact narrow="abbreviate">
                 <Figure
                   value={invoice.total}
                   format={{ style: "currency", currency: "AUD" }}
                   locale="en-AU"
                 />
-              </RecordRowFact>
-              <RecordRowFact narrow="hide">
+              </ListRowFact>
+              <ListRowFact narrow="hide">
                 <RelativeTime dateTime={invoice.issued} now="2026-10-15T11:12:00Z" />
-              </RecordRowFact>
-            </RecordRowLink>
-          </RecordRow>
+              </ListRowFact>
+            </ListRowLink>
+          </ListRow>
         ))}
-      </RecordList>
+      </List>
     </div>
   )
 }

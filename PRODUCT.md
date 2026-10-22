@@ -29,7 +29,7 @@ The rules live in how the components compose, built on Base UI's composition API
 - Each registry item carries its usage guidance in its `docs` field, and the docs site carries the full guidelines.
 - Rule precedence: Linear first; Primer, Carbon, Geist, Stripe Apps and Saga only where Linear has no answer. Hover cards may hold links, following Linear over Primer.
 - Registry items are named with the common UI word for what they render, and reuse a shadcn/ui item name only when the item is meant to replace that shadcn/ui component (docs/adr/0003-name-registry-items-for-their-role.md).
-- Registry items: `record-list`, `status`, `entity`, `figure`, `meter`, `relative-time`, `preview-card`.
+- Registry items: `list`, `status`, `entity`, `figure`, `meter`, `relative-time`, `preview-card`.
 - A component moves through `experiment`, `beta`, `stable` and `deprecated`: it starts as a greyscale experiment on the docs site, and becomes `beta` when it moves to `registry` and gets a playground page.
 
 ## Brand Commitments
@@ -40,7 +40,7 @@ Monochrome plus one accent colour; the accent marks only what can be acted on. P
 
 - docs/references/ux-references.md: researched rules with quotes from Linear, Primer, Carbon, Geist, Stripe Apps and Saga.
 - docs/references/shadcn-registry-*.md: the shadcn registry documentation, captured 2026-10-14.
-- The seven registry items above, each with a component page on the docs site, and a record list lockup page, built from them, with its States view and constellation.
+- The seven registry items above, each with a component page on the docs site, and a list lockup page, built from them, with its States view and constellation.
 - No adopters or usage data exist yet; do not fabricate them.
 
 ## Product Principles

@@ -247,12 +247,12 @@ export function ThemePage(): React.ReactElement {
         aria-label="Preview"
         className="flex min-w-0 flex-col gap-2 2xl:sticky 2xl:top-6 2xl:self-start"
       >
-        <h2 className="font-medium text-muted-foreground text-xs">Preview · Record list</h2>
+        <h2 className="font-medium text-muted-foreground text-xs">Preview · List</h2>
         <div className="flex h-[30rem] overflow-hidden rounded-xl border bg-muted/50 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[16px_16px] p-3">
           <CanvasFrame
-            to="/canvas/lockups/record-list"
+            to="/canvas/lockups/list"
             view="lockup"
-            title="Record list preview"
+            title="List preview"
             search={previewSearch}
             className="h-full w-full rounded-lg border"
           />

@@ -86,7 +86,7 @@ While any record is selected, a selection bar fixed to the bottom of the viewpor
 
 ## Tables
 
-Use a record table when the caller compares values down a column, and a record list when the caller scans for one record.
+Use a table when the caller compares values down a column, and a list when the caller scans for one record.
 
 Every table column has a header naming it; a sortable header is a button, and one column is sorted at a time.
 
@@ -116,7 +116,7 @@ The container sets the gap between its children by how the two neighbours relate
 | --- | --- | --- |
 | `--spacing-run` (`gap-run`) | the same component in a run, such as row after row | 0 |
 | `--spacing-related` (`gap-related`) | parts of one record or one control, such as a status dot and its word | 0.5rem |
-| `--spacing-section` (`gap-section`) | separate sections, such as two stacked record lists | 1.5rem |
+| `--spacing-section` (`gap-section`) | separate sections, such as two stacked lists | 1.5rem |
 
 ## Rules adopted without a component yet
 
