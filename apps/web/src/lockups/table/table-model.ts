@@ -7,9 +7,6 @@ import {
 } from "@workspace/fixtures/invoices.ts"
 import { fixtureNow } from "@workspace/fixtures/records.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
-import { z } from "zod"
-
-export type TableState = Exclude<FixtureState, "error">
 
 export type RowState = Exclude<FixtureState, "error" | "loading">
 
@@ -17,9 +14,7 @@ export type Column = "invoice" | "customer" | "lines" | "amount" | "paid" | "due
 
 export type Sort = { column: Column; direction: "ascending" | "descending" }
 
-export type Seat = "select" | "expand" | Column
-
-export const statusOrder: ReadonlyArray<InvoiceStatus> = ["draft", "sent", "paid"]
+const statusOrder: ReadonlyArray<InvoiceStatus> = ["draft", "sent", "paid"]
 
 export const statusLabel: Readonly<Record<InvoiceStatus, string>> = {
   draft: "Draft",
@@ -35,68 +30,6 @@ export const columnLabel: Readonly<Record<Column, string>> = {
   paid: "Paid %",
   due: "Due",
 }
-
-export const columns = ["invoice", "customer", "lines", "amount", "paid", "due"] as const
-
-export const tableSearchDefaults: {
-  sort: Column
-  direction: Sort["direction"]
-  collapsed: Array<string>
-  expanded: Array<string>
-} = { sort: "due", direction: "ascending", collapsed: [], expanded: [] }
-
-export const tableSearch = z.object({
-  sort: z.enum(columns).default(tableSearchDefaults.sort).catch(tableSearchDefaults.sort),
-  direction: z
-    .enum(["ascending", "descending"])
-    .default(tableSearchDefaults.direction)
-    .catch(tableSearchDefaults.direction),
-  collapsed: z
-    .array(z.string())
-    .default(tableSearchDefaults.collapsed)
-    .catch(tableSearchDefaults.collapsed),
-  expanded: z
-    .array(z.string())
-    .default(tableSearchDefaults.expanded)
-    .catch(tableSearchDefaults.expanded),
-  focus: z.string().optional().catch(undefined),
-})
-
-export type TableSearch = z.output<typeof tableSearch>
-
-export const seatClass: Readonly<Record<Seat, string>> = {
-  select: "col-start-1 flex justify-center",
-  expand: "col-start-2 flex",
-  invoice: "col-start-3 hidden pr-3 sm:flex",
-  customer: "col-start-4 flex min-w-0",
-  lines: "col-start-5 hidden justify-end pl-4 md:flex",
-  amount: "col-start-6 flex justify-end pl-4",
-  paid: "col-start-7 hidden justify-end pl-4 md:flex",
-  due: "col-start-8 hidden justify-end pr-2 pl-4 sm:flex",
-}
-
-export const numericColumns: ReadonlySet<Column> = new Set(["lines", "amount", "paid"])
-
-export const gridClass =
-  "grid grid-cols-[1.5rem_1.5rem_auto_minmax(0,1fr)_auto_auto_auto_auto] pointer-coarse:grid-cols-[2.75rem_2.75rem_auto_minmax(0,1fr)_auto_auto_auto_auto]"
-
-export const rowClass = "col-span-full grid grid-cols-subgrid items-center gap-x-1 px-2"
-
-export const focusRing = "focus-ring focus-visible:-outline-offset-2"
-
-export const rowFocus = "outline-hidden focus-visible:bg-foreground/7"
-
-export const rowFocusLook = "bg-foreground/7"
-
-export const nameFocus =
-  "decoration-2 decoration-ring underline-offset-3 group-focus-visible/row:underline"
-
-export const nameFocusLook = "underline decoration-2 decoration-ring underline-offset-3"
-
-export const handleIgnore = (): undefined => undefined
-
-export const cardSurface =
-  "block w-56 max-w-full rounded-md border bg-background p-3 text-left text-xs font-normal shadow-sm"
 
 const amountFormat = new Intl.NumberFormat("en-AU", {
   minimumFractionDigits: 2,
@@ -207,4 +140,23 @@ export function groupLineCount(group: StatusGroup): number {
   return group.invoices.reduce((sum, invoice) => sum + linesOf(invoice).length, 0)
 }
 
-export const rowGroupClass = "col-span-full grid grid-cols-subgrid"
+export const columns: ReadonlyArray<Column> = [
+  "invoice",
+  "customer",
+  "lines",
+  "amount",
+  "paid",
+  "due",
+]
+
+export function isColumn(value: string): value is Column {
+  return columns.some((column) => column === value)
+}
+
+export function groupValue(status: InvoiceStatus): string {
+  return `group:${status}`
+}
+
+export function invoiceCount(count: number): string {
+  return count === 1 ? "1 invoice" : `${count} invoices`
+}

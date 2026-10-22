@@ -1,0 +1,6 @@
+[
+  {
+    "date": "2026-10-22",
+    "description": "Adds table, which replaces shadcn/ui's Table: a part for each table element, sortable headers, child and group rows, selection, peek and one tab stop, built from the record table experiment."
+  }
+]

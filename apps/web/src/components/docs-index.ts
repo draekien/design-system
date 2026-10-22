@@ -7,6 +7,7 @@ import { meterDocs } from "./meter/meter.docs.ts"
 import { previewCardDocs } from "./preview-card/preview-card.docs.ts"
 import { relativeTimeDocs } from "./relative-time/relative-time.docs.ts"
 import { statusDocs } from "./status/status.docs.ts"
+import { tableDocs } from "./table/table.docs.ts"
 
 export const itemDocs: Readonly<Record<string, ItemDocs>> = {
   cn: cnDocs,
@@ -17,6 +18,7 @@ export const itemDocs: Readonly<Record<string, ItemDocs>> = {
   list: listDocs,
   "relative-time": relativeTimeDocs,
   status: statusDocs,
+  table: tableDocs,
 }
 export function requireItemDocs(name: string): ItemDocs {
   const docs = itemDocs[name]

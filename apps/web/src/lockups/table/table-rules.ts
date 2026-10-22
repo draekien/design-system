@@ -1,12 +1,12 @@
-import type { Rule } from "../playground/rule-notes.tsx"
+import type { Rule } from "../../playground/rule-notes.tsx"
 
-export const recordTableRules: ReadonlyArray<Rule> = [
+export const tableRules: ReadonlyArray<Rule> = [
   {
     rule: "A table suits invoices because the caller compares amount, paid and due down each column; a list suits a caller who scans for one record.",
     source: "This design system's own decision",
   },
   {
-    rule: "Every column has a header naming it. Invoice, Customer, Amount, Paid % and Due headers are sort buttons; one column is sorted at a time, its header carries aria-sort, and the footer names the sort.",
+    rule: "Every column has a header naming it. Invoice, Customer, Lines, Amount, Paid % and Due headers are sort buttons; one column is sorted at a time, its header carries aria-sort, and the footer names the sort.",
     source: "ARIA 1.2 aria-sort",
   },
   {
@@ -40,7 +40,7 @@ export const recordTableRules: ReadonlyArray<Rule> = [
     source: "Linear Peek",
   },
   {
-    rule: "Sort, collapsed groups and expanded invoices live in the URL; returning from the invoice page focuses the invoice that was opened. The selection clears on leaving.",
+    rule: "Sort, collapsed groups and expanded invoices are kept while the invoice page is open; Back to invoices focuses the invoice that was opened.",
     source: "This design system's own decision",
   },
   {
@@ -56,6 +56,10 @@ export const recordTableRules: ReadonlyArray<Rule> = [
     source: "Linear select issues; Geist Menu; Stripe Accordion; Carbon menu buttons",
   },
   {
+    rule: "The invoice page shows every field peek and the table show, and its lines in full.",
+    source: "This design system's own decision",
+  },
+  {
     rule: "Customer opens a hover card with the billing contact after 300ms; peek and the invoice page are the keyboard and touch routes to the same field.",
     source: "Linear issue list (screenshots, 2026-10-08); Primer designer checklist",
   },
@@ -64,7 +68,7 @@ export const recordTableRules: ReadonlyArray<Rule> = [
     source: "This design system's own decision (Linear Peek; Stripe Apps design)",
   },
   {
-    rule: "Below md the table hides Lines and Paid %; below sm it also hides Invoice, and Due moves under the customer name. Every hidden value stays in peek and on the invoice page.",
+    rule: "When the table is narrower than 640px it hides Invoice, Lines, Paid % and Due, each header with its cells, and Due moves under the customer name. Every hidden value stays in peek and on the invoice page.",
     source: "Primer DataTable",
   },
   {
@@ -78,12 +82,5 @@ export const recordTableRules: ReadonlyArray<Rule> = [
   {
     rule: "Every hit area is at least 24×24px; checkboxes and the expand control grow to 44×44px on a coarse pointer.",
     source: "Primer designer checklist; 44px is this design system's own decision",
-  },
-]
-
-export const invoicePageRules: ReadonlyArray<Rule> = [
-  {
-    rule: "The invoice page shows every field peek and the table show, and its lines in full.",
-    source: "This design system's own decision",
   },
 ]
