@@ -18,8 +18,9 @@ export const tableRules: ReadonlyArray<Rule> = [
     source: "This design system's own decision",
   },
   {
-    rule: "Invoices group by status in the order Draft, Sent, Paid. Each group header shows the status, the invoice count, the line count sum and the amount sum, and keeps all four when collapsed. An empty group is hidden.",
-    source: "Linear Display options; design rules: a collapsed group keeps its counts",
+    rule: "Invoices group by status in the order Sent, Draft, Paid, so the invoices waiting on payment come first. Each group header shows the status, the invoice count, the line count sum and the amount sum, and keeps all four when collapsed. An empty group is hidden.",
+    source:
+      "Linear Display options; design rules: a collapsed group keeps its counts; the order is this design system's own decision (design rules: Goals)",
   },
   {
     rule: "An invoice's lines are its child rows: rank 3, collapsed by default, drawn under the invoice in its columns, each description aligned with the customer name. The line count is a rank 2 reading in the Lines column; the expand control is the chevron alone, and an invoice with no lines draws none.",
@@ -56,7 +57,7 @@ export const tableRules: ReadonlyArray<Rule> = [
     source: "Linear select issues; Geist Menu; Stripe Accordion; Carbon menu buttons",
   },
   {
-    rule: "The invoice page shows every field peek and the table show, and its lines in full.",
+    rule: "The invoice page shows every field peek and the table show; its lines are rank 3, collapsed under a Lines button that shows the line count.",
     source: "This design system's own decision",
   },
   {

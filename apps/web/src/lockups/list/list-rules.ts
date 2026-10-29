@@ -20,6 +20,10 @@ export const listRules: ReadonlyArray<Rule> = [
       "Primer DataTable (tabular-num for numbers); column alignment is this design system's own decision",
   },
   {
+    rule: "An invoice's Due reads Due and the time to its date; past its date while unpaid it reads Overdue in medium weight, and once paid it is muted. Due abbreviates and stays when the list narrows, because the caller's most common goal is finding the invoices to chase.",
+    source: "This design system's own decision (design rules: Goals)",
+  },
+  {
     rule: "The row is a link to the item's page; Enter or a click opens it. The item's page shows every field peek shows.",
     source: "Saga List page",
   },
@@ -30,6 +34,10 @@ export const listRules: ReadonlyArray<Rule> = [
   {
     rule: "A row with a peek button opens peek from it on hover, focus or a coarse pointer, so a click on the row opens the item's page.",
     source: "This design system's own decision (Linear Peek previews without leaving the list)",
+  },
+  {
+    rule: "Peek and the item's page list rank 2 fields before rank 4 ones, so Due comes before Contact and Updated before Team.",
+    source: "This design system's own decision (design rules: Goals)",
   },
   {
     rule: "A drawer that shows peek returns focus to the row that opened it.",

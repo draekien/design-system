@@ -15,6 +15,7 @@ import {
 import { Meter } from "@/components/meter.tsx"
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
 import { RelativeTime } from "@/components/relative-time.tsx"
+import { cn } from "@/lib/cn.ts"
 
 const invoices = [
   {
@@ -39,6 +40,30 @@ const invoices = [
     due: "2026-10-08T00:00:00Z",
   },
 ] as const
+
+const now = "2026-10-15T11:12:00Z"
+
+function InvoiceDue({ invoice }: { invoice: (typeof invoices)[number] }) {
+  const isSettled = invoice.paid >= 1
+  const isOverdue = !isSettled && Date.parse(invoice.due) < Date.parse(now)
+  return (
+    <span
+      className={cn(
+        "whitespace-nowrap",
+        isOverdue && "font-medium",
+        isSettled && "text-muted-foreground"
+      )}
+    >
+      {isOverdue ? (
+        `Overdue ${Math.round((Date.parse(now) - Date.parse(invoice.due)) / 86_400_000)} days`
+      ) : (
+        <>
+          Due <RelativeTime dateTime={invoice.due} now={now} />
+        </>
+      )}
+    </span>
+  )
+}
 
 export function ListInvoices(): React.ReactElement {
   const hintId = React.useId()
@@ -82,8 +107,8 @@ export function ListInvoices(): React.ReactElement {
                   aria-label="Paid"
                 />
               </ListRowFact>
-              <ListRowFact narrow="hide">
-                <RelativeTime dateTime={invoice.due} now="2026-10-15T11:12:00Z" />
+              <ListRowFact narrow="abbreviate">
+                <InvoiceDue invoice={invoice} />
               </ListRowFact>
             </ListRowLink>
           </ListRow>

@@ -25,6 +25,7 @@ import {
 } from "@workspace/registry/components/status.tsx"
 import type * as React from "react"
 import type { CanvasDataset, CanvasOptions, ListPart } from "../../playground/playground-search.ts"
+import { dueClass, readDue } from "../table/table-model.ts"
 import { randomInvoices, randomRecords } from "./random-records.ts"
 
 export type RowState = Exclude<FixtureState, "error" | "loading">
@@ -317,8 +318,8 @@ export const recordsDataset: Dataset<SampleRecord> = {
       value: `${recordStatusLabel[record.status]} for ${record.statusAge}`,
     },
     { label: "Owner", value: fieldValue(missingWhenUnloaded[state], record.owner) },
-    { label: "Team", value: record.team },
     { label: "Updated", value: `${record.updated} (${record.updatedAt})` },
+    { label: "Team", value: record.team },
   ],
   partialMessage: "Owners could not load: the directory service did not respond.",
   partialRetry: "Retry owners",
@@ -333,6 +334,26 @@ const invoiceStatusFill = { draft: "none", sent: "half", paid: "full" } as const
 const amountFormat: Intl.NumberFormatOptions = { style: "currency", currency: "AUD" }
 
 const paidFormat: Intl.NumberFormatOptions = { style: "percent" }
+
+function invoiceDue(invoice: SampleInvoice): React.ReactElement {
+  const due = readDue(invoice)
+  return (
+    <span className={dueClass[due.kind]}>
+      {due.kind === "overdue" ? (
+        <>
+          <span data-abbreviation="long">{due.text}</span>
+          <span data-abbreviation="short" aria-hidden="true" className="hidden">
+            Overdue {due.days}d
+          </span>
+        </>
+      ) : (
+        <>
+          Due <RelativeTime dateTime={invoice.dueIso} now={fixtureNow} />
+        </>
+      )}
+    </span>
+  )
+}
 
 export const invoicesDataset: Dataset<SampleInvoice> = {
   id: "invoices",
@@ -397,10 +418,14 @@ export const invoicesDataset: Dataset<SampleInvoice> = {
     {
       part: "due",
       label: "Due",
-      narrow: "hide",
+      narrow: "abbreviate",
       content: "RelativeTime",
-      render: (invoice) => <RelativeTime dateTime={invoice.dueIso} now={fixtureNow} />,
-      code: () => ["<RelativeTime dateTime={invoice.dueAt} now={now} />"],
+      render: invoiceDue,
+      code: () => [
+        "<span className={dueClass[due.kind]}>",
+        '  {due.kind === "overdue" ? due.text : <>Due <RelativeTime dateTime={invoice.dueAt} now={now} /></>}',
+        "</span>",
+      ],
       components: () => ["RelativeTime"],
     },
   ],
@@ -420,8 +445,8 @@ export const invoicesDataset: Dataset<SampleInvoice> = {
         new Intl.NumberFormat("en", paidFormat).format(invoice.paid)
       ),
     },
-    { label: "Contact", value: invoice.contact },
     { label: "Due", value: invoice.dueAt },
+    { label: "Contact", value: invoice.contact },
   ],
   partialMessage: "Payments could not load: the payments service did not respond.",
   partialRetry: "Retry payments",
