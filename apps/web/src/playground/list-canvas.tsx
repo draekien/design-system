@@ -130,7 +130,6 @@ function handleSpecimenChange() {
 const rowSpecimens: ReadonlyArray<{
   label: string
   rowClassName?: string
-  nameClassName?: string
   isSelected: boolean
   isPeeked: boolean
 }> = [
@@ -138,13 +137,12 @@ const rowSpecimens: ReadonlyArray<{
   { label: "Hovered", rowClassName: "bg-foreground/4", isSelected: false, isPeeked: false },
   {
     label: "Focused",
-    rowClassName: "bg-foreground/7",
-    nameClassName: "underline",
+    rowClassName: "bg-foreground/4 inset-ring inset-ring-ring/40",
     isSelected: false,
     isPeeked: false,
   },
   { label: "Selected", isSelected: true, isPeeked: false },
-  { label: "Peeked", nameClassName: "underline", isSelected: false, isPeeked: true },
+  { label: "Peeked", isSelected: false, isPeeked: true },
 ]
 
 const narrowSpecimens = [
@@ -723,7 +721,7 @@ function Specimen<TItem>({
   specimen: (typeof rowSpecimens)[number]
 }) {
   const value = dataset.value(item)
-  const isHighlighted = specimen.rowClassName !== undefined || specimen.nameClassName !== undefined
+  const isHighlighted = specimen.rowClassName !== undefined || specimen.isPeeked
   return (
     <div className="flex flex-col gap-1.5">
       <p className="text-muted-foreground text-xs">{specimen.label}</p>
@@ -741,7 +739,6 @@ function Specimen<TItem>({
               item={item}
               state={state}
               hidden={hidden}
-              nameClassName={specimen.nameClassName}
               selectClassName={isHighlighted ? "visible" : undefined}
             />
           </ListRow>

@@ -178,7 +178,7 @@ const rowSpecimens: ReadonlyArray<{
   {
     label: "Focused",
     className:
-      "*:first:before:bg-foreground/7 [&_[data-slot=table-row-link]]:underline [&_[data-slot=table-row-link]_*]:underline [&_[data-slot=table-row-select]]:visible",
+      "*:first:before:bg-foreground/4 *:first:before:inset-ring *:first:before:inset-ring-ring/40 [&_[data-slot=table-row-select]]:visible",
   },
   { label: "Selected", selected: true },
   { label: "Peeked", peeked: true },
@@ -561,7 +561,7 @@ function partSpecs(state: RowState): ReadonlyArray<PartSpec> {
           <InvoiceRow
             invoice={invoice}
             isSelectable={isSelectable}
-            className="*:first:before:bg-foreground/7 [&_[data-slot=table-row-link]]:underline [&_[data-slot=table-row-link]_*]:underline"
+            className="*:first:before:bg-foreground/4 *:first:before:inset-ring *:first:before:inset-ring-ring/40"
           />
         </SpecimenTable>
       ),

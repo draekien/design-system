@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-10-29",
+    "description": "A focused or peeked row draws the same mark: the foreground at 4%, as on hover, and a 1px inset ring in the ring colour at 40%. The name no longer underlines on focus, and a peeked row no longer draws a 2px foreground ring at 15% or a 7% tint."
+  },
+  {
     "date": "2026-10-22",
     "description": "Rows have no line between them: the hover, focus and peek tints mark a row, and the tint takes the floor radius (6px). The selection checkbox and peek button take the floor radius in place of rounded-md. A List draws no surface; its rows sit on the page. A selected row is tinted with the foreground at 4%, 7% under the pointer, and a peeked row adds a 2px inset ring at 15%, as a peeked table row does."
   },

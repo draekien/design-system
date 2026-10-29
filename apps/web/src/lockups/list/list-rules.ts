@@ -82,7 +82,7 @@ export const listRules: ReadonlyArray<Rule> = [
     source: "This design system's own decision",
   },
   {
-    rule: "The accent colour marks only what can be acted on: the checked checkbox and the focused row's name underline.",
+    rule: "The accent colour marks only what can be acted on: the checked checkbox and the ring around a focused or peeked row.",
     source: "This design system's own decision",
   },
   {

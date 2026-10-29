@@ -148,7 +148,7 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 
 ### Primary
 - **Signal Orange** (`{colors.signal-orange}`): fills the primary button, the checked selection checkbox and text selection (at 25%). It marks what can be acted on and nothing else.
-- **Signal Ring** (`{colors.signal-ring}`): the focus ring and the focus underline on a row link; dark mode uses Signal Orange.
+- **Signal Ring** (`{colors.signal-ring}`): the focus ring, and the 1px ring at 40% around a focused or peeked row; dark mode uses Signal Orange.
 
 ### Neutral
 - **Ink** (`{colors.ink}`): primary text, rank 1 and 2 values, and the text on Signal Orange.
@@ -225,13 +225,13 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 
 ### List row
 - **Shape:** 44px high with no line under it; its tint takes the floor radius (`{rounded.floor}`).
-- **States:** hover and selection tint the row with Ink at 4%, a selected row under the pointer at 7%; a focused or peeked row with Ink at 7%, and a peeked row adds a 2px inset ring of Ink at 15%; the row name underlines in Signal Ring on keyboard focus.
+- **States:** hover and selection tint the row with Ink at 4%, a selected row under the pointer at 7%; a row with keyboard focus or open peek takes Ink at 4% and a 1px inset Signal Ring at 40%.
 - **Revealed controls:** the selection checkbox and peek button are invisible at rest and appear on row hover, focus or selection; on a coarse pointer they are always visible and 44×44px.
 
 ### Table
 - **Shape:** no line under the header or between rows, and no surface of its own. A body row's tint is square; the header row draws a Quiet Grey fill rounded at its top corners with the floor radius (`{rounded.floor}`), and the footer row one rounded at its bottom corners. Each fill is drawn on the row's first cell's `::before` across the row, below the cell content, so it draws in every engine and when the last column hides. The table fills its container, which scrolls sideways when the columns do not fit.
-- **Record row:** 44px high, hover and selection tint it with Ink at 4%, a selected row under the pointer at 7%, a focused or peeked row with Ink at 7%, and a peeked row adds a 2px inset ring of Ink at 15%; the row name underlines in Signal Ring on keyboard focus. A click anywhere on the row follows its `TableRowLink`, except on its checkbox, chevron or other controls and while text is selected; Enter on the focused row does too.
-- **Group row:** 36px high on Quiet Grey at 40%, square, 44px on a coarse pointer; hover deepens the fill to 70%, and keyboard focus draws a 2px inset Signal Ring. Its name starts in the first data column, not under a column it does not belong to, and its sums stay in their columns.
+- **Record row:** 44px high, hover and selection tint it with Ink at 4%, a selected row under the pointer at 7%, a row with keyboard focus or open peek takes Ink at 4% and a 1px inset Signal Ring at 40%. A click anywhere on the row follows its `TableRowLink`, except on its checkbox, chevron or other controls and while text is selected; Enter on the focused row does too.
+- **Group row:** 36px high on Quiet Grey at 40%, square, 44px on a coarse pointer; hover deepens the fill to 70%, and keyboard focus draws a 1px inset Signal Ring at 40%. Its name starts in the first data column, not under a column it does not belong to, and its sums stay in their columns.
 - **Row header:** a row header that holds the row's `TableRowLink` is the record's name: it takes the spare width and truncates. Any other row header, such as a label or a prop name, fits its content.
 - **Column header:** 36px high, 12px medium Muted Ink; a sortable header is a button with an arrow, drawn on hover and focus until the column is sorted, then always, turned over when descending, and the sorted header takes Ink; the sorted column carries `aria-sort`. The button is 24px high, 44px on a coarse pointer.
 - **Caption:** above the table, 14px medium; it names the table for screen readers and may be hidden when a heading beside the table does.
