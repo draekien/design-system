@@ -638,10 +638,10 @@ function BodyRow({
         onClick: handleRowClick,
         className: cn(
           rowClass,
-          "has-data-[slot=table-row-link]:cursor-pointer outline-none focus-visible:*:first:before:bg-foreground/7 data-peeked:*:first:before:bg-foreground/7 data-peeked:*:first:before:inset-ring-2 data-peeked:*:first:before:inset-ring-foreground/15",
+          "has-data-[slot=table-row-link]:cursor-pointer outline-none focus-visible:*:first:before:inset-ring focus-visible:*:first:before:inset-ring-ring/40 data-peeked:*:first:before:inset-ring data-peeked:*:first:before:inset-ring-ring/40",
           kind === "group"
-            ? "h-9 *:first:before:bg-muted/40 hover:*:first:before:bg-muted/70 focus-visible:*:first:before:inset-ring-2 focus-visible:*:first:before:inset-ring-ring pointer-coarse:h-11"
-            : "h-11 hover:*:first:before:bg-foreground/4 aria-selected:*:first:before:bg-foreground/4 aria-selected:hover:*:first:before:bg-foreground/7",
+            ? "h-9 *:first:before:bg-muted/40 hover:*:first:before:bg-muted/70 pointer-coarse:h-11"
+            : "h-11 hover:*:first:before:bg-foreground/4 focus-visible:*:first:before:bg-foreground/4 data-peeked:*:first:before:bg-foreground/4 aria-selected:*:first:before:bg-foreground/4 aria-selected:hover:*:first:before:bg-foreground/7",
           className
         ),
       },
@@ -1096,10 +1096,7 @@ export function TableRowLink({
       : mergeProps<"a">(
           {
             tabIndex: -1,
-            className: cn(
-              "block truncate font-medium outline-none decoration-2 decoration-ring underline-offset-3 **:decoration-2 **:decoration-ring group-focus-visible/table-row:underline group-focus-visible/table-row:**:underline",
-              className
-            ),
+            className: cn("block truncate font-medium outline-none", className),
             children,
           },
           props

@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-10-29",
+    "description": "A focused or peeked record row draws the same mark: the foreground at 4%, as on hover, and a 1px inset ring in the ring colour at 40%. The row link no longer underlines on focus, and a peeked row no longer draws a 2px foreground ring at 15% or a 7% tint. A focused group row draws the same 1px ring at 40% in place of a 2px ring at full strength."
+  },
+  {
     "date": "2026-10-22",
     "description": "A TableHead in a body row takes the spare width and truncates only when it holds the row's TableRowLink. A row header holding a label fits its content; give its column header w-full when that column should take the spare width."
   },

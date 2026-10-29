@@ -291,7 +291,7 @@ export function ListRow({ value, render, className, ...props }: ListRowProps): R
       {
         className: cn(
           rowClass,
-          "hover:bg-foreground/4 data-[selected]:bg-foreground/4 data-[selected]:hover:bg-foreground/7 has-[[data-slot=list-row-link]:focus-visible]:bg-foreground/7 data-peeked:bg-foreground/7 data-peeked:inset-ring-2 data-peeked:inset-ring-foreground/15 data-peeked:hover:bg-foreground/7",
+          "hover:bg-foreground/4 data-[selected]:bg-foreground/4 data-[selected]:hover:bg-foreground/7 has-[[data-slot=list-row-link]:focus-visible]:bg-foreground/4 has-[[data-slot=list-row-link]:focus-visible]:inset-ring has-[[data-slot=list-row-link]:focus-visible]:inset-ring-ring/40 data-peeked:bg-foreground/4 data-peeked:inset-ring data-peeked:inset-ring-ring/40",
           className
         ),
       },
@@ -464,7 +464,7 @@ export function ListRowLink({
     props: isRecord
       ? mergeProps<"a">(
           {
-            className: cn(linkClass, "group/list-row-link outline-none", className),
+            className: cn(linkClass, "outline-none", className),
             tabIndex: list.activeValue === row.value ? 0 : -1,
             "aria-expanded": row.isPeeked,
             "aria-keyshortcuts": "Space X ArrowUp ArrowDown Home End Escape",
@@ -602,14 +602,13 @@ export function ListRowMedia(props: ListRowMediaProps): React.ReactElement {
 /**
  * The item's name. It takes the width it needs from what the other columns leave and truncates;
  * it is never hidden.
- * The row's focus underline is drawn under it.
  */
 export function ListRowName(props: ListRowPartProps): React.ReactElement {
   const row = useListRow("ListRowName")
   return usePart(
     "ListRowName",
     "list-row-name",
-    "col-start-3 min-w-0 truncate font-medium text-sm decoration-2 decoration-ring underline-offset-3 group-focus-visible/list-row-link:underline",
+    "col-start-3 min-w-0 truncate font-medium text-sm",
     <Bar className="w-40 max-w-full" />,
     { ...props, id: row.kind === "record" ? row.nameId : undefined }
   )

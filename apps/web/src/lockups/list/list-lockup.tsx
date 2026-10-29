@@ -151,7 +151,6 @@ export function RowParts<TItem>({
   state,
   hidden,
   peekIds = "",
-  nameClassName,
   selectClassName,
   cardOpen,
   cardContainer,
@@ -163,7 +162,6 @@ export function RowParts<TItem>({
   state: RowState
   hidden: Hidden
   peekIds?: string
-  nameClassName?: string
   selectClassName?: string
   cardOpen?: boolean
   cardContainer?: HTMLElement | null
@@ -202,9 +200,7 @@ export function RowParts<TItem>({
               })}
             </ListRowMedia>
           )}
-          <ListRowName className={nameClassName} data-anchor={anchors?.get("name")}>
-            {dataset.name(item)}
-          </ListRowName>
+          <ListRowName data-anchor={anchors?.get("name")}>{dataset.name(item)}</ListRowName>
           {!hidden.has("description") && (
             <ListRowDescription data-anchor={anchors?.get("description")}>
               {dataset.summary(item)}
