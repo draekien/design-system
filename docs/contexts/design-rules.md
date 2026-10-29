@@ -14,9 +14,21 @@ Every rule applies at every scale: the parts inside one component follow it as t
 
 Ship a component's usage guidance in its registry item's `docs` field and on the GitHub Pages site.
 
+## Goals
+
+A caller brings several goals to a surface, and the goals compete for its space; the surface ranks them by how many visits bring each, and every part takes the rank of the highest goal it serves. This is this design system's own decision.
+
+The surface is fast to scan: a caller finds the value its top goal needs by reading down the rank 1 edge and across to one rank 2 slot, and opens nothing; every lower goal shows its trigger on screen at rest.
+
+A goal fewer visits bring is served at rank 3, 4 or 5, never by adding a rank 2 slot.
+
+A surface's regions take ranks as its parts do: the head is rank 1, the properties summary rank 2, history and breakdown rank 3, and related records rank 5.
+
+The four principles below serve this section; where they conflict, the reading that is faster to scan for the top goal wins.
+
 ## Principles
 
-Four principles decide any case no rule covers, in this order: Quiet first, then Clear, Precise and Sleek. This is this design system's own decision.
+Four principles decide any case no rule covers, in this order: Quiet first, then Clear, Precise and Sleek; Goals settles a conflict between them. This is this design system's own decision.
 
 | Principle | Rule | Test |
 | --- | --- | --- |

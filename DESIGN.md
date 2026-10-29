@@ -111,6 +111,7 @@ The system is defined by the relationships between components, not by the compon
 
 | Relationship | Example rule | Where it is encoded today |
 | --- | --- | --- |
+| Goal | A surface ranks its callers' goals by how many visits bring each; every part takes the rank of the highest goal it serves | `docs/contexts/design-rules.md` |
 | Rank | Ranks 1 and 2 show for every record before rank 3 shows for any | `docs/contexts/design-rules.md` |
 | Fit | A row holds one `ListRowSubject` and at most eight `ListRowFact` columns, each holding one status, entity, figure, meter or relative time | `ListRow` parts |
 | Placement | A table where the caller compares down a column, a list where they scan for one record | `docs/contexts/design-rules.md` |
@@ -119,7 +120,9 @@ The system is defined by the relationships between components, not by the compon
 | Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px | `docs/contexts/design-rules.md`; the `--spacing-run`, `--spacing-related` and `--spacing-section` tokens |
 | Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; the `--radius-floor`, `--radius-lg`, `--radius-card` and `--radius-panel` tokens; list rows, table header and footer fills, and the card around a table use the floor and card radii |
 
-Four principles decide any case no rule covers, in this order:
+Every surface is fast to scan: a caller finds the value its top goal needs by reading down the rank 1 edge and across to one rank 2 slot, and opens nothing.
+
+Four principles decide any case no rule covers, in this order, and the reading that is faster to scan for the top goal settles a conflict between them:
 
 | Principle | Rule | Test |
 | --- | --- | --- |

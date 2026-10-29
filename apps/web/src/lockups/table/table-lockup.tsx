@@ -1,6 +1,7 @@
 import { AlertDialog } from "@base-ui/react/alert-dialog"
+import { Collapsible } from "@base-ui/react/collapsible"
 import { Menu } from "@base-ui/react/menu"
-import { ArrowLeft01Icon } from "@hugeicons/core-free-icons"
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Link } from "@tanstack/react-router"
 import {
@@ -44,6 +45,7 @@ import { textLink } from "../lockup-styles.ts"
 import {
   columnLabel,
   compareLines,
+  dueClass,
   formatAmount,
   formatPaid,
   groupLineCount,
@@ -684,17 +686,7 @@ export function LoadingInvoiceRow(): React.ReactElement {
 /** The due reading in the Due column: overdue in medium weight, settled muted. */
 export function DueText({ invoice }: { invoice: SampleInvoice }): React.ReactElement {
   const due = readDue(invoice)
-  return (
-    <span
-      className={cn(
-        "whitespace-nowrap",
-        due.kind === "overdue" && "font-medium",
-        due.kind === "settled" && "text-muted-foreground"
-      )}
-    >
-      {due.text}
-    </span>
-  )
+  return <span className={dueClass[due.kind]}>{due.text}</span>
 }
 
 function DueDetail({ invoice }: { invoice: SampleInvoice }) {
@@ -884,25 +876,38 @@ function InvoiceLines({ invoice, state }: { invoice: SampleInvoice; state: RowSt
     return <p className="text-muted-foreground text-sm">This invoice has no lines.</p>
   }
   return (
-    <div className="w-full max-w-lg">
-      <Table>
-        <TableCaption>Lines</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Description</TableHead>
-            <TableHead align="end">Amount</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {lines.map((line) => (
-            <TableRow key={line.id} className="h-9">
-              <TableCell>{line.description}</TableCell>
-              <TableCell align="end">{formatAmount(line.amount)}</TableCell>
+    <Collapsible.Root className="flex w-full max-w-lg flex-col items-start gap-related">
+      <Collapsible.Trigger className="group -ml-1 inline-flex min-h-6 cursor-pointer items-center gap-related rounded-floor px-1 font-medium text-sm hover:bg-foreground/7 focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11">
+        <HugeiconsIcon
+          icon={ArrowRight01Icon}
+          size={16}
+          strokeWidth={1.75}
+          aria-hidden="true"
+          className="text-muted-foreground group-data-panel-open:rotate-90 motion-safe:transition-transform"
+        />
+        Lines
+        <span className="font-normal text-muted-foreground tabular-nums">{lines.length}</span>
+      </Collapsible.Trigger>
+      <Collapsible.Panel hiddenUntilFound className="w-full">
+        <Table>
+          <TableCaption className="sr-only">Lines</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Description</TableHead>
+              <TableHead align="end">Amount</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          </TableHeader>
+          <TableBody>
+            {lines.map((line) => (
+              <TableRow key={line.id} className="h-9">
+                <TableCell>{line.description}</TableCell>
+                <TableCell align="end">{formatAmount(line.amount)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Collapsible.Panel>
+    </Collapsible.Root>
   )
 }
 

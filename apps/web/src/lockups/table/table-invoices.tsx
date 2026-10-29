@@ -19,19 +19,6 @@ import {
 
 const groups = [
   {
-    status: "Draft",
-    fill: "none",
-    invoices: [
-      {
-        id: "INV-2043",
-        customer: "Lumen Studio",
-        contact: "Mia Chen",
-        amount: 8_400,
-        due: "8 Oct",
-      },
-    ],
-  },
-  {
     status: "Sent",
     fill: "half",
     invoices: [
@@ -51,6 +38,19 @@ const groups = [
       },
     ],
   },
+  {
+    status: "Draft",
+    fill: "none",
+    invoices: [
+      {
+        id: "INV-2043",
+        customer: "Lumen Studio",
+        contact: "Mia Chen",
+        amount: 8_400,
+        due: "8 Oct",
+      },
+    ],
+  },
 ] as const
 
 const aud = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" })
@@ -60,7 +60,7 @@ const controlCell = "w-0 px-1 first:pl-2"
 export function TableInvoices(): React.ReactElement {
   const hintId = React.useId()
   const [sort, setSort] = React.useState<TableSort>({ column: "amount", direction: "descending" })
-  const [expanded, setExpanded] = React.useState<ReadonlyArray<string>>(["Draft", "Sent"])
+  const [expanded, setExpanded] = React.useState<ReadonlyArray<string>>(["Sent", "Draft"])
   const sign = sort.direction === "ascending" ? 1 : -1
 
   return (

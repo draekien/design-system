@@ -16,7 +16,7 @@ export type Column = "invoice" | "customer" | "lines" | "amount" | "paid" | "due
 
 export type Sort = { column: Column; direction: "ascending" | "descending" }
 
-const statusOrder: ReadonlyArray<InvoiceStatus> = ["draft", "sent", "paid"]
+const statusOrder: ReadonlyArray<InvoiceStatus> = ["sent", "draft", "paid"]
 
 export const statusLabel: Readonly<Record<InvoiceStatus, string>> = {
   draft: "Draft",
@@ -51,9 +51,15 @@ export function formatPaid(paid: number): string {
 }
 
 export type DueReading =
-  | { kind: "overdue"; text: string }
+  | { kind: "overdue"; text: string; days: number }
   | { kind: "upcoming"; text: string }
   | { kind: "settled"; text: string }
+
+export const dueClass: Readonly<Record<DueReading["kind"], string>> = {
+  overdue: "whitespace-nowrap font-medium",
+  upcoming: "whitespace-nowrap",
+  settled: "whitespace-nowrap text-muted-foreground",
+}
 
 export function readDue(invoice: SampleInvoice): DueReading {
   const days = Math.round((Date.parse(invoice.dueIso) - Date.parse(fixtureNow)) / dayMs)
@@ -62,7 +68,11 @@ export function readDue(invoice: SampleInvoice): DueReading {
     return { kind: "settled", text }
   }
   if (days < 0) {
-    return { kind: "overdue", text: `Overdue ${-days} ${-days === 1 ? "day" : "days"}` }
+    return {
+      kind: "overdue",
+      text: `Overdue ${-days} ${-days === 1 ? "day" : "days"}`,
+      days: -days,
+    }
   }
   return { kind: "upcoming", text }
 }
