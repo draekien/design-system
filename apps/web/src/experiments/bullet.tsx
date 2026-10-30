@@ -28,7 +28,7 @@ import {
 } from "@workspace/registry/components/preview-card.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
-import { PeopleGroup, PeoplePopup } from "./avatar.tsx"
+import { PeopleGroup, PeoplePopup } from "../lockups/avatar/people.tsx"
 import { menuItem, menuSurface } from "./bullet-styles.ts"
 import { Bar, ErrorMessage, RetryLink } from "./wireframe-parts.tsx"
 

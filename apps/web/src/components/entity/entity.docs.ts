@@ -1,3 +1,4 @@
+import type { Avatar } from "@/components/avatar.tsx"
 import type { Entity, EntityDescription, EntityMedia, EntityName } from "@/components/entity.tsx"
 import { type ApiTable, type ComponentDocs, requireSource } from "../item-docs.ts"
 import { EntityPicture } from "./entity-picture.tsx"
@@ -25,7 +26,7 @@ export const entityDocs: ComponentDocs = {
     name: "Entity",
     item: null,
     children: [
-      { name: "EntityMedia", item: null, children: [] },
+      { name: "EntityMedia", item: "avatar", children: [] },
       { name: "EntityName", item: null, children: [] },
       { name: "EntityDescription", item: null, children: [] },
     ],
@@ -41,7 +42,7 @@ export const entityDocs: ComponentDocs = {
     {
       name: "entity-picture",
       title: "Picture",
-      description: "An img or initials in EntityMedia.",
+      description: "A picture or initials in EntityMedia, square for a team.",
       Preview: EntityPicture,
       source: requireSource(sources, "./entity-picture.tsx"),
     },
@@ -57,9 +58,10 @@ export const entityDocs: ComponentDocs = {
     {
       kind: "part",
       name: "EntityMedia",
-      description: "A 24px circle holding initials or an image. Hidden from screen readers.",
-      spreads: span,
-      props: {} satisfies ApiTable<typeof EntityMedia, "span">,
+      description:
+        "An Avatar at size lg (24px) holding initials or a picture. Hidden from screen readers.",
+      spreads: { label: "Avatar", href: "/playground/components/avatar" },
+      props: {} satisfies ApiTable<typeof EntityMedia, typeof Avatar>,
     },
     {
       kind: "part",

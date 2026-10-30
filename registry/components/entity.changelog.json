@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-10-30",
+    "description": "EntityMedia is now a 24px Avatar from the avatar item: it takes Avatar's props, draws a square for a team with shape=\"square\", and shows its AvatarFallback until an AvatarImage loads. Initials passed as children still work."
+  },
+  {
     "date": "2026-10-21",
     "description": "Renamed from person-mark and made composable: install entity and compose Entity, EntityMedia holding the initials or an img, EntityName and an optional EntityDescription. PersonMark's name prop and automatic initials are removed."
   },

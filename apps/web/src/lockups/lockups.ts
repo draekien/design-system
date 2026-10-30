@@ -28,7 +28,16 @@ export const tableLockup: Lockup = {
   components: ["table", "status", "preview-card"].map(requireRegistryItem),
 }
 
-export const lockups: ReadonlyArray<Lockup> = [listLockup, tableLockup]
+export const avatarLockup: Lockup = {
+  name: "avatar",
+  title: "Avatar",
+  description:
+    "The people on a record: the assignee and owner by name, then the reviewers and watchers as groups whose popover lists everyone.",
+  page: "/playground/lockups/avatar",
+  components: ["avatar", "entity", "preview-card"].map(requireRegistryItem),
+}
+
+export const lockups: ReadonlyArray<Lockup> = [avatarLockup, listLockup, tableLockup]
 
 export function usedIn(component: RegistryItem): ReadonlyArray<Lockup> {
   return lockups.filter((lockup) => lockup.components.some((part) => part.name === component.name))

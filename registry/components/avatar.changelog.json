@@ -1,0 +1,6 @@
+[
+  {
+    "date": "2026-10-30",
+    "description": "Component introduced: Avatar, AvatarImage, AvatarFallback and AvatarGroup, moved from the avatar experiment."
+  }
+]

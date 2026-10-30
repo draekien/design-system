@@ -5,6 +5,7 @@
 :root {
   --accent: oklch(0.967 0.001 286.375);
   --accent-foreground: oklch(0.21 0.006 285.885);
+  --avatar-overlap: 0.5;
   --background: oklch(0.985 0 0);
   --border: oklch(0.925 0.003 286);
   --card: oklch(1 0 0);

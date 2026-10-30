@@ -10,6 +10,12 @@
         }
       }
     },
+    "avatar": {
+      "overlap": {
+        "$type": "number",
+        "$value": 0.5
+      }
+    },
     "meter": {
       "value-min": {
         "$type": "number",

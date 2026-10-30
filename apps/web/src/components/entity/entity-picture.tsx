@@ -1,4 +1,5 @@
 import type * as React from "react"
+import { AvatarFallback, AvatarImage } from "@/components/avatar.tsx"
 import { Entity, EntityMedia, EntityName } from "@/components/entity.tsx"
 
 const portrait =
@@ -12,12 +13,13 @@ export function EntityPicture(): React.ReactElement {
     <div className="flex flex-wrap items-center gap-6 text-sm">
       <Entity>
         <EntityMedia>
-          <img src={portrait} alt="" />
+          <AvatarImage src={portrait} alt="" />
+          <AvatarFallback>MO</AvatarFallback>
         </EntityMedia>
         <EntityName>Mira Okafor</EntityName>
       </Entity>
       <Entity>
-        <EntityMedia>AC</EntityMedia>
+        <EntityMedia shape="square">AC</EntityMedia>
         <EntityName>Accounts team</EntityName>
       </Entity>
     </div>

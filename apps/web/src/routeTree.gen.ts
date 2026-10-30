@@ -16,14 +16,14 @@ import { Route as PlaygroundIndexRouteImport } from './routes/playground/index'
 import { Route as PlaygroundRulesRouteImport } from './routes/playground/rules'
 import { Route as PlaygroundThemeRouteImport } from './routes/playground/theme'
 import { Route as PlaygroundTokensRouteImport } from './routes/playground/tokens'
-import { Route as CanvasExperimentsAvatarRouteImport } from './routes/canvas/experiments/avatar'
 import { Route as CanvasExperimentsBulletRouteImport } from './routes/canvas/experiments/bullet'
+import { Route as CanvasLockupsAvatarRouteImport } from './routes/canvas/lockups/avatar'
 import { Route as CanvasLockupsListRouteImport } from './routes/canvas/lockups/list'
 import { Route as CanvasLockupsTableRouteImport } from './routes/canvas/lockups/table'
 import { Route as PlaygroundComponentsComponentRouteImport } from './routes/playground/components/$component'
-import { Route as PlaygroundExperimentsAvatarRouteImport } from './routes/playground/experiments/avatar'
 import { Route as PlaygroundExperimentsBulletRouteImport } from './routes/playground/experiments/bullet'
 import { Route as PlaygroundLibItemRouteImport } from './routes/playground/lib/$item'
+import { Route as PlaygroundLockupsAvatarRouteImport } from './routes/playground/lockups/avatar'
 import { Route as PlaygroundLockupsListRouteImport } from './routes/playground/lockups/list'
 import { Route as PlaygroundLockupsTableRouteImport } from './routes/playground/lockups/table'
 
@@ -62,15 +62,15 @@ const PlaygroundTokensRoute = PlaygroundTokensRouteImport.update({
   path: '/tokens',
   getParentRoute: () => PlaygroundRouteRoute,
 } as any)
-const CanvasExperimentsAvatarRoute = CanvasExperimentsAvatarRouteImport.update({
-  id: '/avatar',
-  path: '/avatar',
-  getParentRoute: () => CanvasExperimentsRouteRoute,
-} as any)
 const CanvasExperimentsBulletRoute = CanvasExperimentsBulletRouteImport.update({
   id: '/bullet',
   path: '/bullet',
   getParentRoute: () => CanvasExperimentsRouteRoute,
+} as any)
+const CanvasLockupsAvatarRoute = CanvasLockupsAvatarRouteImport.update({
+  id: '/canvas/lockups/avatar',
+  path: '/canvas/lockups/avatar',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CanvasLockupsListRoute = CanvasLockupsListRouteImport.update({
   id: '/canvas/lockups/list',
@@ -88,12 +88,6 @@ const PlaygroundComponentsComponentRoute =
     path: '/components/$component',
     getParentRoute: () => PlaygroundRouteRoute,
   } as any)
-const PlaygroundExperimentsAvatarRoute =
-  PlaygroundExperimentsAvatarRouteImport.update({
-    id: '/experiments/avatar',
-    path: '/experiments/avatar',
-    getParentRoute: () => PlaygroundRouteRoute,
-  } as any)
 const PlaygroundExperimentsBulletRoute =
   PlaygroundExperimentsBulletRouteImport.update({
     id: '/experiments/bullet',
@@ -103,6 +97,11 @@ const PlaygroundExperimentsBulletRoute =
 const PlaygroundLibItemRoute = PlaygroundLibItemRouteImport.update({
   id: '/lib/$item',
   path: '/lib/$item',
+  getParentRoute: () => PlaygroundRouteRoute,
+} as any)
+const PlaygroundLockupsAvatarRoute = PlaygroundLockupsAvatarRouteImport.update({
+  id: '/lockups/avatar',
+  path: '/lockups/avatar',
   getParentRoute: () => PlaygroundRouteRoute,
 } as any)
 const PlaygroundLockupsListRoute = PlaygroundLockupsListRouteImport.update({
@@ -124,14 +123,14 @@ export interface FileRoutesByFullPath {
   '/playground/theme': typeof PlaygroundThemeRoute
   '/playground/tokens': typeof PlaygroundTokensRoute
   '/playground/': typeof PlaygroundIndexRoute
-  '/canvas/experiments/avatar': typeof CanvasExperimentsAvatarRoute
   '/canvas/experiments/bullet': typeof CanvasExperimentsBulletRoute
+  '/canvas/lockups/avatar': typeof CanvasLockupsAvatarRoute
   '/canvas/lockups/list': typeof CanvasLockupsListRoute
   '/canvas/lockups/table': typeof CanvasLockupsTableRoute
   '/playground/components/$component': typeof PlaygroundComponentsComponentRoute
-  '/playground/experiments/avatar': typeof PlaygroundExperimentsAvatarRoute
   '/playground/experiments/bullet': typeof PlaygroundExperimentsBulletRoute
   '/playground/lib/$item': typeof PlaygroundLibItemRoute
+  '/playground/lockups/avatar': typeof PlaygroundLockupsAvatarRoute
   '/playground/lockups/list': typeof PlaygroundLockupsListRoute
   '/playground/lockups/table': typeof PlaygroundLockupsTableRoute
 }
@@ -142,14 +141,14 @@ export interface FileRoutesByTo {
   '/playground/theme': typeof PlaygroundThemeRoute
   '/playground/tokens': typeof PlaygroundTokensRoute
   '/playground': typeof PlaygroundIndexRoute
-  '/canvas/experiments/avatar': typeof CanvasExperimentsAvatarRoute
   '/canvas/experiments/bullet': typeof CanvasExperimentsBulletRoute
+  '/canvas/lockups/avatar': typeof CanvasLockupsAvatarRoute
   '/canvas/lockups/list': typeof CanvasLockupsListRoute
   '/canvas/lockups/table': typeof CanvasLockupsTableRoute
   '/playground/components/$component': typeof PlaygroundComponentsComponentRoute
-  '/playground/experiments/avatar': typeof PlaygroundExperimentsAvatarRoute
   '/playground/experiments/bullet': typeof PlaygroundExperimentsBulletRoute
   '/playground/lib/$item': typeof PlaygroundLibItemRoute
+  '/playground/lockups/avatar': typeof PlaygroundLockupsAvatarRoute
   '/playground/lockups/list': typeof PlaygroundLockupsListRoute
   '/playground/lockups/table': typeof PlaygroundLockupsTableRoute
 }
@@ -162,14 +161,14 @@ export interface FileRoutesById {
   '/playground/theme': typeof PlaygroundThemeRoute
   '/playground/tokens': typeof PlaygroundTokensRoute
   '/playground/': typeof PlaygroundIndexRoute
-  '/canvas/experiments/avatar': typeof CanvasExperimentsAvatarRoute
   '/canvas/experiments/bullet': typeof CanvasExperimentsBulletRoute
+  '/canvas/lockups/avatar': typeof CanvasLockupsAvatarRoute
   '/canvas/lockups/list': typeof CanvasLockupsListRoute
   '/canvas/lockups/table': typeof CanvasLockupsTableRoute
   '/playground/components/$component': typeof PlaygroundComponentsComponentRoute
-  '/playground/experiments/avatar': typeof PlaygroundExperimentsAvatarRoute
   '/playground/experiments/bullet': typeof PlaygroundExperimentsBulletRoute
   '/playground/lib/$item': typeof PlaygroundLibItemRoute
+  '/playground/lockups/avatar': typeof PlaygroundLockupsAvatarRoute
   '/playground/lockups/list': typeof PlaygroundLockupsListRoute
   '/playground/lockups/table': typeof PlaygroundLockupsTableRoute
 }
@@ -183,14 +182,14 @@ export interface FileRouteTypes {
     | '/playground/theme'
     | '/playground/tokens'
     | '/playground/'
-    | '/canvas/experiments/avatar'
     | '/canvas/experiments/bullet'
+    | '/canvas/lockups/avatar'
     | '/canvas/lockups/list'
     | '/canvas/lockups/table'
     | '/playground/components/$component'
-    | '/playground/experiments/avatar'
     | '/playground/experiments/bullet'
     | '/playground/lib/$item'
+    | '/playground/lockups/avatar'
     | '/playground/lockups/list'
     | '/playground/lockups/table'
   fileRoutesByTo: FileRoutesByTo
@@ -201,14 +200,14 @@ export interface FileRouteTypes {
     | '/playground/theme'
     | '/playground/tokens'
     | '/playground'
-    | '/canvas/experiments/avatar'
     | '/canvas/experiments/bullet'
+    | '/canvas/lockups/avatar'
     | '/canvas/lockups/list'
     | '/canvas/lockups/table'
     | '/playground/components/$component'
-    | '/playground/experiments/avatar'
     | '/playground/experiments/bullet'
     | '/playground/lib/$item'
+    | '/playground/lockups/avatar'
     | '/playground/lockups/list'
     | '/playground/lockups/table'
   id:
@@ -220,14 +219,14 @@ export interface FileRouteTypes {
     | '/playground/theme'
     | '/playground/tokens'
     | '/playground/'
-    | '/canvas/experiments/avatar'
     | '/canvas/experiments/bullet'
+    | '/canvas/lockups/avatar'
     | '/canvas/lockups/list'
     | '/canvas/lockups/table'
     | '/playground/components/$component'
-    | '/playground/experiments/avatar'
     | '/playground/experiments/bullet'
     | '/playground/lib/$item'
+    | '/playground/lockups/avatar'
     | '/playground/lockups/list'
     | '/playground/lockups/table'
   fileRoutesById: FileRoutesById
@@ -236,6 +235,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PlaygroundRouteRoute: typeof PlaygroundRouteRouteWithChildren
   CanvasExperimentsRouteRoute: typeof CanvasExperimentsRouteRouteWithChildren
+  CanvasLockupsAvatarRoute: typeof CanvasLockupsAvatarRoute
   CanvasLockupsListRoute: typeof CanvasLockupsListRoute
   CanvasLockupsTableRoute: typeof CanvasLockupsTableRoute
 }
@@ -291,19 +291,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlaygroundTokensRouteImport
       parentRoute: typeof PlaygroundRouteRoute
     }
-    '/canvas/experiments/avatar': {
-      id: '/canvas/experiments/avatar'
-      path: '/avatar'
-      fullPath: '/canvas/experiments/avatar'
-      preLoaderRoute: typeof CanvasExperimentsAvatarRouteImport
-      parentRoute: typeof CanvasExperimentsRouteRoute
-    }
     '/canvas/experiments/bullet': {
       id: '/canvas/experiments/bullet'
       path: '/bullet'
       fullPath: '/canvas/experiments/bullet'
       preLoaderRoute: typeof CanvasExperimentsBulletRouteImport
       parentRoute: typeof CanvasExperimentsRouteRoute
+    }
+    '/canvas/lockups/avatar': {
+      id: '/canvas/lockups/avatar'
+      path: '/canvas/lockups/avatar'
+      fullPath: '/canvas/lockups/avatar'
+      preLoaderRoute: typeof CanvasLockupsAvatarRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/canvas/lockups/list': {
       id: '/canvas/lockups/list'
@@ -326,13 +326,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlaygroundComponentsComponentRouteImport
       parentRoute: typeof PlaygroundRouteRoute
     }
-    '/playground/experiments/avatar': {
-      id: '/playground/experiments/avatar'
-      path: '/experiments/avatar'
-      fullPath: '/playground/experiments/avatar'
-      preLoaderRoute: typeof PlaygroundExperimentsAvatarRouteImport
-      parentRoute: typeof PlaygroundRouteRoute
-    }
     '/playground/experiments/bullet': {
       id: '/playground/experiments/bullet'
       path: '/experiments/bullet'
@@ -345,6 +338,13 @@ declare module '@tanstack/react-router' {
       path: '/lib/$item'
       fullPath: '/playground/lib/$item'
       preLoaderRoute: typeof PlaygroundLibItemRouteImport
+      parentRoute: typeof PlaygroundRouteRoute
+    }
+    '/playground/lockups/avatar': {
+      id: '/playground/lockups/avatar'
+      path: '/lockups/avatar'
+      fullPath: '/playground/lockups/avatar'
+      preLoaderRoute: typeof PlaygroundLockupsAvatarRouteImport
       parentRoute: typeof PlaygroundRouteRoute
     }
     '/playground/lockups/list': {
@@ -370,9 +370,9 @@ interface PlaygroundRouteRouteChildren {
   PlaygroundTokensRoute: typeof PlaygroundTokensRoute
   PlaygroundIndexRoute: typeof PlaygroundIndexRoute
   PlaygroundComponentsComponentRoute: typeof PlaygroundComponentsComponentRoute
-  PlaygroundExperimentsAvatarRoute: typeof PlaygroundExperimentsAvatarRoute
   PlaygroundExperimentsBulletRoute: typeof PlaygroundExperimentsBulletRoute
   PlaygroundLibItemRoute: typeof PlaygroundLibItemRoute
+  PlaygroundLockupsAvatarRoute: typeof PlaygroundLockupsAvatarRoute
   PlaygroundLockupsListRoute: typeof PlaygroundLockupsListRoute
   PlaygroundLockupsTableRoute: typeof PlaygroundLockupsTableRoute
 }
@@ -383,9 +383,9 @@ const PlaygroundRouteRouteChildren: PlaygroundRouteRouteChildren = {
   PlaygroundTokensRoute: PlaygroundTokensRoute,
   PlaygroundIndexRoute: PlaygroundIndexRoute,
   PlaygroundComponentsComponentRoute: PlaygroundComponentsComponentRoute,
-  PlaygroundExperimentsAvatarRoute: PlaygroundExperimentsAvatarRoute,
   PlaygroundExperimentsBulletRoute: PlaygroundExperimentsBulletRoute,
   PlaygroundLibItemRoute: PlaygroundLibItemRoute,
+  PlaygroundLockupsAvatarRoute: PlaygroundLockupsAvatarRoute,
   PlaygroundLockupsListRoute: PlaygroundLockupsListRoute,
   PlaygroundLockupsTableRoute: PlaygroundLockupsTableRoute,
 }
@@ -395,13 +395,11 @@ const PlaygroundRouteRouteWithChildren = PlaygroundRouteRoute._addFileChildren(
 )
 
 interface CanvasExperimentsRouteRouteChildren {
-  CanvasExperimentsAvatarRoute: typeof CanvasExperimentsAvatarRoute
   CanvasExperimentsBulletRoute: typeof CanvasExperimentsBulletRoute
 }
 
 const CanvasExperimentsRouteRouteChildren: CanvasExperimentsRouteRouteChildren =
   {
-    CanvasExperimentsAvatarRoute: CanvasExperimentsAvatarRoute,
     CanvasExperimentsBulletRoute: CanvasExperimentsBulletRoute,
   }
 
@@ -414,6 +412,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PlaygroundRouteRoute: PlaygroundRouteRouteWithChildren,
   CanvasExperimentsRouteRoute: CanvasExperimentsRouteRouteWithChildren,
+  CanvasLockupsAvatarRoute: CanvasLockupsAvatarRoute,
   CanvasLockupsListRoute: CanvasLockupsListRoute,
   CanvasLockupsTableRoute: CanvasLockupsTableRoute,
 }

@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-10-30",
+    "description": "Adds --avatar-overlap, the fraction of an avatar's width that the next avatar in a group covers."
+  },
+  {
     "date": "2026-10-21",
     "description": "The docs say to install this item once, before your first component, instead of naming it in every component's add command."
   },

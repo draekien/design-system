@@ -3,12 +3,12 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { recordPriorities, sampleRecordDetails } from "@workspace/fixtures/record-details.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import * as React from "react"
+import { PeopleGroup, PeopleList } from "../lockups/avatar/people.tsx"
 import {
   Constellation,
   type ConstellationGroup,
   type ConstellationPart,
 } from "../playground/constellation.tsx"
-import { PeopleGroup, PeopleList } from "./avatar.tsx"
 import {
   Bullet,
   BulletLabel,

@@ -160,10 +160,18 @@
       "css": ".ds-status { display: inline-flex; align-items: center; gap: 8px; color: var(--foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-status-dot { width: 10px; height: 10px; border-radius: 9999px; border: 1.5px solid currentColor; background: currentColor; }"
     },
     {
+      "name": "Avatar",
+      "kind": "custom",
+      "refersTo": "avatar",
+      "description": "20px by default, 24px at size lg; a circle for a person, a floor-radius square for a team; initials in the micro type on Quiet Grey. A group draws 3 avatars overlapping by half their width (--avatar-overlap 0.5), then +N, never +1; each has a 2px background ring, and they spread 4px apart on hover, focus or open over 150ms with ease-out, at once under reduced motion.",
+      "html": "<span class=\"ds-avatar-group\"><span class=\"ds-avatar\">DW</span><span class=\"ds-avatar\">MO</span><span class=\"ds-avatar\">+3</span></span>",
+      "css": ".ds-avatar-group { display: inline-flex; align-items: center; } .ds-avatar { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; overflow: hidden; border-radius: 9999px; background: var(--muted); color: var(--muted-foreground); box-shadow: 0 0 0 2px var(--background); font: 500 0.625rem/1.4 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; text-transform: uppercase; transition: margin-inline-start 150ms cubic-bezier(0, 0, 0.2, 1); } .ds-avatar:not(:first-child) { margin-inline-start: -10px; } .ds-avatar-group:hover .ds-avatar:not(:first-child) { margin-inline-start: 4px; } @media (prefers-reduced-motion: reduce) { .ds-avatar { transition: none; } }"
+    },
+    {
       "name": "Entity",
       "kind": "custom",
       "refersTo": "entity-media",
-      "description": "Initials or a picture in a quiet circle, then the name.",
+      "description": "An Avatar at size lg (24px), initials or a picture in a quiet circle, then the name.",
       "html": "<span class=\"ds-person\"><span class=\"ds-person-initials\">DW</span>Dana Whitfield</span>",
       "css": ".ds-person { display: inline-flex; align-items: center; gap: 8px; font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-person-initials { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 9999px; background: var(--muted); color: var(--muted-foreground); font-size: 0.625rem; font-weight: 500; }"
     },
