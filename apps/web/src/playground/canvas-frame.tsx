@@ -17,7 +17,10 @@ const canvasMessageSearch = canvasSearch.extend(canvasPointerSearch.shape)
 export type CanvasMessageSearch = z.output<typeof canvasMessageSearch>
 
 /** A lockup canvas route that a `CanvasFrame` loads. */
-export type CanvasRoute = "/canvas/lockups/list" | "/canvas/lockups/table"
+export type CanvasRoute =
+  | "/canvas/lockups/avatar"
+  | "/canvas/lockups/list"
+  | "/canvas/lockups/table"
 
 const messageType = z.enum(["playground:navigate", "playground:canvas"])
 

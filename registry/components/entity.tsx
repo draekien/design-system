@@ -1,5 +1,7 @@
 import type * as React from "react"
 // biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { Avatar, type AvatarProps } from "@/components/avatar"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
 import { cn } from "@/lib/cn"
 
 /**
@@ -19,21 +21,15 @@ export function Entity({ className, ...props }: React.ComponentProps<"span">): R
 }
 
 /**
- * A 24×24px circle holding the entity's initials, such as "MO", or an `<img>` of it, which fills
- * the circle. Hidden from screen readers, so `EntityName` carries the name.
+ * A 24px `Avatar` holding the entity's initials, such as "MO", or an `AvatarImage` and an
+ * `AvatarFallback`. Pass `shape="square"` for a team or organisation. Hidden from screen readers,
+ * so `EntityName` carries the name.
  */
-export function EntityMedia({
-  className,
-  ...props
-}: React.ComponentProps<"span">): React.ReactElement {
+export function EntityMedia({ size = "lg", className, ...props }: AvatarProps): React.ReactElement {
   return (
-    <span
-      data-slot="entity-media"
-      aria-hidden="true"
-      className={cn(
-        "flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted font-medium text-micro text-muted-foreground uppercase [&_img]:size-full [&_img]:object-cover",
-        className
-      )}
+    <Avatar
+      size={size}
+      className={cn("[&_img]:size-full [&_img]:object-cover", className)}
       {...props}
     />
   )

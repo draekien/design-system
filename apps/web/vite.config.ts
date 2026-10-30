@@ -20,14 +20,15 @@ export default defineConfig({
       tanstackStart({
         importProtection: { behavior: "error" },
         pages: [
+          { path: "/playground/lockups/avatar" },
           { path: "/playground/lockups/list" },
           { path: "/playground/lockups/table" },
           { path: "/playground/tokens" },
           { path: "/playground/theme" },
           { path: "/playground/rules" },
+          { path: "/canvas/lockups/avatar" },
           { path: "/canvas/lockups/list" },
           { path: "/canvas/lockups/table" },
-          { path: "/canvas/experiments/avatar" },
           { path: "/canvas/experiments/bullet" },
         ],
         prerender: {

@@ -90,6 +90,24 @@ components:
     rounded: "{rounded.card}"
     padding: "12px"
     width: "240px"
+  avatar:
+    backgroundColor: "{colors.quiet-grey}"
+    textColor: "{colors.muted-ink}"
+    typography: "{typography.micro}"
+    rounded: "{rounded.full}"
+    size: "20px"
+  avatar-lg:
+    backgroundColor: "{colors.quiet-grey}"
+    textColor: "{colors.muted-ink}"
+    typography: "{typography.micro}"
+    rounded: "{rounded.full}"
+    size: "24px"
+  avatar-square:
+    backgroundColor: "{colors.quiet-grey}"
+    textColor: "{colors.muted-ink}"
+    typography: "{typography.micro}"
+    rounded: "{rounded.floor}"
+    size: "20px"
   entity-media:
     backgroundColor: "{colors.quiet-grey}"
     textColor: "{colors.muted-ink}"
@@ -266,8 +284,18 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 ### Status
 - **Style:** a 10px dot with a `--status-media-ring` (1.5px) border, filled, half-filled or hollow by state, then the state's name, then an optional one-line description in Muted Ink that truncates before the name.
 
+### Avatar
+- **Size:** 20px by default; 24px at size `lg`.
+- **Shape:** a circle for a person; a square with the floor radius (`{rounded.floor}`) for a team.
+- **Fallback:** initials in the micro type (10px medium, uppercase) in Muted Ink on Quiet Grey, shown until the picture loads; a picture fills the avatar.
+- **Screen readers:** the avatar is hidden from them; the name beside it or the control around it names who it is.
+- **Group:** `AvatarGroup` draws 3 avatars, then a +N avatar counting the rest, never +1; each overlaps the one before by half its width (`--avatar-overlap`, 0.5).
+- **Ring:** each avatar in a group has a 2px ring in the background colour.
+- **Spread:** on hover, focus or open, the group's avatars after the first move 4px apart, animating `margin-inline-start` over `--transition-duration-quick` (150ms) with `--ease-out`; no animation under reduced motion.
+- **Trigger:** a group is the trigger of a popover that reaches the names it hides; as a button or link it takes the floor radius and a focus ring, and is 44px high on a coarse pointer.
+
 ### Entity
-- **Style:** initials or a picture in a 24px Quiet Grey circle, then the name, then an optional one-line description in Muted Ink that truncates before the name; media alone at narrow widths.
+- **Style:** an Avatar at size `lg` (24px), initials or a picture, then the name, then an optional one-line description in Muted Ink that truncates before the name; media alone at narrow widths.
 
 ### Missing fact
 - **Style:** the word "Unavailable" or "Hidden" in Muted Ink in place of a rank 2 value; the reason is stated once outside the list.

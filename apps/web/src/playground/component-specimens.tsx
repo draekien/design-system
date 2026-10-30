@@ -30,6 +30,8 @@ import {
   StatusName,
 } from "@workspace/registry/components/status.tsx"
 import * as React from "react"
+import { avatarSources } from "../components/avatar/avatar.docs.ts"
+import { AvatarPicture } from "../components/avatar/avatar-picture.tsx"
 import { consumerSource, requireSource } from "../components/item-docs.ts"
 import { tableSources } from "../components/table/table.docs.ts"
 import { TableSortable } from "../components/table/table-sortable.tsx"
@@ -343,6 +345,11 @@ export function PreviewCardExample() {
 `
 
 export const componentSpecimens: Readonly<Record<string, ComponentSpecimen>> = {
+  avatar: {
+    fileName: "avatar-example.tsx",
+    code: consumerSource(requireSource(avatarSources, "./avatar-picture.tsx")),
+    Preview: AvatarPicture,
+  },
   list: {
     fileName: "list-example.tsx",
     code: listCode,

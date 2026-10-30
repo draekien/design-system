@@ -75,6 +75,7 @@
           "container-hide": "40rem"
         },
         "light": {
+          "avatar-overlap": "0.5",
           "meter-value-min": "4ch",
           "preview-card-enter-scale": "0.97",
           "status-media-ring": "1.5px",
@@ -223,13 +224,43 @@
       }
     },
     {
-      "name": "entity",
+      "name": "avatar",
       "type": "registry:ui",
-      "title": "Entity",
-      "description": "A person, team or organisation drawn as its initials or picture in a 24px circle, then its name.",
+      "title": "Avatar",
+      "description": "One person or team drawn as their picture or initials, and a group of avatars that overlap and spread apart on hover, on Base UI Avatar.",
+      "dependencies": [
+        "@base-ui/react@1.8.0"
+      ],
       "registryDependencies": [
         "draekien/design-system/tokens",
         "draekien/design-system/cn"
+      ],
+      "files": [
+        {
+          "path": "components/avatar.tsx",
+          "type": "registry:ui",
+          "target": "@components/avatar.tsx"
+        }
+      ],
+      "docs": "Compose Avatar holding an AvatarImage and an AvatarFallback with the initials; shape square draws a team. The avatar is hidden from screen readers, so put the name beside it or in the accessible name of the control around it. AvatarGroup draws three avatars, then +N for the rest; render it as a popover trigger whose popup lists everyone, and pass label, since its avatars are hidden from screen readers. Draw a person's name with entity, which composes Avatar. Playground: https://design-system.wpei.me/playground/components/avatar",
+      "meta": {
+        "status": "beta",
+        "a11yReviewed": null,
+        "critiqued": null
+      }
+    },
+    {
+      "name": "entity",
+      "type": "registry:ui",
+      "title": "Entity",
+      "description": "A person, team or organisation drawn as its initials or picture in a 24px avatar, then its name.",
+      "dependencies": [
+        "@base-ui/react@1.8.0"
+      ],
+      "registryDependencies": [
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn",
+        "draekien/design-system/avatar"
       ],
       "files": [
         {
@@ -238,7 +269,7 @@
           "target": "@components/entity.tsx"
         }
       ],
-      "docs": "Compose EntityMedia holding the initials or an img, then EntityName, then an optional one-line EntityDescription. The media is hidden from screen readers, so EntityName carries the name. The description truncates before the name. In a ListRowMedia, and in an abbreviated ListRowFact, only the media is drawn and the name and description are read by screen readers. Wrap it in a preview-card to show more about the entity. Playground: https://design-system.wpei.me/playground/components/entity",
+      "docs": "Compose EntityMedia holding an AvatarImage and an AvatarFallback with the initials, or the initials alone, then EntityName, then an optional one-line EntityDescription. The media is hidden from screen readers, so EntityName carries the name. The description truncates before the name. In a ListRowMedia, and in an abbreviated ListRowFact, only the media is drawn and the name and description are read by screen readers. Wrap it in a preview-card to show more about the entity. Playground: https://design-system.wpei.me/playground/components/entity",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,
