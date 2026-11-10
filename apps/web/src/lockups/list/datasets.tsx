@@ -128,7 +128,7 @@ function initialsOf(name: string) {
   return `${parts[0]?.[0] ?? ""}${parts.length > 1 ? (parts.at(-1)?.[0] ?? "") : ""}`
 }
 
-function ownerEntity(owner: string) {
+export function ownerEntity(owner: string): React.ReactElement {
   return (
     <Entity>
       <EntityMedia>{initialsOf(owner)}</EntityMedia>
@@ -198,7 +198,7 @@ const recordStatusFill: Readonly<Record<RecordStatus, StatusMediaProps["fill"]>>
   approved: "full",
 }
 
-function recordStatus(record: SampleRecord) {
+export function recordStatus(record: SampleRecord): React.ReactElement {
   return (
     <Status>
       <StatusMedia fill={recordStatusFill[record.status]} />

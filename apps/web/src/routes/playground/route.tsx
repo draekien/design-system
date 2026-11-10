@@ -89,6 +89,9 @@ function PlaygroundLayout() {
             <Link to="/playground/experiments/bullet" className={navLink}>
               Bullet
             </Link>
+            <Link to="/playground/experiments/card" className={navLink}>
+              Card
+            </Link>
           </NavGroup>
           <NavGroup label="Settings">
             <Link to="/playground/theme" className={navLink}>

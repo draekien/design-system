@@ -1,6 +1,9 @@
 /** A sample invoice's billing stage. */
 export type InvoiceStatus = "draft" | "sent" | "paid"
 
+/** The amount still unpaid on sent invoices one month before {@link sampleInvoices}, in Australian dollars. */
+export const outstandingLastMonth = 8_940
+
 /** A synthetic invoice for playground routes; no field holds real data. */
 export type SampleInvoice = {
   id: string
