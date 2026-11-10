@@ -10,6 +10,21 @@ export const cardRules: ReadonlyArray<Rule> = [
     source: "Design rules: rank 1 shows always, at the start of the row or head",
   },
   {
+    rule: "Proposed, not yet a design rule: a record card's picture is CardMedia, first in CardSubject, passed only on a surface whose callers recognise a record by its picture; summary and metric cards take none, since their figure is the subject.",
+    source:
+      "Design rules: the rank 1 Subject holds media; Goals. Passing it only for that goal is this design system's own decision, awaiting approval",
+  },
+  {
+    rule: "Proposed, not yet a design rule: CardMedia sits inside the card's 12px padding with the floor radius, 6px, so the card's 18px follows from it, and is cropped to 16:9, so every card in a grid row starts its ID on the same line.",
+    source:
+      "Design rules: Outward Radius Rule; Precise principle. The 16:9 ratio is this design system's own decision, awaiting approval",
+  },
+  {
+    rule: "Proposed, not yet a design rule: in a run of cards with pictures, a record with none, a picture the caller may not see and a picture that fails to load each draw an empty 16:9 box with an image icon and No picture, Hidden or Unavailable; the picture's alt text is empty unless it says something the name does not.",
+    source:
+      "DESIGN.md: Missing fact; Avatar (the name beside it names it). The empty box is this design system's own decision, awaiting approval",
+  },
+  {
     rule: "A record card draws its facts on one line under the head, in the same order on every card, so a caller compares a fact by its position across cards; each fact's property name is read by screen readers only.",
     source:
       "Linear Display options (properties on the board); the fixed order is this design system's own decision",
@@ -24,8 +39,9 @@ export const cardRules: ReadonlyArray<Rule> = [
       "Design rules: Precise principle; bullet experiment (the details panel names each fact's property)",
   },
   {
-    rule: "A metric card's subject names the metric and its unit; its facts are the figure, then its change against the previous period, both in tabular figures.",
-    source: "Design rules: Clear principle (a figure names its unit); Tabular Figures Rule",
+    rule: "A metric card leads with its figure at the top left and its change against the previous period at the top right, both in tabular figures; the name and unit sit below them. Proposed: the change shows its percentage alone; the period and both months' figures are in a hover card on it, and the period is in its accessible name. This departs from the Clear principle, which keeps a value's meaning on screen, and the card has no keyboard route to the hover card yet.",
+    source:
+      "Design rules: Clear principle (a figure names its unit); Tabular Figures Rule. The figure-first order is this design system's own decision",
   },
   {
     rule: "Proposed, not yet a design rule: the figure on a metric card is 24px semibold, which needs a display type token before the card moves to the registry.",
@@ -62,6 +78,16 @@ export const cardRules: ReadonlyArray<Rule> = [
   {
     rule: "A fact the caller cannot see shows Unavailable or Hidden in its slot, and the reason is stated once above the cards.",
     source: "DESIGN.md: Missing fact",
+  },
+  {
+    rule: "Proposed, not yet a design rule: a metric figure longer than 12 characters at full length switches to compact notation, such as A$12B, and screen readers still read the full figure; a change against a previous figure of zero says there is nothing to compare instead of a percentage.",
+    source:
+      "Design rules: Clear principle; Figure's compact form. The 12-character limit is this design system's own decision, awaiting approval",
+  },
+  {
+    rule: "A run with no records draws one line saying so and what makes a record appear, in place of the grid; a name, description or summary in a right-to-left script aligns to its own start.",
+    source:
+      "Design rules: error and refusal copy states what went wrong, then how to fix it; dir=auto is this design system's own decision",
   },
   {
     rule: "Every control's hit area is at least 24×24px, and 44px high on a coarse pointer.",

@@ -64,7 +64,7 @@ function cardDrawing(state: FixtureState): Drawing {
             n: 1,
             name: "Card",
             depth: 0,
-            note: "Bars in place of the ID, name, description and three facts",
+            note: "An empty 16:9 box in place of the picture, then bars in place of the ID, name, description and three facts",
           },
         ],
         groups: [],
@@ -83,33 +83,39 @@ function cardDrawing(state: FixtureState): Drawing {
 
 function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
   const hasOwner = state === "loaded"
-  const explain = hasOwner ? 10 : 9
+  const explain = hasOwner ? 11 : 10
   const parts: ReadonlyArray<ConstellationPart> = [
     { n: 1, name: "Card", depth: 0, note: "12px padding, the card radius, a hairline border" },
-    { n: 2, name: "CardSubject", depth: 1, note: "Rank 1: ID, name, description" },
-    { n: 3, name: "CardId", depth: 2, note: "Muted, tabular figures" },
+    { n: 2, name: "CardSubject", depth: 1, note: "Rank 1: picture, ID, name, description" },
     {
-      n: 4,
+      n: 3,
+      name: "CardMedia",
+      depth: 2,
+      note: '16:9, cropped, the floor radius; "No picture", "Unavailable" or "Hidden" in an empty box when there is none',
+    },
+    { n: 4, name: "CardId", depth: 2, note: "Muted, tabular figures" },
+    {
+      n: 5,
       name: "CardName",
       depth: 2,
       note: "At most two lines",
       specimen: <span className="font-medium text-sm">{record.title}</span>,
     },
     {
-      n: 5,
+      n: 6,
       name: "CardLink",
       depth: 3,
       note: "Rank 5: the record's page; its hit area covers the card",
     },
-    { n: 6, name: "CardDescription", depth: 2, note: "One line; truncates" },
+    { n: 7, name: "CardDescription", depth: 2, note: "One line; truncates" },
     {
-      n: 7,
+      n: 8,
       name: "CardFacts",
       depth: 1,
       note: "Rank 2: at most four facts on one line, in the same order on every card",
     },
     {
-      n: 8,
+      n: 9,
       name: "CardFact",
       depth: 2,
       note: "One status, entity, figure or relative time; its property's name is read by screen readers only",
@@ -118,7 +124,7 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
     ...(hasOwner
       ? [
           {
-            n: 9,
+            n: 10,
             name: "PreviewCard",
             depth: 3,
             note: "The owner's role and team, on hover after 300ms",
@@ -150,7 +156,8 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
         { part: 2, anchor: 2 },
         { part: 3, anchor: 3 },
         { part: 4, anchor: 4 },
-        { part: 6, anchor: 6 },
+        { part: 5, anchor: 5 },
+        { part: 7, anchor: 7 },
       ],
     },
     {
@@ -159,8 +166,8 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
       summary: "The facts the caller compares across cards",
       reveal: "always",
       links: [
-        { part: 7, anchor: 7 },
         { part: 8, anchor: 8 },
+        { part: 9, anchor: 9 },
       ],
     },
     {
@@ -179,7 +186,7 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
             summary: "More about the owner",
             reveal: "revealed" as const,
             gesture: "Hover",
-            links: [{ part: 9, anchor: 9 }],
+            links: [{ part: 10, anchor: 10 }],
           },
         ]
       : []),
@@ -189,7 +196,7 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
       summary: "Everything about the record, on its page",
       reveal: "revealed",
       gesture: "Click or Enter",
-      links: [{ part: 5, anchor: 4 }],
+      links: [{ part: 6, anchor: 5 }],
     },
   ]
 
@@ -204,12 +211,13 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
           anchors={{
             card: 1,
             subject: 2,
-            id: 3,
-            name: 4,
-            description: 6,
-            facts: 7,
-            fact: 8,
-            owner: 9,
+            media: 3,
+            id: 4,
+            name: 5,
+            description: 7,
+            facts: 8,
+            fact: 9,
+            owner: 10,
             explain,
           }}
         />
