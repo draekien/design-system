@@ -1,7 +1,6 @@
 import { sampleRecordDetails } from "@workspace/fixtures/record-details.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import * as React from "react"
-import { cardSurface } from "../../experiments/bullet-styles.ts"
 import { clipSpecimen } from "../../experiments/clip-specimen.tsx"
 import {
   Constellation,
@@ -9,6 +8,7 @@ import {
   type ConstellationPart,
 } from "../../playground/constellation.tsx"
 import { recordStatus } from "../list/datasets.tsx"
+import { cardSurface } from "../lockup-styles.ts"
 import { SummaryCard } from "./summary-card.tsx"
 import { summaryRecord } from "./summary-record.ts"
 

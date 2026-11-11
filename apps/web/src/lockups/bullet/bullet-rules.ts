@@ -1,4 +1,4 @@
-import type { Rule } from "../playground/rule-notes.tsx"
+import type { Rule } from "../../playground/rule-notes.tsx"
 
 export const bulletRules: ReadonlyArray<Rule> = [
   {
@@ -11,6 +11,11 @@ export const bulletRules: ReadonlyArray<Rule> = [
       "Geist Entity (lead with the identifier); order as position is this design system's own decision",
   },
   {
+    rule: "In a details list every bullet leads with an icon, so each label shares a left edge with the labels above and below it; an icon after the label never replaces the leading one.",
+    source:
+      "Design rules: Precise principle (a part shares a left edge with the part above or below)",
+  },
+  {
     rule: "A bullet comes in two sizes: default draws a 12px label, 14px icons and 20px avatars, as in the team and last update under the record's title; lg draws a 14px label, 16px icons and 24px avatars, as in the details list. Both keep a hit area at least 24px high.",
     source:
       "The 12px label and 14px body sizes are DESIGN.md's type scale; the 24px floor is the Primer designer checklist",
@@ -20,7 +25,7 @@ export const bulletRules: ReadonlyArray<Rule> = [
     source: "Primer progressive disclosure (a caret is not a disclosure control)",
   },
   {
-    rule: "An icon stack is an AvatarGroup from the avatar experiment, and the label beside it states the count, such as 3 reviewers; the bullet's size sets the avatars' size.",
+    rule: "An icon stack is an AvatarGroup from the avatar component, and the label beside it states the count, such as 3 reviewers; the bullet's size sets the avatars' size.",
     source:
       "Geist Show More (state how many items there are); Geist Avatar (20–24px beside a 14px label)",
   },

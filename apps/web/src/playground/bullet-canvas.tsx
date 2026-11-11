@@ -3,28 +3,131 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { recordPriorities, sampleRecordDetails } from "@workspace/fixtures/record-details.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import * as React from "react"
+import { Bullet, BulletLabel, BulletMedia } from "@/components/bullet.tsx"
+import { cn } from "@/lib/cn.ts"
+import { clipSpecimen } from "../experiments/clip-specimen.tsx"
 import { PeopleGroup, PeopleList } from "../lockups/avatar/people.tsx"
 import {
-  Constellation,
-  type ConstellationGroup,
-  type ConstellationPart,
-} from "../playground/constellation.tsx"
-import {
-  Bullet,
-  BulletLabel,
-  BulletMedia,
+  BulletLockup,
   DetailsError,
   DetailsLoading,
   DetailsPanel,
   DrawingAnchors,
   DueContent,
   PolicyContent,
+  PriorityContent,
   ReviewersContent,
   WorkspaceCard,
   WorkspaceContent,
-} from "./bullet.tsx"
-import { cardSurface, menuItem, menuSurface } from "./bullet-styles.ts"
-import { clipSpecimen } from "./clip-specimen.tsx"
+} from "../lockups/bullet/details-panel.tsx"
+import { cardSurface } from "../lockups/lockup-styles.ts"
+import { menuItem, menuSurface } from "../lockups/table/table-styles.ts"
+import { Constellation, type ConstellationGroup, type ConstellationPart } from "./constellation.tsx"
+import type { CanvasOptions } from "./playground-search.ts"
+import { StatesSection } from "./states-section.tsx"
+
+/** The bullet lockup canvas: a record's details panel, or its States view. */
+export function BulletCanvas({ options }: { options: CanvasOptions }): React.ReactElement {
+  return (
+    <main className="p-4 sm:p-6">
+      <h1 className="sr-only">Record details</h1>
+      {options.view === "states" ? (
+        <StatesView state={options.state} />
+      ) : (
+        <BulletLockup state={options.state} />
+      )}
+    </main>
+  )
+}
+
+const interactionSpecimens = [
+  { label: "At rest", props: {} },
+  { label: "Hovered: Ink at 4%", props: { className: "before:bg-foreground/4" } },
+  { label: "Open: Ink at 7%", props: { "data-popup-open": "" } },
+  {
+    label: "Focused: the outline 4px past each side",
+    props: { className: "before:outline-2 before:outline-foreground before:outline-solid" },
+  },
+] as const
+
+const narrowSpecimens = [
+  { label: "320px: the panel at its usual width", width: "w-80" },
+  { label: "240px: labels truncate before their icons", width: "w-60" },
+] as const
+
+function StatesView({ state }: { state: FixtureState }) {
+  switch (state) {
+    case "error":
+    case "loading":
+      return (
+        <StatesSection
+          title={state === "error" ? "Error" : "Loading"}
+          description={
+            state === "error"
+              ? "The message says what failed and offers Retry"
+              : "Each property's name, then a circle and a bar where its bullet will be"
+          }
+        >
+          <BulletLockup state={state} />
+        </StatesSection>
+      )
+    case "loaded":
+    case "partial":
+    case "no-permission":
+      return (
+        <div className="flex flex-col gap-12">
+          <StatesSection
+            title="Interaction states"
+            description="A bullet rendered as a button at rest, hovered, open and focused"
+          >
+            <div className="flex flex-wrap items-start gap-8">
+              {interactionSpecimens.map((specimen) => (
+                <Specimen key={specimen.label} label={specimen.label}>
+                  <Bullet size="lg" render={<button type="button" />} {...specimen.props}>
+                    <PriorityContent priority={sampleRecordDetails.priority} />
+                  </Bullet>
+                </Specimen>
+              ))}
+              <Specimen label="Sizes: default, then lg">{sizes}</Specimen>
+            </div>
+          </StatesSection>
+          <StatesSection
+            title="Narrow widths"
+            description="The panel fills its container; each label truncates before its icons"
+          >
+            <div className="flex flex-wrap items-start gap-8">
+              {narrowSpecimens.map((specimen) => (
+                <Specimen
+                  key={specimen.label}
+                  label={specimen.label}
+                  className={cn(specimen.width, "max-w-full")}
+                >
+                  <DetailsPanel state={state} />
+                </Specimen>
+              ))}
+            </div>
+          </StatesSection>
+        </div>
+      )
+  }
+}
+
+function Specimen({
+  label,
+  className,
+  children,
+}: {
+  label: string
+  className?: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className={cn("flex flex-col items-start gap-1.5", className)}>
+      <p className="text-muted-foreground text-xs">{label}</p>
+      {children}
+    </div>
+  )
+}
 
 type Drawing = {
   parts: ReadonlyArray<ConstellationPart>
@@ -32,7 +135,7 @@ type Drawing = {
   centre: React.ReactNode
 }
 
-/** The bullet experiment drawn as its constellation: the details panel at rest with its parts around it. */
+/** The bullet lockup drawn as its constellation: the details panel at rest with its parts around it. */
 export function BulletConstellation({ state }: { state: FixtureState }): React.ReactElement {
   const [stage, setStage] = React.useState<HTMLDivElement | null>(null)
   const drawing = bulletDrawing(state)
@@ -100,7 +203,7 @@ const layoutContents = [
   <ReviewersContent key="reviewers" />,
 ]
 
-const layouts = (
+const sizes = (
   <span className="flex flex-col items-start gap-3">
     {(["default", "lg"] as const).map((size) => (
       <span key={size} className="flex flex-col items-start gap-1">
@@ -129,7 +232,7 @@ function panelDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
       name: "Bullet",
       depth: 1,
       note: "One fact on one line, at least 24px high: [icon] [label], [icon] [label] [icon], [label] [icon], [icon stack] [label]; default size, then lg",
-      specimen: layouts,
+      specimen: sizes,
     },
     {
       n: 3,
@@ -170,7 +273,7 @@ function panelDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
             specimen: (
               <div className={menuSurface}>
                 {recordPriorities.map((option) => (
-                  <div key={option} className={menuItem}>
+                  <div key={option} className={cn(menuItem, "gap-related")}>
                     <span className="flex size-4 items-center justify-center">
                       {option === sampleRecordDetails.priority ? (
                         <HugeiconsIcon icon={Tick02Icon} className="size-4" />

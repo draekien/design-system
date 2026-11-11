@@ -1,12 +1,11 @@
 import { Menu } from "@base-ui/react/menu"
-import { mergeProps } from "@base-ui/react/merge-props"
 import { Popover } from "@base-ui/react/popover"
-import { useRender } from "@base-ui/react/use-render"
 import {
   Alert02Icon,
   ArrowUpRight01Icon,
   Calendar03Icon,
   Clock01Icon,
+  File02Icon,
   Flag03Icon,
   Folder01Icon,
   SquareLock02Icon,
@@ -27,84 +26,11 @@ import {
   PreviewCardTrigger,
 } from "@workspace/registry/components/preview-card.tsx"
 import * as React from "react"
+import { Bullet, BulletLabel, BulletMedia } from "@/components/bullet.tsx"
 import { cn } from "@/lib/cn.ts"
-import { PeopleGroup, PeoplePopup } from "../lockups/avatar/people.tsx"
-import { menuItem, menuSurface } from "./bullet-styles.ts"
-import { Bar, ErrorMessage, RetryLink } from "./wireframe-parts.tsx"
-
-const bulletClass = cn(
-  "group/bullet relative isolate inline-flex min-h-6 min-w-0 max-w-full items-center justify-start gap-related text-left text-xs outline-hidden data-[size=lg]:text-sm data-[size=lg]:**:data-[slot=avatar]:[--avatar-size:--spacing(6)]",
-  "before:absolute before:inset-y-0 before:-inset-x-1 before:-z-10 before:rounded-floor",
-  "[&:is(button,a):not([data-slot=preview-card-trigger])]:hover:before:bg-foreground/4 [&:is(button,a):not([data-slot=preview-card-trigger])]:data-popup-open:before:bg-foreground/7",
-  "focus-visible:before:outline-2 focus-visible:before:outline-foreground focus-visible:before:outline-solid",
-  "[&:is(button,a)]:pointer-coarse:min-h-11"
-)
-
-/** Props for {@link Bullet}. */
-export type BulletProps = useRender.ComponentProps<"span"> & {
-  /**
-   * `"default"` draws a 12px label, 14px icons and 20px avatars; `"lg"` draws a 14px label,
-   * 16px icons and 24px avatars. Both keep a hit area at least 24px high.
-   */
-  size?: "default" | "lg"
-}
-
-/**
- * One fact on one line: `BulletMedia`, an `Avatar` or an `AvatarGroup`, and a `BulletLabel`, in the order
- * they are drawn. Render it as a trigger, such as `render={<Menu.Trigger />}`, to open a popup.
- */
-export function Bullet({
-  render,
-  size = "default",
-  className,
-  ...props
-}: BulletProps): React.ReactElement {
-  return useRender({
-    defaultTagName: "span",
-    render,
-    state: { size },
-    props: mergeProps<"span">({ className: cn(bulletClass, className) }, props),
-  })
-}
-
-/** One muted icon, 14px or 16px by the bullet's size, before or after the label. `label` names what the icon adds for screen readers. */
-export function BulletMedia({
-  label,
-  className,
-  children,
-  ...props
-}: React.ComponentProps<"span"> & { label?: string }): React.ReactElement {
-  return (
-    <span
-      data-slot="bullet-media"
-      className={cn(
-        "flex size-3.5 shrink-0 items-center justify-center text-muted-foreground group-data-[size=lg]/bullet:size-4 [&_svg]:size-full",
-        className
-      )}
-      {...props}
-    >
-      <span aria-hidden="true" className="contents">
-        {children}
-      </span>
-      {label === undefined ? null : <span className="sr-only">{label}</span>}
-    </span>
-  )
-}
-
-/** The fact in words, such as "High"; it truncates before any media does. */
-export function BulletLabel({
-  className,
-  ...props
-}: React.ComponentProps<"span">): React.ReactElement {
-  return (
-    <span
-      data-slot="bullet-label"
-      data-abbreviation="long"
-      className={cn("min-w-0 truncate", className)}
-      {...props}
-    />
-  )
-}
+import { Bar, ErrorMessage, RetryLink } from "../../experiments/wireframe-parts.tsx"
+import { PeopleGroup, PeoplePopup } from "../avatar/people.tsx"
+import { menuItem, menuSurface } from "../table/table-styles.ts"
 
 const record = detailsRecord()
 
@@ -118,10 +44,10 @@ function detailsRecord() {
 
 const properties = ["Priority", "Reviewers", "Workspace", "Policy", "Due"] as const
 
-const panelClass = "w-80 max-w-full rounded-md border p-4"
+const panelClass = "w-80 max-w-full rounded-card border bg-card p-3 text-card-foreground"
 
 const listClass =
-  "mt-4 grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-x-related gap-y-1 [&_dd]:flex [&_dd]:min-w-0 [&_dt]:text-muted-foreground [&_dt]:text-xs"
+  "mt-4 grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-x-related gap-y-1 [&_dd]:flex [&_dd]:min-w-0 pointer-coarse:[&_dd]:min-h-hit-coarse [&_dt]:text-muted-foreground [&_dt]:text-xs"
 
 /** The centre parts of the details panel that a constellation connector ends on, by part number. */
 export type Anchors = Readonly<{
@@ -150,7 +76,7 @@ export function DrawingAnchors({
   return <AnchorsContext.Provider value={anchors}>{children}</AnchorsContext.Provider>
 }
 
-/** The wireframe this experiment renders for `state`: a record's details panel built from bullets. */
+/** The bullet lockup for `state`: a record's details panel built from bullets. */
 export function BulletLockup({ state }: { state: FixtureState }): React.ReactElement {
   switch (state) {
     case "error":
@@ -176,21 +102,22 @@ export function DetailsError(): React.ReactElement {
 /** The details panel while its facts load: each property's name, then a placeholder bullet. */
 export function DetailsLoading(): React.ReactElement {
   return (
-    <section aria-label="Record details, loading" aria-busy="true" className={panelClass}>
+    <article aria-label="Record details, loading" aria-busy="true" className={panelClass}>
       <Bar className="w-40" />
       <Bar className="mt-2 w-14" />
+      <Bar className="mt-4 w-36" />
       <dl className={listClass}>
         {properties.map((name) => (
           <React.Fragment key={name}>
             <dt>{name}</dt>
-            <dd className="flex min-h-6 items-center gap-related">
+            <dd className="flex min-h-hit-min items-center gap-related">
               <span className="size-4 rounded-full bg-muted" />
               <Bar className="w-20" />
             </dd>
           </React.Fragment>
         ))}
       </dl>
-    </section>
+    </article>
   )
 }
 
@@ -214,7 +141,7 @@ export function DetailsPanel({
     ),
   }
   return (
-    <section aria-labelledby={titleId} className={panelClass}>
+    <article aria-labelledby={titleId} className={panelClass}>
       <h2 id={titleId} className="font-medium text-sm">
         {record.title}
       </h2>
@@ -233,7 +160,7 @@ export function DetailsPanel({
           Only {details.owner.name}, the record's owner, can change its priority.
         </p>
       )}
-    </section>
+    </article>
   )
 }
 
@@ -269,10 +196,13 @@ export function DueContent(): React.ReactElement {
   )
 }
 
-/** The policy's title, then an icon saying the link opens in a new tab. */
+/** A document icon, the policy's title, then an icon saying the link opens in a new tab. */
 export function PolicyContent(): React.ReactElement {
   return (
     <>
+      <BulletMedia>
+        <HugeiconsIcon icon={File02Icon} />
+      </BulletMedia>
       <BulletLabel>{details.policyTitle}</BulletLabel>
       <BulletMedia label=", opens in a new tab">
         <HugeiconsIcon icon={ArrowUpRight01Icon} />
@@ -325,7 +255,7 @@ function PriorityBullet({ canEdit }: { canEdit: boolean }) {
         <PriorityContent priority={priority} />
       </Bullet>
       <Menu.Portal>
-        <Menu.Positioner side="bottom" align="start" sideOffset={6} className="z-popover">
+        <Menu.Positioner side="bottom" align="start" sideOffset={4} className="z-popover">
           <Menu.Popup className={menuSurface}>
             <Menu.RadioGroup
               value={priority}
@@ -337,7 +267,12 @@ function PriorityBullet({ canEdit }: { canEdit: boolean }) {
               }}
             >
               {recordPriorities.map((option) => (
-                <Menu.RadioItem key={option} value={option} closeOnClick className={menuItem}>
+                <Menu.RadioItem
+                  key={option}
+                  value={option}
+                  closeOnClick
+                  className={cn(menuItem, "gap-related")}
+                >
                   <span className="flex size-4 items-center justify-center">
                     <Menu.RadioItemIndicator>
                       <HugeiconsIcon icon={Tick02Icon} className="size-4" />
@@ -385,14 +320,14 @@ function ReviewersBullet() {
 
 function ReviewersFailed() {
   return (
-    <span className="flex min-w-0 items-center gap-related">
-      <Bullet size="lg">
+    <span className="flex min-w-0 flex-wrap items-center gap-x-related">
+      <Bullet size="lg" className="shrink-0">
         <BulletMedia>
           <HugeiconsIcon icon={Alert02Icon} />
         </BulletMedia>
         <BulletLabel>Could not load</BulletLabel>
       </Bullet>
-      <RetryLink className="min-h-6 text-sm underline underline-offset-2 pointer-coarse:min-h-11" />
+      <RetryLink className="min-h-hit-min text-sm underline underline-offset-2 pointer-coarse:min-h-hit-coarse" />
     </span>
   )
 }

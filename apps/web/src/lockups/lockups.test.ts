@@ -42,6 +42,7 @@ describe("lockupNav", () => {
       lockupNav.map((entry) => [entry.group, entry.lockups.map(({ title }) => title)])
     ).toEqual([
       [null, ["Avatar"]],
+      [null, ["Bullet"]],
       ["Cards", ["Record card", "Summary card", "Metric card"]],
       [null, ["List"]],
       [null, ["Table"]],

@@ -36,7 +36,7 @@ const rules = {
   labelledFacts: {
     rule: "A summary card draws one fact per 24px line after its property's name, every value starts on one left edge, and a value that does not fit truncates to one line; a truncated text value shows in full in a hover card that opens 6px past the card's right edge, past its left edge when the right has no room, and 4px below the value, or above it when below has no room, over the card only when neither side has room.",
     source:
-      "Design rules: Precise principle; rank 4 (a truncated value); bullet experiment (the details panel names each fact's property)",
+      "Design rules: Precise principle; rank 4 (a truncated value); bullet lockup (the details panel names each fact's property)",
   },
   aside: {
     rule: "a card reserves its top right for CardAside, which holds a change, an action or a menu beside the card's first part; the first part narrows to make room, neither runs under the other, and every later part spans the card; a picture keeps the card's full width and CardAside moves below it, beside the ID, so it never covers the picture.",

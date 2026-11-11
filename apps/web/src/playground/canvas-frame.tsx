@@ -19,6 +19,7 @@ export type CanvasMessageSearch = z.output<typeof canvasMessageSearch>
 /** A lockup canvas route that a `CanvasFrame` loads. */
 export type CanvasRoute =
   | "/canvas/lockups/avatar"
+  | "/canvas/lockups/bullet"
   | "/canvas/lockups/record-card"
   | "/canvas/lockups/summary-card"
   | "/canvas/lockups/metric-card"

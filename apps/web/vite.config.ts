@@ -21,6 +21,7 @@ export default defineConfig({
         importProtection: { behavior: "error" },
         pages: [
           { path: "/playground/lockups/avatar" },
+          { path: "/playground/lockups/bullet" },
           { path: "/playground/lockups/record-card" },
           { path: "/playground/lockups/summary-card" },
           { path: "/playground/lockups/metric-card" },
@@ -30,12 +31,12 @@ export default defineConfig({
           { path: "/playground/theme" },
           { path: "/playground/rules" },
           { path: "/canvas/lockups/avatar" },
+          { path: "/canvas/lockups/bullet" },
           { path: "/canvas/lockups/record-card" },
           { path: "/canvas/lockups/summary-card" },
           { path: "/canvas/lockups/metric-card" },
           { path: "/canvas/lockups/list" },
           { path: "/canvas/lockups/table" },
-          { path: "/canvas/experiments/bullet" },
         ],
         prerender: {
           enabled: true,

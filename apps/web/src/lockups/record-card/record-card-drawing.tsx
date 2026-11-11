@@ -1,7 +1,6 @@
 import { sampleRecords } from "@workspace/fixtures/records.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import * as React from "react"
-import { cardSurface } from "../../experiments/bullet-styles.ts"
 import { clipSpecimen } from "../../experiments/clip-specimen.tsx"
 import { ErrorMessage } from "../../experiments/wireframe-parts.tsx"
 import {
@@ -10,6 +9,7 @@ import {
   type ConstellationPart,
 } from "../../playground/constellation.tsx"
 import { ownerEntity, recordStatus } from "../list/datasets.tsx"
+import { cardSurface } from "../lockup-styles.ts"
 import { RecordCard, RecordCardLoading } from "./record-card.tsx"
 
 type Drawing = {

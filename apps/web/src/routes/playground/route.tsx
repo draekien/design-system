@@ -93,11 +93,6 @@ function PlaygroundLayout() {
               </Link>
             ))}
           </NavGroup>
-          <NavGroup label="Experiments">
-            <Link to="/playground/experiments/bullet" className={navLink}>
-              Bullet
-            </Link>
-          </NavGroup>
           <NavGroup label="Settings">
             <Link to="/playground/theme" className={navLink}>
               Canvas theme
