@@ -34,7 +34,7 @@ export const cardRules: ReadonlyArray<Rule> = [
     source: "Design rules: Goals (a goal fewer visits bring is served at rank 3, 4 or 5)",
   },
   {
-    rule: "A summary card draws one fact per 24px line after its property's name, every value starts on one left edge, and a value that does not fit truncates to one line; a truncated text value shows in full in a hover card.",
+    rule: "A summary card draws one fact per 24px line after its property's name, every value starts on one left edge, and a value that does not fit truncates to one line; a truncated text value shows in full in a hover card that opens 6px past the card's right edge, past its left edge when the right has no room, and 4px below the value, or above it when below has no room, over the card only when neither side has room.",
     source:
       "Design rules: Precise principle; rank 4 (a truncated value); bullet experiment (the details panel names each fact's property)",
   },

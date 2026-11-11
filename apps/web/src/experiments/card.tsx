@@ -284,7 +284,7 @@ export function CardFact({
       className={cn(
         layout === "row"
           ? cn("flex min-h-6 items-center", narrowClass[narrow])
-          : "col-span-2 grid h-6 grid-cols-subgrid items-center",
+          : "col-span-2 grid h-6 grid-cols-subgrid items-center *:last:overflow-clip *:last:whitespace-nowrap *:last:[overflow-clip-margin:4px]",
         className
       )}
       {...props}
@@ -570,6 +570,8 @@ export function SummaryCard({
   record?: SampleRecord
   details?: SampleRecordDetails
 }): React.ReactElement {
+  const cardRef = React.useRef<HTMLDivElement>(null)
+  const workspaceRef = React.useRef<HTMLAnchorElement>(null)
   if (state === "error") {
     return <ErrorMessage subject="The record's properties" />
   }
@@ -596,14 +598,14 @@ export function SummaryCard({
           <CardMissing>Hidden</CardMissing>
         ) : (
           <PreviewCard>
-            <PreviewCardTrigger className="w-full min-w-0 justify-start">
+            <PreviewCardTrigger ref={workspaceRef} className="w-full min-w-0 justify-start">
               <span className="truncate">{details.workspace}</span>
             </PreviewCardTrigger>
             <PreviewCardContent
               side="right"
               align="center"
-              sideOffset={offsetPastCardEdge}
-              collisionAvoidance={{ side: "none" }}
+              sideOffset={pastCardEdge(workspaceRef, cardRef)}
+              collisionAvoidance={besideCard}
             >
               <p className="text-muted-foreground">Workspace</p>
               <p className="mt-1 font-medium">{details.workspace}</p>
@@ -614,7 +616,10 @@ export function SummaryCard({
     { label: "Due", value: details.dueAt },
   ]
   return (
-    <Card render={<section aria-busy={loading} aria-label={`${record.title} properties`} />}>
+    <Card
+      ref={cardRef}
+      render={<section aria-busy={loading} aria-label={`${record.title} properties`} />}
+    >
       <CardSubject>
         <CardId>{loading ? <Bar className="my-1 w-14" /> : record.id}</CardId>
         <CardName>{loading ? <Bar className="my-1 w-40" /> : record.title}</CardName>
@@ -648,7 +653,25 @@ const audFormat = new Intl.NumberFormat("en", aud)
 
 const fullFigureMaxLength = 12
 
-const offsetPastCardEdge = 12 + 1 + 6
+const besideCard = { side: "flip", align: "shift", fallbackAxisSide: "end" } as const
+
+function pastCardEdge(
+  trigger: React.RefObject<HTMLElement | null>,
+  card: React.RefObject<HTMLElement | null>
+) {
+  return ({ side }: { side: string }): number => {
+    if (
+      trigger.current === null ||
+      card.current === null ||
+      (side !== "left" && side !== "right")
+    ) {
+      return belowTrigger.sideOffset
+    }
+    const anchor = trigger.current.getBoundingClientRect()
+    const edge = card.current.getBoundingClientRect()
+    return (side === "left" ? anchor.left - edge.left : edge.right - anchor.right) + 6
+  }
+}
 
 const belowTrigger = { side: "bottom", align: "start", sideOffset: 4 } as const
 
