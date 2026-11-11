@@ -185,6 +185,20 @@
           "value": 0.5,
           "unit": "rem"
         }
+      },
+      "hit-outset": {
+        "$type": "dimension",
+        "$value": {
+          "value": 0.625,
+          "unit": "rem"
+        }
+      },
+      "hit-coarse-gap": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1.25,
+          "unit": "rem"
+        }
       }
     },
     "text": {
@@ -246,6 +260,22 @@
           },
           "fontWeight": 600,
           "lineHeight": 1.43,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "rem"
+          }
+        }
+      },
+      "display": {
+        "$type": "typography",
+        "$value": {
+          "fontFamily": "{theme.font.sans}",
+          "fontSize": {
+            "value": 1.5,
+            "unit": "rem"
+          },
+          "fontWeight": 600,
+          "lineHeight": 1.33,
           "letterSpacing": {
             "value": 0,
             "unit": "rem"
@@ -325,6 +355,10 @@
       "popover": {
         "$type": "number",
         "$value": 50
+      },
+      "raised": {
+        "$type": "number",
+        "$value": 1
       }
     },
     "container": {
@@ -339,6 +373,20 @@
         "$type": "dimension",
         "$value": {
           "value": 40,
+          "unit": "rem"
+        }
+      },
+      "card-abbreviate": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "rem"
+        }
+      },
+      "card-hide": {
+        "$type": "dimension",
+        "$value": {
+          "value": 13,
           "unit": "rem"
         }
       }

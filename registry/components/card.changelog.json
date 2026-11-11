@@ -1,0 +1,6 @@
+[
+  {
+    "date": "2026-11-11",
+    "description": "Component introduced: Card, CardSubject, CardMedia, CardId, CardName, CardDescription, CardLink, CardAside, CardAction, CardFacts, CardFact, CardExplain and CardMissing, moved from the card experiment."
+  }
+]

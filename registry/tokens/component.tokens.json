@@ -20,13 +20,38 @@
       "value-min": {
         "$type": "number",
         "$value": 4,
-        "$extensions": { "me.wpei.unit": "ch" }
+        "$extensions": {
+          "me.wpei.unit": "ch"
+        }
       }
     },
     "preview-card": {
       "enter-scale": {
         "$type": "number",
         "$value": 0.97
+      }
+    },
+    "card": {
+      "aside-max": {
+        "$type": "number",
+        "$value": 33,
+        "$extensions": {
+          "me.wpei.unit": "cqw"
+        }
+      },
+      "media-width": {
+        "$type": "number",
+        "$value": 100,
+        "$extensions": {
+          "me.wpei.unit": "cqw"
+        }
+      },
+      "media-height": {
+        "$type": "number",
+        "$value": 56.25,
+        "$extensions": {
+          "me.wpei.unit": "cqw"
+        }
       }
     }
   }

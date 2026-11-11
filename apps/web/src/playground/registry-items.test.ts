@@ -22,6 +22,7 @@ describe("componentItems", () => {
       "meter",
       "relative-time",
       "preview-card",
+      "card",
     ])
   })
 })

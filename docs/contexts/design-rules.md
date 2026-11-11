@@ -151,6 +151,30 @@ The container sets the gap between its children by how the two neighbours relate
 | `--spacing-related` (`gap-related`) | parts of one record or one control, such as a status dot and its word | 0.5rem |
 | `--spacing-section` (`gap-section`) | separate sections, such as two stacked lists | 1.5rem |
 
+## Cards
+
+A record card shows a picture only when its callers recognise records by their pictures. The picture goes in `CardMedia`, the first part of `CardSubject`. A summary card and a metric card have no picture. This is this design system's own decision.
+
+`CardMedia` sits inside the card's 12px padding and has the 6px floor radius. It is cropped to 16:9. Every card in a grid row then starts its ID at the same height. The 16:9 ratio is this design system's own decision.
+
+A card in a run of cards with pictures draws an empty 16:9 box when it has no picture to show. The box shows an image icon and one word: No picture when the record has none, Hidden when the caller may not see it, and Unavailable when it fails to load. A picture's alt text is empty unless the picture shows something the name does not. The empty box is this design system's own decision.
+
+The top right of a card holds `CardAside`: a change, a status word, an icon or actions. `CardAside` sits beside the card's first part, which narrows to make room. The two never overlap. Every later part spans the card's full width. When the card has a picture, the picture keeps the full width and `CardAside` sits below it, beside the ID. This is this design system's own decision.
+
+`CardAside` holds at most two actions, then a ⋮ menu with the rest. Destructive actions go last in the menu, after a divider. The actions appear while the pointer is over the card, focus is inside it or its menu is open, and always show on a touch screen. As they appear, the always-shown items slide toward the card's middle over 150ms; they slide back as the actions hide. Reduced motion turns the slide off. `CardAside` reserves the width of both, so the part beside it never reflows. Applying the selection bar's two-action limit to the card, and ⋮ in place of ⋯, is this design system's own decision.
+
+Text and icons that always show in `CardAside` take at most a third of the card's content width. The part beside `CardAside` keeps at least half. In a card 18rem or wider, actions are never cut off. 8px separates the always-shown items from the actions. Each action is 24px. On a touch screen its hit area grows to 44px around it without moving it, and actions sit 20px apart so their hit areas do not overlap. The limits and the 20px spacing are this design system's own decision.
+
+Text in `CardAside` truncates to one line and shows in full in a hover card. An icon shown alone names its meaning to screen readers and in a hover card. An icon button names its action in a tooltip. Menus and hover cards open 4px below their trigger, aligned to its start edge, or to its end edge when the window has no room. The placement is this design system's own decision.
+
+A metric card leads with its figure at the top left, in the 24px semibold display type. Its change against the previous period sits in `CardAside`. The title and description follow below. This is this design system's own decision.
+
+Cards in a grid are 8px apart (`gap-related`). Bordered cards with no gap would draw doubled borders. This is this design system's own decision.
+
+A metric figure longer than 12 characters switches to compact notation, such as A$12B. Screen readers still read the full figure. The 12-character limit is this design system's own decision.
+
+When the previous figure is zero, the change has no percentage. Its slot draws a muted dash. The dash's hover card shows both periods' figures and says that a change from zero has no percentage. The dash is this design system's own decision.
+
 ## Rules adopted without a component yet
 
 Every error or refusal states what went wrong, then how the caller fixes it; apologise only when the product itself failed.

@@ -35,7 +35,9 @@
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-xl: calc(var(--radius) * 1.4);
   --spacing-hit-coarse: 2.75rem;
+  --spacing-hit-coarse-gap: 1.25rem;
   --spacing-hit-min: 1.5rem;
+  --spacing-hit-outset: 0.625rem;
   --spacing-related: 0.5rem;
   --spacing-row: 2.75rem;
   --spacing-row-inset: 0.5rem;
@@ -45,6 +47,10 @@
   --text-body--font-weight: 400;
   --text-body--line-height: 1.43;
   --text-body--letter-spacing: 0rem;
+  --text-display: 1.5rem;
+  --text-display--font-weight: 600;
+  --text-display--line-height: 1.33;
+  --text-display--letter-spacing: 0rem;
   --text-label: 0.75rem;
   --text-label--font-weight: 500;
   --text-label--line-height: 1.33;
@@ -61,6 +67,9 @@
   --transition-duration-quick: 150ms;
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --z-index-popover: 50;
+  --z-index-raised: 1;
   --container-abbreviate: 48rem;
+  --container-card-abbreviate: 16rem;
+  --container-card-hide: 13rem;
   --container-hide: 40rem;
 }

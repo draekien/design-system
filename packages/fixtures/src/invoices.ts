@@ -4,6 +4,12 @@ export type InvoiceStatus = "draft" | "sent" | "paid"
 /** The amount still unpaid on sent invoices one month before {@link sampleInvoices}, in Australian dollars. */
 export const outstandingLastMonth = 8_940
 
+/** The amount still unpaid on sent invoices past their due date, one month before {@link sampleInvoices}, in Australian dollars. */
+export const overdueLastMonth = 2_310
+
+/** The amount received on invoices one month before {@link sampleInvoices}, in Australian dollars. */
+export const paidLastMonth = 11_200
+
 /** A synthetic invoice for playground routes; no field holds real data. */
 export type SampleInvoice = {
   id: string

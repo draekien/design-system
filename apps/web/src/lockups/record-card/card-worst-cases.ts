@@ -1,5 +1,3 @@
-import type { SampleRecordDetails } from "@workspace/fixtures/record-details.ts"
-import { sampleRecordDetails } from "@workspace/fixtures/record-details.ts"
 import type { SampleRecord } from "@workspace/fixtures/records.ts"
 
 export const worstRecords: ReadonlyArray<SampleRecord> = [
@@ -53,36 +51,4 @@ export const worstRecords: ReadonlyArray<SampleRecord> = [
     updatedIso: "2026-10-10T09:00:00Z",
     summary: "يؤكد من يملك أدوار المسؤول في مساحتي عمل الفوترة والدعم (REC-104).",
   },
-]
-
-const longest = worstRecordOf(0)
-
-function worstRecordOf(index: number) {
-  const found = worstRecords[index]
-  if (found === undefined) {
-    throw new Error(`No worst-case record at index ${index}.`)
-  }
-  return found
-}
-
-export const worstRecordDetails: SampleRecordDetails = {
-  ...sampleRecordDetails,
-  recordId: longest.id,
-  priority: "Urgent",
-  assignee: {
-    name: longest.owner,
-    initials: "MW",
-    kind: "person",
-    summary: longest.team,
-    profileUrl: "https://example.com/people/mw",
-  },
-  workspace: "Governance, Risk and Compliance archive, Asia Pacific read-only mirror",
-  workspaceRestrictedTo: "members of the Governance, Risk and Compliance leadership group",
-  dueAt: "31 Dec 2026",
-}
-
-/** Figures too wide for the metric card at full length, and a previous month of zero to compare against. */
-export const worstMetrics: ReadonlyArray<{ amount: number; previous: number }> = [
-  { amount: 12_345_678_901.23, previous: 24_691_357_802.46 },
-  { amount: 9_560.74, previous: 0 },
 ]

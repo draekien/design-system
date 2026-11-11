@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { componentItems, requireRegistryItem } from "../playground/registry-items.ts"
-import { listLockup, lockups, usedIn } from "./lockups.ts"
+import { listLockup, lockupNav, lockups, usedIn } from "./lockups.ts"
 
 describe("listLockup", () => {
   it("is built from list and every content component", () => {
@@ -33,5 +33,18 @@ describe("usedIn", () => {
 
   it("names no lockup for an item no lockup is built from", () => {
     expect(usedIn(requireRegistryItem("cn"))).toEqual([])
+  })
+})
+
+describe("lockupNav", () => {
+  it("gathers the card lockups under Cards and lists the rest on their own", () => {
+    expect(
+      lockupNav.map((entry) => [entry.group, entry.lockups.map(({ title }) => title)])
+    ).toEqual([
+      [null, ["Avatar"]],
+      ["Cards", ["Record card", "Summary card", "Metric card"]],
+      [null, ["List"]],
+      [null, ["Table"]],
+    ])
   })
 })

@@ -32,6 +32,8 @@ import {
 import * as React from "react"
 import { avatarSources } from "../components/avatar/avatar.docs.ts"
 import { AvatarPicture } from "../components/avatar/avatar-picture.tsx"
+import { cardSources } from "../components/card/card.docs.ts"
+import { CardRecord } from "../components/card/card-record.tsx"
 import { consumerSource, requireSource } from "../components/item-docs.ts"
 import { tableSources } from "../components/table/table.docs.ts"
 import { TableSortable } from "../components/table/table-sortable.tsx"
@@ -349,6 +351,11 @@ export const componentSpecimens: Readonly<Record<string, ComponentSpecimen>> = {
     fileName: "avatar-example.tsx",
     code: consumerSource(requireSource(avatarSources, "./avatar-picture.tsx")),
     Preview: AvatarPicture,
+  },
+  card: {
+    fileName: "card-example.tsx",
+    code: consumerSource(requireSource(cardSources, "./card-record.tsx")),
+    Preview: CardRecord,
   },
   list: {
     fileName: "list-example.tsx",

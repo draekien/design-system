@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-11",
+    "description": "Adds the display type (24px semibold) for a metric card's figure; --spacing-hit-outset and --spacing-hit-coarse-gap, which grow a 24px control's hit area to 44px on a coarse pointer without moving it; and --card-aside-max, --card-media-width and --card-media-height for the card's aside and 16:9 picture. Adds --container-card-abbreviate (16rem) and --container-card-hide (13rem), the card widths below which a fact abbreviates and hides. Adds --z-index-raised (1), which lifts a control above a link whose hit area covers its container."
+  },
+  {
     "date": "2026-10-30",
     "description": "Adds --avatar-overlap, the fraction of an avatar's width that the next avatar in a group covers."
   },

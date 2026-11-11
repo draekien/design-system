@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-11",
+    "description": "Merges the classes for the new tokens: text-display, the hit-outset and hit-coarse-gap spacing, the card-abbreviate and card-hide container widths, and z-raised."
+  },
+  {
     "date": "2026-10-18",
     "description": "The docs link to this item's playground page at /playground/lib/cn."
   },
