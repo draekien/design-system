@@ -19,7 +19,9 @@ export const cn = createCn({
       ],
       "spacing": [
         "hit-coarse",
+        "hit-coarse-gap",
         "hit-min",
+        "hit-outset",
         "related",
         "row",
         "row-inset",
@@ -28,6 +30,7 @@ export const cn = createCn({
       ],
       "text": [
         "body",
+        "display",
         "label",
         "micro",
         "title"
@@ -40,6 +43,8 @@ export const cn = createCn({
       ],
       "container": [
         "abbreviate",
+        "card-abbreviate",
+        "card-hide",
         "hide"
       ]
     },
@@ -54,7 +59,8 @@ export const cn = createCn({
       "z": [
         {
           "z": [
-            "popover"
+            "popover",
+            "raised"
           ]
         }
       ]

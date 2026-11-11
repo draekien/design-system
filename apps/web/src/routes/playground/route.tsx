@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
 import type * as React from "react"
 import { cn } from "@/lib/cn.ts"
-import { lockups } from "../../lockups/lockups.ts"
+import { type Lockup, lockupNav } from "../../lockups/lockups.ts"
 import { Mark } from "../../mark.tsx"
 import { focusRing } from "../../playground/playground-styles.ts"
 import { componentItems, libItems } from "../../playground/registry-items.ts"
@@ -50,11 +50,19 @@ function PlaygroundLayout() {
             </Link>
           </div>
           <NavGroup label="Lockups">
-            {lockups.map((lockup) => (
-              <Link key={lockup.name} to={lockup.page} className={navLink}>
-                {lockup.title}
-              </Link>
-            ))}
+            {lockupNav.map((entry) =>
+              entry.group === null ? (
+                entry.lockups.map((lockup) => lockupLink(lockup, null))
+              ) : (
+                <div
+                  key={entry.group}
+                  className="flex shrink-0 items-center gap-1 lg:flex-col lg:items-stretch"
+                >
+                  <p className="px-2.5 text-muted-foreground text-xs lg:pt-1">{entry.group}</p>
+                  {entry.lockups.map((lockup) => lockupLink(lockup, "lg:ps-5"))}
+                </div>
+              )
+            )}
           </NavGroup>
           <NavGroup label="Components">
             {componentItems.map((item) => (
@@ -101,6 +109,14 @@ function PlaygroundLayout() {
         <Outlet />
       </div>
     </div>
+  )
+}
+
+function lockupLink(lockup: Lockup, inset: string | null) {
+  return (
+    <Link key={lockup.name} to={lockup.page} className={cn(navLink, inset)}>
+      {lockup.title}
+    </Link>
   )
 }
 

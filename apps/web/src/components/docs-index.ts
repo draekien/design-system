@@ -1,4 +1,5 @@
 import { avatarDocs } from "./avatar/avatar.docs.ts"
+import { cardDocs } from "./card/card.docs.ts"
 import { cnDocs } from "./cn/cn.docs.ts"
 import { entityDocs } from "./entity/entity.docs.ts"
 import { figureDocs } from "./figure/figure.docs.ts"
@@ -12,6 +13,7 @@ import { tableDocs } from "./table/table.docs.ts"
 
 export const itemDocs: Readonly<Record<string, ItemDocs>> = {
   avatar: avatarDocs,
+  card: cardDocs,
   cn: cnDocs,
   entity: entityDocs,
   figure: figureDocs,

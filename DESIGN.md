@@ -13,6 +13,11 @@ colors:
   muted-ink: "oklch(0.49 0.012 286)"
   hairline: "oklch(0.925 0.003 286)"
 typography:
+  display:
+    fontFamily: "Mona Sans Variable, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 600
+    lineHeight: 1.33
   title:
     fontFamily: "Mona Sans Variable, ui-sans-serif, system-ui, sans-serif"
     fontSize: "0.875rem"
@@ -46,6 +51,8 @@ spacing:
   section: "24px"
   hit-min: "24px"
   hit-coarse: "44px"
+  hit-outset: "10px"
+  hit-coarse-gap: "20px"
   row: "44px"
   row-inset: "8px"
 components:
@@ -117,6 +124,25 @@ components:
   list-row-media-icon:
     textColor: "{colors.muted-ink}"
     size: "{spacing.hit-min}"
+  card:
+    backgroundColor: "{colors.sheet}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.card}"
+    padding: "12px"
+  card-media:
+    backgroundColor: "{colors.quiet-grey}"
+    textColor: "{colors.muted-ink}"
+    rounded: "{rounded.floor}"
+  card-action:
+    backgroundColor: "transparent"
+    textColor: "{colors.muted-ink}"
+    typography: "{typography.label}"
+    rounded: "{rounded.floor}"
+    size: "{spacing.hit-min}"
+  card-metric-figure:
+    textColor: "{colors.ink}"
+    typography: "{typography.display}"
 ---
 
 # Design System: design-system
@@ -193,6 +219,7 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 **Character:** one variable sans for everything; hierarchy comes from weight, size and the width axis, not from a second family.
 
 ### Hierarchy
+- **Display** (600, 1.5rem): the figure on a metric card; nothing else.
 - **Title** (600, 0.875rem): section headings and hover card titles.
 - **Body** (400–500, 0.875rem): row values; a row's name is 500.
 - **Label** (500, 0.75rem): buttons, column headers, footers and key hints.
@@ -203,7 +230,9 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 
 ## Layout
 
-Lists are CSS grids whose rows are subgrids, so every row's columns align with the header without fixed widths. A row is 44px high with an 8px inset. Columns respond to the list's width, not the viewport's: below the `abbreviate` container width (48rem) a column shows its short form, and below the `hide` container width (40rem) a column marked to hide disappears. Columns that hold rank 3 values hide first; the record's name truncates before it wraps. Interactive targets are at least 24×24px, and 44×44px on a coarse pointer.
+Lists are CSS grids whose rows are subgrids, so every row's columns align with the header without fixed widths. A row is 44px high with an 8px inset. Columns respond to the list's width, not the viewport's: below the `abbreviate` container width (48rem) a column shows its short form, and below the `hide` container width (40rem) a column marked to hide disappears. Columns that hold rank 3 values hide first; the record's name truncates before it wraps. Interactive targets are at least 24×24px, and 44×44px on a coarse pointer. A 24px control in a dense slot keeps its size on a coarse pointer and grows its hit area 10px past each edge (`{spacing.hit-outset}`) instead; controls in a run then sit 20px apart (`{spacing.hit-coarse-gap}`), so their hit areas do not overlap.
+
+Cards respond to their own width, not the viewport's: below the `card-abbreviate` container width (16rem) a fact marked to abbreviate shows its short form, and below `card-hide` (13rem) a fact marked to hide disappears. Cards in a grid are `{spacing.related}` (8px) apart.
 
 The container sets the gap between its children by how the two neighbours relate: `{spacing.run}` between the same component in a run (row after row, with no line between them), `{spacing.related}` between parts of one record or control (a status dot and its word), `{spacing.section}` between separate sections (two stacked lists). A component never sets margin on itself.
 
@@ -212,6 +241,7 @@ The container sets the gap between its children by how the two neighbours relate
 Surfaces are flat and separated by Hairline borders and Paper/Sheet contrast. Shadows appear only on layers that float above the page.
 
 ### Shadow Vocabulary
+- **Raised** (`--z-index-raised`, 1): a control inside a card sits on this layer, above the card's full-card link, so a click on it does not follow the link. No shadow.
 - **Popover** (`--shadow-popover`: `0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18)`): hover cards, menus and peek panels, which also sit on the `--z-index-popover` layer (50).
 
 ### Named Rules
@@ -297,8 +327,17 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 ### Entity
 - **Style:** an Avatar at size `lg` (24px), initials or a picture, then the name, then an optional one-line description in Muted Ink that truncates before the name; media alone at narrow widths.
 
+### Card
+- **Style:** Sheet with one Hairline border, 12px padding and `{rounded.card}` (18px); no shadow. The hairline is a 1px inset ring, not a border, so it takes no width: the picture sits exactly 12px in and its `{rounded.floor}` (6px) is concentric with the card's corner. When it holds a `CardLink`, hover tints it with Ink at 4% and the link's hit area covers the card.
+- **Parts and ranks:** `CardSubject` (rank 1: an optional picture, the ID, the name in at most two lines, a one-line description), `CardFacts` (rank 2: in a row in the same order on every card, or labelled one per 24px line), `CardExplain` (rank 3: a trigger that stays on screen and opens its panel in place), a hover card on a fact (rank 4) and `CardLink` (rank 5).
+- **Picture:** `CardMedia` sits inside the padding with `{rounded.floor}` (6px), cropped to 16:9. With no picture, a hidden one or one that fails to load, the 16:9 box is Quiet Grey with an icon and "No picture", "Hidden" or "Unavailable" in Muted Ink. Summary and metric cards have no picture.
+- **Aside:** `CardAside` takes the top right beside the card's first part, or beside the ID under a picture. Its always-shown items take at most a third of the content width (`--card-aside-max`, 33cqw); the part beside it keeps at least half. Its actions slide in over `--transition-duration-quick` (150ms) with `--ease-out` on hover, focus or while a menu is open, and show always on a coarse pointer; the aside reserves their width, so nothing reflows.
+- **Action:** `CardAction` is 24px in the label type, Muted Ink, `{rounded.floor}`; hover tints it with Ink at 7%. At most two, then a ⋮ menu; menus and hover cards open 4px below their trigger, start-aligned.
+- **Metric:** the figure leads at the top left in the display type (24px, 600) with tabular figures, its change in `CardAside`; a figure longer than 12 characters switches to compact notation, and a change from zero shows a muted dash.
+- **Icons:** `CardMedia` and `CardExplain` take an `icon` from any icon library; inline SVG is the default.
+
 ### Missing fact
-- **Style:** the word "Unavailable" or "Hidden" in Muted Ink in place of a rank 2 value; the reason is stated once outside the list.
+- **Style:** the word "Unavailable" or "Hidden" in Muted Ink in place of a rank 2 value; the reason is stated once outside the list. Where the property's name is not on screen, as in a card's row of facts, the word follows the name: "Owner unavailable".
 
 ## Do's and Don'ts
 

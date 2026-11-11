@@ -7,6 +7,7 @@ import { Segmented } from "../playground/playground-controls.tsx"
 import { canvasPointers, canvasWidths } from "../playground/playground-search.ts"
 import { segmentItem } from "../playground/playground-styles.ts"
 import { type Rule, RuleNotes } from "../playground/rule-notes.tsx"
+import type { FileRoutesByTo } from "../routeTree.gen.ts"
 import {
   type ExperimentSearch,
   experimentCanvasSearch,
@@ -51,7 +52,7 @@ const controls: ReadonlyArray<{
   },
 ]
 
-type CanvasPath = "/canvas/experiments/bullet"
+type CanvasPath = Extract<keyof FileRoutesByTo, `/canvas/experiments/${string}`>
 
 type RuleSection = { title: string; rules: ReadonlyArray<Rule> }
 

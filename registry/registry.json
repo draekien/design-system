@@ -45,7 +45,9 @@
           "radius-sm": "calc(var(--radius) * 0.6)",
           "radius-xl": "calc(var(--radius) * 1.4)",
           "spacing-hit-coarse": "2.75rem",
+          "spacing-hit-coarse-gap": "1.25rem",
           "spacing-hit-min": "1.5rem",
+          "spacing-hit-outset": "0.625rem",
           "spacing-related": "0.5rem",
           "spacing-row": "2.75rem",
           "spacing-row-inset": "0.5rem",
@@ -55,6 +57,10 @@
           "text-body--font-weight": "400",
           "text-body--line-height": "1.43",
           "text-body--letter-spacing": "0rem",
+          "text-display": "1.5rem",
+          "text-display--font-weight": "600",
+          "text-display--line-height": "1.33",
+          "text-display--letter-spacing": "0rem",
           "text-label": "0.75rem",
           "text-label--font-weight": "500",
           "text-label--line-height": "1.33",
@@ -71,11 +77,17 @@
           "transition-duration-quick": "150ms",
           "ease-out": "cubic-bezier(0, 0, 0.2, 1)",
           "z-index-popover": "50",
+          "z-index-raised": "1",
           "container-abbreviate": "48rem",
+          "container-card-abbreviate": "16rem",
+          "container-card-hide": "13rem",
           "container-hide": "40rem"
         },
         "light": {
           "avatar-overlap": "0.5",
+          "card-aside-max": "33cqw",
+          "card-media-height": "56.25cqw",
+          "card-media-width": "100cqw",
           "meter-value-min": "4ch",
           "preview-card-enter-scale": "0.97",
           "status-media-ring": "1.5px",
@@ -372,6 +384,32 @@
         "status": "beta",
         "a11yReviewed": null,
         "critiqued": null
+      }
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "description": "One record or one figure in a bordered container whose parts take ranks: a subject with an optional picture, a top-right aside for a change or actions, facts and an explanation one click away.",
+      "dependencies": [
+        "@base-ui/react@1.8.0"
+      ],
+      "registryDependencies": [
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
+      ],
+      "files": [
+        {
+          "path": "components/card.tsx",
+          "type": "registry:ui",
+          "target": "@components/card.tsx"
+        }
+      ],
+      "docs": "Compose Card holding CardSubject (an optional CardMedia, then CardId, CardName with a CardLink to the record's page, and CardDescription), then CardFacts with one CardFact per compared fact, then CardExplain for content read on some visits. Pass CardMedia only where callers recognise records by their pictures, and pass it on every card in the run: a record without one draws an empty 16:9 box. Put a change, a status word or an icon in CardAside, and at most two CardActions in its actions prop, then a menu triggered by a CardAction holding the rest; Card places CardAside at the top right wherever it is rendered. Name an icon-only CardAction with aria-label and a tooltip. CardMedia and CardExplain take an icon prop for your icon library's icon. Draw facts with status, entity, figure and relative-time. Playground: https://design-system.wpei.me/playground/components/card",
+      "meta": {
+        "status": "beta",
+        "a11yReviewed": null,
+        "critiqued": "2026-11-11"
       }
     }
   ]

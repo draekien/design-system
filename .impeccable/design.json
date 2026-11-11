@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-21T03:32:00Z",
+  "generatedAt": "2026-11-11T00:00:00Z",
   "title": "Design System: design-system",
   "extensions": {
     "colorMeta": {
@@ -56,6 +56,10 @@
       }
     },
     "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The figure on a metric card."
+      },
       "title": {
         "displayName": "Title",
         "purpose": "Section headings and hover card titles."
@@ -190,6 +194,14 @@
       "description": "Floats at the bottom while records are selected: the count, at most two actions, a more menu and Clear, padded 4px with the lg radius (10px).",
       "html": "<section class=\"ds-bar\" aria-label=\"Selected invoices\"><span class=\"ds-bar-count\">2 selected</span><span class=\"ds-bar-divider\" aria-hidden=\"true\"></span><button class=\"ds-bar-btn\">Send reminder</button><button class=\"ds-bar-btn\">Export</button><span class=\"ds-bar-divider\" aria-hidden=\"true\"></span><button class=\"ds-bar-btn ds-bar-clear\">Clear</button></section>",
       "css": ".ds-bar { display: inline-flex; align-items: center; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius-lg, var(--radius)); background: var(--background); box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-bar-count { padding: 0 10px; font-variant-numeric: tabular-nums; } .ds-bar-divider { width: 1px; height: 16px; margin: 0 4px; background: var(--border); } .ds-bar-btn { min-height: 32px; padding: 0 10px; border: 0; border-radius: calc(var(--radius) * 0.6); background: transparent; color: var(--foreground); font: inherit; font-weight: 500; cursor: pointer; } .ds-bar-btn:hover { background: var(--muted); } .ds-bar-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; } .ds-bar-clear { color: var(--muted-foreground); } .ds-bar-clear:hover { color: var(--foreground); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "One record or one figure: Sheet, one hairline border, 12px padding and the card radius (18px), no shadow. The top right holds an aside whose actions show on hover or focus.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-subject\"><span class=\"ds-card-id\">REC-104</span><h3 class=\"ds-card-name\"><a href=\"#REC-104\">Quarterly access review</a></h3></div><span class=\"ds-card-aside\">In review</span><dl class=\"ds-card-facts\"><dt>Owner</dt><dd>Mira Okafor</dd></dl></article>",
+      "css": ".ds-card { display: grid; grid-template-columns: minmax(50%, 1fr) auto; gap: 8px; align-content: start; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--card); color: var(--card-foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-card-subject { display: flex; flex-direction: column; min-width: 0; } .ds-card-id { color: var(--muted-foreground); font-size: 0.75rem; font-variant-numeric: tabular-nums; } .ds-card-name { margin: 0; font-weight: 500; } .ds-card-name a { color: inherit; text-decoration: none; } .ds-card-aside { max-width: 33cqw; min-height: 24px; color: var(--muted-foreground); font-size: 0.75rem; text-align: end; } .ds-card-facts { grid-column: 1 / -1; display: flex; gap: 12px; margin: 0; font-size: 0.75rem; } .ds-card-facts dt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); } .ds-card-facts dd { margin: 0; }"
     }
   ],
   "narrative": {
