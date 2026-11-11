@@ -324,6 +324,14 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Spread:** on hover, focus or open, the group's avatars after the first move 4px apart, animating `margin-inline-start` over `--transition-duration-quick` (150ms) with `--ease-out`; no animation under reduced motion.
 - **Trigger:** a group is the trigger of a popover that reaches the names it hides; as a button or link it takes the floor radius and a focus ring, and is 44px high on a coarse pointer.
 
+### Bullet
+- **Size:** default draws a 12px label, 14px icons and 20px avatars, for metadata under a title; `lg` draws a 14px label, 16px icons and 24px avatars, for a details list.
+- **Order:** icons, an avatar group and the label are drawn in the order they are written; every icon is Muted Ink, the label inherits its colour and truncates before any icon.
+- **Height:** at least 24px (`--spacing-hit-min`); 44px (`--spacing-hit-coarse`) on a coarse pointer when it is a button or link.
+- **Tint:** a button or link tints Ink at 4% on hover and 7% while its popup is open, on a floor-radius layer that extends 4px past each side, so its first icon lines up with a bullet that opens nothing; a hover card trigger draws no tint.
+- **Focus:** a 2px Ink outline on the same extended layer.
+- **Screen readers:** an icon that adds meaning, such as restricted or opens in a new tab, carries that word through `BulletMedia`'s `label`; every other icon is hidden from them.
+
 ### Entity
 - **Style:** an Avatar at size `lg` (24px), initials or a picture, then the name, then an optional one-line description in Muted Ink that truncates before the name; media alone at narrow widths.
 

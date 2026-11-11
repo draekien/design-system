@@ -17,6 +17,7 @@ describe("componentItems", () => {
       "table",
       "status",
       "avatar",
+      "bullet",
       "entity",
       "figure",
       "meter",

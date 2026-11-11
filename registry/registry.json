@@ -262,6 +262,32 @@
       }
     },
     {
+      "name": "bullet",
+      "type": "registry:ui",
+      "title": "Bullet",
+      "description": "One fact on one line, drawn as muted icons, an avatar group and a label in the order they are written, that renders as the trigger or link that opens more about it.",
+      "dependencies": [
+        "@base-ui/react@1.8.0"
+      ],
+      "registryDependencies": [
+        "draekien/design-system/tokens",
+        "draekien/design-system/cn"
+      ],
+      "files": [
+        {
+          "path": "components/bullet.tsx",
+          "type": "registry:ui",
+          "target": "@components/bullet.tsx"
+        }
+      ],
+      "docs": "Compose Bullet holding BulletMedia with your icon library's icon, an Avatar or AvatarGroup, and a BulletLabel, in the order they should be drawn. Pass BulletMedia a label when an icon adds meaning, such as \", restricted\" or \", opens in a new tab\". Render Bullet as a Menu.Trigger, Popover.Trigger, PreviewCardTrigger or link to open something; a bullet that opens nothing is drawn the same. size lg draws a 14px label for a details list; default draws 12px for metadata under a title. Playground: https://design-system.wpei.me/playground/components/bullet",
+      "meta": {
+        "status": "beta",
+        "a11yReviewed": null,
+        "critiqued": "2026-11-11"
+      }
+    },
+    {
       "name": "entity",
       "type": "registry:ui",
       "title": "Entity",

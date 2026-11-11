@@ -52,7 +52,7 @@ const controls: ReadonlyArray<{
   },
 ]
 
-type CanvasPath = Extract<keyof FileRoutesByTo, `/canvas/experiments/${string}`>
+type CanvasPath = Extract<keyof FileRoutesByTo, `/canvas/experiments${string}`>
 
 type RuleSection = { title: string; rules: ReadonlyArray<Rule> }
 

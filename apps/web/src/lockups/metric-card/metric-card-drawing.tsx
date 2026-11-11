@@ -1,13 +1,13 @@
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import * as React from "react"
 import { Figure } from "@/components/figure.tsx"
-import { cardSurface } from "../../experiments/bullet-styles.ts"
 import { clipSpecimen } from "../../experiments/clip-specimen.tsx"
 import {
   Constellation,
   type ConstellationGroup,
   type ConstellationPart,
 } from "../../playground/constellation.tsx"
+import { cardSurface } from "../lockup-styles.ts"
 import { MetricCard } from "./metric-card.tsx"
 import { outstandingMetric } from "./metrics.ts"
 

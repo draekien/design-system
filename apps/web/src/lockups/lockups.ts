@@ -42,6 +42,16 @@ export const avatarLockup: Lockup = {
   components: ["avatar", "entity", "preview-card"].map(requireRegistryItem),
 }
 
+export const bulletLockup: Lockup = {
+  name: "bullet",
+  title: "Bullet",
+  group: null,
+  description:
+    "A record's details panel: one fact per line after its property's name, each a picker, a popover, a hover card, a link or a plain fact.",
+  page: "/playground/lockups/bullet",
+  components: ["bullet", "avatar", "preview-card"].map(requireRegistryItem),
+}
+
 export const recordCardLockup: Lockup = {
   name: "record-card",
   title: "Record card",
@@ -76,6 +86,7 @@ export const metricCardLockup: Lockup = {
 
 export const lockups: ReadonlyArray<Lockup> = [
   avatarLockup,
+  bulletLockup,
   recordCardLockup,
   summaryCardLockup,
   metricCardLockup,
