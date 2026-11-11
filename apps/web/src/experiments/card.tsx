@@ -37,7 +37,7 @@ import { Bar, ErrorMessage, RetryLink } from "./wireframe-parts.tsx"
 
 const cardClass = cn(
   "group/card @container relative isolate grid min-w-0 grid-cols-1 gap-x-related gap-y-related rounded-card border bg-card p-3 text-card-foreground text-sm",
-  "*:col-span-full has-[>[data-slot=card-aside]]:grid-cols-[minmax(66%,1fr)_auto]",
+  "*:col-span-full has-[>[data-slot=card-aside]]:grid-cols-[minmax(50%,1fr)_auto]",
   "*:data-[slot=card-aside]:col-[2] *:data-[slot=card-aside]:row-[1]",
   "has-[>[data-slot=card-subject]>[data-slot=card-media]]:*:data-[slot=card-aside]:mt-[calc(100cqw*9/16+var(--spacing-related))]",
   "has-[>[data-slot=card-aside]]:*:not-data-[slot=card-aside]:first:col-[1] [&>[data-slot=card-aside]:first-child+*]:col-[1]",
@@ -73,6 +73,8 @@ export function CardSubject({
   )
 }
 
+const coarseGap = "pointer-coarse:gap-[calc(var(--spacing-hit-coarse)-var(--spacing-hit-min))]"
+
 const revealedActions =
   "grid grid-cols-[0fr] opacity-0 transition-[grid-template-columns,opacity] duration-quick ease-out group-hover/card:grid-cols-[1fr] group-hover/card:opacity-100 group-focus-within/card:grid-cols-[1fr] group-focus-within/card:opacity-100 has-data-popup-open:grid-cols-[1fr] has-data-popup-open:opacity-100 pointer-coarse:grid-cols-[1fr] pointer-coarse:opacity-100 motion-reduce:transition-none"
 
@@ -90,6 +92,10 @@ export function CardAside({
   ...props
 }: React.ComponentProps<"div"> & { actions?: React.ReactNode }): React.ReactElement {
   const gap = children === undefined ? null : "ps-related"
+  const shown =
+    children === undefined ? null : (
+      <div className="flex min-w-0 max-w-[33cqw] justify-end">{children}</div>
+    )
   const hasActions = actions !== undefined && actions !== null && actions !== false
   return (
     <div
@@ -103,15 +109,23 @@ export function CardAside({
           inert
           className="invisible col-start-1 row-start-1 flex min-w-0 items-start"
         >
-          {children}
-          <div className={cn("flex shrink-0 gap-run", gap)}>{actions}</div>
+          {shown}
+          <div className={cn("flex shrink-0 gap-run", coarseGap, gap)}>{actions}</div>
         </div>
       ) : null}
       <div className="col-start-1 row-start-1 flex min-w-0 items-start justify-end *:pointer-events-auto">
-        {children}
+        {shown}
         {hasActions ? (
           <div className={revealedActions}>
-            <div className={cn("flex min-w-0 gap-run overflow-hidden", gap)}>{actions}</div>
+            <div
+              className={cn(
+                "flex min-w-0 gap-run overflow-clip pointer-coarse:overflow-visible",
+                coarseGap,
+                gap
+              )}
+            >
+              {actions}
+            </div>
           </div>
         ) : null}
       </div>
@@ -836,13 +850,18 @@ function WorstCase({ state }: { state: FactsState }) {
   )
 }
 
+const coarseHit =
+  "relative pointer-coarse:after:absolute pointer-coarse:after:-inset-[calc((var(--spacing-hit-coarse)-var(--spacing-hit-min))/2)]"
+
 const iconButton = cn(
-  "inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-floor text-muted-foreground hover:bg-foreground/7 hover:text-foreground pointer-coarse:size-11",
+  "inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-floor text-muted-foreground hover:bg-foreground/7 hover:text-foreground",
+  coarseHit,
   focusRing
 )
 
 const textButton = cn(
-  "inline-flex h-6 shrink-0 cursor-pointer items-center rounded-floor px-1.5 font-medium text-xs hover:bg-foreground/7 pointer-coarse:h-11",
+  "inline-flex h-6 shrink-0 cursor-pointer items-center rounded-floor px-1.5 font-medium text-xs hover:bg-foreground/7",
+  coarseHit,
   focusRing
 )
 
