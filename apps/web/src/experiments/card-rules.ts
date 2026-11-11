@@ -34,9 +34,24 @@ export const cardRules: ReadonlyArray<Rule> = [
     source: "Design rules: Goals (a goal fewer visits bring is served at rank 3, 4 or 5)",
   },
   {
-    rule: "A summary card draws one fact per line after its property's name, and every value starts on one left edge.",
+    rule: "A summary card draws one fact per 24px line after its property's name, every value starts on one left edge, and a value that does not fit truncates to one line; a truncated text value shows in full in a hover card.",
     source:
-      "Design rules: Precise principle; bullet experiment (the details panel names each fact's property)",
+      "Design rules: Precise principle; rank 4 (a truncated value); bullet experiment (the details panel names each fact's property)",
+  },
+  {
+    rule: "Proposed, not yet a design rule: a card reserves its top right for CardAside, which holds a change, an action or a menu beside the card's first part; the first part narrows to make room, neither runs under the other, and every later part spans the card; a picture keeps the card's full width and CardAside moves below it, beside the ID, so it never covers the picture.",
+    source:
+      "This design system's own decision, awaiting approval; Precise principle (every part sits on the edge it belongs to)",
+  },
+  {
+    rule: "Proposed, not yet a design rule: CardAside holds at most two actions, then a ⋮ menu holding the rest with destructive actions last after a divider; its actions show on card hover, focus or open menu and always on a coarse pointer; as they appear the always-shown items slide toward the card's middle over 150ms and slide back as they hide, with no motion under reduced motion, and the slot keeps the width of both so the part beside it never reflows.",
+    source:
+      "Design rules: the selection bar holds at most two actions, then a ⋯ menu; DESIGN.md: revealed controls. Applying them to the card, and the vertical ⋮ in place of the selection bar's ⋯, is this design system's own decision, awaiting approval",
+  },
+  {
+    rule: "Proposed, not yet a design rule: CardAside takes at most a third of the card's width, so it is always narrower than the part beside it; 8px separates its always-shown items from its actions; its text truncates to one line and shows in full in a hover card, an icon names its meaning to screen readers and in a hover card, an icon button names its action in a tooltip, and its menus and hover cards open 4px below their trigger with their start edges aligned, or their end edges aligned when the viewport has no room.",
+    source:
+      "Design rules: Clear principle; No-Colour-Alone Rule (a shape drawn alone discloses its word). The one-third limit and the menu placement are this design system's own decision, awaiting approval",
   },
   {
     rule: "A metric card leads with its figure at the top left and its change against the previous period at the top right, both in tabular figures; the name and unit sit below them. Proposed: the change shows its percentage alone; the period and both months' figures are in a hover card on it, and the period is in its accessible name. This departs from the Clear principle, which keeps a value's meaning on screen, and the card has no keyboard route to the hover card yet.",
@@ -80,7 +95,7 @@ export const cardRules: ReadonlyArray<Rule> = [
     source: "DESIGN.md: Missing fact",
   },
   {
-    rule: "Proposed, not yet a design rule: a metric figure longer than 12 characters at full length switches to compact notation, such as A$12B, and screen readers still read the full figure; a change against a previous figure of zero says there is nothing to compare instead of a percentage.",
+    rule: "Proposed, not yet a design rule: a metric figure longer than 12 characters at full length switches to compact notation, such as A$12B, and screen readers still read the full figure; a change against a previous figure of zero draws a muted dash in the change's slot, and its hover card names both months' figures and says a change from zero has no percentage.",
     source:
       "Design rules: Clear principle; Figure's compact form. The 12-character limit is this design system's own decision, awaiting approval",
   },

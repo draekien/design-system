@@ -1,7 +1,17 @@
 import { Collapsible } from "@base-ui/react/collapsible"
+import { Menu } from "@base-ui/react/menu"
 import { mergeProps } from "@base-ui/react/merge-props"
+import { Tooltip } from "@base-ui/react/tooltip"
 import { useRender } from "@base-ui/react/use-render"
-import { ArrowRight01Icon, Image01Icon } from "@hugeicons/core-free-icons"
+import {
+  ArrowRight01Icon,
+  Image01Icon,
+  LockIcon,
+  MoreVerticalIcon,
+  PencilEdit01Icon,
+  PinIcon,
+  Share08Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { outstandingLastMonth, sampleInvoices } from "@workspace/fixtures/invoices.ts"
 import {
@@ -21,11 +31,16 @@ import { RelativeTime } from "@workspace/registry/components/relative-time.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import { ownerEntity, recordStatus } from "../lockups/list/datasets.tsx"
+import { focusRing, menuDivider, menuItem, menuSurface } from "../lockups/table/table-styles.ts"
 import { worstMetrics, worstRecordDetails, worstRecords } from "./card-worst-cases.ts"
 import { Bar, ErrorMessage, RetryLink } from "./wireframe-parts.tsx"
 
 const cardClass = cn(
-  "group/card @container relative isolate flex min-w-0 flex-col gap-related rounded-card border bg-card p-3 text-card-foreground text-sm",
+  "group/card @container relative isolate grid min-w-0 grid-cols-1 gap-x-related gap-y-related rounded-card border bg-card p-3 text-card-foreground text-sm",
+  "*:col-span-full has-[>[data-slot=card-aside]]:grid-cols-[minmax(66%,1fr)_auto]",
+  "*:data-[slot=card-aside]:col-[2] *:data-[slot=card-aside]:row-[1]",
+  "has-[>[data-slot=card-subject]>[data-slot=card-media]]:*:data-[slot=card-aside]:mt-[calc(100cqw*9/16+var(--spacing-related))]",
+  "has-[>[data-slot=card-aside]]:*:not-data-[slot=card-aside]:first:col-[1] [&>[data-slot=card-aside]:first-child+*]:col-[1]",
   "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-[inherit]",
   "has-[[data-slot=card-link]]:hover:before:bg-foreground/4",
   "has-[[data-slot=card-link]:focus-visible]:before:bg-foreground/4 has-[[data-slot=card-link]:focus-visible]:inset-ring has-[[data-slot=card-link]:focus-visible]:inset-ring-ring/40"
@@ -58,11 +73,58 @@ export function CardSubject({
   )
 }
 
-const mediaClass = "aspect-video w-full rounded-floor bg-muted"
+const revealedActions =
+  "grid grid-cols-[0fr] opacity-0 transition-[grid-template-columns,opacity] duration-quick ease-out group-hover/card:grid-cols-[1fr] group-hover/card:opacity-100 group-focus-within/card:grid-cols-[1fr] group-focus-within/card:opacity-100 has-data-popup-open:grid-cols-[1fr] has-data-popup-open:opacity-100 pointer-coarse:grid-cols-[1fr] pointer-coarse:opacity-100 motion-reduce:transition-none"
 
 /**
- * The picture a caller recognises the record by, first in `CardSubject`: 16:9, cropped to fill, with
- * the floor radius. `alt` defaults to empty because the name below it names the record. A record
+ * The slot at the top right of the card, beside its first other part. `children` always show: a
+ * change, a word or an icon. `actions` show on card hover, focus or open menu and always on a coarse
+ * pointer; as they appear the children slide toward the card's middle, and slide back as they hide.
+ * The slot keeps the width of both, so the part beside it never reflows. `Card` places the slot
+ * wherever it is rendered and adds its column only when it is present.
+ */
+export function CardAside({
+  actions,
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"div"> & { actions?: React.ReactNode }): React.ReactElement {
+  const gap = children === undefined ? null : "ps-related"
+  const hasActions = actions !== undefined && actions !== null && actions !== false
+  return (
+    <div
+      data-slot="card-aside"
+      className={cn("pointer-events-none relative z-10 grid min-h-6 min-w-0 text-end", className)}
+      {...props}
+    >
+      {hasActions ? (
+        <div
+          aria-hidden="true"
+          inert
+          className="invisible col-start-1 row-start-1 flex min-w-0 items-start"
+        >
+          {children}
+          <div className={cn("flex shrink-0 gap-run", gap)}>{actions}</div>
+        </div>
+      ) : null}
+      <div className="col-start-1 row-start-1 flex min-w-0 items-start justify-end *:pointer-events-auto">
+        {children}
+        {hasActions ? (
+          <div className={revealedActions}>
+            <div className={cn("flex min-w-0 gap-run overflow-hidden", gap)}>{actions}</div>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
+const mediaClass = "aspect-video w-[100cqw] max-w-none shrink-0 rounded-floor bg-muted"
+
+/**
+ * The picture a caller recognises the record by, first in `CardSubject`: the card's full width at
+ * 16:9, cropped to fill, with the floor radius; a `CardAside` moves below it, beside the ID.
+ * `alt` defaults to empty because the name below it names the record. A record
  * with no picture, a picture the caller may not see, and a picture that fails to load each draw an
  * empty 16:9 box naming why, so every card in a run keeps its name on the same line.
  */
@@ -214,19 +276,21 @@ export function CardFact({
   children: React.ReactNode
 }): React.ReactElement {
   const layout = React.use(FactsLayoutContext)
+  const value =
+    typeof children === "string" ? <span className="truncate">{children}</span> : children
   return (
     <div
       data-slot="card-fact"
       className={cn(
         layout === "row"
           ? cn("flex min-h-6 items-center", narrowClass[narrow])
-          : "col-span-2 grid min-h-6 grid-cols-subgrid items-baseline",
+          : "col-span-2 grid h-6 grid-cols-subgrid items-center",
         className
       )}
       {...props}
     >
       <dt className={layout === "row" ? "sr-only" : "text-muted-foreground text-xs"}>{label}</dt>
-      <dd className="flex min-w-0">{children}</dd>
+      <dd className="flex min-w-0">{value}</dd>
     </div>
   )
 }
@@ -527,7 +591,25 @@ export function SummaryCard({
     },
     {
       label: "Workspace",
-      value: state === "no-permission" ? <CardMissing>Hidden</CardMissing> : details.workspace,
+      value:
+        state === "no-permission" ? (
+          <CardMissing>Hidden</CardMissing>
+        ) : (
+          <PreviewCard>
+            <PreviewCardTrigger className="w-full min-w-0 justify-start">
+              <span className="truncate">{details.workspace}</span>
+            </PreviewCardTrigger>
+            <PreviewCardContent
+              side="right"
+              align="center"
+              sideOffset={offsetPastCardEdge}
+              collisionAvoidance={{ side: "none" }}
+            >
+              <p className="text-muted-foreground">Workspace</p>
+              <p className="mt-1 font-medium">{details.workspace}</p>
+            </PreviewCardContent>
+          </PreviewCard>
+        ),
     },
     { label: "Due", value: details.dueAt },
   ]
@@ -568,6 +650,8 @@ const fullFigureMaxLength = 12
 
 const offsetPastCardEdge = 12 + 1 + 6
 
+const belowTrigger = { side: "bottom", align: "start", sideOffset: 4 } as const
+
 const compactClass = "*:data-[abbreviation=long]:sr-only *:data-[abbreviation=short]:inline"
 
 const change = {
@@ -592,7 +676,7 @@ export function MetricCard({
   const loading = state === "loading"
   return (
     <Card render={<section aria-busy={loading} aria-label="Outstanding invoices" />}>
-      <CardFacts className="items-start justify-between">
+      <CardFacts>
         <CardFact label="Amount">
           {loading ? (
             <Bar className="my-2 w-28" />
@@ -609,52 +693,67 @@ export function MetricCard({
             />
           )}
         </CardFact>
-        <CardFact label="Change" className="ms-auto min-w-0 shrink text-end">
-          {loading ? (
-            <Bar className="w-16" />
-          ) : state !== "loaded" ? (
-            <CardMissing>{state === "partial" ? "Unavailable" : "Hidden"}</CardMissing>
-          ) : previous === 0 ? (
-            <CardMissing>Nothing to compare</CardMissing>
-          ) : (
-            <PreviewCard>
-              <PreviewCardTrigger className="relative z-10">
-                <Figure
-                  value={(amount - previous) / previous}
-                  format={change}
-                  className="ms-0 font-medium text-sm"
-                />
-                <span className="sr-only"> vs September</span>
-              </PreviewCardTrigger>
-              <PreviewCardContent
-                side="top"
-                align="end"
-                sideOffset={offsetPastCardEdge}
-                collisionAvoidance={{ side: "none" }}
-              >
-                <p className="font-medium">Change against September</p>
-                <dl className="mt-1 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 text-muted-foreground">
-                  <dt>October</dt>
-                  <dd className="flex">
-                    <Figure value={amount} format={aud} className="text-foreground" />
-                  </dd>
-                  <dt>September</dt>
-                  <dd className="flex">
-                    <Figure value={previous} format={aud} className="text-foreground" />
-                  </dd>
-                </dl>
-              </PreviewCardContent>
-            </PreviewCard>
-          )}
-        </CardFact>
       </CardFacts>
+      <CardAside>
+        <CardFacts>
+          <CardFact label="Change">
+            {loading ? (
+              <Bar className="w-16" />
+            ) : state !== "loaded" ? (
+              <CardMissing>{state === "partial" ? "Unavailable" : "Hidden"}</CardMissing>
+            ) : (
+              <PreviewCard>
+                <PreviewCardTrigger className="relative z-10">
+                  {previous === 0 ? (
+                    <>
+                      <span
+                        aria-hidden="true"
+                        className="font-medium text-muted-foreground text-sm"
+                      >
+                        —
+                      </span>
+                      <span className="sr-only">No percentage: September was A$0.00</span>
+                    </>
+                  ) : (
+                    <>
+                      <Figure
+                        value={(amount - previous) / previous}
+                        format={change}
+                        className="ms-0 font-medium text-sm"
+                      />
+                      <span className="sr-only"> vs September</span>
+                    </>
+                  )}
+                </PreviewCardTrigger>
+                <PreviewCardContent {...belowTrigger}>
+                  <p className="font-medium">
+                    {previous === 0 ? "No percentage to show" : "Change against September"}
+                  </p>
+                  <dl className="mt-1 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 text-muted-foreground">
+                    <dt>October</dt>
+                    <dd className="flex">
+                      <Figure value={amount} format={aud} className="text-foreground" />
+                    </dd>
+                    <dt>September</dt>
+                    <dd className="flex">
+                      <Figure value={previous} format={aud} className="text-foreground" />
+                    </dd>
+                  </dl>
+                  {previous === 0 ? (
+                    <p className="mt-1 text-muted-foreground">
+                      A change from A$0.00 has no percentage.
+                    </p>
+                  ) : null}
+                </PreviewCardContent>
+              </PreviewCard>
+            )}
+          </CardFact>
+        </CardFacts>
+      </CardAside>
       <CardSubject>
         <CardName>Outstanding</CardName>
         <CardDescription>Unpaid on sent invoices, AUD</CardDescription>
       </CardSubject>
-      {state === "loaded" && previous === 0 ? (
-        <Note>September's total was A$0.00, so there is no change to show.</Note>
-      ) : null}
       {state === "partial" ? (
         <Note>
           September's total could not load. <RetryLink className={retryClass} />
@@ -698,6 +797,8 @@ function WorstCase({ state }: { state: FactsState }) {
       <h2 className="font-medium text-sm">Worst case</h2>
       <Records state={state} records={worstRecords} label="Worst-case records" />
       <Records state={state} records={[]} label="No records" />
+      <AsideSpecimens media={false} />
+      <AsideSpecimens media />
       <div className="flex flex-wrap items-start gap-section">
         <div className="w-80 max-w-full">
           <SummaryCard state={state} record={worstSummaryRecord} details={worstRecordDetails} />
@@ -709,5 +810,178 @@ function WorstCase({ state }: { state: FactsState }) {
         ))}
       </div>
     </section>
+  )
+}
+
+const iconButton = cn(
+  "inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-floor text-muted-foreground hover:bg-foreground/7 hover:text-foreground pointer-coarse:size-11",
+  focusRing
+)
+
+const textButton = cn(
+  "inline-flex h-6 shrink-0 cursor-pointer items-center rounded-floor px-1.5 font-medium text-xs hover:bg-foreground/7 pointer-coarse:h-11",
+  focusRing
+)
+
+function IconAction({ label, icon }: { label: string; icon: typeof PinIcon }) {
+  return (
+    <Tooltip.Root>
+      <Tooltip.Trigger
+        delay={300}
+        render={<button type="button" aria-label={label} className={iconButton} />}
+      >
+        <HugeiconsIcon icon={icon} size={16} strokeWidth={1.75} aria-hidden="true" />
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
+          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+            {label}
+          </Tooltip.Popup>
+        </Tooltip.Positioner>
+      </Tooltip.Portal>
+    </Tooltip.Root>
+  )
+}
+
+function MoreActions({ actions }: { actions: ReadonlyArray<string> }) {
+  return (
+    <Menu.Root>
+      <Menu.Trigger aria-label="More actions" className={iconButton}>
+        <HugeiconsIcon icon={MoreVerticalIcon} size={16} strokeWidth={1.75} aria-hidden="true" />
+      </Menu.Trigger>
+      <Menu.Portal>
+        <Menu.Positioner {...belowTrigger} className="z-popover">
+          <Menu.Popup className={menuSurface}>
+            {actions.map((action) => (
+              <Menu.Item key={action} className={menuItem}>
+                {action}
+              </Menu.Item>
+            ))}
+            <Menu.Separator className={menuDivider} />
+            <Menu.Item className={cn(menuItem, "text-destructive")}>Delete</Menu.Item>
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
+  )
+}
+
+function AsideText({ children, detail }: { children: string; detail: string }) {
+  return (
+    <PreviewCard>
+      <PreviewCardTrigger className="min-w-0 justify-end">
+        <span dir="auto" className="truncate text-muted-foreground text-xs">
+          {children}
+        </span>
+      </PreviewCardTrigger>
+      <PreviewCardContent {...belowTrigger}>
+        <p className="font-medium">{children}</p>
+        <p className="mt-1 text-muted-foreground">{detail}</p>
+      </PreviewCardContent>
+    </PreviewCard>
+  )
+}
+
+const asideSpecimens: ReadonlyArray<{
+  label: string
+  media: React.ComponentProps<typeof CardMedia>
+  aside: React.ReactElement
+}> = [
+  {
+    label: "One text action",
+    media: { kind: "picture", src: `${pictureBase}rec-104.svg` },
+    aside: (
+      <CardAside
+        actions={
+          <button type="button" className={textButton}>
+            Edit
+          </button>
+        }
+      />
+    ),
+  },
+  {
+    label: "One icon action",
+    media: { kind: "picture", src: `${pictureBase}panorama.svg` },
+    aside: <CardAside actions={<IconAction label="Pin" icon={PinIcon} />} />,
+  },
+  {
+    label: "Two actions, then a menu holding the rest",
+    media: { kind: "picture", src: `${pictureBase}portrait.svg` },
+    aside: (
+      <CardAside
+        actions={
+          <>
+            <IconAction label="Edit" icon={PencilEdit01Icon} />
+            <IconAction label="Share" icon={Share08Icon} />
+            <MoreActions actions={["Duplicate", "Pin", "Archive"]} />
+          </>
+        }
+      />
+    ),
+  },
+  {
+    label: "Long text",
+    media: { kind: "picture", src: `${pictureBase}rec-102.svg` },
+    aside: (
+      <CardAside>
+        <AsideText detail="Finance approved on 14 Oct; Legal has not reviewed it yet.">
+          Awaiting approval from Finance and Legal
+        </AsideText>
+      </CardAside>
+    ),
+  },
+  {
+    label: "Icon",
+    media: { kind: "missing", reason: "No picture" },
+    aside: (
+      <CardAside>
+        <PreviewCard>
+          <PreviewCardTrigger className="text-muted-foreground">
+            <HugeiconsIcon icon={LockIcon} size={16} strokeWidth={1.75} aria-hidden="true" />
+            <span className="sr-only">Restricted</span>
+          </PreviewCardTrigger>
+          <PreviewCardContent {...belowTrigger}>
+            <p className="font-medium">Restricted</p>
+            <p className="mt-1 text-muted-foreground">Only the Governance team can open it.</p>
+          </PreviewCardContent>
+        </PreviewCard>
+      </CardAside>
+    ),
+  },
+  {
+    label: "Text and a menu",
+    media: { kind: "missing", reason: "Hidden" },
+    aside: (
+      <CardAside actions={<MoreActions actions={["Edit", "Share"]} />}>
+        <AsideText detail="Not shared with anyone yet.">Draft</AsideText>
+      </CardAside>
+    ),
+  },
+]
+
+function AsideSpecimens({ media }: { media: boolean }) {
+  return (
+    <ul aria-label={media ? "Card aside with media" : "Card aside"} className={gridClass}>
+      {asideSpecimens.map((specimen) => (
+        <li key={specimen.label} className="flex flex-col gap-related">
+          <p className="text-muted-foreground text-xs">{specimen.label}</p>
+          <Card>
+            <CardSubject>
+              {media ? <CardMedia {...specimen.media} /> : null}
+              <CardId>{worstSummaryRecord.id}</CardId>
+              <CardName>
+                <CardLink href={`#${worstSummaryRecord.id}`}>{worstSummaryRecord.title}</CardLink>
+              </CardName>
+              <CardDescription>{worstSummaryRecord.team}</CardDescription>
+            </CardSubject>
+            {specimen.aside}
+            <CardFacts>
+              <CardFact label="Status">{recordStatus(worstSummaryRecord)}</CardFact>
+            </CardFacts>
+          </Card>
+        </li>
+      ))}
+    </ul>
   )
 }

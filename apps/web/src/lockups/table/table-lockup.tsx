@@ -64,7 +64,15 @@ import {
   statusLabel,
 } from "./table-model.ts"
 import type { TablePart } from "./table-parts.ts"
-import { controlCell, firstColumnInset, tableSurface } from "./table-styles.ts"
+import {
+  controlCell,
+  firstColumnInset,
+  focusRing,
+  menuDivider,
+  menuItem,
+  menuSurface,
+  tableSurface,
+} from "./table-styles.ts"
 
 const defaultSort: Sort = { column: "due", direction: "ascending" }
 
@@ -973,9 +981,6 @@ function SelectionBar({ count, onClear }: { count: number; onClear: () => void }
   )
 }
 
-const focusRing =
-  "focus-visible:outline-2 focus-visible:outline-ring focus-visible:-outline-offset-2"
-
 const barButton =
   "inline-flex min-h-8 shrink-0 cursor-pointer items-center gap-related rounded-floor px-2.5 font-medium text-sm hover:bg-muted pointer-coarse:min-h-11"
 
@@ -1058,14 +1063,6 @@ function MoreIcon() {
     </svg>
   )
 }
-
-const menuSurface =
-  "flex w-48 flex-col gap-run rounded-lg border bg-background p-1 shadow-popover outline-hidden"
-
-const menuItem =
-  "flex min-h-8 w-full cursor-default items-center rounded-floor px-2 text-left text-sm outline-hidden data-highlighted:bg-muted pointer-coarse:min-h-11"
-
-const menuDivider = "-mx-1 my-1 h-px bg-border"
 
 function SelectionMenu({ isWide, onVoid }: { isWide: boolean; onVoid: () => void }) {
   return (
