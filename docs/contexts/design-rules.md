@@ -153,6 +153,8 @@ The container sets the gap between its children by how the two neighbours relate
 
 ## Cards
 
+A card draws facts about one entity, such as a person's team and open records, as bullets: an icon, then a value that names itself, such as 4 open records, with the property's name read by screen readers. It draws facts whose label is the information, such as two months' figures, labelled. This is this design system's own decision.
+
 A record card shows a picture only when its callers recognise records by their pictures. The picture goes in `CardMedia`, the first part of `CardSubject`. A summary card and a metric card have no picture. This is this design system's own decision.
 
 `CardMedia` sits inside the card's 12px padding and has the 6px floor radius. It is cropped to 16:9. Every card in a grid row then starts its ID at the same height. The 16:9 ratio is this design system's own decision.
@@ -162,6 +164,8 @@ A card in a run of cards with pictures draws an empty 16:9 box when it has no pi
 The top right of a card holds `CardAside`: a change, a status word, an icon or actions. `CardAside` sits beside the card's first part, which narrows to make room. The two never overlap. Every later part spans the card's full width. When the card has a picture, the picture keeps the full width and `CardAside` sits below it, beside the ID. This is this design system's own decision.
 
 `CardAside` holds at most two actions, then a ⋮ menu with the rest. Destructive actions go last in the menu, after a divider. The actions appear while the pointer is over the card, focus is inside it or its menu is open, and always show on a touch screen. As they appear, the always-shown items slide toward the card's middle over 150ms; they slide back as the actions hide. Reduced motion turns the slide off. `CardAside` reserves the width of both, so the part beside it never reflows. Applying the selection bar's two-action limit to the card, and ⋮ in place of ⋯, is this design system's own decision.
+
+A card's actions, its buttons and links, go in `CardAside`, never in `CardFooter`. `CardFooter` holds one muted line about the record, such as when it last changed. This is this design system's own decision.
 
 Text and icons that always show in `CardAside` take at most a third of the card's content width. The part beside `CardAside` keeps at least half. In a card 18rem or wider, actions are never cut off. 8px separates the always-shown items from the actions. Each action is 24px. On a touch screen its hit area grows to 44px around it without moving it, and actions sit 20px apart so their hit areas do not overlap. The limits and the 20px spacing are this design system's own decision.
 

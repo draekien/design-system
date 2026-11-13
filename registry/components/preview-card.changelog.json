@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-13",
+    "description": "Draws as a card and installs the card item: compose PreviewCardContent from CardSubject, CardFacts and CardFooter in place of your own paragraphs. It takes the card radius and its inset hairline in place of the 10px radius and border. Its name and description are not truncated. CardAction and CardExplain throw inside it."
+  },
+  {
     "date": "2026-10-21",
     "description": "Renamed from field-card: install preview-card and import PreviewCard, PreviewCardTrigger and PreviewCardContent from @/components/preview-card. The enter scale token is now --preview-card-enter-scale."
   },

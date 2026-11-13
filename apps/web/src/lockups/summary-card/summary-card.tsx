@@ -7,6 +7,7 @@ import type { FixtureState } from "@workspace/fixtures/state.ts"
 import * as React from "react"
 import {
   Card,
+  CardDescription,
   CardFact,
   CardFacts,
   CardId,
@@ -74,8 +75,10 @@ export function SummaryCard({
           sideOffset={({ side }) => pastCardEdge(workspaceRef.current, cardRef.current, side)}
           collisionAvoidance={besideCard}
         >
-          <p className="text-muted-foreground">Workspace</p>
-          <p className="mt-1 font-medium">{details.workspace}</p>
+          <CardSubject>
+            <CardName>{details.workspace}</CardName>
+            <CardDescription>Workspace</CardDescription>
+          </CardSubject>
         </PreviewCardContent>
       </PreviewCard>
     ) : (

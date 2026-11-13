@@ -6,6 +6,7 @@ import type {
   CardExplain,
   CardFact,
   CardFacts,
+  CardFooter,
   CardId,
   CardLink,
   CardMedia,
@@ -94,6 +95,7 @@ export const cardDocs: ComponentDocs = {
         ],
       },
       { name: "CardExplain", item: null, children: [] },
+      { name: "CardFooter", item: null, children: [] },
     ],
   },
   examples: [
@@ -237,11 +239,11 @@ export const cardDocs: ComponentDocs = {
       spreads: { label: "<dl>", href: null },
       props: {
         layout: {
-          type: '"row" | "labelled"',
+          type: '"row" | "labelled" | "bullets"',
           required: false,
           default: '"row"',
           description:
-            "A row on one line with names for screen readers only, or one labelled fact per line.",
+            "A row on one line, or one bullet per line, with names for screen readers only; or one labelled fact per line when the label is the information.",
         },
       } satisfies ApiTable<typeof CardFacts, "dl">,
     },
@@ -265,6 +267,7 @@ export const cardDocs: ComponentDocs = {
           description:
             "In a row: abbreviates when the card's content is narrower than 16rem, and hides below 13rem when set to hide.",
         },
+        icon: { ...icon, description: "In bullets, the icon before the value." },
       } satisfies ApiTable<typeof CardFact, "div">,
     },
     {
@@ -298,6 +301,14 @@ export const cardDocs: ComponentDocs = {
         },
         icon: { ...icon, description: "Replaces the chevron. Point it to the inline end." },
       } satisfies ApiTable<typeof CardExplain, "div">,
+    },
+    {
+      kind: "part",
+      name: "CardFooter",
+      description:
+        "The last part of the card: one muted line, such as when the record last changed, which truncates. A link or a button in it throws.",
+      spreads: { label: "<div>", href: null },
+      props: {} satisfies ApiTable<typeof CardFooter, "div">,
     },
   ],
 }

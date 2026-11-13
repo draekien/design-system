@@ -8,6 +8,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import * as React from "react"
 import { Bullet, BulletLabel, BulletMedia } from "@/components/bullet.tsx"
+import { CardDescription, CardName, CardSubject } from "@/components/card.tsx"
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
 
 export function BulletDetails(): React.ReactElement {
@@ -37,10 +38,10 @@ export function BulletDetails(): React.ReactElement {
               </BulletMedia>
             </Bullet>
             <PreviewCardContent>
-              <p className="font-medium">Legal workspace</p>
-              <p className="mt-1 text-muted-foreground">
-                Restricted: only the Legal team can open it.
-              </p>
+              <CardSubject>
+                <CardName>Legal workspace</CardName>
+                <CardDescription>Restricted: only the Legal team can open it.</CardDescription>
+              </CardSubject>
             </PreviewCardContent>
           </PreviewCard>
         </dd>

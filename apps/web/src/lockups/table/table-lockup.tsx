@@ -11,6 +11,7 @@ import {
   sampleInvoices,
 } from "@workspace/fixtures/invoices.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import { CardDescription, CardName, CardSubject } from "@workspace/registry/components/card.tsx"
 import {
   PreviewCard,
   PreviewCardContent,
@@ -712,10 +713,10 @@ function DueDetail({ invoice }: { invoice: SampleInvoice }) {
 /** The customer's billing contact, shown in the customer's hover card. */
 function ContactCard({ invoice }: { invoice: SampleInvoice }): React.ReactElement {
   return (
-    <span className="flex flex-col gap-related">
-      <span className="font-medium">{invoice.contact}</span>
-      <span className="text-muted-foreground">Billing contact, {invoice.customer}</span>
-    </span>
+    <CardSubject>
+      <CardName>{invoice.contact}</CardName>
+      <CardDescription>Billing contact, {invoice.customer}</CardDescription>
+    </CardSubject>
   )
 }
 

@@ -152,8 +152,8 @@
       "kind": "card",
       "refersTo": "preview-card",
       "description": "Rank 4 hover card on one entity's trigger; its radius is its content's radius plus its padding.",
-      "html": "<div class=\"ds-preview-card\"><strong>Dana Whitfield</strong><p>Accounts payable, Sydney</p><button class=\"ds-preview-card-action\">Open profile</button></div>",
-      "css": ".ds-preview-card { width: 240px; padding: 12px; border: 1px solid var(--border); border-radius: calc(var(--radius) * 0.6 + 12px); background: var(--popover); color: var(--popover-foreground); font: 400 0.75rem/1.33 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18); } .ds-preview-card p { margin: 4px 0 8px; color: var(--muted-foreground); } .ds-preview-card-action { height: 24px; padding: 0 8px; border: 1px solid var(--border); border-radius: calc(var(--radius) * 0.6); background: transparent; font: inherit; font-weight: 500; }"
+      "html": "<div class=\"ds-preview-card\"><strong>Dana Whitfield</strong><p>Accounts payable, Sydney</p><footer>Updated 2 hours ago</footer></div>",
+      "css": ".ds-preview-card { width: 240px; padding: 12px; display: grid; gap: 8px; border-radius: calc(var(--radius) * 0.6 + 12px); box-shadow: inset 0 0 0 1px var(--border), 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18); background: var(--popover); color: var(--popover-foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-preview-card strong { font-weight: 500; } .ds-preview-card p { margin: 0; font-size: 0.75rem; color: var(--muted-foreground); } .ds-preview-card footer { display: flex; min-height: 24px; align-items: center; font-size: 0.75rem; color: var(--muted-foreground); }"
     },
     {
       "name": "Status",

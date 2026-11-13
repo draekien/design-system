@@ -21,7 +21,8 @@ import {
   PreviewCard,
   PreviewCardContent,
   PreviewCardTrigger,
-} from "@/components/preview-card"`,
+} from "@/components/preview-card"
+import { CardDescription, CardName, CardSubject } from "@/components/card"`,
     code: `<dl>
   <dt>Assignee</dt>
   <dd>
@@ -32,7 +33,12 @@ import {
           <EntityName>Jonas Lindqvist</EntityName>
         </Entity>
       </PreviewCardTrigger>
-      <PreviewCardContent>Jonas Lindqvist · Compliance</PreviewCardContent>
+      <PreviewCardContent>
+        <CardSubject>
+          <CardName>Jonas Lindqvist</CardName>
+          <CardDescription>Compliance</CardDescription>
+        </CardSubject>
+      </PreviewCardContent>
     </PreviewCard>
   </dd>
   <dt>Watchers</dt>

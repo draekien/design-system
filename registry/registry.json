@@ -396,7 +396,8 @@
       ],
       "registryDependencies": [
         "draekien/design-system/tokens",
-        "draekien/design-system/cn"
+        "draekien/design-system/cn",
+        "draekien/design-system/card"
       ],
       "files": [
         {
@@ -405,7 +406,7 @@
           "target": "@components/preview-card.tsx"
         }
       ],
-      "docs": "Compose PreviewCard, PreviewCardTrigger around the value, then PreviewCardContent. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links. The card renders into the body; pass PreviewCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/components/preview-card",
+      "docs": "Compose PreviewCard, PreviewCardTrigger around the value, then PreviewCardContent holding the card item's parts: CardSubject with CardName and an optional CardDescription, CardFacts with layout bullets or labelled, and CardFooter. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links, and nothing else that acts: CardAction and CardExplain throw inside it. Its name and description are not truncated. The card renders into the body; pass PreviewCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/components/preview-card",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,
@@ -422,7 +423,8 @@
       ],
       "registryDependencies": [
         "draekien/design-system/tokens",
-        "draekien/design-system/cn"
+        "draekien/design-system/cn",
+        "draekien/design-system/bullet"
       ],
       "files": [
         {
@@ -431,7 +433,7 @@
           "target": "@components/card.tsx"
         }
       ],
-      "docs": "Compose Card holding CardSubject (an optional CardMedia, then CardId, CardName with a CardLink to the record's page, and CardDescription), then CardFacts with one CardFact per compared fact, then CardExplain for content read on some visits. Pass CardMedia only where callers recognise records by their pictures, and pass it on every card in the run: a record without one draws an empty 16:9 box. Put a change, a status word or an icon in CardAside, and at most two CardActions in its actions prop, then a menu triggered by a CardAction holding the rest; Card places CardAside at the top right wherever it is rendered. Name an icon-only CardAction with aria-label and a tooltip. CardMedia and CardExplain take an icon prop for your icon library's icon. Draw facts with status, entity, figure and relative-time. Playground: https://design-system.wpei.me/playground/components/card",
+      "docs": "Compose Card holding CardSubject (an optional CardMedia, then CardId, CardName with a CardLink to the record's page, and CardDescription), then CardFacts with one CardFact per compared fact (layout bullets, with an icon on each CardFact and values that name themselves, such as 4 open records, for facts about one entity; layout labelled when the label is the information, such as two months' figures), then CardExplain for content read on some visits, then an optional CardFooter holding one muted line, such as a relative-time. Every action, button or link, goes in CardAside; CardFooter throws on one. Pass CardMedia only where callers recognise records by their pictures, and pass it on every card in the run: a record without one draws an empty 16:9 box. Put a change, a status word or an icon in CardAside, and at most two CardActions in its actions prop, then a menu triggered by a CardAction holding the rest; Card places CardAside at the top right wherever it is rendered. Name an icon-only CardAction with aria-label and a tooltip. CardMedia and CardExplain take an icon prop for your icon library's icon. Draw facts with status, entity, figure and relative-time. Playground: https://design-system.wpei.me/playground/components/card",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,

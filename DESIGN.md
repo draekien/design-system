@@ -220,7 +220,7 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 
 ### Hierarchy
 - **Display** (600, 1.5rem): the figure on a metric card; nothing else.
-- **Title** (600, 0.875rem): section headings and hover card titles.
+- **Title** (600, 0.875rem): section headings.
 - **Body** (400–500, 0.875rem): row values; a row's name is 500.
 - **Label** (500, 0.75rem): buttons, column headers, footers and key hints.
 - **Micro** (500, 0.625rem): initials inside a person mark and the smallest button's label; never running text.
@@ -264,7 +264,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 ### Named Rules
 **The Outward Radius Rule.** A container's radius is its content's radius plus its padding, so a container never picks a radius on its own.
 
-**Not yet in code.** The default, sm, lg and icon buttons are still `rounded-md` (8px), the preview card `rounded-lg` (10px), and the selection checkbox casts a `shadow-xs` at rest; moving them to the floor and the outward rule is a follow-up lockup change.
+**Not yet in code.** The default, sm, lg and icon buttons are still `rounded-md` (8px), and the selection checkbox casts a `shadow-xs` at rest; moving them to the floor and the outward rule is a follow-up lockup change.
 
 ## Components
 
@@ -303,8 +303,9 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 
 ### Preview card (hover card)
 - **Corner Style:** its content's radius plus its 12px padding (`{rounded.card}`).
-- **Background:** Sheet with a Hairline border and the popover shadow.
-- **Size:** 240px wide, 12px padding, 12px text.
+- **Background:** a Card (Sheet, the 1px inset Hairline ring, 12px padding) with the popover shadow.
+- **Content:** the card's own parts: `CardSubject` (the name and description, which do not truncate here), `CardFacts` as bullets or labelled, and `CardFooter`; links are the only thing in it that acts.
+- **Size:** 240px wide.
 - **Motion:** opens over `--transition-duration-quick` (150ms) with `--ease-out`, from `--preview-card-enter-scale` (97%), and fades out instantly; no motion under reduced motion.
 
 ### List row media
@@ -337,7 +338,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 
 ### Card
 - **Style:** Sheet with one Hairline border, 12px padding and `{rounded.card}` (18px); no shadow. The hairline is a 1px inset ring, not a border, so it takes no width: the picture sits exactly 12px in and its `{rounded.floor}` (6px) is concentric with the card's corner. When it holds a `CardLink`, hover tints it with Ink at 4% and the link's hit area covers the card.
-- **Parts and ranks:** `CardSubject` (rank 1: an optional picture, the ID, the name in at most two lines, a one-line description), `CardFacts` (rank 2: in a row in the same order on every card, or labelled one per 24px line), `CardExplain` (rank 3: a trigger that stays on screen and opens its panel in place), a hover card on a fact (rank 4) and `CardLink` (rank 5).
+- **Parts and ranks:** `CardSubject` (rank 1: an optional picture, the ID, the name in at most two lines, a one-line description), `CardFacts` (rank 2: in a row in the same order on every card; as lg bullets one per line, a 16px Muted Ink icon then a value that names itself; or labelled one per 24px line when the label is the information), `CardExplain` (rank 3: a trigger that stays on screen and opens its panel in place), a hover card on a fact (rank 4), `CardLink` (rank 5) and `CardFooter` last (one muted 12px line, 24px high, no divider). Every action, a button or a link, goes in `CardAside`, never the footer.
 - **Picture:** `CardMedia` sits inside the padding with `{rounded.floor}` (6px), cropped to 16:9. With no picture, a hidden one or one that fails to load, the 16:9 box is Quiet Grey with an icon and "No picture", "Hidden" or "Unavailable" in Muted Ink. Summary and metric cards have no picture.
 - **Aside:** `CardAside` takes the top right beside the card's first part, or beside the ID under a picture. Its always-shown items take at most a third of the content width (`--card-aside-max`, 33cqw); the part beside it keeps at least half. Its actions slide in over `--transition-duration-quick` (150ms) with `--ease-out` on hover, focus or while a menu is open, and show always on a coarse pointer; the aside reserves their width, so nothing reflows.
 - **Action:** `CardAction` is 24px in the label type, Muted Ink, `{rounded.floor}`; hover tints it with Ink at 7%. At most two, then a ⋮ menu; menus and hover cards open 4px below their trigger, start-aligned.

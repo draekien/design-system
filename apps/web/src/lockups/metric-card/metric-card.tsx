@@ -116,24 +116,22 @@ export function MetricCard({
               <PreviewCard>
                 <PreviewCardTrigger>{changeFigure}</PreviewCardTrigger>
                 <PreviewCardContent {...belowTrigger}>
-                  <p className="font-medium">
-                    {previous === 0 ? "No percentage to show" : "Change against September"}
-                  </p>
-                  <dl className="mt-1 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 text-muted-foreground">
-                    <dt>October</dt>
-                    <dd className="flex">
-                      <Figure value={amount} format={aud} className="text-foreground" />
-                    </dd>
-                    <dt>September</dt>
-                    <dd className="flex">
-                      <Figure value={previous} format={aud} className="text-foreground" />
-                    </dd>
-                  </dl>
-                  {previous === 0 ? (
-                    <p className="mt-1 text-muted-foreground">
-                      A change from A$0.00 has no percentage.
-                    </p>
-                  ) : null}
+                  <CardSubject>
+                    <CardName>
+                      {previous === 0 ? "No percentage to show" : "Change against September"}
+                    </CardName>
+                    {previous === 0 ? (
+                      <CardDescription>A change from A$0.00 has no percentage.</CardDescription>
+                    ) : null}
+                  </CardSubject>
+                  <CardFacts layout="labelled">
+                    <CardFact label="October">
+                      <Figure value={amount} format={aud} />
+                    </CardFact>
+                    <CardFact label="September">
+                      <Figure value={previous} format={aud} />
+                    </CardFact>
+                  </CardFacts>
                 </PreviewCardContent>
               </PreviewCard>
             )}

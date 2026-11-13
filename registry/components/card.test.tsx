@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import {
   Card,
   CardAction,
@@ -8,6 +8,7 @@ import {
   CardExplain,
   CardFact,
   CardFacts,
+  CardFooter,
   CardLink,
   CardMedia,
   CardName,
@@ -126,5 +127,46 @@ describe("CardExplain", () => {
 
     expect(trigger.getAttribute("aria-expanded")).toBe("true")
     expect(screen.getByText("Rotates the audit logs.")).toBeTruthy()
+  })
+})
+
+describe("CardFooter", () => {
+  it("draws its line", () => {
+    render(
+      <Card>
+        <CardFooter>Updated 2 hours ago</CardFooter>
+      </Card>
+    )
+
+    expect(screen.getByText("Updated 2 hours ago")).toBeTruthy()
+  })
+
+  it("refuses an action, which belongs in CardAside", () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined)
+
+    expect(() =>
+      render(
+        <Card>
+          <CardFooter>
+            <a href="#people/dana-nguyen">Open profile</a>
+          </CardFooter>
+        </Card>
+      )
+    ).toThrow("CardFooter cannot hold an action")
+  })
+})
+
+describe("CardFacts as bullets", () => {
+  it("draws the value and names the property for screen readers", () => {
+    render(
+      <Card>
+        <CardFacts layout="bullets">
+          <CardFact label="Open records">4 open records</CardFact>
+        </CardFacts>
+      </Card>
+    )
+
+    expect(screen.getByRole("term").textContent).toBe("Open records")
+    expect(screen.getByRole("definition").textContent).toBe("4 open records")
   })
 })

@@ -1,4 +1,5 @@
 import type * as React from "react"
+import { CardName, CardSubject } from "@/components/card.tsx"
 import {
   List,
   ListRow,
@@ -25,7 +26,11 @@ export function StatusInRow(): React.ReactElement {
                       <StatusName>In review</StatusName>
                     </Status>
                   </PreviewCardTrigger>
-                  <PreviewCardContent>In review</PreviewCardContent>
+                  <PreviewCardContent>
+                    <CardSubject>
+                      <CardName>In review</CardName>
+                    </CardSubject>
+                  </PreviewCardContent>
                 </PreviewCard>
               </ListRowMedia>
               <ListRowName>Quarterly access review</ListRowName>

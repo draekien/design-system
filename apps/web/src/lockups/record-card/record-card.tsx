@@ -80,8 +80,10 @@ function OwnerFact({
             {ownerEntity(record.owner)}
           </PreviewCardTrigger>
           <PreviewCardContent>
-            <p className="font-medium">{record.owner}</p>
-            <p className="mt-1 text-muted-foreground">Owner · {record.team} team</p>
+            <CardSubject>
+              <CardName>{record.owner}</CardName>
+              <CardDescription>Owner · {record.team} team</CardDescription>
+            </CardSubject>
           </PreviewCardContent>
         </PreviewCard>
       ) : (
@@ -349,8 +351,10 @@ function AsideText({ children, detail }: { children: string; detail: string }) {
         </span>
       </PreviewCardTrigger>
       <PreviewCardContent {...belowTrigger}>
-        <p className="font-medium">{children}</p>
-        <p className="mt-1 text-muted-foreground">{detail}</p>
+        <CardSubject>
+          <CardName>{children}</CardName>
+          <CardDescription>{detail}</CardDescription>
+        </CardSubject>
       </PreviewCardContent>
     </PreviewCard>
   )
@@ -418,8 +422,10 @@ const asideSpecimens: ReadonlyArray<{
             <span className="sr-only">Restricted</span>
           </PreviewCardTrigger>
           <PreviewCardContent {...belowTrigger}>
-            <p className="font-medium">Restricted</p>
-            <p className="mt-1 text-muted-foreground">Only the Governance team can open it.</p>
+            <CardSubject>
+              <CardName>Restricted</CardName>
+              <CardDescription>Only the Governance team can open it.</CardDescription>
+            </CardSubject>
           </PreviewCardContent>
         </PreviewCard>
       </CardAside>
