@@ -1,4 +1,5 @@
 import * as React from "react"
+import { CardDescription, CardName, CardSubject } from "@/components/card.tsx"
 import { Entity, EntityMedia, EntityName } from "@/components/entity.tsx"
 import { Figure } from "@/components/figure.tsx"
 import {
@@ -85,8 +86,10 @@ export function ListInvoices(): React.ReactElement {
                       </Entity>
                     </PreviewCardTrigger>
                     <PreviewCardContent>
-                      <p className="font-medium">{invoice.customer.name}</p>
-                      <p className="text-muted-foreground">Customer · {invoice.customer.city}</p>
+                      <CardSubject>
+                        <CardName>{invoice.customer.name}</CardName>
+                        <CardDescription>Customer · {invoice.customer.city}</CardDescription>
+                      </CardSubject>
                     </PreviewCardContent>
                   </PreviewCard>
                 </ListRowMedia>

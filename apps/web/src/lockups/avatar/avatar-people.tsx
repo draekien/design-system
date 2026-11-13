@@ -1,6 +1,7 @@
 import { Popover } from "@base-ui/react/popover"
 import * as React from "react"
 import { Avatar, AvatarFallback, AvatarGroup } from "@/components/avatar.tsx"
+import { CardDescription, CardName, CardSubject } from "@/components/card.tsx"
 import { Entity, EntityDescription, EntityMedia, EntityName } from "@/components/entity.tsx"
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
 
@@ -38,8 +39,10 @@ export function AvatarPeople(): React.ReactElement {
               </Entity>
             </PreviewCardTrigger>
             <PreviewCardContent>
-              <p className="font-semibold text-sm">{assignee.name}</p>
-              <p className="mt-1 text-muted-foreground">{assignee.summary}</p>
+              <CardSubject>
+                <CardName>{assignee.name}</CardName>
+                <CardDescription>{assignee.summary}</CardDescription>
+              </CardSubject>
             </PreviewCardContent>
           </PreviewCard>
         </dd>

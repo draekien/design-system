@@ -1,4 +1,5 @@
 import type * as React from "react"
+import { CardDescription, CardName, CardSubject } from "@/components/card.tsx"
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
 
 export function PreviewCardPlacement(): React.ReactElement {
@@ -7,8 +8,10 @@ export function PreviewCardPlacement(): React.ReactElement {
       <PreviewCard>
         <PreviewCardTrigger>INV-2041</PreviewCardTrigger>
         <PreviewCardContent side="top" align="end">
-          <p className="font-medium text-sm">Invoice INV-2041</p>
-          <p className="mt-1 text-muted-foreground">Issued 3 Oct 2026 · Due 2 Nov 2026</p>
+          <CardSubject>
+            <CardName>Invoice INV-2041</CardName>
+            <CardDescription>Issued 3 Oct 2026 · Due 2 Nov 2026</CardDescription>
+          </CardSubject>
         </PreviewCardContent>
       </PreviewCard>
     </div>

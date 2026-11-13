@@ -1,4 +1,5 @@
 import * as React from "react"
+import { CardDescription, CardName, CardSubject } from "@/components/card.tsx"
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
 import { Status, StatusMedia, StatusName } from "@/components/status.tsx"
 import {
@@ -134,10 +135,12 @@ export function TableInvoices(): React.ReactElement {
                                 <span className="truncate">{invoice.customer}</span>
                               </PreviewCardTrigger>
                               <PreviewCardContent>
-                                <p className="font-medium">{invoice.contact}</p>
-                                <p className="text-muted-foreground">
-                                  Billing contact, {invoice.customer}
-                                </p>
+                                <CardSubject>
+                                  <CardName>{invoice.contact}</CardName>
+                                  <CardDescription>
+                                    Billing contact, {invoice.customer}
+                                  </CardDescription>
+                                </CardSubject>
                               </PreviewCardContent>
                             </PreviewCard>
                           </TableRowLink>

@@ -2,6 +2,7 @@ import { Popover } from "@base-ui/react/popover"
 import type { SamplePerson } from "@workspace/fixtures/record-details.ts"
 import type * as React from "react"
 import { Avatar, AvatarFallback, AvatarGroup, type AvatarProps } from "@/components/avatar.tsx"
+import { CardDescription, CardName, CardSubject } from "@/components/card.tsx"
 import { Entity, EntityDescription, EntityMedia, EntityName } from "@/components/entity.tsx"
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
 import { cn } from "@/lib/cn.ts"
@@ -39,10 +40,10 @@ export function PersonEntity({ person }: { person: SamplePerson }): React.ReactE
 /** One person's name and the line about them, as their hover card shows it. */
 export function PersonCard({ person }: { person: SamplePerson }): React.ReactElement {
   return (
-    <>
-      <p className="font-semibold text-sm">{person.name}</p>
-      <p className="mt-1 text-muted-foreground">{person.summary}</p>
-    </>
+    <CardSubject>
+      <CardName>{person.name}</CardName>
+      <CardDescription>{person.summary}</CardDescription>
+    </CardSubject>
   )
 }
 

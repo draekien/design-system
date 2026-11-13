@@ -1,4 +1,5 @@
 import type * as React from "react"
+import { CardAside, CardDescription, CardName, CardSubject } from "@/components/card.tsx"
 import { Entity, EntityMedia, EntityName } from "@/components/entity.tsx"
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
 
@@ -13,11 +14,13 @@ export function PreviewCardLink(): React.ReactElement {
           </Entity>
         </PreviewCardTrigger>
         <PreviewCardContent>
-          <p className="font-medium text-sm">Dana Nguyen</p>
-          <p className="mt-1 text-muted-foreground">Billing lead · Finance</p>
-          <a className="mt-2 inline-block underline" href="#dana-nguyen">
-            Open profile
-          </a>
+          <CardAside>
+            <a href="#dana-nguyen">Open profile</a>
+          </CardAside>
+          <CardSubject>
+            <CardName>Dana Nguyen</CardName>
+            <CardDescription>Billing lead · Finance</CardDescription>
+          </CardSubject>
         </PreviewCardContent>
       </PreviewCard>
     </div>

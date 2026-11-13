@@ -6,6 +6,7 @@ describe("listLockup", () => {
   it("is built from list and every content component", () => {
     expect(listLockup.components.map((item) => item.name)).toEqual([
       "list",
+      "card",
       "entity",
       "figure",
       "meter",

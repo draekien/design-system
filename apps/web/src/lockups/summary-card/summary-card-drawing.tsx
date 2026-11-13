@@ -1,5 +1,11 @@
 import { sampleRecordDetails } from "@workspace/fixtures/record-details.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import {
+  Card,
+  CardDescription,
+  CardName,
+  CardSubject,
+} from "@workspace/registry/components/card.tsx"
 import * as React from "react"
 import { clipSpecimen } from "../../experiments/clip-specimen.tsx"
 import {
@@ -8,7 +14,7 @@ import {
   type ConstellationPart,
 } from "../../playground/constellation.tsx"
 import { recordStatus } from "../list/datasets.tsx"
-import { cardSurface } from "../lockup-styles.ts"
+import { previewCardSpecimen } from "../lockup-styles.ts"
 import { SummaryCard } from "./summary-card.tsx"
 import { summaryRecord } from "./summary-record.ts"
 
@@ -101,10 +107,12 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
             depth: 3,
             note: "The full workspace name, beside the card on hover after 300ms",
             specimen: (
-              <div className={cardSurface}>
-                <p className="text-muted-foreground">Workspace</p>
-                <p className="mt-1 font-medium">{sampleRecordDetails.workspace}</p>
-              </div>
+              <Card className={previewCardSpecimen}>
+                <CardSubject>
+                  <CardName>{sampleRecordDetails.workspace}</CardName>
+                  <CardDescription>Workspace</CardDescription>
+                </CardSubject>
+              </Card>
             ),
           },
         ]

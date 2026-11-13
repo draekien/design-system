@@ -3,6 +3,8 @@ import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
 import * as React from "react"
 // biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { Bullet, BulletLabel, BulletMedia } from "@/components/bullet"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
 import { cn } from "@/lib/cn"
 
 const cardClass = cn(
@@ -51,6 +53,24 @@ export function CardSubject({
   )
 }
 
+const HoverOnlyContext = React.createContext(false)
+
+/**
+ * Holds a hover card's content. Inside it, `CardAction` and `CardExplain` throw, because a hover card
+ * closes as the pointer leaves it and holds no control but a link.
+ */
+export function CardHoverOnly({ children }: { children: React.ReactNode }): React.ReactElement {
+  return <HoverOnlyContext value={true}>{children}</HoverOnlyContext>
+}
+
+function useRefuseInHoverCard(part: string) {
+  if (React.use(HoverOnlyContext)) {
+    throw new Error(
+      `${part} cannot render inside a hover card, because the card closes as the pointer leaves it. Move the control to the card or row on the page, and keep only links in the hover card.`
+    )
+  }
+}
+
 const actionsGap = "gap-run pointer-coarse:gap-hit-coarse-gap"
 
 const revealedActions =
@@ -81,7 +101,12 @@ export function CardAside({
   const hasChildren = children !== undefined && children !== null && children !== false
   const gap = hasChildren ? "ps-related" : null
   const shown = !hasChildren ? null : (
-    <div className="flex min-h-hit-min min-w-0 max-w-(--card-aside-max) items-center justify-end">
+    <div
+      className={cn(
+        "flex min-h-hit-min min-w-0 max-w-(--card-aside-max) items-center justify-end",
+        "[&>a]:inline-flex [&>a]:min-h-hit-min [&>a]:whitespace-nowrap [&>a]:text-xs [&>a]:items-center [&>a]:rounded-floor [&>a]:font-medium [&>a]:hover:underline [&>a]:hover:underline-offset-2 [&>a]:focus-visible:outline-2 [&>a]:focus-visible:outline-ring"
+      )}
+    >
       {children}
     </div>
   )
@@ -135,6 +160,7 @@ export function CardAction({
   type = "button",
   ...props
 }: React.ComponentProps<"button">): React.ReactElement {
+  useRefuseInHoverCard("CardAction")
   return (
     <button
       data-slot="card-action"
@@ -305,16 +331,25 @@ export function CardLink({ className, ...props }: React.ComponentProps<"a">): Re
   )
 }
 
-const FactsLayoutContext = React.createContext<"row" | "labelled">("row")
+const FactsLayoutContext = React.createContext<"row" | "labelled" | "bullets">("row")
 
 /** Props for {@link CardFacts}. */
 export type CardFactsProps = React.ComponentProps<"dl"> & {
   /**
    * `"row"` draws the facts on one line in the same order on every card, with each property's name
-   * read by screen readers only; `"labelled"` draws one per 24px line after its property's name.
+   * read by screen readers only; `"labelled"` draws one per 24px line after its property's name;
+   * `"bullets"` draws one per line as a bullet, its `icon` then the value, with the property's name
+   * read by screen readers only, so the value names itself, such as "4 open records". Use
+   * `"labelled"` when the label is the information, such as the months of two compared figures.
    */
-  layout?: "row" | "labelled"
+  layout?: "row" | "labelled" | "bullets"
 }
+
+const factsLayoutClass = {
+  row: "flex min-w-0 items-center gap-x-3 text-xs",
+  bullets: "flex min-w-0 flex-col",
+  labelled: "grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-1",
+} as const
 
 /** Rank 2: the facts the surface compares, as `CardFact`s. */
 export function CardFacts({
@@ -324,16 +359,7 @@ export function CardFacts({
 }: CardFactsProps): React.ReactElement {
   return (
     <FactsLayoutContext.Provider value={layout}>
-      <dl
-        data-slot="card-facts"
-        className={cn(
-          layout === "row"
-            ? "flex min-w-0 items-center gap-x-3 text-xs"
-            : "grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-1",
-          className
-        )}
-        {...props}
-      />
+      <dl data-slot="card-facts" className={cn(factsLayoutClass[layout], className)} {...props} />
     </FactsLayoutContext.Provider>
   )
 }
@@ -356,6 +382,8 @@ export type CardFactProps = Omit<React.ComponentProps<"div">, "children"> & {
    * card whose content is narrower than 13rem drops one marked `"hide"`; the record's page still shows it.
    */
   narrow?: keyof typeof narrowClass
+  /** In `bullets`, the 16px icon before the value; any icon library's icon. */
+  icon?: React.ReactNode
   /** One status, entity, figure or relative time, or text, which truncates to one line. */
   children: React.ReactNode
 }
@@ -364,11 +392,25 @@ export type CardFactProps = Omit<React.ComponentProps<"div">, "children"> & {
 export function CardFact({
   label,
   narrow = "keep",
+  icon,
   className,
   children,
   ...props
 }: CardFactProps): React.ReactElement {
   const layout = React.use(FactsLayoutContext)
+  if (layout === "bullets") {
+    return (
+      <div data-slot="card-fact" className={cn("flex min-w-0", className)} {...props}>
+        <dt className="sr-only">{label}</dt>
+        <dd className="flex min-w-0">
+          <Bullet size="lg">
+            {icon === undefined ? null : <BulletMedia>{icon}</BulletMedia>}
+            <BulletLabel>{children}</BulletLabel>
+          </Bullet>
+        </dd>
+      </div>
+    )
+  }
   const value =
     typeof children === "string" ? <span className="truncate">{children}</span> : children
   return (
@@ -405,6 +447,7 @@ export function CardExplain({
   children,
   ...props
 }: CardExplainProps): React.ReactElement {
+  useRefuseInHoverCard("CardExplain")
   return (
     <Collapsible.Root
       data-slot="card-explain"
@@ -431,6 +474,40 @@ export function CardExplain({
         {children}
       </Collapsible.Panel>
     </Collapsible.Root>
+  )
+}
+
+/**
+ * The last part of the card: one muted line about the record, such as when it last changed, which
+ * truncates. It holds no action: it throws on a link or a button among its children, which belong in
+ * `CardAside`.
+ */
+export function CardFooter({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"div">): React.ReactElement {
+  const hasAction = React.Children.toArray(children).some(
+    (child) =>
+      React.isValidElement(child) &&
+      (child.type === "a" ||
+        child.type === "button" ||
+        child.type === CardAction ||
+        child.type === CardLink)
+  )
+  if (hasAction) {
+    throw new Error(
+      "CardFooter cannot hold an action, because a card's actions show at its top right. Move the link or button to CardAside."
+    )
+  }
+  return (
+    <div
+      data-slot="card-footer"
+      className={cn("min-w-0 truncate text-muted-foreground text-xs leading-6", className)}
+      {...props}
+    >
+      {children}
+    </div>
   )
 }
 

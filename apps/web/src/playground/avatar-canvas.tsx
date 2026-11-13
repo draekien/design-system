@@ -1,5 +1,6 @@
 import type { SamplePerson } from "@workspace/fixtures/record-details.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import { Card } from "@workspace/registry/components/card.tsx"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import { clipSpecimen } from "../experiments/clip-specimen.tsx"
@@ -15,7 +16,7 @@ import {
   PeoplePanel,
   PeoplePanelLockup,
 } from "../lockups/avatar/people-panel.tsx"
-import { popupSurface } from "../lockups/avatar/people-styles.ts"
+import { previewCardSpecimen } from "../lockups/lockup-styles.ts"
 import { Constellation, type ConstellationGroup, type ConstellationPart } from "./constellation.tsx"
 import type { CanvasOptions } from "./playground-search.ts"
 import { StatesSection } from "./states-section.tsx"
@@ -129,9 +130,9 @@ function StatesView({ state }: { state: FixtureState }) {
                 <PeoplePopupBody title="Reviewers" people={reviewers} />
               </Specimen>
               <Specimen label="Assignee hover card">
-                <div className={popupSurface}>
+                <Card className={previewCardSpecimen}>
                   <PersonCard person={samplePeople.assignee ?? samplePeople.owner} />
-                </div>
+                </Card>
               </Specimen>
             </div>
           </StatesSection>
@@ -309,9 +310,9 @@ function panelDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
       depth: 2,
       note: "The person's name and team, on hover after 300ms; the link is the keyboard route",
       specimen: (
-        <div className={popupSurface}>
+        <Card className={previewCardSpecimen}>
           <PersonCard person={samplePeople.assignee ?? samplePeople.owner} />
-        </div>
+        </Card>
       ),
     },
     ...watchersPart,

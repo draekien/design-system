@@ -20,6 +20,7 @@ import {
 } from "@workspace/fixtures/record-details.ts"
 import { sampleRecords } from "@workspace/fixtures/records.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import { CardDescription, CardName, CardSubject } from "@workspace/registry/components/card.tsx"
 import {
   PreviewCard,
   PreviewCardContent,
@@ -352,14 +353,14 @@ export function WorkspaceContent(): React.ReactElement {
 /** Who may open the workspace, as its hover card says it. */
 export function WorkspaceCard(): React.ReactElement {
   return (
-    <>
-      <p className="font-medium">{details.workspace} workspace</p>
-      <p className="mt-1 text-muted-foreground">
+    <CardSubject>
+      <CardName>{details.workspace} workspace</CardName>
+      <CardDescription>
         {details.workspaceRestrictedTo === null
           ? "Everyone in the organisation can open it."
           : `Restricted: only ${details.workspaceRestrictedTo} can open it.`}
-      </p>
-    </>
+      </CardDescription>
+    </CardSubject>
   )
 }
 

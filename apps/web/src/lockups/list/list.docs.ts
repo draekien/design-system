@@ -40,6 +40,7 @@ import {
   PreviewCardContent,
   PreviewCardTrigger,
 } from "@/components/preview-card"
+import { CardDescription, CardName, CardSubject } from "@/components/card"
 import {
   List,
   ListRow,
@@ -62,7 +63,12 @@ import { Status, StatusMedia, StatusName } from "@/components/status"`,
                 <StatusName>In review</StatusName>
               </Status>
             </PreviewCardTrigger>
-            <PreviewCardContent>In review since 3 Oct</PreviewCardContent>
+            <PreviewCardContent>
+              <CardSubject>
+                <CardName>In review</CardName>
+                <CardDescription>Since 3 Oct</CardDescription>
+              </CardSubject>
+            </PreviewCardContent>
           </PreviewCard>
         </ListRowMedia>
         <ListRowName>Quarterly access review</ListRowName>
@@ -75,7 +81,12 @@ import { Status, StatusMedia, StatusName } from "@/components/status"`,
               <EntityName>Dev Patel</EntityName>
             </Entity>
           </PreviewCardTrigger>
-          <PreviewCardContent>Record owner · Platform</PreviewCardContent>
+          <PreviewCardContent>
+            <CardSubject>
+              <CardName>Dev Patel</CardName>
+              <CardDescription>Record owner · Platform</CardDescription>
+            </CardSubject>
+          </PreviewCardContent>
         </PreviewCard>
       </ListRowFact>
     </ListRowLink>

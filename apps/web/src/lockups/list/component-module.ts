@@ -1,4 +1,9 @@
 export const componentModule: Readonly<Record<string, string>> = {
+  CardDescription: "card",
+  CardFact: "card",
+  CardFacts: "card",
+  CardName: "card",
+  CardSubject: "card",
   Entity: "entity",
   EntityMedia: "entity",
   EntityName: "entity",

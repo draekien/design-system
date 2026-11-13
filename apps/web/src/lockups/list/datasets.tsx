@@ -7,6 +7,13 @@ import {
   sampleRecords,
 } from "@workspace/fixtures/records.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import {
+  CardDescription,
+  CardFact,
+  CardFacts,
+  CardName,
+  CardSubject,
+} from "@workspace/registry/components/card.tsx"
 import { Entity, EntityMedia, EntityName } from "@workspace/registry/components/entity.tsx"
 import { Figure } from "@workspace/registry/components/figure.tsx"
 import type { ListRowFactProps, ListRowNarrow } from "@workspace/registry/components/list.tsx"
@@ -186,6 +193,10 @@ function withCard(
 
 const cardComponents = ["PreviewCard", "PreviewCardContent", "PreviewCardTrigger"]
 
+const factCardComponents = [...cardComponents, "CardFacts", "CardFact"]
+
+const subjectCardComponents = [...cardComponents, "CardSubject", "CardName", "CardDescription"]
+
 const recordStatusLabel: Readonly<Record<RecordStatus, string>> = {
   draft: "Draft",
   "in-review": "In review",
@@ -245,12 +256,11 @@ export const recordsDataset: Dataset<SampleRecord> = {
       withCard(
         context,
         recordStatus(record),
-        <>
-          <p className="text-muted-foreground">Time in status</p>
-          <p className="mt-1 font-medium text-sm">
+        <CardFacts layout="labelled">
+          <CardFact label="Time in status">
             {recordStatusLabel[record.status]} for {record.statusAge}
-          </p>
-        </>
+          </CardFact>
+        </CardFacts>
       ),
     code: (card) =>
       withCardLines(
@@ -261,9 +271,20 @@ export const recordsDataset: Dataset<SampleRecord> = {
           "  <StatusName>{statusLabel[record.status]}</StatusName>",
           "</Status>",
         ],
-        ["{statusLabel[record.status]} for {record.statusAge}"]
+        [
+          '<CardFacts layout="labelled">',
+          '  <CardFact label="Time in status">',
+          "    {statusLabel[record.status]} for {record.statusAge}",
+          "  </CardFact>",
+          "</CardFacts>",
+        ]
       ),
-    components: (card) => ["Status", "StatusMedia", "StatusName", ...(card ? cardComponents : [])],
+    components: (card) => [
+      "Status",
+      "StatusMedia",
+      "StatusName",
+      ...(card ? factCardComponents : []),
+    ],
   },
   facts: [
     {
@@ -278,10 +299,10 @@ export const recordsDataset: Dataset<SampleRecord> = {
         withCard(
           context,
           ownerEntity(record.owner),
-          <>
-            <p className="font-medium text-sm">{record.owner}</p>
-            <p className="mt-1 text-muted-foreground">Record owner · {record.team}</p>
-          </>,
+          <CardSubject>
+            <CardName>{record.owner}</CardName>
+            <CardDescription>Record owner · {record.team}</CardDescription>
+          </CardSubject>,
           "end"
         ),
       code: (card) =>
@@ -293,13 +314,18 @@ export const recordsDataset: Dataset<SampleRecord> = {
             "  <EntityName>{record.owner}</EntityName>",
             "</Entity>",
           ],
-          ["{record.owner} · {record.team}"]
+          [
+            "<CardSubject>",
+            "  <CardName>{record.owner}</CardName>",
+            "  <CardDescription>Record owner · {record.team}</CardDescription>",
+            "</CardSubject>",
+          ]
         ),
       components: (card) => [
         "Entity",
         "EntityMedia",
         "EntityName",
-        ...(card ? cardComponents : []),
+        ...(card ? subjectCardComponents : []),
       ],
     },
     {

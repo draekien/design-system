@@ -2,6 +2,7 @@ import { Flag03Icon, Tick02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { recordPriorities, sampleRecordDetails } from "@workspace/fixtures/record-details.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import { Card } from "@workspace/registry/components/card.tsx"
 import * as React from "react"
 import { Bullet, BulletLabel, BulletMedia } from "@/components/bullet.tsx"
 import { cn } from "@/lib/cn.ts"
@@ -20,7 +21,7 @@ import {
   WorkspaceCard,
   WorkspaceContent,
 } from "../lockups/bullet/details-panel.tsx"
-import { cardSurface } from "../lockups/lockup-styles.ts"
+import { cardSurface, previewCardSpecimen } from "../lockups/lockup-styles.ts"
 import { menuItem, menuSurface } from "../lockups/table/table-styles.ts"
 import { Constellation, type ConstellationGroup, type ConstellationPart } from "./constellation.tsx"
 import type { CanvasOptions } from "./playground-search.ts"
@@ -309,9 +310,9 @@ function panelDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
       depth: 2,
       note: "Who may open the workspace, on hover after 300ms",
       specimen: (
-        <div className={cardSurface}>
+        <Card className={previewCardSpecimen}>
           <WorkspaceCard />
-        </div>
+        </Card>
       ),
     },
   ]

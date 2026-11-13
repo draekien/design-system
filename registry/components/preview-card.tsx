@@ -1,6 +1,8 @@
 import { PreviewCard as BasePreviewCard } from "@base-ui/react/preview-card"
 import type * as React from "react"
 // biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { Card, CardHoverOnly } from "@/components/card"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
 import { cn } from "@/lib/cn"
 
 /**
@@ -41,7 +43,9 @@ export type PreviewCardContentProps = BasePreviewCard.Popup.Props &
   Pick<BasePreviewCard.Portal.Props, "container">
 
 /**
- * The card drawn below its trigger. It may hold links. It renders into `<body>` unless `container`
+ * The card drawn below its trigger: a `Card` with the popover shadow, composed of the same parts, such
+ * as `CardSubject`, `CardFacts` and `CardFooter`. It may hold links; `CardAction` and `CardExplain`
+ * throw inside it. It renders into `<body>` unless `container`
  * names another element, such as a scaled or panned canvas the card must move with. A click inside
  * it does not reach the trigger's ancestors, so it never activates the row link around the trigger.
  */
@@ -53,6 +57,7 @@ export function PreviewCardContent({
   container,
   className,
   onClick,
+  children,
   ...props
 }: PreviewCardContentProps): React.ReactElement {
   return (
@@ -66,8 +71,9 @@ export function PreviewCardContent({
       >
         <BasePreviewCard.Popup
           data-slot="preview-card-content"
+          render={<Card />}
           className={cn(
-            "w-60 origin-(--transform-origin) rounded-lg border bg-popover p-3 text-popover-foreground text-xs shadow-popover transition-[opacity,scale] duration-quick ease-out data-ending-style:opacity-0 data-ending-style:duration-0 data-starting-style:scale-(--preview-card-enter-scale) data-starting-style:opacity-0 motion-reduce:transition-none",
+            "w-60 origin-(--transform-origin) bg-popover **:data-[slot=card-description]:whitespace-normal **:data-[slot=card-name]:line-clamp-none text-popover-foreground shadow-popover transition-[opacity,scale] duration-quick ease-out data-ending-style:opacity-0 data-ending-style:duration-0 data-starting-style:scale-(--preview-card-enter-scale) data-starting-style:opacity-0 motion-reduce:transition-none",
             className
           )}
           onClick={(event) => {
@@ -75,7 +81,9 @@ export function PreviewCardContent({
             onClick?.(event)
           }}
           {...props}
-        />
+        >
+          <CardHoverOnly>{children}</CardHoverOnly>
+        </BasePreviewCard.Popup>
       </BasePreviewCard.Positioner>
     </BasePreviewCard.Portal>
   )

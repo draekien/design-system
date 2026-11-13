@@ -23,10 +23,16 @@ export const previewCardDocs: ComponentDocs = {
   PreviewCard,
   PreviewCardContent,
   PreviewCardTrigger,
-} from "@/components/preview-card"`,
+} from "@/components/preview-card"
+import { CardDescription, CardName, CardSubject } from "@/components/card"`,
     code: `<PreviewCard>
   <PreviewCardTrigger>Mira Okafor</PreviewCardTrigger>
-  <PreviewCardContent>Record owner · Security</PreviewCardContent>
+  <PreviewCardContent>
+    <CardSubject>
+      <CardName>Mira Okafor</CardName>
+      <CardDescription>Record owner · Security</CardDescription>
+    </CardSubject>
+  </PreviewCardContent>
 </PreviewCard>`,
     description:
       "The trigger is not focusable, so every field in the card must also appear in peek and on the item's page.",

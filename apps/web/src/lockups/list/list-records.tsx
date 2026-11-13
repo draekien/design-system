@@ -1,4 +1,5 @@
 import * as React from "react"
+import { CardDescription, CardName, CardSubject } from "@/components/card.tsx"
 import { Entity, EntityDescription, EntityMedia, EntityName } from "@/components/entity.tsx"
 import {
   List,
@@ -70,8 +71,10 @@ export function ListRecords(): React.ReactElement {
                       </Status>
                     </PreviewCardTrigger>
                     <PreviewCardContent>
-                      <p className="font-medium">{record.status}</p>
-                      <p className="text-muted-foreground">{record.since}</p>
+                      <CardSubject>
+                        <CardName>{record.status}</CardName>
+                        <CardDescription>{record.since}</CardDescription>
+                      </CardSubject>
                     </PreviewCardContent>
                   </PreviewCard>
                 </ListRowMedia>
@@ -88,8 +91,10 @@ export function ListRecords(): React.ReactElement {
                     </Entity>
                   </PreviewCardTrigger>
                   <PreviewCardContent>
-                    <p className="font-medium">{record.owner.name}</p>
-                    <p className="text-muted-foreground">Record owner · {record.owner.team}</p>
+                    <CardSubject>
+                      <CardName>{record.owner.name}</CardName>
+                      <CardDescription>Record owner · {record.owner.team}</CardDescription>
+                    </CardSubject>
                   </PreviewCardContent>
                 </PreviewCard>
               </ListRowFact>

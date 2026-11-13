@@ -29,7 +29,7 @@ export const tableLockup: Lockup = {
   description:
     "Rows for comparing values down a column: group, sort, expand and select them, and the table decides which columns stay when it is narrow.",
   page: "/playground/lockups/table",
-  components: ["table", "status", "preview-card"].map(requireRegistryItem),
+  components: ["table", "status", "card", "preview-card"].map(requireRegistryItem),
 }
 
 export const avatarLockup: Lockup = {
@@ -39,7 +39,7 @@ export const avatarLockup: Lockup = {
   description:
     "The people on a record: the assignee and owner by name, then the reviewers and watchers as groups whose popover lists everyone.",
   page: "/playground/lockups/avatar",
-  components: ["avatar", "entity", "preview-card"].map(requireRegistryItem),
+  components: ["avatar", "entity", "card", "preview-card"].map(requireRegistryItem),
 }
 
 export const bulletLockup: Lockup = {
@@ -49,7 +49,7 @@ export const bulletLockup: Lockup = {
   description:
     "A record's details panel: one fact per line after its property's name, each a picker, a popover, a hover card, a link or a plain fact.",
   page: "/playground/lockups/bullet",
-  components: ["bullet", "avatar", "preview-card"].map(requireRegistryItem),
+  components: ["bullet", "avatar", "card", "preview-card"].map(requireRegistryItem),
 }
 
 export const recordCardLockup: Lockup = {

@@ -1,3 +1,4 @@
+import { CardDescription, CardName, CardSubject } from "@workspace/registry/components/card.tsx"
 import {
   Entity,
   EntityDescription,
@@ -90,7 +91,9 @@ function ListPreview() {
                       </Status>
                     </PreviewCardTrigger>
                     <PreviewCardContent>
-                      <p className="font-medium text-sm">{record.status}</p>
+                      <CardSubject>
+                        <CardName>{record.status}</CardName>
+                      </CardSubject>
                     </PreviewCardContent>
                   </PreviewCard>
                 </ListRowMedia>
@@ -113,7 +116,8 @@ function ListPreview() {
   )
 }
 
-const listCode = `import { Entity, EntityMedia, EntityName } from "@/components/entity"
+const listCode = `import { CardName, CardSubject } from "@/components/card"
+import { Entity, EntityMedia, EntityName } from "@/components/entity"
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card"
 import {
   List,
@@ -173,7 +177,9 @@ export function ListExample() {
                       </Status>
                     </PreviewCardTrigger>
                     <PreviewCardContent>
-                      <p className="font-medium text-sm">{record.status}</p>
+                      <CardSubject>
+                        <CardName>{record.status}</CardName>
+                      </CardSubject>
                     </PreviewCardContent>
                   </PreviewCard>
                 </ListRowMedia>
@@ -319,15 +325,18 @@ function PreviewCardPreview() {
           </Entity>
         </PreviewCardTrigger>
         <PreviewCardContent>
-          <p className="font-medium text-sm">Mira Okafor</p>
-          <p className="mt-1 text-muted-foreground">Record owner · Security</p>
+          <CardSubject>
+            <CardName>Mira Okafor</CardName>
+            <CardDescription>Record owner · Security</CardDescription>
+          </CardSubject>
         </PreviewCardContent>
       </PreviewCard>
     </div>
   )
 }
 
-const previewCardCode = `import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card"
+const previewCardCode = `import { CardDescription, CardName, CardSubject } from "@/components/card"
+import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card"
 import { Entity, EntityMedia, EntityName } from "@/components/entity"
 
 export function PreviewCardExample() {
@@ -340,8 +349,10 @@ export function PreviewCardExample() {
         </Entity>
       </PreviewCardTrigger>
       <PreviewCardContent>
-        <p className="font-medium text-sm">Mira Okafor</p>
-        <p className="mt-1 text-muted-foreground">Record owner · Security</p>
+        <CardSubject>
+          <CardName>Mira Okafor</CardName>
+          <CardDescription>Record owner · Security</CardDescription>
+        </CardSubject>
       </PreviewCardContent>
     </PreviewCard>
   )

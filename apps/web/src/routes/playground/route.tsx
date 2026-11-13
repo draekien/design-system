@@ -93,6 +93,11 @@ function PlaygroundLayout() {
               </Link>
             ))}
           </NavGroup>
+          <NavGroup label="Experiments">
+            <Link to="/playground/experiments/popover-card" className={navLink}>
+              Popover card
+            </Link>
+          </NavGroup>
           <NavGroup label="Settings">
             <Link to="/playground/theme" className={navLink}>
               Canvas theme

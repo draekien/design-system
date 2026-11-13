@@ -39,6 +39,7 @@ export const tableLockupDocs: ComponentDocs = {
   PreviewCardContent,
   PreviewCardTrigger,
 } from "@/components/preview-card"
+import { CardDescription, CardName, CardSubject } from "@/components/card"
 import {
   Table,
   TableBody,
@@ -73,7 +74,12 @@ import {
         <TableRowLink href="/invoices/INV-2041">
           <PreviewCard>
             <PreviewCardTrigger>Harbour Print Co.</PreviewCardTrigger>
-            <PreviewCardContent>Sam Okafor, billing contact</PreviewCardContent>
+            <PreviewCardContent>
+              <CardSubject>
+                <CardName>Sam Okafor</CardName>
+                <CardDescription>Billing contact</CardDescription>
+              </CardSubject>
+            </PreviewCardContent>
           </PreviewCard>
         </TableRowLink>
       </TableHead>

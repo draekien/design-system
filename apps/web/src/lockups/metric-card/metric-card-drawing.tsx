@@ -1,4 +1,10 @@
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import {
+  Card,
+  CardDescription,
+  CardName,
+  CardSubject,
+} from "@workspace/registry/components/card.tsx"
 import * as React from "react"
 import { Figure } from "@/components/figure.tsx"
 import { clipSpecimen } from "../../experiments/clip-specimen.tsx"
@@ -7,7 +13,7 @@ import {
   type ConstellationGroup,
   type ConstellationPart,
 } from "../../playground/constellation.tsx"
-import { cardSurface } from "../lockup-styles.ts"
+import { previewCardSpecimen } from "../lockup-styles.ts"
 import { MetricCard } from "./metric-card.tsx"
 import { outstandingMetric } from "./metrics.ts"
 
@@ -111,10 +117,12 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
             depth: 3,
             note: "Both months' figures, 4px below the change on hover after 300ms",
             specimen: (
-              <div className={cardSurface}>
-                <p className="font-medium">Change against September</p>
-                <p className="mt-1 text-muted-foreground">October and September, in AUD</p>
-              </div>
+              <Card className={previewCardSpecimen}>
+                <CardSubject>
+                  <CardName>Change against September</CardName>
+                  <CardDescription>October and September, in AUD</CardDescription>
+                </CardSubject>
+              </Card>
             ),
           },
         ]

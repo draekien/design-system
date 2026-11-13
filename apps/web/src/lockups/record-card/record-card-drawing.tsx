@@ -1,5 +1,11 @@
 import { sampleRecords } from "@workspace/fixtures/records.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import {
+  Card,
+  CardDescription,
+  CardName,
+  CardSubject,
+} from "@workspace/registry/components/card.tsx"
 import * as React from "react"
 import { clipSpecimen } from "../../experiments/clip-specimen.tsx"
 import { ErrorMessage } from "../../experiments/wireframe-parts.tsx"
@@ -8,8 +14,8 @@ import {
   type ConstellationGroup,
   type ConstellationPart,
 } from "../../playground/constellation.tsx"
-import { ownerEntity, recordStatus } from "../list/datasets.tsx"
-import { cardSurface } from "../lockup-styles.ts"
+import { recordStatus } from "../list/datasets.tsx"
+import { previewCardSpecimen } from "../lockup-styles.ts"
 import { RecordCard, RecordCardLoading } from "./record-card.tsx"
 
 type Drawing = {
@@ -128,10 +134,12 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
             depth: 3,
             note: "The owner's role and team, on hover after 300ms",
             specimen: (
-              <div className={cardSurface}>
-                <p className="flex font-medium">{ownerEntity(record.owner)}</p>
-                <p className="mt-1 text-muted-foreground">Owner · {record.team} team</p>
-              </div>
+              <Card className={previewCardSpecimen}>
+                <CardSubject>
+                  <CardName>{record.owner}</CardName>
+                  <CardDescription>Owner · {record.team} team</CardDescription>
+                </CardSubject>
+              </Card>
             ),
           },
         ]
