@@ -1,4 +1,7 @@
-import type { Rule } from "../../playground/rule-notes.tsx"
+import type { Rule, StoryGoal } from "../../playground/rule-notes.tsx"
+import type { metricCardStory } from "../metric-card/metric-card-story.ts"
+import type { summaryCardStory } from "../summary-card/summary-card-story.ts"
+import type { recordCardStory } from "./record-card-story.ts"
 
 const rules = {
   ranks: {
@@ -108,53 +111,53 @@ const rules = {
     rule: "Every control's hit area is at least 24×24px, and 44px high on a coarse pointer.",
     source: "Primer designer checklist; 44px is this design system's own decision",
   },
-} satisfies Record<string, Rule>
+} satisfies Record<string, Omit<Rule<string>, "serves">>
 
 /** The rules the record card lockup follows. */
-export const recordCardRules: ReadonlyArray<Rule> = [
-  rules.ranks,
-  rules.subject,
-  rules.media,
-  rules.mediaCrop,
-  rules.missingPicture,
-  rules.factRow,
-  rules.factLimit,
-  rules.aside,
-  rules.asideActions,
-  rules.asideFit,
-  rules.narrow,
-  rules.explain,
-  rules.ownerHover,
-  rules.link,
-  rules.surface,
-  rules.grid,
-  rules.missingFact,
-  rules.empty,
-  rules.hitArea,
+export const recordCardRules: ReadonlyArray<Rule<StoryGoal<typeof recordCardStory>>> = [
+  { ...rules.ranks, serves: "Compare records side by side to pick one" },
+  { ...rules.subject, serves: "Compare records side by side to pick one" },
+  { ...rules.media, serves: "Compare records side by side to pick one" },
+  { ...rules.mediaCrop, serves: "Compare records side by side to pick one" },
+  { ...rules.missingPicture, serves: "Compare records side by side to pick one" },
+  { ...rules.factRow, serves: "Compare records side by side to pick one" },
+  { ...rules.factLimit, serves: "Compare records side by side to pick one" },
+  { ...rules.aside, serves: "Act on one record without opening it" },
+  { ...rules.asideActions, serves: "Act on one record without opening it" },
+  { ...rules.asideFit, serves: "Act on one record without opening it" },
+  { ...rules.narrow, serves: "Compare records side by side to pick one" },
+  { ...rules.explain, serves: "Read more about one record in place" },
+  { ...rules.ownerHover, serves: "Read more about one record in place" },
+  { ...rules.link, serves: "Open the record" },
+  { ...rules.surface, serves: "all" },
+  { ...rules.grid, serves: "Compare records side by side to pick one" },
+  { ...rules.missingFact, serves: "all" },
+  { ...rules.empty, serves: "all" },
+  { ...rules.hitArea, serves: "all" },
 ]
 
 /** The rules the summary card lockup follows. */
-export const summaryCardRules: ReadonlyArray<Rule> = [
-  rules.ranks,
-  rules.subject,
-  rules.media,
-  rules.labelledFacts,
-  rules.surface,
-  rules.missingFact,
-  rules.hitArea,
+export const summaryCardRules: ReadonlyArray<Rule<StoryGoal<typeof summaryCardStory>>> = [
+  { ...rules.ranks, serves: "Read the record's key facts down one edge" },
+  { ...rules.subject, serves: "Read the record's key facts down one edge" },
+  { ...rules.media, serves: "Read the record's key facts down one edge" },
+  { ...rules.labelledFacts, serves: "Read the record's key facts down one edge" },
+  { ...rules.surface, serves: "all" },
+  { ...rules.missingFact, serves: "all" },
+  { ...rules.hitArea, serves: "all" },
 ]
 
 /** The rules the metric card lockup follows. */
-export const metricCardRules: ReadonlyArray<Rule> = [
-  rules.ranks,
-  rules.media,
-  rules.aside,
-  rules.asideFit,
-  rules.metricOrder,
-  rules.metricDisplay,
-  rules.compact,
-  rules.surface,
-  rules.grid,
-  rules.missingFact,
-  rules.hitArea,
+export const metricCardRules: ReadonlyArray<Rule<StoryGoal<typeof metricCardStory>>> = [
+  { ...rules.ranks, serves: "Read this month's figure" },
+  { ...rules.media, serves: "Read this month's figure" },
+  { ...rules.aside, serves: "See how it changed since last month" },
+  { ...rules.asideFit, serves: "See how it changed since last month" },
+  { ...rules.metricOrder, serves: "Read this month's figure" },
+  { ...rules.metricDisplay, serves: "Read this month's figure" },
+  { ...rules.compact, serves: "Read this month's figure" },
+  { ...rules.surface, serves: "all" },
+  { ...rules.grid, serves: "all" },
+  { ...rules.missingFact, serves: "all" },
+  { ...rules.hitArea, serves: "all" },
 ]

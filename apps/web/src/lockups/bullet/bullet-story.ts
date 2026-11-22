@@ -22,7 +22,7 @@ export const bulletStory = {
     },
   ],
   primaryAction: {
-    action: "Change a detail in place, such as priority or due date",
+    action: "Change one detail in place, such as priority or due date",
     basis: "Developer's answer, 2026-11-22",
   },
   neverNeeds: [

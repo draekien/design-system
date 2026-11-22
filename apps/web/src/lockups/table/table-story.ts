@@ -24,6 +24,11 @@ export const tableStory = {
       visits: "few",
       basis: "table-rules.ts rule 6",
     },
+    {
+      goal: "Check a record's details without leaving the table",
+      visits: "few",
+      basis: "Developer's answer, 2026-11-22; table-rules.ts rules 15 and 16",
+    },
   ],
   primaryAction: {
     action: "Open the record",

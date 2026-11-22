@@ -7,19 +7,19 @@ export const recordCardStory = {
     {
       goal: "Compare records side by side to pick one",
       visits: "most",
-      basis: "card-rules.ts rule 6",
+      basis: "recordCardRules rule 6",
     },
     {
       goal: "Act on one record without opening it",
       visits: "some",
-      basis: "card-rules.ts rules 9 and 10",
+      basis: "recordCardRules rules 8 and 9",
     },
     {
       goal: "Read more about one record in place",
       visits: "few",
-      basis: "card-rules.ts rules 7 and 15",
+      basis: "recordCardRules rules 7, 12 and 13",
     },
   ],
-  primaryAction: { action: "Open the record", basis: "card-rules.ts rule 18" },
+  primaryAction: { action: "Open the record", basis: "recordCardRules rule 14" },
   neverNeeds: ["A fifth fact on the card"],
 } as const satisfies Story

@@ -16,6 +16,8 @@ Ship a component's usage guidance in its registry item's `docs` field and on the
 
 ## Goals
 
+Stories: every story.
+
 A caller brings several goals to a surface, and the goals compete for its space; the surface ranks them by how many visits bring each, and every part takes the rank of the highest goal it serves. This is this design system's own decision.
 
 The surface is fast to scan: a caller finds the value its top goal needs by reading down the rank 1 edge and across to one rank 2 slot, and opens nothing; every lower goal shows its trigger on screen at rest.
@@ -27,6 +29,8 @@ A surface's regions take ranks as its parts do: the head is rank 1, the properti
 The four principles below serve this section; where they conflict, the reading that is faster to scan for the top goal wins.
 
 ## Principles
+
+Stories: every story.
 
 Four principles decide any case no rule covers, in this order: Quiet first, then Clear, Precise and Sleek; Goals settles a conflict between them. This is this design system's own decision.
 
@@ -51,11 +55,11 @@ Every rule a component encodes cites its source row in the evidence; a rule with
 
 A row marked "Unverified" is not a source.
 
-A rule here lists the lockup stories that need it beside its source; a rule no story needs is not added (ADR 0006).
+A rule in Goals and every section after it ends with `Stories:` and the lockup and experiment stories that need it, or states them once under its section's heading when every rule in the section has the same stories; a rule no story needs is not added (ADR 0006).
 
 ## Ranking information
 
-Information takes one of five ranks, decided by what the caller came to the surface to decide rather than by what the server returns. This is this design system's own decision.
+Information takes one of five ranks, decided by what the caller came to the surface to decide rather than by what the server returns. This is this design system's own decision. Stories: every story.
 
 | Rank | Holds | Shows | Component |
 | --- | --- | --- | --- |
@@ -65,29 +69,31 @@ Information takes one of five ranks, decided by what the caller came to the surf
 | 4 Enrich | more about one named entity or property — a person, a service, an organisation, a stage, a truncated value | an overlay on that entity's or property's own trigger | hover card |
 | 5 Elsewhere | everything about one record | the record's own surface; peek previews it read-only without leaving | link, peek |
 
-A surface shows ranks 1 and 2 for every item before it shows rank 3 for any.
+A surface shows ranks 1 and 2 for every item before it shows rank 3 for any. Stories: list, table, record-card.
 
-A collapsed group, section or row keeps its rank 1 and 2 on screen, as a collapsed catalogue group keeps its counts.
+A collapsed group, section or row keeps its rank 1 and 2 on screen, as a collapsed catalogue group keeps its counts. Stories: table.
 
-Rank 3 never holds content the caller reads on most visits: collapsing that costs a click every visit.
+Rank 3 never holds content the caller reads on most visits: collapsing that costs a click every visit. Stories: list, table, record-card.
 
-Name a component's parts for the rank they hold, never for a data field; a part takes any data ranked for it.
+Name a component's parts for the rank they hold, never for a data field; a part takes any data ranked for it. Stories: every story.
 
-A value may draw its media alone, such as a status dot or an entity's initials, only when its word is in the accessible name, a hover card on the media shows the word, and peek or the record's own page reaches it by keyboard, as Linear's status icon opens a card naming the stage.
+A value may draw its media alone, such as a status dot or an entity's initials, only when its word is in the accessible name, a hover card on the media shows the word, and peek or the record's own page reaches it by keyboard, as Linear's status icon opens a card naming the stage. Stories: avatar, list.
 
-A narrow surface truncates rank 1 and 2 values first, then abbreviates them, then hides the ones the caller marks hideable; a hidden value stays reachable at rank 3 or 5.
+A narrow surface truncates rank 1 and 2 values first, then abbreviates them, then hides the ones the caller marks hideable; a hidden value stays reachable at rank 3 or 5. Stories: list, table, record-card.
 
-Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks.
+Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks. Stories: list, table.
 
-Peek opens with Space on the focused row, so a click on the row opens rank 5.
+Peek opens with Space on the focused row, so a click on the row opens rank 5. Stories: list, table.
 
-A drawer that shows peek returns focus to the row that opened it.
+A drawer that shows peek returns focus to the row that opened it. Stories: list.
 
-A description is one line after the name, in rank 1 and in a status or entity; it truncates and hides before the name does.
+A description is one line after the name, in rank 1 and in a status or entity; it truncates and hides before the name does. Stories: list, record-card.
 
-A row is selectable only when it draws a selection checkbox.
+A row is selectable only when it draws a selection checkbox. Stories: list, table.
 
 ## Grouping and nesting
+
+Stories: table.
 
 A group header holds the group's name, its record count and its column sums; a collapsed group keeps all three on screen.
 
@@ -103,25 +109,27 @@ Sorting orders records within their group and child records within their parent;
 
 ## Selecting records
 
-A group's checkbox selects every selectable record in the group, and shows mixed while only some are.
+A group's checkbox selects every selectable record in the group, and shows mixed while only some are. Stories: table.
 
-A parent's checkbox selects the parent only.
+A parent's checkbox selects the parent only. Stories: table.
 
-X and Shift+Space toggle selection on the focused row; Esc clears the selection once peek is closed.
+X and Shift+Space toggle selection on the focused row; Esc clears the selection once peek is closed. Stories: list, table.
 
-While any record is selected, a selection bar fixed to the bottom of the viewport shows the count, at most two actions, a ⋯ menu holding the rest with destructive actions last after a divider, and Clear.
+While any record is selected, a selection bar fixed to the bottom of the viewport shows the count, at most two actions, a ⋯ menu holding the rest with destructive actions last after a divider, and Clear. Stories: table.
 
 ## Tables
 
-Use a table when the caller compares values down a column, and a list when the caller scans for one record.
+Use a table when the caller compares values down a column, and a list when the caller scans for one record. Stories: list, table.
 
-Every table column has a header naming it; a sortable header is a button, and one column is sorted at a time.
+Every table column has a header naming it; a sortable header is a button, and one column is sorted at a time. Stories: table.
 
-Numeric columns right-align in tabular figures.
+Numeric columns right-align in tabular figures. Stories: list, table.
 
-A narrow table hides a column together with its header.
+A narrow table hides a column together with its header. Stories: table.
 
 ## Radius
+
+Stories: every story.
 
 A radius builds outward from the floor: a leaf control (button, input) takes the floor, `--radius-floor` (6px), and a container's radius is its content's radius plus its padding. This is this design system's own decision.
 
@@ -145,6 +153,8 @@ A divider between controls in a bar is 16px tall with 4px on each side; a divide
 
 ## Spacing between components
 
+Stories: every story.
+
 The container sets the gap between its children by how the two neighbours relate. This is this design system's own decision.
 
 | Token | Neighbours | Value |
@@ -155,38 +165,38 @@ The container sets the gap between its children by how the two neighbours relate
 
 ## Cards
 
-A card draws facts about one entity, such as a person's team and open records, as bullets: an icon, then a value that names itself, such as 4 open records, with the property's name read by screen readers. It draws facts whose label is the information, such as two months' figures, labelled. This is this design system's own decision.
+A card draws facts about one entity, such as a person's team and open records, as bullets: an icon, then a value that names itself, such as 4 open records, with the property's name read by screen readers. It draws facts whose label is the information, such as two months' figures, labelled. This is this design system's own decision. Stories: popover-card, summary-card, metric-card.
 
-A record card shows a picture only when its callers recognise records by their pictures. The picture goes in `CardMedia`, the first part of `CardSubject`. A summary card and a metric card have no picture. This is this design system's own decision.
+A record card shows a picture only when its callers recognise records by their pictures. The picture goes in `CardMedia`, the first part of `CardSubject`. A summary card and a metric card have no picture. This is this design system's own decision. Stories: record-card.
 
-`CardMedia` sits inside the card's 12px padding and has the 6px floor radius. It is cropped to 16:9. Every card in a grid row then starts its ID at the same height. The 16:9 ratio is this design system's own decision.
+`CardMedia` sits inside the card's 12px padding and has the 6px floor radius. It is cropped to 16:9. Every card in a grid row then starts its ID at the same height. The 16:9 ratio is this design system's own decision. Stories: record-card.
 
-A card in a run of cards with pictures draws an empty 16:9 box when it has no picture to show. The box shows an image icon and one word: No picture when the record has none, Hidden when the caller may not see it, and Unavailable when it fails to load. A picture's alt text is empty unless the picture shows something the name does not. The empty box is this design system's own decision.
+A card in a run of cards with pictures draws an empty 16:9 box when it has no picture to show. The box shows an image icon and one word: No picture when the record has none, Hidden when the caller may not see it, and Unavailable when it fails to load. A picture's alt text is empty unless the picture shows something the name does not. The empty box is this design system's own decision. Stories: record-card.
 
-The top right of a card holds `CardAside`: a change, a status word, an icon or actions. `CardAside` sits beside the card's first part, which narrows to make room. The two never overlap. Every later part spans the card's full width. When the card has a picture, the picture keeps the full width and `CardAside` sits below it, beside the ID. This is this design system's own decision.
+The top right of a card holds `CardAside`: a change, a status word, an icon or actions. `CardAside` sits beside the card's first part, which narrows to make room. The two never overlap. Every later part spans the card's full width. When the card has a picture, the picture keeps the full width and `CardAside` sits below it, beside the ID. This is this design system's own decision. Stories: record-card, metric-card, popover-card.
 
-`CardAside` holds at most two actions, then a ⋮ menu with the rest. Destructive actions go last in the menu, after a divider. The actions appear while the pointer is over the card, focus is inside it or its menu is open, and always show on a touch screen. As they appear, the always-shown items slide toward the card's middle over 150ms; they slide back as the actions hide. Reduced motion turns the slide off. `CardAside` reserves the width of both, so the part beside it never reflows. Applying the selection bar's two-action limit to the card, and ⋮ in place of ⋯, is this design system's own decision.
+`CardAside` holds at most two actions, then a ⋮ menu with the rest. Destructive actions go last in the menu, after a divider. The actions appear while the pointer is over the card, focus is inside it or its menu is open, and always show on a touch screen. As they appear, the always-shown items slide toward the card's middle over 150ms; they slide back as the actions hide. Reduced motion turns the slide off. `CardAside` reserves the width of both, so the part beside it never reflows. Applying the selection bar's two-action limit to the card, and ⋮ in place of ⋯, is this design system's own decision. Stories: record-card, popover-card.
 
-A card's actions, its buttons and links, go in `CardAside`, never in `CardFooter`. `CardFooter` holds one muted line about the record, such as when it last changed. This is this design system's own decision.
+A card's actions, its buttons and links, go in `CardAside`, never in `CardFooter`. `CardFooter` holds one muted line about the record, such as when it last changed. This is this design system's own decision. Stories: record-card, popover-card.
 
-Text and icons that always show in `CardAside` take at most a third of the card's content width. The part beside `CardAside` keeps at least half. In a card 18rem or wider, actions are never cut off. 8px separates the always-shown items from the actions. Each action is 24px. On a touch screen its hit area grows to 44px around it without moving it, and actions sit 20px apart so their hit areas do not overlap. The limits and the 20px spacing are this design system's own decision.
+Text and icons that always show in `CardAside` take at most a third of the card's content width. The part beside `CardAside` keeps at least half. In a card 18rem or wider, actions are never cut off. 8px separates the always-shown items from the actions. Each action is 24px. On a touch screen its hit area grows to 44px around it without moving it, and actions sit 20px apart so their hit areas do not overlap. The limits and the 20px spacing are this design system's own decision. Stories: record-card, metric-card.
 
-Text in `CardAside` truncates to one line and shows in full in a hover card. An icon shown alone names its meaning to screen readers and in a hover card. An icon button names its action in a tooltip. Menus and hover cards open 4px below their trigger, aligned to its start edge, or to its end edge when the window has no room. The placement is this design system's own decision.
+Text in `CardAside` truncates to one line and shows in full in a hover card. An icon shown alone names its meaning to screen readers and in a hover card. An icon button names its action in a tooltip. Menus and hover cards open 4px below their trigger, aligned to its start edge, or to its end edge when the window has no room. The placement is this design system's own decision. Stories: record-card, metric-card, popover-card.
 
-A metric card leads with its figure at the top left, in the 24px semibold display type. Its change against the previous period sits in `CardAside`. The title and description follow below. This is this design system's own decision.
+A metric card leads with its figure at the top left, in the 24px semibold display type. Its change against the previous period sits in `CardAside`. The title and description follow below. This is this design system's own decision. Stories: metric-card.
 
-Cards in a grid are 8px apart (`gap-related`). Bordered cards with no gap would draw doubled borders. This is this design system's own decision.
+Cards in a grid are 8px apart (`gap-related`). Bordered cards with no gap would draw doubled borders. This is this design system's own decision. Stories: record-card, metric-card.
 
-A metric figure longer than 12 characters switches to compact notation, such as A$12B. Screen readers still read the full figure. The 12-character limit is this design system's own decision.
+A metric figure longer than 12 characters switches to compact notation, such as A$12B. Screen readers still read the full figure. The 12-character limit is this design system's own decision. Stories: metric-card.
 
-When the previous figure is zero, the change has no percentage. Its slot draws a muted dash. The dash's hover card shows both periods' figures and says that a change from zero has no percentage. The dash is this design system's own decision.
+When the previous figure is zero, the change has no percentage. Its slot draws a muted dash. The dash's hover card shows both periods' figures and says that a change from zero has no percentage. The dash is this design system's own decision. Stories: metric-card.
 
 ## Rules adopted without a component yet
 
-Every error or refusal states what went wrong, then how the caller fixes it; apologise only when the product itself failed.
+Every error or refusal states what went wrong, then how the caller fixes it; apologise only when the product itself failed. Stories: every story.
 
-Draw surfaces monochrome plus one accent colour; the accent marks only what can be acted on.
+Draw surfaces monochrome plus one accent colour; the accent marks only what can be acted on. Stories: every story.
 
-Syntax highlighting in a code block is the one exception to monochrome.
+Syntax highlighting in a code block is the one exception to monochrome. Stories: none; it governs the docs site's Code views, the one rule kept without a story.
 
-Every mouse interaction has a keyboard route; every hit area is at least 24×24px.
+Every mouse interaction has a keyboard route; every hit area is at least 24×24px. Stories: every story.

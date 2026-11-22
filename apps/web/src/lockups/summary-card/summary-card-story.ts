@@ -8,9 +8,9 @@ export const summaryCardStory = {
     {
       goal: "Read the record's key facts down one edge",
       visits: "most",
-      basis: "card-rules.ts rule 8",
+      basis: "summaryCardRules rule 4",
     },
-    { goal: "Read a long value in full", visits: "few", basis: "card-rules.ts rule 8" },
+    { goal: "Read a long value in full", visits: "few", basis: "summaryCardRules rule 4" },
   ],
   primaryAction: {
     action: "Open the record",

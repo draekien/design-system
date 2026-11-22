@@ -72,7 +72,7 @@ Before editing files for a substantial task:
 - This is a design system first and a component library second: a component encodes the rank, fit, placement, adjacency, spacing and radius rules in `docs/contexts/design-rules.md` and `DESIGN.md`, and takes every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `registry/tokens` and generated into `registry/styles`, never edited in the generated files.
 - Every lockup, experiment and design rule starts from a story about the end user of the built screen (ADR 0006): before `/impeccable shape`, define `<name>-story.ts` beside `<name>-rules.ts` with the developer using the `user-story` skill, and build nothing until the developer has answered every field.
 - Every rule in `<name>-rules.ts` names the story goal it serves in `serves`, or `"all"`.
-- A registry component serves the stories of the lockups that import it; a `beta` or `stable` component no lockup imports fails `lifecycleFailures`.
+- A registry component serves the stories of the lockups built from it; a component no lockup lists fails `apps/web/src/lockups/lockups.test.ts`.
 - Run `/impeccable shape` before every design system change: a token, a rule in `docs/contexts/design-rules.md`, `DESIGN.md`, a new component or a new lockup.
 - Run `/impeccable document` to regenerate `DESIGN.md` and `.impeccable/design.json` in the same change that alters a token or a component's visual treatment.
 - Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `registry`.
