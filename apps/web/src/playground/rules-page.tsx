@@ -121,7 +121,8 @@ export function RulesPage(): React.ReactElement {
             List
           </h2>
           <p className="mt-2 text-pretty text-muted-foreground leading-relaxed">
-            The rules the list and list row encode, with their sources.{" "}
+            The rules the list and list row encode, with their sources and the list story goal each
+            serves.{" "}
             <Link to="/playground/lockups/list" className={textLink}>
               Try them in the playground
             </Link>

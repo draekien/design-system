@@ -27,7 +27,7 @@ import {
   type SectionTab,
 } from "./playground-search.ts"
 import { focusRing, frameSurface, segmentItem } from "./playground-styles.ts"
-import { type Rule, RuleNotes } from "./rule-notes.tsx"
+import { type Rule, RuleNotes, StoryNotes } from "./rule-notes.tsx"
 import { savePlaygroundTheme, usePlaygroundTheme } from "./theme-store.ts"
 
 const stateLabel = {
@@ -50,7 +50,7 @@ const widthLabel: Readonly<Record<CanvasWidth, string>> = {
 type CodeView = { code: string; fileName: string }
 
 /**
- * A lockup's playground page: the lockup and its States view, each in a canvas frame, the
+ * A lockup's playground page: the story, the lockup and its States view, each in a canvas frame, the
  * constellation, the lockup's docs and its rules, with the page nav, the state picker and
  * `controls` beside them.
  */
@@ -79,7 +79,7 @@ export function LockupPage({
   constellation: React.ReactNode
   constellationDescription: string
   docs: ComponentDocs
-  rules: ReadonlyArray<Rule>
+  rules: ReadonlyArray<Rule<string>>
   controls: React.ReactNode
   onSearchChange: (patch: Partial<PlaygroundSearch>) => void
 }): React.ReactElement {
@@ -103,6 +103,14 @@ export function LockupPage({
       </header>
 
       <div className="flex min-w-0 flex-col gap-12 xl:col-start-1 xl:row-start-2">
+        <PageSection
+          id={sectionId.story}
+          title="Story"
+          description={`Who uses the ${noun}, what they came to do, and the action most visits end in. Every rule below serves one of these goals.`}
+        >
+          <StoryNotes story={lockup.story} />
+        </PageSection>
+
         <PageSection
           id={sectionId.lockup}
           title="Lockup"
@@ -211,7 +219,7 @@ export function LockupPage({
         <PageSection
           id={sectionId.rules}
           title="Rules"
-          description="The disclosure and composition rules the lockup encodes, each with its source."
+          description="The disclosure and composition rules the lockup encodes, each with its source and the goal it serves."
         >
           <RuleNotes rules={rules} />
         </PageSection>
@@ -278,6 +286,7 @@ function frameClass(width: CanvasWidth): string {
 }
 
 const sectionId = {
+  story: "story",
   lockup: "lockup",
   states: "states",
   constellation: "constellation",
@@ -289,6 +298,7 @@ const sectionId = {
 } as const
 
 const pageSections = [
+  { id: sectionId.story, label: "Story" },
   { id: sectionId.lockup, label: "Lockup" },
   { id: sectionId.states, label: "States" },
   { id: sectionId.constellation, label: "Constellation" },

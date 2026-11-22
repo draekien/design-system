@@ -6,7 +6,7 @@ import { SearchFrame } from "../playground/canvas-frame.tsx"
 import { Segmented } from "../playground/playground-controls.tsx"
 import { canvasPointers, canvasWidths } from "../playground/playground-search.ts"
 import { segmentItem } from "../playground/playground-styles.ts"
-import { type Rule, RuleNotes } from "../playground/rule-notes.tsx"
+import { type Rule, RuleNotes, type Story, StoryNotes } from "../playground/rule-notes.tsx"
 import type { FileRoutesByTo } from "../routeTree.gen.ts"
 import {
   type ExperimentSearch,
@@ -54,20 +54,22 @@ const controls: ReadonlyArray<{
 
 type CanvasPath = Extract<keyof FileRoutesByTo, `/canvas/experiments${string}`>
 
-type RuleSection = { title: string; rules: ReadonlyArray<Rule> }
+type RuleSection = { title: string; rules: ReadonlyArray<Rule<string>> }
 
-/** An experiment's page: its canvas in an iframe under state, view, width and pointer controls, then its rules. */
+/** An experiment's page: its story, its canvas in an iframe under state, view, width and pointer controls, then its rules. */
 export function ExperimentPage({
   title,
   description,
   canvas,
   search,
+  story,
   ruleSections,
 }: {
   title: string
   description: string
   canvas: CanvasPath
   search: ExperimentSearch
+  story: Story
   ruleSections: ReadonlyArray<RuleSection>
 }): React.ReactElement {
   const router = useRouter()
@@ -97,6 +99,10 @@ export function ExperimentPage({
           {description}
         </p>
       </header>
+      <section className="flex flex-col gap-2">
+        <h2 className="font-semibold text-sm">Story</h2>
+        <StoryNotes story={story} />
+      </section>
       <div className="flex flex-wrap items-center gap-2">
         {controls.map((control) => (
           <Segmented key={control.key} label={control.label}>

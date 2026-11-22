@@ -5,6 +5,7 @@ import {
   experimentSearchDefaults,
 } from "../../../experiments/experiment-search.ts"
 import { popoverCardRules } from "../../../experiments/popover-card-rules.ts"
+import { popoverCardStory } from "../../../experiments/popover-card-story.ts"
 import { siteName } from "../../../site.ts"
 
 const DESCRIPTION =
@@ -34,6 +35,7 @@ function PopoverCardExperiment() {
       description={DESCRIPTION}
       canvas="/canvas/experiments/popover-card"
       search={hydrated ? search : experimentSearchDefaults}
+      story={popoverCardStory}
       ruleSections={ruleSections}
     />
   )
