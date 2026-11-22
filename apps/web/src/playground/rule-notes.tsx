@@ -2,6 +2,14 @@ import type * as React from "react"
 
 export type Rule = { rule: string; source: string }
 
+export type Story = {
+  who: string
+  situation: string
+  goals: ReadonlyArray<{ goal: string; visits: "most" | "some" | "few"; basis: string }>
+  primaryAction: { action: string; basis: string }
+  neverNeeds: ReadonlyArray<string>
+}
+
 export function RuleNotes({ rules }: { rules: ReadonlyArray<Rule> }): React.ReactElement {
   return (
     <table className="w-full border-collapse text-left text-sm">

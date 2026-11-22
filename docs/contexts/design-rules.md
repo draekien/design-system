@@ -51,6 +51,8 @@ Every rule a component encodes cites its source row in the evidence; a rule with
 
 A row marked "Unverified" is not a source.
 
+A rule here lists the lockup stories that need it beside its source; a rule no story needs is not added (ADR 0006).
+
 ## Ranking information
 
 Information takes one of five ranks, decided by what the caller came to the surface to decide rather than by what the server returns. This is this design system's own decision.

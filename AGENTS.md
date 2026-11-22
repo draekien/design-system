@@ -70,6 +70,9 @@ Before editing files for a substantial task:
 - An experiment becomes `beta` when its components move to `registry`, its lockup is added to `apps/web/src/lockups` with a `/playground/lockups/<name>` route, and the same change deletes the experiment, its routes and its sidebar entry.
 - Every change to a registry item adds a dated entry, newest first, to the `<name>.changelog.json` beside its source in `registry` in the same commit.
 - This is a design system first and a component library second: a component encodes the rank, fit, placement, adjacency, spacing and radius rules in `docs/contexts/design-rules.md` and `DESIGN.md`, and takes every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `registry/tokens` and generated into `registry/styles`, never edited in the generated files.
+- Every lockup, experiment and design rule starts from a story about the end user of the built screen (ADR 0006): before `/impeccable shape`, define `<name>-story.ts` beside `<name>-rules.ts` with the developer using the `user-story` skill, and build nothing until the developer has answered every field.
+- Every rule in `<name>-rules.ts` names the story goal it serves in `serves`, or `"all"`.
+- A registry component serves the stories of the lockups that import it; a `beta` or `stable` component no lockup imports fails `lifecycleFailures`.
 - Run `/impeccable shape` before every design system change: a token, a rule in `docs/contexts/design-rules.md`, `DESIGN.md`, a new component or a new lockup.
 - Run `/impeccable document` to regenerate `DESIGN.md` and `.impeccable/design.json` in the same change that alters a token or a component's visual treatment.
 - Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `registry`.
@@ -80,12 +83,12 @@ Before editing files for a substantial task:
 - A constellation draws the component at rest in the centre, one satellite per information rank around it holding that rank's parts with hover cards and panels drawn open, a connector from each part to the centre part that shows or reveals it, and a numbered parts list nesting each part under the part that contains it.
 - A constellation draws always-shown ranks with solid satellites and connectors above the centre, and revealed ranks with dashed satellites below it whose dashed connectors, labelled with the revealing gesture, appear on hover or focus.
 - A lockup page shows a States view: the component's interaction states and narrow widths, one specimen each.
-- A playground page stacks the lockup, the States view, the constellation, Usage, Composition, Examples, API Reference and Rules in that order; the lockup and the States view each render in their own canvas iframe with its own width and pointer controls, the constellation in the page.
+- A playground page stacks the story, the lockup, the States view, the constellation, Usage, Composition, Examples, API Reference and Rules in that order; the lockup and the States view each render in their own canvas iframe with its own width and pointer controls, the constellation in the page.
 - The lockup and the States view each have a Preview/Code toggle in their toolbar.
 - A component page shows its install command, description, a specimen with a Code toggle, Usage (an imports block, a usage block and at most 50 words of description), Composition, Examples, API Reference, its dependents and its changes; a lib page omits Composition.
 - Usage, Composition, Examples and API Reference come from `<name>.docs.ts` in `apps/web/src/components/<name>` or the lockup's folder; each example is one `<name>-<variant>.tsx` file that is both the preview and the code view.
 - Type every API table with `ApiTable`, so `pnpm typecheck` fails when a part's props change.
-- An experiment page shows its rules table and loads its canvas through `canvas-frame.tsx`; `view` selects lockup or constellation.
+- An experiment page shows its story and rules table and loads its canvas through `canvas-frame.tsx`; `view` selects lockup or constellation.
 - Run tasks from the repo root: `pnpm build`, `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm dev`.
 - Run `pnpm typecheck`, never a global `tsc`.
 - Use `pnpm exec` and `pnpm dlx`, never `npx`.
