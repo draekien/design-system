@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-11-25",
+    "description": "Adds --spacing-list-id-min (4rem), --spacing-list-id-max (6rem), --spacing-list-name-min (6rem), --spacing-list-name-max (20rem), --spacing-list-fact-min (2rem) and --spacing-list-fact-max (12rem), the widths a list row part is held between, and --spacing-peek (22rem), the width of a list's peek card."
+  },
+  {
+    "date": "2026-11-25",
     "description": "Adds --spacing-page (3rem, gap-page), the gap between the sections of a docs page, such as Story and Lockup."
   },
   {

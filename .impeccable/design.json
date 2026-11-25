@@ -81,7 +81,7 @@
       {
         "name": "popover",
         "value": "0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18)",
-        "purpose": "Hover cards, menus and peek panels, on the popover layer (z-index 50); nothing in the page flow casts a shadow."
+        "purpose": "Hover cards, menus, the list peek card and the table peek panel, on the popover layer (z-index 50); nothing in the page flow casts a shadow."
       }
     ],
     "motion": [
@@ -135,9 +135,17 @@
       "name": "List Row",
       "kind": "custom",
       "refersTo": "list-row",
-      "description": "One record: rank 1 subject, then rank 2 facts; 44px, no line between rows, a floor-radius tint on hover and focus.",
-      "html": "<div class=\"ds-row\" tabindex=\"0\"><span class=\"ds-row-key\">INV-1042</span><span class=\"ds-row-name\">Harbour Freight Ltd</span><span class=\"ds-row-read\">$12,480.00</span></div>",
-      "css": ".ds-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px; border-radius: calc(var(--radius) * 0.6); color: var(--foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-row:hover { background: color-mix(in oklch, var(--foreground) 4%, transparent); } .ds-row:focus-visible { outline: none; background: color-mix(in oklch, var(--foreground) 4%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ring) 40%, transparent); } .ds-row-key { color: var(--muted-foreground); font-size: 0.75rem; } .ds-row-name { font-weight: 500; } .ds-row-read { font-variant-numeric: tabular-nums; text-align: right; }"
+      "description": "One record: rank 1 subject, then rank 2 facts at the row end; 44px, no line between rows, a floor-radius tint on hover and focus. Checkbox, ID and media line up down the list; facts do not.",
+      "html": "<div class=\"ds-row\" tabindex=\"0\"><span class=\"ds-row-key\">INV-1042</span><span class=\"ds-row-name\">Harbour Freight Ltd</span><span class=\"ds-row-spacer\"></span><span class=\"ds-row-read\">$12,480.00</span></div>",
+      "css": ".ds-row { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px; border-radius: calc(var(--radius) * 0.6); color: var(--foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-row:hover { background: color-mix(in oklch, var(--foreground) 4%, transparent); } .ds-row:focus-visible { outline: none; background: color-mix(in oklch, var(--foreground) 4%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ring) 40%, transparent); } .ds-row-key { min-width: 4rem; max-width: 6rem; color: var(--muted-foreground); font-size: 0.75rem; } .ds-row-name { min-width: 6rem; max-width: 20rem; font-weight: 500; } .ds-row-spacer { flex: 1; min-width: 0; } .ds-row-read { min-width: 2rem; max-width: 12rem; font-variant-numeric: tabular-nums; text-align: right; }"
+    },
+    {
+      "name": "List Peek",
+      "kind": "custom",
+      "refersTo": "list-peek",
+      "description": "A floating card under the peeked row, aligned to its end, 22rem wide and capped to the available space; focus stays on the row.",
+      "html": "<div class=\"ds-list-peek\" role=\"dialog\" aria-label=\"Peek\"><strong>Harbour Freight Ltd</strong><p>INV-1042, due 14 Dec</p></div>",
+      "css": ".ds-list-peek { width: 22rem; max-width: 100%; padding: 12px; display: grid; gap: 8px; border-radius: calc(var(--radius) * 0.6 + 12px); box-shadow: inset 0 0 0 1px var(--border), 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18); background: var(--popover); color: var(--popover-foreground); font: 400 0.875rem/1.43 \"Mona Sans Variable\", ui-sans-serif, system-ui, sans-serif; } .ds-list-peek strong { font-weight: 500; } .ds-list-peek p { margin: 0; font-size: 0.75rem; color: var(--muted-foreground); }"
     },
     {
       "name": "Table Row",

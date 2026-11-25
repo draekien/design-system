@@ -206,6 +206,55 @@
           "value": 1.25,
           "unit": "rem"
         }
+      },
+      "list-id-min": {
+        "$type": "dimension",
+        "$value": {
+          "value": 4,
+          "unit": "rem"
+        }
+      },
+      "list-id-max": {
+        "$type": "dimension",
+        "$value": {
+          "value": 6,
+          "unit": "rem"
+        }
+      },
+      "list-name-min": {
+        "$type": "dimension",
+        "$value": {
+          "value": 6,
+          "unit": "rem"
+        }
+      },
+      "list-name-max": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "rem"
+        }
+      },
+      "list-fact-min": {
+        "$type": "dimension",
+        "$value": {
+          "value": 2,
+          "unit": "rem"
+        }
+      },
+      "list-fact-max": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "rem"
+        }
+      },
+      "peek": {
+        "$type": "dimension",
+        "$value": {
+          "value": 22,
+          "unit": "rem"
+        }
       }
     },
     "text": {

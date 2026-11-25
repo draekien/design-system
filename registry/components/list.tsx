@@ -1,8 +1,11 @@
 import { Checkbox } from "@base-ui/react/checkbox"
 import { mergeProps } from "@base-ui/react/merge-props"
+import { Popover } from "@base-ui/react/popover"
 import { Tooltip } from "@base-ui/react/tooltip"
 import { useRender } from "@base-ui/react/use-render"
 import * as React from "react"
+// biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
+import { Card } from "@/components/card"
 // biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
 import { cn } from "@/lib/cn"
 
@@ -14,6 +17,9 @@ type ListContextValue = {
   onLinkKeyDown: (event: React.KeyboardEvent<HTMLElement>, value: string) => void
   onToggleSelected: (value: string) => void
   onTogglePeek: (value: string) => void
+  onPeekValueChange: (value: string | null) => void
+  rootRef: React.RefObject<HTMLUListElement | null>
+  peekRef: React.RefObject<HTMLDivElement | null>
 }
 
 const ListContext = React.createContext<ListContextValue | null>(null)
@@ -23,6 +29,8 @@ const linkSelector = '[data-slot="list-row-link"]'
 const rowSelector = '[data-slot="list-row"]'
 
 const selectSelector = '[data-slot="list-row-select"]'
+
+const peekFocusSelector = "a[href], button:not([disabled]), input:not([disabled]), [tabindex='0']"
 
 /** Props for {@link List}. */
 export type ListProps = Omit<useRender.ComponentProps<"ul">, "defaultValue"> & {
@@ -65,11 +73,10 @@ function rowLinks(root: HTMLElement | null): ReadonlyArray<HTMLElement> {
  * A list of records, one `ListRow` per record. Owns the row keyboard model: the list is one
  * tab stop; ↑ ↓ Home End move focus between rows; Space toggles peek on the focused row and an
  * open peek follows focus; X toggles selection on a row that has a `ListRowSelect`; Esc closes
- * peek, then clears the selection. A `ListRowPeek` toggles peek by pointer.
- * Peek renders nothing itself: read `peekValue` and render a read-only preview of the record's
- * page beside the list, under the row or in a drawer.
- * The list is a grid that its rows share, so their columns line up. Give any other child, such as an
- * inline peek, `col-span-full`.
+ * peek, then clears the selection. A `ListRowPeek` toggles peek by pointer. Render a `ListPeek`
+ * inside it to draw the peeked row's preview in a floating card.
+ * Each row lays out on its own: the checkbox, ID and media line up down the list, and the facts
+ * sit at the row's end, each as wide as its value.
  */
 export function List({
   selectedValues: selectedValuesProp,
@@ -84,6 +91,7 @@ export function List({
   ...props
 }: ListProps): React.ReactElement {
   const rootRef = React.useRef<HTMLUListElement>(null)
+  const peekRef = React.useRef<HTMLDivElement>(null)
   const [activeValue, setActiveValue] = React.useState<string | null>(null)
   const [selectedValues, setSelectedValues] = useControllable(
     selectedValuesProp,
@@ -163,6 +171,16 @@ export function List({
         event.preventDefault()
         focusLink(links.at(-1))
         return
+      case "Tab": {
+        const target = event.shiftKey
+          ? null
+          : peekRef.current?.querySelector<HTMLElement>(peekFocusSelector)
+        if (target !== null && target !== undefined) {
+          event.preventDefault()
+          target.focus()
+        }
+        return
+      }
       case "Escape":
         if (peekValue !== null) {
           setPeekValue(null)
@@ -190,6 +208,9 @@ export function List({
     onLinkKeyDown: handleLinkKeyDown,
     onToggleSelected: toggleSelected,
     onTogglePeek: togglePeek,
+    onPeekValueChange: setPeekValue,
+    rootRef,
+    peekRef,
   }
 
   const element = useRender({
@@ -199,10 +220,7 @@ export function List({
     state: { slot: "list" },
     props: mergeProps<"ul">(
       {
-        className: cn(
-          "@container grid grid-cols-[auto_auto_auto_minmax(0,auto)_minmax(0,1fr)_repeat(8,auto)_auto]",
-          className
-        ),
+        className: cn("@container flex flex-col", className),
       },
       props
     ),
@@ -255,8 +273,7 @@ const narrowClass: Readonly<Record<ListRowNarrow, string>> = {
   hide: "@max-abbreviate:**:data-[abbreviation=long]:sr-only @max-abbreviate:**:data-[abbreviation=short]:inline @max-hide:hidden",
 }
 
-const rowClass =
-  "group/list-row col-span-full grid min-h-11 grid-cols-subgrid items-center rounded-floor px-2"
+const rowClass = "group/list-row flex min-h-11 items-center rounded-floor px-2"
 
 function Bar({ className }: { className: string }) {
   return (
@@ -276,7 +293,7 @@ export type ListRowProps = useRender.ComponentProps<"li"> & {
  * to compare (rank 2), and `ListRowLink` to the item's own page (rank 5). Peek, rendered from
  * `List`'s `peekValue`, previews part of that page read-only; rank 4 is a `preview-card` on a
  * rank 1 or 2 value.
- * Columns line up down the list whatever the values are.
+ * Compose every row in a list with the same parts, so the checkbox, ID and media line up.
  */
 export function ListRow({ value, render, className, ...props }: ListRowProps): React.ReactElement {
   const list = useList()
@@ -332,8 +349,7 @@ export type ListRowSelectProps = Omit<
   "checked" | "defaultChecked" | "onCheckedChange" | "children"
 >
 
-const selectClass =
-  "col-start-1 flex size-6 shrink-0 items-center justify-center pointer-coarse:size-11"
+const selectClass = "flex size-6 shrink-0 items-center justify-center pointer-coarse:size-11"
 
 /**
  * The row's selection checkbox. It is 24×24px, 44×44px on a coarse pointer, and is drawn only on
@@ -384,10 +400,10 @@ export function ListRowSelect({ className, ...props }: ListRowSelectProps): Reac
   )
 }
 
-const linkClass = "col-[2/-2] grid h-full min-h-11 grid-cols-subgrid items-center pl-1"
+const linkClass = "flex h-full min-h-11 min-w-0 flex-1 items-center gap-related pl-1"
 
 const peekClass =
-  "col-[-2/-1] ml-1 flex size-6 shrink-0 items-center justify-center rounded-floor pointer-coarse:size-11"
+  "ml-1 flex size-6 shrink-0 items-center justify-center rounded-floor pointer-coarse:size-11"
 
 /** Props for {@link ListRowPeek}. */
 export type ListRowPeekProps = Omit<React.ComponentProps<"button">, "children" | "type">
@@ -551,19 +567,23 @@ function usePart(
 
 /**
  * Rank 1: what the row is about. Holds an optional `ListRowId` and `ListRowMedia`, then one
- * `ListRowName` and an optional `ListRowDescription`, at the start of the row.
+ * `ListRowName` and an optional `ListRowDescription`, at the start of the row. It takes the width
+ * the facts leave.
  */
 export function ListRowSubject({ children, ...props }: ListRowPartProps): React.ReactElement {
   return usePart(
     "ListRowSubject",
     "list-row-subject",
-    "col-[1/5] grid min-w-0 grid-cols-subgrid items-center",
+    "flex min-w-0 flex-1 items-center",
     children,
     { ...props, children }
   )
 }
 
-/** The item's ID, such as `REC-104`, in muted tabular figures. */
+/**
+ * The item's ID, such as `REC-104`, in muted tabular figures. It is at least 4rem wide, so IDs of up
+ * to 7 characters line up down the list, and truncates past 6rem.
+ */
 export function ListRowId({
   narrow = "keep",
   ...props
@@ -572,7 +592,7 @@ export function ListRowId({
     "ListRowId",
     "list-row-id",
     cn(
-      "col-start-1 truncate pr-related text-muted-foreground text-xs tabular-nums",
+      "min-w-list-id-min max-w-list-id-max shrink-0 truncate pr-related text-muted-foreground text-xs tabular-nums",
       narrowClass[narrow]
     ),
     <Bar className="w-12" />,
@@ -627,7 +647,7 @@ export function ListRowMedia(props: ListRowMediaProps): React.ReactElement {
     "ListRowMedia",
     "list-row-media",
     cn(
-      "col-start-2 mr-related flex size-6 items-center justify-center",
+      "mr-related flex size-6 shrink-0 items-center justify-center",
       mediaVariantClass[props.variant ?? "default"],
       narrowClass[props.narrow ?? "keep"]
     ),
@@ -641,15 +661,15 @@ export function ListRowMedia(props: ListRowMediaProps): React.ReactElement {
 }
 
 /**
- * The item's name. It takes the width it needs from what the other columns leave and truncates;
- * it is never hidden.
+ * The item's name. It takes the width it needs, up to 20rem, and truncates; when the row is too
+ * narrow for it, it shrinks to 6rem after the description is gone. It is never hidden.
  */
 export function ListRowName(props: ListRowPartProps): React.ReactElement {
   const row = useListRow("ListRowName")
   return usePart(
     "ListRowName",
     "list-row-name",
-    "col-start-3 min-w-0 truncate font-medium text-sm",
+    "min-w-list-name-min max-w-list-name-max truncate font-medium text-sm",
     <Bar className="w-40 max-w-full" />,
     { ...props, id: row.kind === "record" ? row.nameId : undefined },
     true
@@ -658,14 +678,14 @@ export function ListRowName(props: ListRowPartProps): React.ReactElement {
 
 /**
  * One line after the name saying what the item is about, in muted text. It fills the width the
- * other columns leave, truncates before the name does, and is hidden when the list is narrower
+ * name and the facts leave, truncates before the name does, and is hidden when the list is narrower
  * than 640px.
  */
 export function ListRowDescription(props: ListRowPartProps): React.ReactElement {
   return usePart(
     "ListRowDescription",
     "list-row-description",
-    "col-start-4 min-w-0 truncate pl-related text-muted-foreground text-sm @max-hide:hidden",
+    "min-w-0 flex-1 basis-0 truncate pl-related text-muted-foreground text-sm @max-hide:hidden",
     <Bar className="w-2/3" />,
     props
   )
@@ -699,12 +719,17 @@ function missingFactProps({
 
 /**
  * Rank 2: one fact about the subject that the list exists to compare, such as a state or a figure.
- * Each `ListRowFact` is its own column, and the row holds at most eight. Hold one `status`,
+ * Facts sit at the end of the row in the order given, each as wide as its value between 2rem and
+ * 12rem, so they do not line up down the list; put the fact the caller looks for first last, where
+ * it shares the row's right edge. The row holds at most eight. Hold one `status`,
  * `entity`, `figure`, `meter` or `relative-time` in it, or set `missing` when the value cannot be
  * shown.
  */
 export function ListRowFact({ narrow = "keep", ...props }: ListRowFactProps): React.ReactElement {
-  const factClass = cn("flex min-w-0 items-center pl-related text-sm", narrowClass[narrow])
+  const factClass = cn(
+    "flex min-w-list-fact-min max-w-list-fact-max items-center justify-end text-sm",
+    narrowClass[narrow]
+  )
   const partProps = props.missing === undefined ? props : missingFactProps(props)
   return usePart(
     "ListRowFact",
@@ -713,5 +738,77 @@ export function ListRowFact({ narrow = "keep", ...props }: ListRowFactProps): Re
     <Bar className="w-16" />,
     partProps,
     true
+  )
+}
+
+/** Props for {@link ListPeek}. */
+export type ListPeekProps = Omit<Popover.Popup.Props, "initialFocus" | "finalFocus" | "ref">
+
+function rowOf(root: HTMLElement | null, value: string | null): Element | null {
+  if (value === null) {
+    return null
+  }
+  return (
+    root
+      ?.querySelector(`${linkSelector}[data-value="${CSS.escape(value)}"]`)
+      ?.closest(rowSelector) ?? null
+  )
+}
+
+/**
+ * Peek: a floating card under the peeked row, aligned to its end, that previews part of the item's
+ * page read-only. Render it inside `List` and put the preview of the row in `peekValue` in it; it
+ * opens when peek opens and moves with it. Focus stays on the row, so ↑ ↓ move peek to the next
+ * row; Space, Esc or a press outside the list closes it. Pass `aria-label`, and give it the `id`
+ * that the rows' `aria-controls` names.
+ */
+export function ListPeek({ className, ...props }: ListPeekProps): React.ReactElement {
+  const { rootRef, peekRef, peekValue, onPeekValueChange } = useList()
+  const [anchor, setAnchor] = React.useState<Element | null>(null)
+
+  React.useLayoutEffect(() => {
+    const row = rowOf(rootRef.current, peekValue)
+    setAnchor((previous) => (previous === row ? previous : row))
+  })
+
+  function handleOpenChange(open: boolean, details: Popover.Root.ChangeEventDetails) {
+    const target = details.event.target
+    const isInList = target instanceof Node && rootRef.current?.contains(target) === true
+    if (open || isInList) {
+      return
+    }
+    if (peekRef.current?.contains(document.activeElement) === true) {
+      rootRef.current
+        ?.querySelector<HTMLElement>(`${linkSelector}[data-value="${CSS.escape(peekValue ?? "")}"]`)
+        ?.focus()
+    }
+    onPeekValueChange(null)
+  }
+
+  return (
+    <Popover.Root open={peekValue !== null && anchor !== null} onOpenChange={handleOpenChange}>
+      <Popover.Portal>
+        <Popover.Positioner
+          anchor={anchor}
+          side="bottom"
+          align="end"
+          sideOffset={4}
+          className="z-popover"
+        >
+          <Popover.Popup
+            ref={peekRef}
+            data-slot="list-peek"
+            initialFocus={false}
+            finalFocus={false}
+            render={<Card />}
+            className={cn(
+              "max-h-(--available-height) w-peek max-w-(--available-width) origin-(--transform-origin) overflow-y-auto bg-popover text-popover-foreground shadow-popover transition-[opacity,scale] duration-quick ease-out data-ending-style:opacity-0 data-ending-style:duration-0 data-starting-style:scale-(--preview-card-enter-scale) data-starting-style:opacity-0 motion-reduce:transition-none",
+              className
+            )}
+            {...props}
+          />
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
   )
 }

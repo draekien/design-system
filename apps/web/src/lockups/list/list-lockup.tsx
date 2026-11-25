@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import {
   List,
+  ListPeek,
   ListRow,
   ListRowDescription,
   ListRowFact,
@@ -49,10 +50,14 @@ export function ListLockup<TItem>({
   const [openValue, setOpenValue] = React.useState<string | null>(null)
   const listRef = React.useRef<HTMLDivElement>(null)
   const hintId = React.useId()
-  const inlinePeekId = React.useId()
-  const panelPeekId = React.useId()
+  const peekId = React.useId()
   const peeked = items.find((item) => dataset.value(item) === peekValue) ?? null
   const opened = items.find((item) => dataset.value(item) === openValue) ?? null
+
+  function handleOpen(value: string) {
+    setPeekValue(null)
+    setOpenValue(value)
+  }
 
   function handleBack(value: string) {
     flushSync(() => setOpenValue(null))
@@ -71,75 +76,52 @@ export function ListLockup<TItem>({
           onBack={() => handleBack(dataset.value(opened))}
         />
       )}
-      <div
-        ref={listRef}
-        hidden={opened !== null}
-        className="grid grid-cols-[minmax(0,1fr)] items-start gap-section lg:grid-cols-[minmax(0,1fr)_20rem]"
-      >
-        <div>
-          {state === "loading" ? (
-            <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
-              {items.map((item) => (
-                <ListRowLoading key={dataset.value(item)}>
-                  <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
-                </ListRowLoading>
-              ))}
-            </List>
-          ) : (
-            <List
-              aria-label={capitalise(dataset.noun)}
-              aria-describedby={hintId}
-              peekValue={peekValue}
-              onPeekValueChange={setPeekValue}
-              selectedValues={selectedValues}
-              onSelectedValuesChange={setSelectedValues}
-            >
-              {items.map((item) => (
-                <React.Fragment key={dataset.value(item)}>
-                  <ListRow value={dataset.value(item)}>
-                    <RowParts
-                      dataset={dataset}
-                      item={item}
-                      state={state}
-                      hidden={hidden}
-                      peekIds={`${inlinePeekId} ${panelPeekId}`}
-                      onOpen={setOpenValue}
-                    />
-                  </ListRow>
-                  {dataset.value(item) === peekValue && (
-                    <li
-                      id={inlinePeekId}
-                      className="col-span-full rounded-floor bg-foreground/4 p-3 lg:hidden"
-                    >
-                      <PeekContent
-                        dataset={dataset}
-                        item={item}
-                        state={state}
-                        onOpen={setOpenValue}
-                      />
-                    </li>
-                  )}
-                </React.Fragment>
-              ))}
-            </List>
-          )}
-          <ListFooter
-            dataset={dataset}
-            state={state}
-            count={items.length}
-            hintId={hintId}
-            selectedCount={selectedValues.length}
-            isSelectable={!hidden.has("select")}
-            onClearSelection={() => setSelectedValues([])}
-          />
-        </div>
-        <aside
-          id={panelPeekId}
-          aria-label="Peek"
-          className="hidden rounded-card border bg-card p-3 text-card-foreground text-sm lg:sticky lg:top-section lg:block lg:max-h-[calc(100svh-3rem)] lg:overflow-y-auto"
-        >
-          <PeekPanelBody dataset={dataset} item={peeked} state={state} onOpen={setOpenValue} />
-        </aside>
+      <div ref={listRef} hidden={opened !== null}>
+        {state === "loading" ? (
+          <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
+            {items.map((item) => (
+              <ListRowLoading key={dataset.value(item)}>
+                <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
+              </ListRowLoading>
+            ))}
+          </List>
+        ) : (
+          <List
+            aria-label={capitalise(dataset.noun)}
+            aria-describedby={hintId}
+            peekValue={peekValue}
+            onPeekValueChange={setPeekValue}
+            selectedValues={selectedValues}
+            onSelectedValuesChange={setSelectedValues}
+          >
+            {items.map((item) => (
+              <ListRow key={dataset.value(item)} value={dataset.value(item)}>
+                <RowParts
+                  dataset={dataset}
+                  item={item}
+                  state={state}
+                  hidden={hidden}
+                  peekId={dataset.value(item) === peekValue ? peekId : undefined}
+                  onOpen={handleOpen}
+                />
+              </ListRow>
+            ))}
+            <ListPeek id={peekId} aria-label="Peek">
+              {peeked !== null && (
+                <PeekContent dataset={dataset} item={peeked} state={state} onOpen={handleOpen} />
+              )}
+            </ListPeek>
+          </List>
+        )}
+        <ListFooter
+          dataset={dataset}
+          state={state}
+          count={items.length}
+          hintId={hintId}
+          selectedCount={selectedValues.length}
+          isSelectable={!hidden.has("select")}
+          onClearSelection={() => setSelectedValues([])}
+        />
       </div>
     </>
   )
@@ -150,7 +132,7 @@ export function RowParts<TItem>({
   item,
   state,
   hidden,
-  peekIds = "",
+  peekId,
   selectClassName,
   cardOpen,
   cardContainer,
@@ -161,7 +143,7 @@ export function RowParts<TItem>({
   item: TItem
   state: RowState
   hidden: Hidden
-  peekIds?: string
+  peekId?: string
   selectClassName?: string
   cardOpen?: boolean
   cardContainer?: HTMLElement | null
@@ -178,7 +160,7 @@ export function RowParts<TItem>({
       <ListRowLink
         href={`#${value}`}
         data-anchor={anchors?.get("link")}
-        aria-controls={peekIds === "" ? undefined : peekIds}
+        aria-controls={peekId}
         onClick={(event) => {
           if (onOpen !== undefined) {
             event.preventDefault()
@@ -314,33 +296,6 @@ function FooterMessage<TItem>({
     case "no-permission":
       return <span>{dataset.noPermissionMessage}</span>
   }
-}
-
-function PeekPanelBody<TItem>({
-  dataset,
-  item,
-  state,
-  onOpen,
-}: {
-  dataset: Dataset<TItem>
-  item: TItem | null
-  state: ListState
-  onOpen: (value: string) => void
-}) {
-  if (state === "loading") {
-    return <p className="text-muted-foreground">Peek is available once the {dataset.noun} load.</p>
-  }
-  if (item === null) {
-    return (
-      <p className="text-pretty text-muted-foreground">
-        <span className="pointer-coarse:hidden">
-          Focus a row and press <Kbd>Space</Kbd> to peek at it here.
-        </span>
-        <span className="hidden pointer-coarse:inline">Tap a row to open the {dataset.item}.</span>
-      </p>
-    )
-  }
-  return <PeekContent dataset={dataset} item={item} state={state} onOpen={onOpen} />
 }
 
 export function PeekContent<TItem>({

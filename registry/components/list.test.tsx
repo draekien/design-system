@@ -1,9 +1,10 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import type * as React from "react"
 import { describe, expect, it, vi } from "vitest"
 import {
   List,
+  ListPeek,
   ListRow,
   ListRowDescription,
   ListRowFact,
@@ -15,6 +16,7 @@ import {
   ListRowPeek,
   ListRowSelect,
   ListRowSubject,
+  useList,
 } from "@/components/list.tsx"
 import { Status, StatusMedia, StatusName } from "@/components/status.tsx"
 
@@ -74,6 +76,43 @@ function renderPeekList() {
     </List>
   )
   return { onPeekValueChange, onSelectedValuesChange }
+}
+
+function PeekedTitle() {
+  const { peekValue } = useList()
+  return (
+    <>
+      <p>{records.find((record) => record.id === peekValue)?.title}</p>
+      <a href={`/records/${peekValue}`}>Open {peekValue}</a>
+    </>
+  )
+}
+
+function renderFloatingPeekList() {
+  render(
+    <>
+      <List aria-label="Records">
+        {records.map((record) => (
+          <ListRow key={record.id} value={record.id}>
+            <ListRowLink href={`/records/${record.id}`}>
+              <ListRowSubject>
+                <ListRowName>{record.title}</ListRowName>
+              </ListRowSubject>
+            </ListRowLink>
+            <ListRowPeek />
+          </ListRow>
+        ))}
+        <ListPeek aria-label="Peek">
+          <PeekedTitle />
+        </ListPeek>
+      </List>
+      <button type="button">After the list</button>
+    </>
+  )
+}
+
+function peekCard() {
+  return screen.queryByRole("dialog", { name: "Peek" })
 }
 
 function link(title: string) {
@@ -273,6 +312,83 @@ function renderRow(link: React.ReactNode) {
     </List>
   )
 }
+
+describe("ListPeek", () => {
+  it("opens a card for the focused row on Space, keeps focus on the row and follows it", async () => {
+    const user = userEvent.setup()
+    renderFloatingPeekList()
+    await user.tab()
+    expect(peekCard()).toBeNull()
+
+    await user.keyboard(" ")
+    expect(
+      within(await screen.findByRole("dialog", { name: "Peek" })).getByText(
+        "Quarterly access review"
+      )
+    ).toBeDefined()
+    expect(document.activeElement).toBe(link("Quarterly access review"))
+
+    await user.keyboard("{ArrowDown}")
+    expect(peekCard()?.textContent).toContain("Retention policy update")
+    expect(document.activeElement).toBe(link("Retention policy update"))
+  })
+
+  it("moves Tab from the peeked row into the card, and Escape there closes it and refocuses the row", async () => {
+    const user = userEvent.setup()
+    renderFloatingPeekList()
+    await user.tab()
+    await user.keyboard(" ")
+    const card = await screen.findByRole("dialog", { name: "Peek" })
+
+    await user.tab()
+    expect(card.contains(document.activeElement)).toBe(true)
+
+    await user.keyboard("{Escape}")
+    expect(peekCard()).toBeNull()
+    expect(document.activeElement).toBe(link("Quarterly access review"))
+  })
+
+  it("leaves Tab to the page when peek is closed", async () => {
+    const user = userEvent.setup()
+    renderFloatingPeekList()
+    await user.tab()
+
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "After the list" }))
+  })
+
+  it("closes with Escape and with Space on the peeked row", async () => {
+    const user = userEvent.setup()
+    renderFloatingPeekList()
+    await user.tab()
+
+    await user.keyboard(" ")
+    await screen.findByRole("dialog", { name: "Peek" })
+    await user.keyboard("{Escape}")
+    expect(link("Quarterly access review").getAttribute("aria-expanded")).toBe("false")
+
+    await user.keyboard(" ")
+    await screen.findByRole("dialog", { name: "Peek" })
+    await user.keyboard(" ")
+    expect(link("Quarterly access review").getAttribute("aria-expanded")).toBe("false")
+  })
+
+  it("closes on a press outside the list but not on the peeked row's peek button", async () => {
+    const user = userEvent.setup()
+    renderFloatingPeekList()
+    const peek = screen.getByRole("button", { name: "Peek Retention policy update" })
+
+    await user.click(peek)
+    await screen.findByRole("dialog", { name: "Peek" })
+    await user.click(peek)
+    expect(peek.getAttribute("aria-expanded")).toBe("false")
+
+    await user.click(peek)
+    await screen.findByRole("dialog", { name: "Peek" })
+    await user.click(screen.getByRole("button", { name: "After the list" }))
+    expect(peek.getAttribute("aria-expanded")).toBe("false")
+  })
+})
 
 describe("ListRow", () => {
   it("names the link with every rank 1 part and each fact, in order", () => {

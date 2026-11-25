@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-11-25",
+    "description": "Rows no longer share columns. Only the checkbox, ID and media line up down the list: the ID is 4rem to 6rem wide, the name 6rem to 20rem, and the description fills what is left. The facts sit at the end of the row in the order given, each as wide as its value between 2rem and 12rem. Adds ListPeek, a floating card under the peeked row that previews the item read-only, keeps focus on the row, moves with peek, and closes on Space, Esc or a press outside the list. List's context gains onPeekValueChange and rootRef. The item now depends on card."
+  },
+  {
+    "date": "2026-11-25",
     "description": "Every column in a row is 8px apart, the related spacing token: the ID, the media, the description and each fact were 12px, 8px, 12px and 16px apart. ListRowPeek shows a tooltip, Peek · Space, that names it and its key. In a ListRowLoading, ListRowId, ListRowName and ListRowFact size their bar to the sample values you pass as children, so the columns keep their widths when the loaded rows replace the loading ones."
   },
   {
