@@ -14,7 +14,7 @@ export const summaryCardStory = {
   ],
   primaryAction: {
     action: "Open the record",
-    basis: "Developer's answer, 2026-11-22; summary-card.tsx has no CardLink yet",
+    basis: "Developer's answer, 2026-11-22; summaryCardRules: the name holds the CardLink",
   },
   neverNeeds: ["A picture"],
 } as const satisfies Story

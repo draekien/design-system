@@ -32,12 +32,13 @@ export const avatarRules: ReadonlyArray<Rule<StoryGoal<typeof avatarStory>>> = [
   {
     rule: "The assignee and the owner show their avatar and name as a link to their profile; a hover card names them and their team after 300ms, and the link is its keyboard route.",
     source:
-      "Design rules: Clear (a value names itself without a hover card), and every hover card has a keyboard route",
+      "Design rules: Clear (a value names itself without a hover card), and every hover card has a keyboard route; the 300ms delay is this design system's own decision",
     serves: "Reach one of them",
   },
   {
     rule: "A group draws at most three avatars overlapping by half their width, then a +N avatar for the rest, never +1: four people draw as four avatars. It is always a trigger: its popover lists everyone as links to their profiles, on hover after 300ms or on press, and scrolls when the list is taller than the space below.",
-    source: "Primer AvatarStack (2 to 4 avatars); Geist Avatar (a group gets one accessible label)",
+    source:
+      "Primer AvatarStack (2 to 4 avatars); Geist Avatar (a group gets one accessible label); the 300ms delay is this design system's own decision",
     serves: "See everyone involved",
   },
   {

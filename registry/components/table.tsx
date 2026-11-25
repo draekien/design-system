@@ -1,5 +1,6 @@
 import { Checkbox } from "@base-ui/react/checkbox"
 import { mergeProps } from "@base-ui/react/merge-props"
+import { Tooltip } from "@base-ui/react/tooltip"
 import { useRender } from "@base-ui/react/use-render"
 import * as React from "react"
 // biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
@@ -1021,7 +1022,7 @@ export type TableRowExpandProps = Omit<React.ComponentProps<"button">, "children
  * The chevron that shows or hides the row's children; render it only on a row that has children.
  * It is 24×24px, 44×44px on a coarse pointer, and not a tab stop: → and ← on the focused row
  * expand and collapse it. Its accessible name is "Expand" or "Collapse", described by the row's
- * name.
+ * name, and its tooltip names the action and its key.
  */
 export function TableRowExpand({ className, ...props }: TableRowExpandProps): React.ReactElement {
   const row = useBodyRowPart("TableRowExpand")
@@ -1038,39 +1039,53 @@ export function TableRowExpand({ className, ...props }: TableRowExpandProps): Re
   }
 
   return (
-    <button
-      {...mergeProps<"button">(
-        {
-          type: "button",
-          tabIndex: -1,
-          "aria-label": row.isExpanded ? "Collapse" : "Expand",
-          "aria-describedby": row.nameId,
-          onClick: () => table.onToggleExpanded(row.value),
-          className: cn(
-            controlClass,
-            "cursor-pointer rounded-floor text-muted-foreground transition-colors hover:bg-foreground/7 hover:text-foreground",
-            className
-          ),
-        },
-        props
-      )}
-      data-slot="table-row-expand"
-    >
-      <svg
-        viewBox="0 0 16 16"
-        aria-hidden="true"
-        className={cn("size-4 motion-safe:transition-transform", row.isExpanded && "rotate-90")}
+    <Tooltip.Root>
+      <Tooltip.Trigger
+        delay={300}
+        render={
+          <button
+            {...mergeProps<"button">(
+              {
+                type: "button",
+                tabIndex: -1,
+                "aria-label": row.isExpanded ? "Collapse" : "Expand",
+                "aria-describedby": row.nameId,
+                onClick: () => table.onToggleExpanded(row.value),
+                className: cn(
+                  controlClass,
+                  "cursor-pointer rounded-floor text-muted-foreground transition-colors hover:bg-foreground/7 hover:text-foreground",
+                  className
+                ),
+              },
+              props
+            )}
+            data-slot="table-row-expand"
+          />
+        }
       >
-        <path
-          d="M6 3.5 10.5 8 6 12.5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </button>
+        <svg
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+          className={cn("size-4 motion-safe:transition-transform", row.isExpanded && "rotate-90")}
+        >
+          <path
+            d="M6 3.5 10.5 8 6 12.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
+          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+            {row.isExpanded ? "Collapse · ←" : "Expand · →"}
+          </Tooltip.Popup>
+        </Tooltip.Positioner>
+      </Tooltip.Portal>
+    </Tooltip.Root>
   )
 }
 

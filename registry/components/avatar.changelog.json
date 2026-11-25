@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-25",
+    "description": "An AvatarGroup rendered as a button or link is at least 24px wide, and 44px on a touch screen, so a one-avatar trigger meets the hit-area minimum."
+  },
+  {
     "date": "2026-10-30",
     "description": "Component introduced: Avatar, AvatarImage, AvatarFallback and AvatarGroup, moved from the avatar experiment."
   }

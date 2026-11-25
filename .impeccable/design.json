@@ -277,7 +277,7 @@
       "**Do** derive a container's radius from its content's radius plus its padding.",
       "**Do** pad a container of controls by 4px with `{rounded.lg}`, and a container of content by 12px with `{rounded.card}`.",
       "**Do** name a figure's unit in its column header, such as Amount (AUD).",
-      "**Do** let the container set the gap between its children from `--spacing-run`, `--spacing-related` or `--spacing-section`.",
+      "**Do** let the container set the gap between its children from `--spacing-run`, `--spacing-related`, `--spacing-section` or `--spacing-page`.",
       "**Do** keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer.",
       "**Do** give every hit area at least 24×24px, and 44×44px on a coarse pointer.",
       "**Do** use tabular figures for any number compared down a column."

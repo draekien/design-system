@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-25",
+    "description": "The dot and its word are spaced with the gap-related token, 8px as before, so the gap follows the spacing tokens."
+  },
+  {
     "date": "2026-10-21",
     "description": "Renamed from status-mark: install status and import Status, StatusMedia (was StatusMarkDot) and StatusName (was StatusMarkLabel) from @/components/status. Adds StatusDescription, one muted line after the name. The ring width token is now --status-media-ring."
   },

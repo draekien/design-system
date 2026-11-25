@@ -40,8 +40,9 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     serves: "Check a record's details without leaving the list",
   },
   {
-    rule: "A row with a peek button opens peek from it on hover, focus or a coarse pointer, so a click on the row opens the item's page.",
-    source: "This design system's own decision (Linear Peek previews without leaving the list)",
+    rule: "A row with a peek button opens peek from it on hover, focus or a coarse pointer, so a click on the row opens the item's page. The button's tooltip reads Peek · Space.",
+    source:
+      "This design system's own decision (Linear Peek previews without leaving the list); the tooltip follows design rules: Loading, results and help",
     serves: "Check a record's details without leaving the list",
   },
   {
@@ -61,12 +62,17 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     serves: "Check a record's details without leaving the list",
   },
   {
+    rule: "The invoice list opens with unpaid invoices first, earliest due date first, so the invoices to chase lead the list.",
+    source: "Design rules: Tables, default order, following Tesler's Law",
+    serves: "Find the records that need action, such as overdue invoices to chase",
+  },
+  {
     rule: "A row is selectable only when it has a checkbox; the checkbox is drawn on a hovered, focused or selected row, and always on a coarse pointer.",
     source: "Linear select issues; Linear issue list (screenshots, 2026-10-08)",
     serves: "Act on several records at once",
   },
   {
-    rule: "X toggles selection on the focused row when it has a checkbox; Esc clears the selection when peek is closed; the footer counts the selection and offers Clear selection.",
+    rule: "X toggles selection on the focused row when it has a checkbox, and the footer lists X only then; Esc clears the selection when peek is closed; the footer counts the selection and offers Clear selection.",
     source: "This design system's own decision",
     serves: "Act on several records at once",
   },

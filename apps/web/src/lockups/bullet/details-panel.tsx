@@ -45,10 +45,11 @@ function detailsRecord() {
 
 const properties = ["Priority", "Reviewers", "Workspace", "Policy", "Due"] as const
 
-const panelClass = "w-80 max-w-full rounded-card border bg-card p-3 text-card-foreground"
+const panelClass =
+  "flex w-80 max-w-full flex-col gap-section rounded-card border bg-card p-3 text-card-foreground"
 
 const listClass =
-  "mt-4 grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-x-related gap-y-1 [&_dd]:flex [&_dd]:min-w-0 pointer-coarse:[&_dd]:min-h-hit-coarse [&_dt]:text-muted-foreground [&_dt]:text-xs"
+  "grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-x-related gap-y-run [&_dd]:flex [&_dd]:min-w-0 pointer-coarse:[&_dd]:min-h-hit-coarse [&_dt]:text-muted-foreground [&_dt]:text-xs"
 
 /** The centre parts of the details panel that a constellation connector ends on, by part number. */
 export type Anchors = Readonly<{
@@ -104,9 +105,20 @@ export function DetailsError(): React.ReactElement {
 export function DetailsLoading(): React.ReactElement {
   return (
     <article aria-label="Record details, loading" aria-busy="true" className={panelClass}>
-      <Bar className="w-40" />
-      <Bar className="mt-2 w-14" />
-      <Bar className="mt-4 w-36" />
+      <div className="flex flex-col gap-related">
+        <div>
+          <div className="flex h-5 items-center">
+            <Bar className="w-40" />
+          </div>
+          <div className="flex h-4 items-center">
+            <Bar className="w-14" />
+          </div>
+        </div>
+        <div className="flex min-h-hit-min items-center gap-x-related">
+          <Bar className="w-20" />
+          <Bar className="w-24" />
+        </div>
+      </div>
       <dl className={listClass}>
         {properties.map((name) => (
           <React.Fragment key={name}>
@@ -143,11 +155,15 @@ export function DetailsPanel({
   }
   return (
     <article aria-labelledby={titleId} className={panelClass}>
-      <h2 id={titleId} className="font-medium text-sm">
-        {record.title}
-      </h2>
-      <p className="text-muted-foreground text-xs">{details.recordId}</p>
-      <RecordMeta />
+      <header className="flex flex-col gap-related">
+        <div>
+          <h2 id={titleId} className="font-medium text-sm">
+            {record.title}
+          </h2>
+          <p className="text-muted-foreground text-xs">{details.recordId}</p>
+        </div>
+        <RecordMeta />
+      </header>
       <dl className={listClass}>
         {properties.map((name) => (
           <React.Fragment key={name}>
@@ -157,7 +173,7 @@ export function DetailsPanel({
         ))}
       </dl>
       {canEdit ? null : (
-        <p className="mt-4 text-muted-foreground text-xs">
+        <p className="text-muted-foreground text-xs">
           Only {details.owner.name}, the record's owner, can change its priority.
         </p>
       )}
@@ -167,7 +183,7 @@ export function DetailsPanel({
 
 function RecordMeta() {
   return (
-    <p className="mt-2 flex flex-wrap gap-x-4 text-muted-foreground">
+    <p className="flex flex-wrap gap-x-related text-muted-foreground">
       <Bullet>
         <BulletMedia>
           <HugeiconsIcon icon={UserGroupIcon} />
@@ -241,6 +257,7 @@ export function PriorityContent({ priority }: { priority: RecordPriority }): Rea
 function PriorityBullet({ canEdit }: { canEdit: boolean }) {
   const anchors = React.use(AnchorsContext)
   const [priority, setPriority] = React.useState<RecordPriority>(details.priority)
+  const [changed, setChanged] = React.useState(false)
 
   if (!canEdit || anchors !== null) {
     return (
@@ -251,42 +268,48 @@ function PriorityBullet({ canEdit }: { canEdit: boolean }) {
   }
 
   return (
-    <Menu.Root>
-      <Bullet size="lg" render={<Menu.Trigger aria-label={`Change priority, now ${priority}`} />}>
-        <PriorityContent priority={priority} />
-      </Bullet>
-      <Menu.Portal>
-        <Menu.Positioner side="bottom" align="start" sideOffset={4} className="z-popover">
-          <Menu.Popup className={menuSurface}>
-            <Menu.RadioGroup
-              value={priority}
-              onValueChange={(value) => {
-                const next = recordPriorities.find((option) => option === value)
-                if (next !== undefined) {
-                  setPriority(next)
-                }
-              }}
-            >
-              {recordPriorities.map((option) => (
-                <Menu.RadioItem
-                  key={option}
-                  value={option}
-                  closeOnClick
-                  className={cn(menuItem, "gap-related")}
-                >
-                  <span className="flex size-4 items-center justify-center">
-                    <Menu.RadioItemIndicator>
-                      <HugeiconsIcon icon={Tick02Icon} className="size-4" />
-                    </Menu.RadioItemIndicator>
-                  </span>
-                  {option}
-                </Menu.RadioItem>
-              ))}
-            </Menu.RadioGroup>
-          </Menu.Popup>
-        </Menu.Positioner>
-      </Menu.Portal>
-    </Menu.Root>
+    <span className="flex min-w-0 items-center gap-related">
+      <Menu.Root>
+        <Bullet size="lg" render={<Menu.Trigger aria-label={`Change priority, now ${priority}`} />}>
+          <PriorityContent priority={priority} />
+        </Bullet>
+        <Menu.Portal>
+          <Menu.Positioner side="bottom" align="start" sideOffset={4} className="z-popover">
+            <Menu.Popup className={menuSurface}>
+              <Menu.RadioGroup
+                value={priority}
+                onValueChange={(value) => {
+                  const next = recordPriorities.find((option) => option === value)
+                  if (next !== undefined) {
+                    setPriority(next)
+                    setChanged(true)
+                  }
+                }}
+              >
+                {recordPriorities.map((option) => (
+                  <Menu.RadioItem
+                    key={option}
+                    value={option}
+                    closeOnClick
+                    className={cn(menuItem, "gap-related")}
+                  >
+                    <span className="flex size-4 items-center justify-center">
+                      <Menu.RadioItemIndicator>
+                        <HugeiconsIcon icon={Tick02Icon} className="size-4" />
+                      </Menu.RadioItemIndicator>
+                    </span>
+                    {option}
+                  </Menu.RadioItem>
+                ))}
+              </Menu.RadioGroup>
+            </Menu.Popup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>
+      <span role="status" className="shrink-0 text-muted-foreground text-xs">
+        {changed ? `Priority set to ${priority}` : null}
+      </span>
+    </span>
   )
 }
 

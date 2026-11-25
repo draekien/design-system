@@ -66,9 +66,9 @@ export const tableRules: ReadonlyArray<Rule<StoryGoal<typeof tableStory>>> = [
     serves: "Act on several records at once, such as sending reminders",
   },
   {
-    rule: "While any invoice is selected, the selection bar fixed to the bottom shows the count, Send reminder and Export, a ⋯ menu with Mark as paid and then Void after a divider, and Clear. Below sm, Export moves into the menu. Void asks to confirm, with Cancel focused.",
+    rule: "While any invoice is selected, the selection bar fixed to the bottom shows the count, Send reminder and Export, a ⋯ menu with Mark as paid and then Void after a divider, and Clear. Below sm, Export moves into the menu. Void asks to confirm, with Cancel focused. Each action clears the selection and states its result in the footer, such as Reminder sent for 3 invoices; the ⋯ button's tooltip reads More actions.",
     source:
-      "Linear select issues; Geist Menu; Stripe Accordion; Carbon menu buttons; limiting the actions follows Hick's Law",
+      "Linear select issues; Geist Menu; Stripe Accordion; Carbon menu buttons; limiting the actions follows Hick's Law; the result line follows design rules: Loading, results and help",
     serves: "Act on several records at once, such as sending reminders",
   },
   {
@@ -102,7 +102,7 @@ export const tableRules: ReadonlyArray<Rule<StoryGoal<typeof tableStory>>> = [
     serves: "Act on several records at once, such as sending reminders",
   },
   {
-    rule: "Every hit area is at least 24×24px; checkboxes and the expand control grow to 44×44px on a coarse pointer.",
+    rule: "Every hit area is at least 24×24px, Retry lines included; checkboxes and the expand control grow to 44×44px on a coarse pointer. The expand control's tooltip names its action and key, Expand · → or Collapse · ←.",
     source: "Primer designer checklist; Fitts's Law; 44px is this design system's own decision",
     serves: "all",
   },

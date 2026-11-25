@@ -30,7 +30,7 @@ export function ComponentPage({
   const docs = requireItemDocs(item.name)
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-12 px-5 py-8 sm:px-8 lg:py-10">
+    <div className="mx-auto flex max-w-5xl flex-col gap-page px-5 py-8 sm:px-8 lg:py-10">
       <header>
         <h1 className="font-semibold text-3xl tracking-[-0.03em] [font-stretch:108%]">
           {item.title}

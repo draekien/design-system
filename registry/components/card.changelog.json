@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-25",
+    "description": "Spacing between a card's parts comes from the spacing tokens: facts in a row and the labelled facts' columns are gap-related (8px, from 12px and 16px), labelled facts stack with no gap (from 4px), and the empty picture's icon and word and CardExplain's icon and trigger text are gap-related (8px, from 4px)."
+  },
+  {
     "date": "2026-11-13",
     "description": "Adds CardFooter: one muted line after the card's other parts; it throws on a link or a button, which go in CardAside. CardAside styles a link among its always-shown items. CardAction and CardExplain throw inside a hover card, which marks its content with CardHoverOnly. CardFacts takes layout \"bullets\", one bullet per fact with CardFact's new icon prop; install the bullet item with card."
   },

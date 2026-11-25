@@ -49,6 +49,7 @@ spacing:
   run: "0px"
   related: "8px"
   section: "24px"
+  page: "48px"
   hit-min: "24px"
   hit-coarse: "44px"
   hit-outset: "10px"
@@ -161,7 +162,7 @@ The system is defined by the relationships between components, not by the compon
 | Placement | A table where the caller compares down a column, a list where they scan for one record | `docs/contexts/design-rules.md` |
 | Nesting | Groups do not nest; records nest one level deep | `docs/contexts/design-rules.md`, `List` |
 | Adjacency | A selection bar holds at most two actions, then a ⋯ menu | `docs/contexts/design-rules.md` |
-| Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px | `docs/contexts/design-rules.md`; the `--spacing-run`, `--spacing-related` and `--spacing-section` tokens |
+| Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px, the sections of a docs page 48px | `docs/contexts/design-rules.md`; the `--spacing-run`, `--spacing-related`, `--spacing-section` and `--spacing-page` tokens |
 | Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; the `--radius-floor`, `--radius-lg`, `--radius-card` and `--radius-panel` tokens; list rows, table header and footer fills, and the card around a table use the floor and card radii |
 
 Every surface is fast to scan: a caller finds the value its top goal needs by reading down the rank 1 edge and across to one rank 2 slot, and opens nothing.
@@ -234,7 +235,7 @@ Lists are CSS grids whose rows are subgrids, so every row's columns align with t
 
 Cards respond to their own width, not the viewport's: below the `card-abbreviate` container width (16rem) a fact marked to abbreviate shows its short form, and below `card-hide` (13rem) a fact marked to hide disappears. Cards in a grid are `{spacing.related}` (8px) apart.
 
-The container sets the gap between its children by how the two neighbours relate: `{spacing.run}` between the same component in a run (row after row, with no line between them), `{spacing.related}` between parts of one record or control (a status dot and its word), `{spacing.section}` between separate sections (two stacked lists). A component never sets margin on itself.
+The container sets the gap between its children by how the two neighbours relate: `{spacing.run}` between the same component in a run (row after row, with no line between them), `{spacing.related}` between parts of one record or control (a status dot and its word), `{spacing.section}` between separate sections (two stacked lists), `{spacing.page}` between the sections of a docs page. A component never sets margin on itself.
 
 ## Elevation & Depth
 
@@ -355,7 +356,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Do** derive a container's radius from its content's radius plus its padding.
 - **Do** pad a container of controls by 4px with `{rounded.lg}`, and a container of content by 12px with `{rounded.card}`.
 - **Do** name a figure's unit in its column header, such as Amount (AUD).
-- **Do** let the container set the gap between its children from `--spacing-run`, `--spacing-related` or `--spacing-section`.
+- **Do** let the container set the gap between its children from `--spacing-run`, `--spacing-related`, `--spacing-section` or `--spacing-page`.
 - **Do** keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer.
 - **Do** give every hit area at least 24×24px, and 44×44px on a coarse pointer.
 - **Do** use tabular figures for any number compared down a column.

@@ -24,7 +24,7 @@ export function Home({ state }: { state: FixtureState }) {
         <Wordmark />
       </header>
 
-      <main className="grid flex-1 items-start gap-14 py-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:py-16">
+      <main className="grid flex-1 items-start gap-page py-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:py-16">
         <div className="max-w-xl">
           <h1 className="text-balance font-semibold text-[2.75rem] leading-[1.04] tracking-[-0.035em] [font-stretch:108%] sm:text-6xl">
             Rule-driven components for data-dense interfaces.

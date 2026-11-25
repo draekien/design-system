@@ -14,7 +14,7 @@ export const metricCardStory = {
   ],
   primaryAction: {
     action: "Open what the figure counts, such as the overdue invoices",
-    basis: "Developer's answer, 2026-11-22; metric-card.tsx has no link yet",
+    basis: "Developer's answer, 2026-11-22; metricCardRules: the name holds the CardLink",
   },
   neverNeeds: ["A picture"],
 } as const satisfies Story

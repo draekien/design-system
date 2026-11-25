@@ -6,6 +6,7 @@ import {
   CardDescription,
   CardFact,
   CardFacts,
+  CardLink,
   CardMissing,
   CardName,
   CardSubject,
@@ -84,7 +85,9 @@ export function MetricCard({
       <CardFacts data-anchor={anchors?.figure}>
         <CardFact label="Amount">
           {loading ? (
-            <Bar className="my-2 w-28" />
+            <span className="flex h-8 items-center">
+              <Bar className="w-28" />
+            </span>
           ) : state === "no-permission" ? (
             <CardMissing>Amount hidden</CardMissing>
           ) : (
@@ -114,7 +117,7 @@ export function MetricCard({
               </span>
             ) : (
               <PreviewCard>
-                <PreviewCardTrigger>{changeFigure}</PreviewCardTrigger>
+                <PreviewCardTrigger tabIndex={0}>{changeFigure}</PreviewCardTrigger>
                 <PreviewCardContent {...belowTrigger}>
                   <CardSubject>
                     <CardName>
@@ -139,7 +142,15 @@ export function MetricCard({
         </CardFacts>
       </CardAside>
       <CardSubject data-anchor={anchors?.subject}>
-        <CardName data-anchor={anchors?.name}>{metric.name}</CardName>
+        <CardName data-anchor={anchors?.name}>
+          {anchors === undefined ? (
+            <CardLink href={`#${metric.name.toLowerCase().replaceAll(" ", "-")}`}>
+              {metric.name}
+            </CardLink>
+          ) : (
+            metric.name
+          )}
+        </CardName>
         <CardDescription data-anchor={anchors?.description}>{metric.description}</CardDescription>
       </CardSubject>
     </Card>

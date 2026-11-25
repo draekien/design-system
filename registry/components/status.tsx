@@ -11,7 +11,7 @@ export function Status({ className, ...props }: React.ComponentProps<"span">): R
   return (
     <span
       data-slot="status"
-      className={cn("inline-flex min-w-0 items-center gap-2", className)}
+      className={cn("inline-flex min-w-0 items-center gap-related", className)}
       {...props}
     />
   )

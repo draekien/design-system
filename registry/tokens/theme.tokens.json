@@ -158,6 +158,13 @@
           "unit": "rem"
         }
       },
+      "page": {
+        "$type": "dimension",
+        "$value": {
+          "value": 3,
+          "unit": "rem"
+        }
+      },
       "hit-min": {
         "$type": "dimension",
         "$value": {

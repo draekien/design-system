@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-25",
+    "description": "The bar and its figure are spaced with the gap-related token, 8px as before, so the gap follows the spacing tokens."
+  },
+  {
     "date": "2026-10-21",
     "description": "Renamed from track: install meter and import Meter from @/components/meter. The value width token is now --meter-value-min."
   },

@@ -46,7 +46,7 @@ import { Status, StatusMedia, StatusName } from "@/components/status"`,
   </CardFacts>
 </Card>`,
     description:
-      "One record's properties, one per line after its name. Leave out CardLink: the card sits on the record's own page.",
+      "One record's properties, one per line after its name, which holds the CardLink to the record.",
   },
   composition: {
     name: "RecordProperties",

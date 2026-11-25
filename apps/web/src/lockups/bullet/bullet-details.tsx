@@ -16,12 +16,12 @@ export function BulletDetails(): React.ReactElement {
   return (
     <section
       aria-labelledby={titleId}
-      className="w-80 max-w-full rounded-card border bg-card p-3 text-card-foreground"
+      className="flex w-80 max-w-full flex-col gap-section rounded-card border bg-card p-3 text-card-foreground"
     >
       <h2 id={titleId} className="font-medium text-sm">
         Rotate audit log keys
       </h2>
-      <dl className="mt-4 grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-x-related gap-y-1 [&_dd]:flex [&_dd]:min-w-0 [&_dt]:text-muted-foreground [&_dt]:text-xs">
+      <dl className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-x-related gap-y-run [&_dd]:flex [&_dd]:min-w-0 [&_dt]:text-muted-foreground [&_dt]:text-xs">
         <dt>Workspace</dt>
         <dd>
           <PreviewCard>

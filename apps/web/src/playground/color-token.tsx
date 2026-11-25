@@ -232,15 +232,17 @@ function ChannelSlider({
         <Slider.Label className="font-medium text-muted-foreground">{channel.label}</Slider.Label>
         <span className="font-mono text-[0.6875rem] tabular-nums">{channel.format(value)}</span>
       </div>
-      <Slider.Control className="flex h-5 touch-none items-center">
+      <Slider.Control className="flex h-6 touch-none items-center">
         <Slider.Track
           className="h-3 w-full rounded-full shadow-[0_0_0_1px_rgb(0_0_0/0.1)_inset]"
           style={{ background: channel.track(color) }}
         >
           <Slider.Thumb
             getAriaValueText={() => channel.format(value)}
-            className="size-4 rounded-full border-2 border-white bg-transparent shadow-[0_0_0_1px_rgb(0_0_0/0.35),0_1px_3px_rgb(0_0_0/0.3)] outline-none has-focus-visible:outline-2 has-focus-visible:outline-ring has-focus-visible:outline-offset-2 has-focus-visible:outline-solid"
-          />
+            className="flex size-6 items-center justify-center rounded-full outline-none has-focus-visible:outline-2 has-focus-visible:outline-ring has-focus-visible:outline-solid"
+          >
+            <span className="size-4 rounded-full border-2 border-white bg-transparent shadow-[0_0_0_1px_rgb(0_0_0/0.35),0_1px_3px_rgb(0_0_0/0.3)]" />
+          </Slider.Thumb>
         </Slider.Track>
       </Slider.Control>
     </Slider.Root>

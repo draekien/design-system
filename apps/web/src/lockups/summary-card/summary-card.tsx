@@ -11,12 +11,14 @@ import {
   CardFact,
   CardFacts,
   CardId,
+  CardLink,
   CardMissing,
   CardName,
   CardSubject,
 } from "@/components/card.tsx"
 import { Entity, EntityMedia, EntityName } from "@/components/entity.tsx"
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/components/preview-card.tsx"
+import { cn } from "@/lib/cn.ts"
 import { Bar, ErrorMessage, RetryLink } from "../../experiments/wireframe-parts.tsx"
 import { recordStatus } from "../list/datasets.tsx"
 import { belowTrigger, retryClass } from "../record-card/card-styles.ts"
@@ -45,7 +47,7 @@ function pastCardEdge(trigger: HTMLElement | null, card: HTMLElement | null, sid
   return (side === "left" ? anchor.left - edge.left : edge.right - anchor.right) + 6
 }
 
-/** One record's properties: its head, then each fact after its property's name. Nothing links out. */
+/** One record's properties: its head, then each fact after its property's name. Its name links to the record. */
 export function SummaryCard({
   state,
   record = summaryRecord,
@@ -66,7 +68,10 @@ export function SummaryCard({
   const workspace =
     anchors === undefined ? (
       <PreviewCard>
-        <PreviewCardTrigger ref={workspaceRef} className="w-full min-w-0 justify-start">
+        <PreviewCardTrigger
+          ref={workspaceRef}
+          className="relative z-raised w-full min-w-0 justify-start"
+        >
           <span className="truncate">{details.workspace}</span>
         </PreviewCardTrigger>
         <PreviewCardContent
@@ -118,7 +123,13 @@ export function SummaryCard({
           {loading ? <Bar className="my-1 w-14" /> : record.id}
         </CardId>
         <CardName data-anchor={anchors?.name}>
-          {loading ? <Bar className="my-1 w-40" /> : record.title}
+          {loading ? (
+            <Bar className="my-1 w-40" />
+          ) : anchors === undefined ? (
+            <CardLink href={`#${record.id}`}>{record.title}</CardLink>
+          ) : (
+            record.title
+          )}
         </CardName>
       </CardSubject>
       <CardFacts layout="labelled" data-anchor={anchors?.facts}>
@@ -134,7 +145,7 @@ export function SummaryCard({
       </CardFacts>
       {state === "partial" ? (
         <Note>
-          The assignee could not load. <RetryLink className={retryClass} />
+          The assignee could not load. <RetryLink className={cn(retryClass, "relative z-raised")} />
         </Note>
       ) : null}
       {state === "no-permission" ? (
@@ -156,14 +167,18 @@ export function SummaryCardLockup({ state }: { state: FixtureState }): React.Rea
 /** The States view: the worst-case record's properties, in the given state. */
 export function SummaryCardStates({ state }: { state: FixtureState }): React.ReactElement {
   return (
-    <section className="flex flex-col gap-related">
-      <h2 className="font-medium text-sm">Worst case</h2>
-      <div className="w-80 max-w-full">
-        <SummaryCard state={state} record={worstSummaryRecord} details={worstRecordDetails} />
+    <section className="flex flex-col gap-section">
+      <div className="flex flex-col gap-related">
+        <h2 className="font-medium text-sm">Worst case</h2>
+        <div className="w-80 max-w-full">
+          <SummaryCard state={state} record={worstSummaryRecord} details={worstRecordDetails} />
+        </div>
       </div>
-      <h2 className="font-medium text-sm">Narrow</h2>
-      <div className="w-60">
-        <SummaryCard state={state} />
+      <div className="flex flex-col gap-related">
+        <h2 className="font-medium text-sm">Narrow</h2>
+        <div className="w-60">
+          <SummaryCard state={state} />
+        </div>
       </div>
     </section>
   )

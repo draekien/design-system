@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-25",
+    "description": "The media and name are spaced with the gap-related token, 8px as before, so the gap follows the spacing tokens."
+  },
+  {
     "date": "2026-10-30",
     "description": "EntityMedia is now a 24px Avatar from the avatar item: it takes Avatar's props, draws a square for a team with shape=\"square\", and shows its AvatarFallback until an AvatarImage loads. Initials passed as children still work."
   },

@@ -7,8 +7,10 @@ import {
   CardMenuItem,
   PopoverCard,
   PopoverCardContent,
+  PopoverCardLockup,
   PopoverCardTrigger,
 } from "./popover-card.tsx"
+import { people } from "./popover-card-data.ts"
 
 function renderCard(onReassign = vi.fn()) {
   render(
@@ -67,5 +69,17 @@ describe("PopoverCard", () => {
 
     expect(onReassign).toHaveBeenCalledOnce()
     expect(screen.queryByRole("heading", { name: "Mira Okafor" })).toBeNull()
+  })
+
+  it("states an action's result beside the people it acted on", async () => {
+    const user = userEvent.setup()
+    const [{ person }] = people
+    render(<PopoverCardLockup state="loaded" />)
+    await user.click(screen.getByRole("button", { name: person.name }))
+    await user.click(await screen.findByRole("button", { name: `More actions for ${person.name}` }))
+
+    await user.click(screen.getByRole("button", { name: "Remove from record" }))
+
+    expect(screen.getByRole("status").textContent).toBe(`${person.name} removed from the record`)
   })
 })

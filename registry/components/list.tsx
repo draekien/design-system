@@ -1,5 +1,6 @@
 import { Checkbox } from "@base-ui/react/checkbox"
 import { mergeProps } from "@base-ui/react/merge-props"
+import { Tooltip } from "@base-ui/react/tooltip"
 import { useRender } from "@base-ui/react/use-render"
 import * as React from "react"
 // biome-ignore lint/correctness/useImportExtensions: shadcn add copies this import into consumer projects, which may not allow .ts extensions
@@ -308,7 +309,8 @@ export function ListRow({ value, render, className, ...props }: ListRowProps): R
 
 /**
  * A placeholder row shown while items load. Compose the same parts as `ListRow`; each part draws
- * a bar and ignores its children, so the loading row has the columns of the rows that replace it.
+ * a bar. `ListRowId`, `ListRowName` and `ListRowFact` size their bar to their children when given
+ * sample values, so the columns keep their widths when the rows that replace it arrive.
  */
 export function ListRowLoading({
   render,
@@ -393,9 +395,10 @@ export type ListRowPeekProps = Omit<React.ComponentProps<"button">, "children" |
 /**
  * A button at the end of the row that toggles peek on it, so a pointer reaches peek while a click
  * on `ListRowLink` opens the item's page. It is 24×24px, 44×44px on a coarse pointer, and is
- * drawn only on a hovered, focused or peeked row, and always on a coarse pointer. It is not a tab
- * stop: Space on the focused row toggles peek. Its accessible name is "Peek" followed by the row's
- * name; pass `aria-controls` the id of the element that renders peek.
+ * drawn only on a hovered, focused or peeked row, and always on a coarse pointer. Its tooltip
+ * names it and its key. It is not a tab stop: Space on the focused row toggles peek. Its
+ * accessible name is "Peek" followed by the row's name; pass `aria-controls` the id of the
+ * element that renders peek.
  */
 export function ListRowPeek({ className, ...props }: ListRowPeekProps): React.ReactElement {
   const row = useListRow("ListRowPeek")
@@ -407,38 +410,52 @@ export function ListRowPeek({ className, ...props }: ListRowPeekProps): React.Re
   }
 
   return (
-    <button
-      {...mergeProps<"button">(
-        {
-          type: "button",
-          tabIndex: -1,
-          "aria-expanded": row.isPeeked,
-          "aria-labelledby": `${labelId} ${row.nameId}`,
-          onClick: () => list.onTogglePeek(row.value),
-          className: cn(
-            peekClass,
-            "invisible cursor-pointer text-muted-foreground outline-none transition-colors hover:bg-foreground/7 hover:text-foreground aria-expanded:visible aria-expanded:text-foreground pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible",
-            className
-          ),
-        },
-        props
-      )}
-      data-slot="list-row-peek"
-    >
-      <span id={labelId} className="sr-only">
-        Peek
-      </span>
-      <svg viewBox="0 0 16 16" aria-hidden="true" className="size-4">
-        <path
-          d="M1.75 8S4 3.75 8 3.75 14.25 8 14.25 8 12 12.25 8 12.25 1.75 8 1.75 8Z"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-        />
-        <circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      </svg>
-    </button>
+    <Tooltip.Root>
+      <Tooltip.Trigger
+        delay={300}
+        render={
+          <button
+            {...mergeProps<"button">(
+              {
+                type: "button",
+                tabIndex: -1,
+                "aria-expanded": row.isPeeked,
+                "aria-labelledby": `${labelId} ${row.nameId}`,
+                onClick: () => list.onTogglePeek(row.value),
+                className: cn(
+                  peekClass,
+                  "invisible cursor-pointer text-muted-foreground outline-none transition-colors hover:bg-foreground/7 hover:text-foreground aria-expanded:visible aria-expanded:text-foreground pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible",
+                  className
+                ),
+              },
+              props
+            )}
+            data-slot="list-row-peek"
+          />
+        }
+      >
+        <span id={labelId} className="sr-only">
+          Peek
+        </span>
+        <svg viewBox="0 0 16 16" aria-hidden="true" className="size-4">
+          <path
+            d="M1.75 8S4 3.75 8 3.75 14.25 8 14.25 8 12 12.25 8 12.25 1.75 8 1.75 8Z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          <circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
+          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+            Peek · Space
+          </Tooltip.Popup>
+        </Tooltip.Positioner>
+      </Tooltip.Portal>
+    </Tooltip.Root>
   )
 }
 
@@ -492,22 +509,42 @@ export type ListRowNarrowPartProps = ListRowPartProps & {
   narrow?: ListRowNarrow
 }
 
+function SizedBar({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="relative flex min-w-0 items-center">
+      <span className="invisible flex min-w-0 items-center">{children}</span>
+      <Bar className="absolute inset-x-0" />
+    </span>
+  )
+}
+
 function usePart(
   part: string,
   slot: string,
   partClassName: string,
   placeholder: React.ReactNode,
-  { render, className, children, ...props }: ListRowPartProps
+  { render, className, children, ...props }: ListRowPartProps,
+  sizeToChildren = false
 ) {
   const row = useListRow(part)
   const isRecord = row.kind === "record"
+  const loadingChildren =
+    sizeToChildren &&
+    children !== undefined &&
+    children !== null &&
+    children !== false &&
+    children !== "" ? (
+      <SizedBar>{children}</SizedBar>
+    ) : (
+      placeholder
+    )
   return useRender({
     defaultTagName: "span",
     render: isRecord ? render : <span />,
     state: { slot },
     props: mergeProps<"span">(
       { className: cn(partClassName, className) },
-      isRecord ? { ...props, children } : { children: placeholder }
+      isRecord ? { ...props, children } : { children: loadingChildren }
     ),
   })
 }
@@ -534,9 +571,13 @@ export function ListRowId({
   return usePart(
     "ListRowId",
     "list-row-id",
-    cn("col-start-1 truncate pr-3 text-muted-foreground text-xs tabular-nums", narrowClass[narrow]),
+    cn(
+      "col-start-1 truncate pr-related text-muted-foreground text-xs tabular-nums",
+      narrowClass[narrow]
+    ),
     <Bar className="w-12" />,
-    props
+    props,
+    true
   )
 }
 
@@ -586,7 +627,7 @@ export function ListRowMedia(props: ListRowMediaProps): React.ReactElement {
     "ListRowMedia",
     "list-row-media",
     cn(
-      "col-start-2 mr-2 flex size-6 items-center justify-center",
+      "col-start-2 mr-related flex size-6 items-center justify-center",
       mediaVariantClass[props.variant ?? "default"],
       narrowClass[props.narrow ?? "keep"]
     ),
@@ -610,7 +651,8 @@ export function ListRowName(props: ListRowPartProps): React.ReactElement {
     "list-row-name",
     "col-start-3 min-w-0 truncate font-medium text-sm",
     <Bar className="w-40 max-w-full" />,
-    { ...props, id: row.kind === "record" ? row.nameId : undefined }
+    { ...props, id: row.kind === "record" ? row.nameId : undefined },
+    true
   )
 }
 
@@ -623,7 +665,7 @@ export function ListRowDescription(props: ListRowPartProps): React.ReactElement 
   return usePart(
     "ListRowDescription",
     "list-row-description",
-    "col-start-4 min-w-0 truncate pl-3 text-muted-foreground text-sm @max-hide:hidden",
+    "col-start-4 min-w-0 truncate pl-related text-muted-foreground text-sm @max-hide:hidden",
     <Bar className="w-2/3" />,
     props
   )
@@ -662,7 +704,14 @@ function missingFactProps({
  * shown.
  */
 export function ListRowFact({ narrow = "keep", ...props }: ListRowFactProps): React.ReactElement {
-  const factClass = cn("flex min-w-0 items-center pl-4 text-sm", narrowClass[narrow])
+  const factClass = cn("flex min-w-0 items-center pl-related text-sm", narrowClass[narrow])
   const partProps = props.missing === undefined ? props : missingFactProps(props)
-  return usePart("ListRowFact", "list-row-fact", factClass, <Bar className="w-16" />, partProps)
+  return usePart(
+    "ListRowFact",
+    "list-row-fact",
+    factClass,
+    <Bar className="w-16" />,
+    partProps,
+    true
+  )
 }

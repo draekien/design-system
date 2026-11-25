@@ -96,7 +96,7 @@ export function AvatarGroup({
     props: mergeProps<"span">(
       {
         className: cn(
-          "data-[size=default]:*:[--avatar-size:--spacing(5)] data-[size=lg]:*:[--avatar-size:--spacing(6)] inline-flex min-h-6 shrink-0 items-center outline-hidden [&:is(button,a)]:rounded-floor [&:is(button,a)]:focus-ring [&:is(button,a)]:pointer-coarse:min-h-11",
+          "data-[size=default]:*:[--avatar-size:--spacing(5)] data-[size=lg]:*:[--avatar-size:--spacing(6)] inline-flex min-h-6 shrink-0 items-center outline-hidden [&:is(button,a)]:rounded-floor [&:is(button,a)]:focus-ring [&:is(button,a)]:pointer-coarse:min-h-11 [&:is(button,a)]:min-w-6 [&:is(button,a)]:pointer-coarse:min-w-11",
           spreadClass,
           className
         ),
