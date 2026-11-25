@@ -38,7 +38,14 @@
   --spacing-hit-coarse-gap: 1.25rem;
   --spacing-hit-min: 1.5rem;
   --spacing-hit-outset: 0.625rem;
+  --spacing-list-fact-max: 12rem;
+  --spacing-list-fact-min: 2rem;
+  --spacing-list-id-max: 6rem;
+  --spacing-list-id-min: 4rem;
+  --spacing-list-name-max: 20rem;
+  --spacing-list-name-min: 6rem;
   --spacing-page: 3rem;
+  --spacing-peek: 22rem;
   --spacing-related: 0.5rem;
   --spacing-row: 2.75rem;
   --spacing-row-inset: 0.5rem;

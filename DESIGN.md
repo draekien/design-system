@@ -56,6 +56,13 @@ spacing:
   hit-coarse-gap: "20px"
   row: "44px"
   row-inset: "8px"
+  list-id-min: "64px"
+  list-id-max: "96px"
+  list-name-min: "96px"
+  list-name-max: "320px"
+  list-fact-min: "32px"
+  list-fact-max: "192px"
+  peek: "352px"
 components:
   button-primary:
     backgroundColor: "{colors.signal-orange}"
@@ -76,6 +83,13 @@ components:
     rounded: "{rounded.floor}"
     padding: "0 {spacing.row-inset}"
     height: "{spacing.row}"
+  list-peek:
+    backgroundColor: "{colors.sheet}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.card}"
+    padding: "12px"
+    width: "{spacing.peek}"
   table-row:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
@@ -158,7 +172,7 @@ The system is defined by the relationships between components, not by the compon
 | --- | --- | --- |
 | Goal | A surface ranks its callers' goals by how many visits bring each; every part takes the rank of the highest goal it serves | `docs/contexts/design-rules.md` |
 | Rank | Ranks 1 and 2 show for every record before rank 3 shows for any | `docs/contexts/design-rules.md` |
-| Fit | A row holds one `ListRowSubject` and at most eight `ListRowFact` columns, each holding one status, entity, figure, meter or relative time | `ListRow` parts |
+| Fit | A row holds one `ListRowSubject` and at most eight `ListRowFact`s, each holding one status, entity, figure, meter or relative time | `ListRow` parts |
 | Placement | A table where the caller compares down a column, a list where they scan for one record | `docs/contexts/design-rules.md` |
 | Nesting | Groups do not nest; records nest one level deep | `docs/contexts/design-rules.md`, `List` |
 | Adjacency | A selection bar holds at most two actions, then a ⋯ menu | `docs/contexts/design-rules.md` |
@@ -178,7 +192,7 @@ Four principles decide any case no rule covers, in this order, and the reading t
 
 Clear overrules Quiet: a unit, a state's word or an action's name is never hidden to draw less.
 
-The palette is monochrome with a single orange that marks only what can be acted on. Density is high: 44px rows, 10–14px type, no line between rows and no decorative fills, so a list of hundreds of records stays scannable. Depth is flat; only layers that float above the page (hover cards, menus, peek panels) cast a shadow.
+The palette is monochrome with a single orange that marks only what can be acted on. Density is high: 44px rows, 10–14px type, no line between rows and no decorative fills, so a list of hundreds of records stays scannable. Depth is flat; only layers that float above the page (hover cards, menus, the list peek card and the table peek panel) cast a shadow.
 
 **Key Characteristics:**
 - Quiet, Clear, Precise and Sleek, in that order, decide what the rules do not.
@@ -231,7 +245,7 @@ Monochrome neutrals with a faint cool cast, plus one orange accent.
 
 ## Layout
 
-Lists are CSS grids whose rows are subgrids, so every row's columns align with the header without fixed widths. A row is 44px high with an 8px inset. Columns respond to the list's width, not the viewport's: below the `abbreviate` container width (48rem) a column shows its short form, and below the `hide` container width (40rem) a column marked to hide disappears. Columns that hold rank 3 values hide first; the record's name truncates before it wraps. Interactive targets are at least 24×24px, and 44×44px on a coarse pointer. A 24px control in a dense slot keeps its size on a coarse pointer and grows its hit area 10px past each edge (`{spacing.hit-outset}`) instead; controls in a run then sit 20px apart (`{spacing.hit-coarse-gap}`), so their hit areas do not overlap.
+A list row is a flex row 44px high with an 8px inset; rows do not share columns. The checkbox (24px), the ID (at least `{spacing.list-id-min}`, at most `{spacing.list-id-max}`) and the media (24px) line up down the list. The name (`{spacing.list-name-min}` to `{spacing.list-name-max}`) and the description follow; the description takes the rest of the row and truncates first. The facts sit at the end of the row, right-aligned, each between `{spacing.list-fact-min}` and `{spacing.list-fact-max}` and `{spacing.related}` apart, so they do not line up down the list; the fact the top goal looks for is last, on the right edge. Tables are CSS grids whose columns align with the header. Columns respond to the list's width, not the viewport's: below the `abbreviate` container width (48rem) a column shows its short form, and below the `hide` container width (40rem) a column marked to hide disappears. Columns that hold rank 3 values hide first; the record's name truncates before it wraps. Interactive targets are at least 24×24px, and 44×44px on a coarse pointer. A 24px control in a dense slot keeps its size on a coarse pointer and grows its hit area 10px past each edge (`{spacing.hit-outset}`) instead; controls in a run then sit 20px apart (`{spacing.hit-coarse-gap}`), so their hit areas do not overlap.
 
 Cards respond to their own width, not the viewport's: below the `card-abbreviate` container width (16rem) a fact marked to abbreviate shows its short form, and below `card-hide` (13rem) a fact marked to hide disappears. Cards in a grid are `{spacing.related}` (8px) apart.
 
@@ -243,7 +257,7 @@ Surfaces are flat and separated by Hairline borders and Paper/Sheet contrast. Sh
 
 ### Shadow Vocabulary
 - **Raised** (`--z-index-raised`, 1): a control inside a card sits on this layer, above the card's full-card link, so a click on it does not follow the link. No shadow.
-- **Popover** (`--shadow-popover`: `0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18)`): hover cards, menus and peek panels, which also sit on the `--z-index-popover` layer (50).
+- **Popover** (`--shadow-popover`: `0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.18)`): hover cards, menus, the list peek card and the table peek panel, which also sit on the `--z-index-popover` layer (50).
 
 ### Named Rules
 **The Flat-At-Rest Rule.** Nothing on the page casts a shadow at rest; a shadow means the layer floats and will close.
@@ -255,7 +269,7 @@ A radius builds outward from a floor. A leaf control (button, input) takes the f
 | Container holds | Padding | Radius |
 | --- | --- | --- |
 | only controls: a selection bar, a menu | 4px | `{rounded.lg}` (10px) |
-| content: a peek panel, a hover card, a dialog | 12px | `{rounded.card}` (18px) |
+| content: a peek card or panel, a hover card, a dialog | 12px | `{rounded.card}` (18px) |
 | cards | 16px | `{rounded.panel}` (34px) |
 
 A divider between controls in a bar is 16px tall with 4px on each side; a divider in a menu runs its full width with 4px above and below. A list row's tint is a leaf shape and takes the floor. A table row is square; the header fill's top corners and the footer fill's bottom corners take the floor. A card that holds a table has no padding, takes `{rounded.card}` and clips the header and footer fills to its corners.
@@ -279,6 +293,11 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Shape:** 44px high with no line under it; its tint takes the floor radius (`{rounded.floor}`).
 - **States:** hover and selection tint the row with Ink at 4%, a selected row under the pointer at 7%; a row with keyboard focus or open peek takes Ink at 4% and a 1px inset Signal Ring at 40%.
 - **Revealed controls:** the selection checkbox and peek button are invisible at rest and appear on row hover, focus or selection; on a coarse pointer they are always visible and 44×44px.
+- **Layout:** the checkbox (24px), ID (`{spacing.list-id-min}` to `{spacing.list-id-max}`) and media (24px) line up down the list; the name (`{spacing.list-name-min}` to `{spacing.list-name-max}`) and description follow, the description filling the rest and truncating first; the facts sit at the end, right-aligned, each `{spacing.list-fact-min}` to `{spacing.list-fact-max}` wide and `{spacing.related}` apart, the fact the top goal looks for last on the right edge.
+
+### List peek
+- **Shape:** a floating card (a Base UI Popover rendered as Card) under the peeked row, aligned to its end, `{spacing.peek}` (22rem) wide and capped to the available width and height; `{colors.sheet}` fill, `--shadow-popover`, `{rounded.card}`, on the `--z-index-popover` layer.
+- **Behaviour:** focus stays on the row; nothing is drawn while peek is closed. A table keeps its own peek beside or under the table.
 
 ### Table
 - **Shape:** no line under the header or between rows, and no surface of its own. A body row's tint is square; the header row draws a Quiet Grey fill rounded at its top corners with the floor radius (`{rounded.floor}`), and the footer row one rounded at its bottom corners. Each fill is drawn on the row's first cell's `::before` across the row, below the cell content, so it draws in every engine and when the last column hides. The table fills its container, which scrolls sideways when the columns do not fit.

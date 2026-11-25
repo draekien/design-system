@@ -19,7 +19,7 @@ export const ranks: ReadonlyArray<Rank> = [
     name: "Fact",
     holds:
       "One fact about the subject that the surface exists to compare: a state, a person, a figure.",
-    shows: "Always, each in its own column.",
+    shows: "Always, in its own table column or at the end of a list row.",
     drawnAs: "Status, entity, figure, meter, relative time",
   },
   {
@@ -53,7 +53,7 @@ export const rankingRules: ReadonlyArray<string> = [
   "Rank 3 never holds content the caller reads on most visits: collapsing that costs a click on every visit.",
   "A component's parts are named for the rank they hold, never for a data field, so a part takes any data ranked for it.",
   "A narrow surface truncates rank 1 and 2 values first, then abbreviates them, then hides the ones marked hideable; a hidden value stays reachable at rank 3 or 5.",
-  "Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks.",
+  "Peek previews a read-only part of rank 5 without leaving the surface, and holds nothing rank 5 lacks: in a list, a floating card under the peeked row that leaves focus on the row; in a table, beside the table, under the row or in a drawer.",
   "Peek opens with Space on the focused row, so a click on the row opens rank 5.",
   "A drawer that shows peek returns focus to the row that opened it.",
   "A description is one line after the name, in rank 1 and in a status or entity; it truncates and hides before the name does.",

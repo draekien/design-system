@@ -3,7 +3,7 @@ import type { listStory } from "./list-story.ts"
 
 export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
   {
-    rule: "Every value takes one of five ranks, decided by what the caller came to decide: 1 Subject (ID, media, name, a one-line description) at the start of the row; 2 Fact (a state, a person or a figure the caller compares) in its own column; 4 Enrich in a hover card on a rank 1 or 2 value; 5 Elsewhere on the item's own page, which peek previews read-only.",
+    rule: "Every value takes one of five ranks, decided by what the caller came to decide: 1 Subject (ID, media, name, a one-line description) at the start of the row; 2 Fact (a state, a person or a figure the caller compares) at the end of the row; 4 Enrich in a hover card on a rank 1 or 2 value; 5 Elsewhere on the item's own page, which peek previews read-only.",
     source:
       "This design system's own decision (Geist Entity leads with the identifier; Saga Lists of objects ranks fields by typography)",
     serves: "Find the records that need action, such as overdue invoices to chase",
@@ -19,9 +19,9 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     serves: "Find the records that need action, such as overdue invoices to chase",
   },
   {
-    rule: "Each fact is its own column and lines up down the list whatever its value; a figure is right-aligned in tabular figures.",
+    rule: "Only the checkbox, ID and media line up down the list. The name and description follow them, and the facts sit at the end of the row, each as wide as its value between 2rem and 12rem, with Due last on the row's right edge; a figure uses tabular figures.",
     source:
-      "Primer DataTable (tabular-num for numbers); column alignment is this design system's own decision",
+      "Linear issue list (screenshots, 2026-10-08); Primer DataTable (tabular-num for numbers); the widths are this design system's own decision",
     serves: "Find the records that need action, such as overdue invoices to chase",
   },
   {
@@ -51,14 +51,13 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     serves: "Check a record's details without leaving the list",
   },
   {
-    rule: "A drawer that shows peek returns focus to the row that opened it.",
-    source: "This design system's own decision",
+    rule: "Peek is a floating card under the peeked row, aligned to its end; nothing is drawn while peek is closed.",
+    source: "Linear Peek (observed by the developer, 2026-11-25)",
     serves: "Check a record's details without leaving the list",
   },
   {
-    rule: "Peek opens beside the list or in a drawer from the side at lg and wider, and under the peeked row or in a drawer from the bottom below lg.",
-    source:
-      "This design system's own decision (Linear Peek previews in place; Stripe Apps design puts detail beside the content it qualifies)",
+    rule: "Focus stays on the row while peek is open, so ↑ ↓ move the card with it; Space, Esc or a press outside the list closes it. When the list is narrower than the card, the card takes the width the viewport leaves.",
+    source: "Linear Peek (Space toggles peek); the rest is this design system's own decision",
     serves: "Check a record's details without leaving the list",
   },
   {
@@ -98,12 +97,12 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     serves: "Find the records that need action, such as overdue invoices to chase",
   },
   {
-    rule: "Loading rows compose the same parts as the rows they replace, so they keep the row height and every column.",
+    rule: "Loading rows compose the same parts as the rows they replace, so they keep the row height and every part's width.",
     source: "This design system's own decision",
     serves: "all",
   },
   {
-    rule: "A value that fails to load says Unavailable in its column; the rest of the row stays readable.",
+    rule: "A value that fails to load says Unavailable in its place; the rest of the row stays readable.",
     source: "This design system's own decision",
     serves: "all",
   },
@@ -124,7 +123,7 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     serves: "all",
   },
   {
-    rule: "The footer starts on the first data column, past the checkbox column, so its text shares a left edge with the rows.",
+    rule: "The footer starts past the checkbox, so its text shares a left edge with the IDs.",
     source: "This design system's own decision (Precise principle)",
     serves: "all",
   },

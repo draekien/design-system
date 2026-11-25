@@ -1,6 +1,8 @@
 import type { Checkbox } from "@base-ui/react/checkbox"
+import type { Popover } from "@base-ui/react/popover"
 import type {
   List,
+  ListPeek,
   ListRow,
   ListRowDescription,
   ListRowFact,
@@ -111,13 +113,14 @@ export const listDocs: ComponentDocs = {
         ],
       },
       { name: "ListRowLoading", item: null, children: [] },
+      { name: "ListPeek", item: "card", children: [] },
     ],
   },
   examples: [
     {
       name: "list-figures",
       title: "Figures",
-      description: "Each fact lines up in its own column.",
+      description: "Facts sit at the row's end, each as wide as its value.",
       Preview: ListFigures,
       source: requireSource(sources, "./list-figures.tsx"),
     },
@@ -281,7 +284,7 @@ export const listDocs: ComponentDocs = {
       kind: "part",
       name: "ListRowFact",
       description:
-        "Rank 2: one fact the list exists to compare, in its own column. A row holds at most eight.",
+        "Rank 2: one fact the list exists to compare, at the row's end, between 2rem and 12rem wide. A row holds at most eight; put the fact the caller looks for first last.",
       spreads: span,
       props: {
         render: {
@@ -308,9 +311,20 @@ export const listDocs: ComponentDocs = {
     },
     {
       kind: "part",
+      name: "ListPeek",
+      description:
+        "A floating card under the peeked row holding a read-only preview of the item's page. Focus stays on the row; Space, Esc or a press outside the list closes it.",
+      spreads: {
+        label: "Base UI Popover.Popup",
+        href: "https://base-ui.com/react/components/popover",
+      },
+      props: {} satisfies ApiTable<typeof ListPeek, typeof Popover.Popup>,
+    },
+    {
+      kind: "part",
       name: "ListRowLoading",
       description:
-        "A placeholder row for loading items; each part inside draws a bar so the columns match the rows that replace it.",
+        "A placeholder row for loading items; each part inside draws a bar at the width of the value that replaces it.",
       spreads: li,
       props: { render: renderProp } satisfies ApiTable<typeof ListRowLoading, "li">,
     },

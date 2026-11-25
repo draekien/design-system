@@ -48,7 +48,14 @@
           "spacing-hit-coarse-gap": "1.25rem",
           "spacing-hit-min": "1.5rem",
           "spacing-hit-outset": "0.625rem",
+          "spacing-list-fact-max": "12rem",
+          "spacing-list-fact-min": "2rem",
+          "spacing-list-id-max": "6rem",
+          "spacing-list-id-min": "4rem",
+          "spacing-list-name-max": "20rem",
+          "spacing-list-name-min": "6rem",
           "spacing-page": "3rem",
+          "spacing-peek": "22rem",
           "spacing-related": "0.5rem",
           "spacing-row": "2.75rem",
           "spacing-row-inset": "0.5rem",
@@ -165,13 +172,14 @@
       "name": "list",
       "type": "registry:ui",
       "title": "List",
-      "description": "A list of 44px rows, each part named for the rank of what it holds, with one tab stop, arrow-key focus, keyboard peek and keyboard selection.",
+      "description": "A list of 44px rows, each part named for the rank of what it holds, with one tab stop, arrow-key focus, keyboard selection and a floating peek card.",
       "dependencies": [
         "@base-ui/react@1.8.0"
       ],
       "registryDependencies": [
         "draekien/design-system/tokens",
-        "draekien/design-system/cn"
+        "draekien/design-system/cn",
+        "draekien/design-system/card"
       ],
       "files": [
         {
@@ -180,7 +188,7 @@
           "target": "@components/list.tsx"
         }
       ],
-      "docs": "List holds ListRow children, and every ListRow part ships in this item. In each row, rank each value, then compose: an optional ListRowSelect (a row without one cannot be selected), then ListRowLink holding ListRowSubject (rank 1: an optional ListRowId, an optional ListRowMedia, then ListRowName, then an optional one-line ListRowDescription) and one ListRowFact per rank 2 fact, at most eight, then an optional ListRowPeek, a button that toggles peek on the row so a click on ListRowLink can open the item's page. ListRowMedia holds a status or entity and draws only its media (variant default), or one muted icon (variant icon, with a label screen readers read in place of the icon). Media drawn alone needs a PreviewCard on it that shows the word, and peek or the item's page to reach it by keyboard. Hold a status, entity, figure, meter or relative-time in each ListRowFact, or set missing to unavailable when the value failed to load or hidden when the viewer's role cannot see it, and state why once outside the list. Rank 4 is a preview-card on a rank 1 or 2 value; rank 5 is the item's page, reached through ListRowLink's render, and peek, rendered from List's peekValue, previews part of it read-only. Columns line up down the list. When the list narrows the description truncates, then the name; below 640px the description is hidden; set narrow=\"abbreviate\" to switch a part to its short form below 768px, or narrow=\"hide\" to drop it below 640px, and keep a hidden value in peek and on the item's page. While loading, render ListRowLoading with the same parts. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection on a row that has a ListRowSelect, Esc closes peek and then clears the selection. List renders no peek: read peekValue with onPeekValueChange and render a read-only preview of the item's page beside the list or in a drawer at wide widths, and under the row or in a bottom drawer at narrow ones; it holds nothing that page lacks. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/components/list",
+      "docs": "List holds ListRow children, and every ListRow part ships in this item. In each row, rank each value, then compose: an optional ListRowSelect (a row without one cannot be selected), then ListRowLink holding ListRowSubject (rank 1: an optional ListRowId, an optional ListRowMedia, then ListRowName, then an optional one-line ListRowDescription) and one ListRowFact per rank 2 fact, at most eight, then an optional ListRowPeek, a button that toggles peek on the row so a click on ListRowLink can open the item's page. Render one ListPeek inside List, with aria-label and the id the rows' aria-controls names, holding a read-only preview of the row in peekValue: a floating card under the peeked row that moves with peek and leaves focus on the row; Tab from the peeked row moves focus to the card's first link or button, and Esc there returns focus to the row; it holds nothing the item's page lacks. ListRowMedia holds a status or entity and draws only its media (variant default), or one muted icon (variant icon, with a label screen readers read in place of the icon). Media drawn alone needs a PreviewCard on it that shows the word, and peek or the item's page to reach it by keyboard. Hold a status, entity, figure, meter or relative-time in each ListRowFact, or set missing to unavailable when the value failed to load or hidden when the viewer's role cannot see it, and state why once outside the list. Rank 4 is a preview-card on a rank 1 or 2 value; rank 5 is the item's page, reached through ListRowLink's render, and ListPeek previews part of it read-only. Compose every row with the same parts. Only the checkbox, ID and media line up down the list; the name and description follow them, and the facts sit at the row's end in the order given, each between 2rem and 12rem wide, so put the fact the caller looks for first last, on the row's right edge. Compare values down a column in a table instead. When the list narrows the description truncates, then the name; below 640px the description is hidden; set narrow=\"abbreviate\" to switch a part to its short form below 768px, or narrow=\"hide\" to drop it below 640px, and keep a hidden value in peek and on the item's page. While loading, render ListRowLoading with the same parts. The list is one tab stop. ↑ ↓ Home End move focus, Space toggles peek on the focused row (an open peek follows focus), X toggles selection on a row that has a ListRowSelect, Esc or a press outside the list closes peek, and Esc then clears the selection. Show the key hints in text near the list and point aria-describedby at them. Playground: https://design-system.wpei.me/playground/components/list",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,

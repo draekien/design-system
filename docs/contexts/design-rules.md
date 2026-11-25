@@ -68,7 +68,7 @@ Information takes one of five ranks, decided by what the caller came to the surf
 | Rank | Holds | Shows | Component |
 | --- | --- | --- | --- |
 | 1 Subject | what the row is about: ID, media, name, a one-line description | always, at the start of the row or head | text, icon, status, entity |
-| 2 Fact | one fact about the subject that the surface exists to compare, in its own column: a state, a person, a figure | always, in its own slot | status, entity, figure, meter, relative time |
+| 2 Fact | one fact about the subject that the surface exists to compare, in its own table column or at the end of a list row: a state, a person, a figure | always, in its own slot | status, entity, figure, meter, relative time |
 | 3 Explain | what a caller reads on some visits: purpose, breakdown, history, older entries | in place, one click away | expanded row, `Collapsible`, `Accordion`, "Show N more" |
 | 4 Enrich | more about one named entity or property — a person, a service, an organisation, a stage, a truncated value | an overlay on that entity's or property's own trigger | hover card |
 | 5 Elsewhere | everything about one record | the record's own surface; peek previews it read-only without leaving | link, peek |
@@ -85,7 +85,7 @@ A value may draw its media alone, such as a status dot or an entity's initials, 
 
 A narrow surface truncates rank 1 and 2 values first, then abbreviates them, then hides the ones the caller marks hideable; a hidden value stays reachable at rank 3 or 5. Stories: list, table, record-card.
 
-Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks. Keeping the list in view follows Working Memory. Stories: list, table.
+Peek previews a read-only part of rank 5 without leaving the surface, and holds nothing rank 5 lacks: in a list, a floating card under the peeked row that leaves focus on the row; in a table, beside the table, under the row or in a drawer. Keeping the list in view follows Working Memory. Stories: list, table.
 
 Peek opens with Space on the focused row, so a click on the row opens rank 5. Stories: list, table.
 
@@ -127,7 +127,7 @@ Use a table when the caller compares values down a column, and a list when the c
 
 Every table column has a header naming it; a sortable header is a button, and one column is sorted at a time. Stories: table.
 
-A fact draws in the same type, weight and alignment in every row, so the caller reads its column as one group; numeric columns right-align in tabular figures. Drawing a fact alike follows the Law of Similarity. The one exception is a state the story's top goal looks for, such as Overdue, which takes medium weight so it stands out; this follows the Von Restorff Effect. Stories: list, table.
+A fact draws in the same type, weight and alignment in every row, so the caller reads it as one group; numbers use tabular figures. In a table each fact is a column and numeric columns right-align. In a list only the checkbox, ID and media line up down the list; the facts sit at the end of the row, each as wide as its value between a minimum and a maximum, with the fact the story's top goal looks for last, on the row's right edge. Drawing a fact alike follows the Law of Similarity. The one exception is a state the story's top goal looks for, such as Overdue, which takes medium weight so it stands out; this follows the Von Restorff Effect. Stories: list, table.
 
 A list or table opens with the sort, grouping and filter its story's top goal needs, so the caller changes no setting to reach it, as an invoice list opens with the earliest due date first. This follows Tesler's Law; the default for each surface is this design system's own decision. Stories: list, table.
 
@@ -241,6 +241,6 @@ Each row checks one law from Laws of UX against the rule it backs: the micro tes
 | Paradox of the Active User | Loading, results and help: help | Every icon-only control has a tooltip naming its action, and its key when it has one. | The story's primary action completes with no link to a separate guide. |
 | Tesler's Law | Tables: default order | With no sort, grouping or filter set, the component orders records as the story's top goal needs. | Open the lockup with no search params: the records the top goal needs come first. |
 | Goal-Gradient Effect, Zeigarnik Effect | Tables: progress | A progress part draws a figure with its unit, never a bar alone. | Every record with work left shows its progress in its own column, or at rank 3 or 5 where a narrow table hides that column. |
-| Law of Similarity | Tables: a fact draws the same in every row | A fact part draws every value in the same type, weight and alignment, except a state the story's top goal looks for, which takes medium weight. | Down each column, values share one edge: the left for text, the right for numbers. |
+| Law of Similarity | Tables: a fact draws the same in every row | A fact part draws every value in the same type, weight and alignment, except a state the story's top goal looks for, which takes medium weight. | Down each table column, values share one edge: the left for text, the right for numbers. Down a list, the checkbox, ID, media and last fact each share one edge. |
 | Law of Common Region | Cards: one border | Every part of the card, `CardAside` included, sits inside its border. | In a grid, no part of one card sits outside its own border. |
 | Working Memory | Ranking information: peek | Peek opens without removing the list from view, or in a drawer that returns focus to its row. | With peek open at the page's widest width, the row that opened it stays visible. |

@@ -1,6 +1,17 @@
 import { describe, expect, it } from "vitest"
 import { invoicesDataset, recordsDataset } from "./datasets.tsx"
-import { listStatesCode } from "./list-code.ts"
+import { listCode, listStatesCode } from "./list-code.ts"
+
+describe("listCode", () => {
+  it("renders the peeked invoice in a ListPeek inside the list", () => {
+    const code = listCode(invoicesDataset, new Set())
+
+    expect(code).toContain("  ListPeek,\n")
+    expect(code).toContain(
+      '<Link to="/invoices/$id" params={{ id: peekValue }}>\n            Open {peekValue}'
+    )
+  })
+})
 
 describe("listStatesCode", () => {
   it("imports List and every row part from list alone", () => {

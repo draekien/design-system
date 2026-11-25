@@ -280,7 +280,7 @@ function loadingDrawing<TItem>({
   add("row", {
     name: "ListRowLoading",
     depth: 1,
-    note: "Same parts as ListRow; each part draws a bar in its own column",
+    note: "Same parts as ListRow; each part draws a bar at its loaded width",
     specimen: (
       <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
         <ListRowLoading className="px-0">
@@ -460,9 +460,7 @@ function rowDrawing<TItem>({
       note: "One muted line; fills the remaining width, truncates first, hidden below 640px",
       specimen: (
         <PartRow dataset={dataset} item={item}>
-          <ListRowDescription className="col-span-full pl-0">
-            {dataset.summary(item)}
-          </ListRowDescription>
+          <ListRowDescription className="pl-0">{dataset.summary(item)}</ListRowDescription>
         </PartRow>
       ),
     })
@@ -474,7 +472,7 @@ function rowDrawing<TItem>({
       note: `Rank 2: ${fact.label}, a ${fact.content}; ${narrowNote[fact.narrow]}`,
       specimen: (
         <PartRow dataset={dataset} item={item}>
-          <ListRowFact className="pl-0" {...factProps(fact, item, { state, withCard: false })} />
+          <ListRowFact {...factProps(fact, item, { state, withCard: false })} />
         </PartRow>
       ),
     })
@@ -488,7 +486,7 @@ function rowDrawing<TItem>({
           <CardSpecimen>
             {(container) => (
               <PartRow dataset={dataset} item={item}>
-                <ListRowFact className="col-span-full justify-end pl-0">
+                <ListRowFact>
                   {fact.render(item, {
                     state,
                     withCard: true,
@@ -522,7 +520,7 @@ function rowDrawing<TItem>({
   add("peek", {
     name: "Peek",
     depth: 0,
-    note: "Playground part: a read-only preview of the page; beside the list at lg, under the row below",
+    note: "Playground part: the read-only preview of the page that ListPeek floats under the peeked row",
     specimen: (
       <div className="py-1 text-sm">
         <PeekContent dataset={dataset} item={item} state={state} onOpen={handleSpecimenChange} />
@@ -547,7 +545,7 @@ function rowDrawing<TItem>({
       title: "Fact",
       rank: 2,
       reveal: "always",
-      summary: "What the list is scanned for, each value in its own column",
+      summary: "What the list is scanned for, at the row's end, each value as wide as it needs",
       links: facts.flatMap((fact) => link(fact.part)),
     },
     {
@@ -650,7 +648,7 @@ function StatesView<TItem>({
       return (
         <StatesSection
           title="Loading"
-          description="One ListRowLoading per expected item; each part draws a bar in its own column"
+          description="One ListRowLoading per expected item; each part draws a bar at its loaded width"
         >
           <div>
             <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
