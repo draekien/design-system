@@ -35,7 +35,8 @@ export const popoverCardRules: ReadonlyArray<Rule<StoryGoal<typeof popoverCardSt
   },
   {
     rule: "At most two actions show in CardAside, then the ⋮ menu.",
-    source: "Design rules: CardAside holds at most two actions",
+    source:
+      "Design rules: CardAside holds at most two actions, as the selection bar does, following Hick's Law",
     serves: "Contact them",
   },
   {

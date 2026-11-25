@@ -75,7 +75,7 @@ export const bulletRules: ReadonlyArray<Rule<StoryGoal<typeof bulletStory>>> = [
   },
   {
     rule: "Every interactive bullet's hit area is at least 24×24px, and 44px high on a coarse pointer.",
-    source: "Primer designer checklist; 44px is this design system's own decision",
+    source: "Primer designer checklist; Fitts's Law; 44px is this design system's own decision",
     serves: "all",
   },
 ]

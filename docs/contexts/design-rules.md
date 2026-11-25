@@ -18,7 +18,7 @@ Ship a component's usage guidance in its registry item's `docs` field and on the
 
 Stories: every story.
 
-A caller brings several goals to a surface, and the goals compete for its space; the surface ranks them by how many visits bring each, and every part takes the rank of the highest goal it serves. This is this design system's own decision.
+A caller brings several goals to a surface, and the goals compete for its space; the surface ranks them by how many visits bring each, and every part takes the rank of the highest goal it serves. Ranking by visits follows the Pareto Principle; the ranks are this design system's own decision.
 
 The surface is fast to scan: a caller finds the value its top goal needs by reading down the rank 1 edge and across to one rank 2 slot, and opens nothing; every lower goal shows its trigger on screen at rest.
 
@@ -36,7 +36,7 @@ Four principles decide any case no rule covers, in this order: Quiet first, then
 
 | Principle | Rule | Test |
 | --- | --- | --- |
-| Quiet | Nothing draws at rest that the caller does not need at rest; a line, border, fill, control or hint the caller needs only sometimes is revealed on hover, focus or selection. | Remove the element at rest: if the caller loses nothing, it stays removed or becomes revealed. |
+| Quiet | Nothing draws at rest that the caller does not need at rest; a line, border, fill, control or hint the caller needs only sometimes is revealed on hover, focus or selection. This follows Cognitive Load and Selective Attention. | Remove the element at rest: if the caller loses nothing, it stays removed or becomes revealed. |
 | Clear | Every value carries its meaning: a figure names its unit, a state shows its word, a control names its action. | A first-time reader names what the value is and its unit or state without a hover card. |
 | Precise | Every part sits in the column and on the edge it belongs to. | The part shares a left edge or a baseline with the part above or below it. |
 | Sleek | A container is no thicker than its contents need: 4px of padding around controls, 12px around content. | The container's padding and radius match one row of the container table under Radius. |
@@ -47,7 +47,9 @@ Clear overrules Quiet: never hide a unit, a state's word or an action's name to 
 
 The evidence is [docs/references/ux-references.md](../references/ux-references.md).
 
-Follow Linear first; consult Primer, Carbon, Geist, Stripe Apps and Saga only where Linear has no answer.
+Follow Linear first; consult Primer, Carbon, Geist, Stripe Apps and Saga only where Linear has no answer. This follows Jakob's Law.
+
+A law from Laws of UX is a source for why a rule exists, never for its value: Fitts's Law backs a minimum hit area, and the 24px figure keeps its own source or is marked as this design system's own decision. A law never overrides a pattern from Linear or the other references.
 
 Hover cards may hold links, following Linear over Primer; every hover card still has a keyboard route.
 
@@ -95,7 +97,7 @@ A row is selectable only when it draws a selection checkbox. Stories: list, tabl
 
 Stories: table.
 
-A group header holds the group's name, its record count and its column sums; a collapsed group keeps all three on screen.
+A group header holds the group's name, its record count and its column sums; a collapsed group keeps all three on screen. This follows Chunking.
 
 An empty group is hidden.
 
@@ -115,7 +117,7 @@ A parent's checkbox selects the parent only. Stories: table.
 
 X and Shift+Space toggle selection on the focused row; Esc clears the selection once peek is closed. Stories: list, table.
 
-While any record is selected, a selection bar fixed to the bottom of the viewport shows the count, at most two actions, a ⋯ menu holding the rest with destructive actions last after a divider, and Clear. Stories: table.
+While any record is selected, a selection bar fixed to the bottom of the viewport shows the count, at most two actions, a ⋯ menu holding the rest with destructive actions last after a divider, and Clear. Limiting the actions follows Hick's Law; the limit of two follows Geist Entity and Stripe Accordion. Stories: table.
 
 ## Tables
 
@@ -155,7 +157,7 @@ A divider between controls in a bar is 16px tall with 4px on each side; a divide
 
 Stories: every story.
 
-The container sets the gap between its children by how the two neighbours relate. This is this design system's own decision.
+The container sets the gap between its children by how the two neighbours relate. This follows the Law of Proximity; the values are this design system's own decision.
 
 | Token | Neighbours | Value |
 | --- | --- | --- |
@@ -195,8 +197,8 @@ When the previous figure is zero, the change has no percentage. Its slot draws a
 
 Every error or refusal states what went wrong, then how the caller fixes it; apologise only when the product itself failed. Stories: every story.
 
-Draw surfaces monochrome plus one accent colour; the accent marks only what can be acted on. Stories: every story.
+Draw surfaces monochrome plus one accent colour; the accent marks only what can be acted on. This follows the Von Restorff Effect. Stories: every story.
 
 Syntax highlighting in a code block is the one exception to monochrome. Stories: none; it governs the docs site's Code views, the one rule kept without a story.
 
-Every mouse interaction has a keyboard route; every hit area is at least 24×24px. Stories: every story.
+Every mouse interaction has a keyboard route; every hit area is at least 24×24px. The minimum follows Fitts's Law; the 24px figure is from the Primer designer checklist. Stories: every story.
