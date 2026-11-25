@@ -41,6 +41,24 @@ describe("PreviewCardContent", () => {
     expect(handleRowClick).not.toHaveBeenCalled()
   })
 
+  it("opens on keyboard focus when its trigger is focusable", async () => {
+    const user = userEvent.setup()
+    render(
+      <PreviewCard>
+        <PreviewCardTrigger tabIndex={0}>Mira Okafor</PreviewCardTrigger>
+        <PreviewCardContent>
+          <CardSubject>
+            <CardName>Mira Okafor</CardName>
+          </CardSubject>
+        </PreviewCardContent>
+      </PreviewCard>
+    )
+
+    await user.tab()
+
+    expect(await screen.findByRole("heading", { name: "Mira Okafor" })).toBeTruthy()
+  })
+
   it("draws its content with the card's parts", () => {
     render(
       <PreviewCard open>

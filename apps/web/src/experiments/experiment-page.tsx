@@ -89,7 +89,7 @@ export function ExperimentPage({
   }
 
   return (
-    <div className="mx-auto flex max-w-[100rem] flex-col gap-6 px-5 py-8 sm:px-8 lg:py-10">
+    <div className="mx-auto flex max-w-[100rem] flex-col gap-page px-5 py-8 sm:px-8 lg:py-10">
       <header>
         <p className="font-medium text-muted-foreground text-xs">Experiment</p>
         <h1 className="mt-1 font-semibold text-3xl tracking-[-0.03em] [font-stretch:108%]">
@@ -103,38 +103,40 @@ export function ExperimentPage({
         <h2 className="font-semibold text-sm">Story</h2>
         <StoryNotes story={story} />
       </section>
-      <div className="flex flex-wrap items-center gap-2">
-        {controls.map((control) => (
-          <Segmented key={control.key} label={control.label}>
-            {control.options.map((option) => (
-              <button
-                key={option}
-                type="button"
-                aria-pressed={search[control.key] === option}
-                onClick={() => setSearch({ [control.key]: option })}
-                className={cn(segmentItem, control.key === "width" && "tabular-nums")}
-              >
-                {control.labels[option]}
-              </button>
-            ))}
-          </Segmented>
-        ))}
-      </div>
-      <div
-        className={cn(
-          "flex h-[clamp(28rem,72vh,52rem)] overflow-auto rounded-xl border",
-          width !== "fill" && "bg-muted/50 p-3 sm:p-5"
-        )}
-      >
-        <SearchFrame
-          src={src}
-          search={canvasSearch}
-          schema={experimentCanvasSearch}
-          width={width}
-          title={`${title} canvas`}
-          onCanvasNavigate={setSearch}
-          className={width === "fill" ? "h-full" : "mx-auto h-full rounded-lg border"}
-        />
+      <div className="flex flex-col gap-related">
+        <div className="flex flex-wrap items-center gap-2">
+          {controls.map((control) => (
+            <Segmented key={control.key} label={control.label}>
+              {control.options.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  aria-pressed={search[control.key] === option}
+                  onClick={() => setSearch({ [control.key]: option })}
+                  className={cn(segmentItem, control.key === "width" && "tabular-nums")}
+                >
+                  {control.labels[option]}
+                </button>
+              ))}
+            </Segmented>
+          ))}
+        </div>
+        <div
+          className={cn(
+            "flex h-[clamp(28rem,72vh,52rem)] overflow-auto rounded-xl border",
+            width !== "fill" && "bg-muted/50 p-3 sm:p-5"
+          )}
+        >
+          <SearchFrame
+            src={src}
+            search={canvasSearch}
+            schema={experimentCanvasSearch}
+            width={width}
+            title={`${title} canvas`}
+            onCanvasNavigate={setSearch}
+            className={width === "fill" ? "h-full" : "mx-auto h-full rounded-lg border"}
+          />
+        </div>
       </div>
       {ruleSections.map((section) => (
         <section key={section.title} className="flex flex-col gap-2">

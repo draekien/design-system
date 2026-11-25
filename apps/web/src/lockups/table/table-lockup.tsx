@@ -41,6 +41,7 @@ import {
 import * as React from "react"
 import { flushSync } from "react-dom"
 import { cn } from "@/lib/cn.ts"
+import { ActionTooltip } from "../action-tooltip.tsx"
 import { Kbd } from "../kbd.tsx"
 import { textLink } from "../lockup-styles.ts"
 import {
@@ -140,6 +141,7 @@ function Invoices({
   const [peekValue, setPeekValue] = React.useState<string | null>(null)
   const [openValue, setOpenValue] = React.useState<string | null>(null)
   const [announcement, setAnnouncement] = React.useState("")
+  const [result, setResult] = React.useState("")
   const tableRef = React.useRef<HTMLDivElement>(null)
   const sortId = React.useId()
   const hintId = React.useId()
@@ -150,6 +152,11 @@ function Invoices({
   const groups = statusGroups(invoices, sort)
   const peeked = invoices.find((invoice) => invoice.id === peekValue) ?? null
   const opened = invoices.find((invoice) => invoice.id === openValue) ?? null
+
+  function handleSelectedValuesChange(values: ReadonlyArray<string>) {
+    setSelectedValues(values)
+    setResult("")
+  }
 
   function focusRow(value: string) {
     tableRef.current?.querySelector<HTMLElement>(`tr[data-value="${value}"]`)?.focus()
@@ -217,7 +224,7 @@ function Invoices({
             expandedValues={expandedValues}
             onExpandedValuesChange={handleExpandedValuesChange}
             selectedValues={isSelectable ? selectedValues : undefined}
-            onSelectedValuesChange={isSelectable ? setSelectedValues : undefined}
+            onSelectedValuesChange={isSelectable ? handleSelectedValuesChange : undefined}
             peekValue={peekValue}
             onPeekValueChange={handlePeekValueChange}
           >
@@ -279,6 +286,7 @@ function Invoices({
             sortId={sortId}
             hintId={hintId}
             isSelectable={isSelectable}
+            result={result}
           />
           <p role="status" className="sr-only">
             {announcement}
@@ -295,17 +303,26 @@ function Invoices({
         )}
       </div>
       {isSelectable && opened === null ? (
-        <SelectionBar count={selectedValues.length} onClear={handleClearSelection} />
+        <SelectionBar
+          count={selectedValues.length}
+          onClear={handleClearSelection}
+          onResult={(message) => {
+            setResult(message)
+            handleClearSelection()
+          }}
+        />
       ) : null}
     </>
   )
 }
 
+function handleLoadingSortChange() {}
+
 function LoadingInvoices({ invoices }: { invoices: ReadonlyArray<SampleInvoice> }) {
   const isSelectable = useShown()("select")
   return (
     <div className={tableSurface}>
-      <Table aria-busy="true">
+      <Table aria-busy="true" sort={defaultSort} onSortChange={handleLoadingSortChange}>
         <TableCaption className="sr-only">Invoices, loading</TableCaption>
         <TableHeader>
           <InvoiceHeaderRow isSelectable={isSelectable} />
@@ -354,7 +371,7 @@ export function InvoiceHeaderRow({
         <span className="sr-only">Lines</span>
       </TableHead>
       {shown("invoice") ? (
-        <TableHead column="invoice" narrow="hide">
+        <TableHead column="invoice" narrow="hide" className="min-w-20">
           {columnLabel.invoice}
         </TableHead>
       ) : null}
@@ -362,20 +379,20 @@ export function InvoiceHeaderRow({
         {columnLabel.customer}
       </TableHead>
       {shown("lines") ? (
-        <TableHead column="lines" align="end" narrow="hide">
+        <TableHead column="lines" align="end" narrow="hide" className="min-w-20">
           {columnLabel.lines}
         </TableHead>
       ) : null}
-      <TableHead column="amount" align="end" data-anchor={anchors?.column}>
+      <TableHead column="amount" align="end" className="min-w-32" data-anchor={anchors?.column}>
         {columnLabel.amount}
       </TableHead>
       {shown("paid") ? (
-        <TableHead column="paid" align="end" narrow="hide">
+        <TableHead column="paid" align="end" narrow="hide" className="min-w-20">
           {columnLabel.paid}
         </TableHead>
       ) : null}
       {shown("due") ? (
-        <TableHead column="due" narrow="hide" className="pr-3">
+        <TableHead column="due" narrow="hide" className="min-w-32 pr-3">
           {columnLabel.due}
         </TableHead>
       ) : null}
@@ -625,7 +642,7 @@ export function LinesErrorRow({
         Lines for {invoice.id} could not load: the billing service did not respond.{" "}
         <TableRowLink
           render={<Link to="." search={(previous) => ({ ...previous, state: "loaded" })} />}
-          className="inline font-medium text-foreground underline underline-offset-4"
+          className="inline-flex min-h-6 items-center font-medium text-foreground underline underline-offset-4 pointer-coarse:min-h-11"
         >
           Retry lines
         </TableRowLink>
@@ -651,9 +668,15 @@ export function LoadingGroupRow(): React.ReactElement {
       <TableCell className={controlCell}>
         <TableRowExpand />
       </TableCell>
+      <TableHead className="relative w-0 *:absolute *:inset-y-0 *:left-2 *:my-auto">
+        Status
+      </TableHead>
       {shown("invoice") ? <TableCell narrow="hide" /> : null}
-      <TableHead>Status</TableHead>
-      {shown("lines") ? <TableCell narrow="hide" /> : null}
+      {shown("lines") ? (
+        <TableCell align="end" narrow="hide">
+          Lines
+        </TableCell>
+      ) : null}
       <TableCell align="end">Sum</TableCell>
       {shown("paid") ? <TableCell narrow="hide" /> : null}
       {shown("due") ? <TableCell narrow="hide" /> : null}
@@ -728,6 +751,7 @@ export function InvoicesFooter({
   sortId,
   hintId,
   isSelectable,
+  result,
   anchor,
 }: {
   state: RowState
@@ -736,6 +760,7 @@ export function InvoicesFooter({
   sortId?: string
   hintId?: string
   isSelectable: boolean
+  result?: string
   anchor?: number
 }): React.ReactElement {
   return (
@@ -755,6 +780,11 @@ export function InvoicesFooter({
       <span id={sortId}>
         Sorted by {columnLabel[sort.column]}, {sort.direction}
       </span>
+      {result === undefined ? null : (
+        <span role="status" className="font-medium text-foreground">
+          {result}
+        </span>
+      )}
       <span id={hintId} className="ml-auto pointer-coarse:hidden">
         <Kbd>↑</Kbd> <Kbd>↓</Kbd> move · <Kbd>←</Kbd> <Kbd>→</Kbd> lines · <Kbd>Space</Kbd> peek ·{" "}
         {isSelectable ? (
@@ -944,10 +974,19 @@ function TableError() {
   )
 }
 
-function SelectionBar({ count, onClear }: { count: number; onClear: () => void }) {
+function SelectionBar({
+  count,
+  onClear,
+  onResult,
+}: {
+  count: number
+  onClear: () => void
+  onResult: (message: string) => void
+}) {
   const [isVoidOpen, setIsVoidOpen] = React.useState(false)
   const [isVoided, setIsVoided] = React.useState(false)
   const isWide = useIsWide()
+  const handleExport = () => onResult(`Exported ${invoiceCount(count)}`)
   return (
     <>
       <p role="status" className="sr-only">
@@ -958,8 +997,17 @@ function SelectionBar({ count, onClear }: { count: number; onClear: () => void }
           <SelectionBarBody
             count={count}
             isWide={isWide}
-            menu={<SelectionMenu isWide={isWide} onVoid={() => setIsVoidOpen(true)} />}
+            menu={
+              <SelectionMenu
+                isWide={isWide}
+                onExport={handleExport}
+                onMarkPaid={() => onResult(`Marked ${invoiceCount(count)} as paid`)}
+                onVoid={() => setIsVoidOpen(true)}
+              />
+            }
             onClear={onClear}
+            onRemind={() => onResult(`Reminder sent for ${invoiceCount(count)}`)}
+            onExport={handleExport}
           />
         </div>
       )}
@@ -974,7 +1022,7 @@ function SelectionBar({ count, onClear }: { count: number; onClear: () => void }
         onClosed={() => {
           if (isVoided) {
             setIsVoided(false)
-            onClear()
+            onResult(`Voided ${invoiceCount(count)}`)
           }
         }}
       />
@@ -993,11 +1041,15 @@ export function SelectionBarBody({
   isWide,
   menu,
   onClear,
+  onRemind,
+  onExport,
 }: {
   count: number
   isWide: boolean
   menu: React.ReactNode
   onClear: () => void
+  onRemind?: () => void
+  onExport?: () => void
 }): React.ReactElement {
   return (
     <section
@@ -1015,11 +1067,11 @@ export function SelectionBarBody({
     >
       <span className="shrink-0 px-2.5 text-sm tabular-nums">{count} selected</span>
       <span aria-hidden="true" className="mx-1 h-4 w-px shrink-0 bg-border" />
-      <button type="button" className={cn(barButton, focusRing)}>
+      <button type="button" onClick={onRemind} className={cn(barButton, focusRing)}>
         Send reminder
       </button>
       {isWide ? (
-        <button type="button" className={cn(barButton, focusRing)}>
+        <button type="button" onClick={onExport} className={cn(barButton, focusRing)}>
           Export
         </button>
       ) : null}
@@ -1065,17 +1117,35 @@ function MoreIcon() {
   )
 }
 
-function SelectionMenu({ isWide, onVoid }: { isWide: boolean; onVoid: () => void }) {
+function SelectionMenu({
+  isWide,
+  onExport,
+  onMarkPaid,
+  onVoid,
+}: {
+  isWide: boolean
+  onExport: () => void
+  onMarkPaid: () => void
+  onVoid: () => void
+}) {
   return (
     <Menu.Root>
-      <Menu.Trigger aria-label="More actions" className={cn(moreButton, focusRing)}>
-        <MoreIcon />
-      </Menu.Trigger>
+      <ActionTooltip label="More actions">
+        <Menu.Trigger aria-label="More actions" className={cn(moreButton, focusRing)}>
+          <MoreIcon />
+        </Menu.Trigger>
+      </ActionTooltip>
       <Menu.Portal>
         <Menu.Positioner side="top" align="end" sideOffset={8} className="z-popover">
           <Menu.Popup className={menuSurface}>
-            {isWide ? null : <Menu.Item className={menuItem}>Export</Menu.Item>}
-            <Menu.Item className={menuItem}>Mark as paid</Menu.Item>
+            {isWide ? null : (
+              <Menu.Item className={menuItem} onClick={onExport}>
+                Export
+              </Menu.Item>
+            )}
+            <Menu.Item className={menuItem} onClick={onMarkPaid}>
+              Mark as paid
+            </Menu.Item>
             <Menu.Separator className={menuDivider} />
             <Menu.Item className={cn(menuItem, "text-destructive")} onClick={onVoid}>
               Void invoices…

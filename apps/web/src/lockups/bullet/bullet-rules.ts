@@ -54,7 +54,8 @@ export const bulletRules: ReadonlyArray<Rule<StoryGoal<typeof bulletStory>>> = [
   },
   {
     rule: "Reviewers opens on hover after 300ms and on press, Enter or Space, so a keyboard reaches the names the hover shows.",
-    source: "Design rules: every hover card has a keyboard route",
+    source:
+      "Design rules: every hover card has a keyboard route; the 300ms delay is this design system's own decision",
     serves: "Get more about one detail, such as the reviewers' names or who may open the workspace",
   },
   {

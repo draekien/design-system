@@ -116,7 +116,19 @@ export function SearchFrame<TSearch>({
   onCanvasNavigate?: (search: TSearch) => void
 }): React.ReactElement {
   const frameRef = React.useRef<HTMLIFrameElement>(null)
+  const [loadedSrc, setLoadedSrc] = React.useState<string | null>(null)
+  const loaded = loadedSrc === src
   const message = JSON.stringify(search)
+
+  React.useEffect(() => {
+    const frame = frameRef.current
+    if (
+      frame?.contentDocument?.readyState === "complete" &&
+      frame.contentWindow?.location.href !== "about:blank"
+    ) {
+      setLoadedSrc(src)
+    }
+  }, [src])
 
   React.useEffect(() => {
     frameRef.current?.contentWindow?.postMessage(
@@ -148,7 +160,14 @@ export function SearchFrame<TSearch>({
       title={title}
       src={src}
       suppressHydrationWarning
-      className={cn("shrink-0 bg-background", widthClass[width], className)}
+      onLoad={() => setLoadedSrc(src)}
+      aria-busy={!loaded}
+      className={cn(
+        "shrink-0",
+        loaded ? "bg-background" : "motion-safe:animate-pulse bg-muted",
+        widthClass[width],
+        className
+      )}
     />
   )
 }

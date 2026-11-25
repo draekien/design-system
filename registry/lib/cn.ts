@@ -22,6 +22,7 @@ export const cn = createCn({
         "hit-coarse-gap",
         "hit-min",
         "hit-outset",
+        "page",
         "related",
         "row",
         "row-inset",

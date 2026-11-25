@@ -27,6 +27,7 @@ import {
 import * as React from "react"
 import { flushSync } from "react-dom"
 import { cn } from "@/lib/cn.ts"
+import { ActionTooltip } from "../lockups/action-tooltip.tsx"
 import { PersonAvatar } from "../lockups/avatar/people.tsx"
 import { menuDivider, menuItem, menuSurface } from "../lockups/table/table-styles.ts"
 import { people, popoverCardSurface } from "./popover-card-data.ts"
@@ -232,19 +233,25 @@ export function CardMenu({ label, children }: CardMenuProps): React.ReactElement
   )
   if (card !== null) {
     return (
-      <CardAction
-        aria-label={label}
-        onClick={(event) => card.openMenu({ label, items: children, trigger: event.currentTarget })}
-      >
-        {icon}
-      </CardAction>
+      <ActionTooltip label={label}>
+        <CardAction
+          aria-label={label}
+          onClick={(event) =>
+            card.openMenu({ label, items: children, trigger: event.currentTarget })
+          }
+        >
+          {icon}
+        </CardAction>
+      </ActionTooltip>
     )
   }
   return (
     <Menu.Root>
-      <Menu.Trigger aria-label={label} render={<CardAction />}>
-        {icon}
-      </Menu.Trigger>
+      <ActionTooltip label={label}>
+        <Menu.Trigger aria-label={label} render={<CardAction />}>
+          {icon}
+        </Menu.Trigger>
+      </ActionTooltip>
       <Menu.Portal>
         <Menu.Positioner side="bottom" align="start" sideOffset={4} className="z-popover">
           <Menu.Popup className={menuSurface}>{children}</Menu.Popup>
@@ -310,11 +317,13 @@ export function PersonCardParts({
   team,
   open,
   state,
+  onResult,
 }: {
   person: SamplePerson
   team: string
   open: number
   state: "loaded" | "partial" | "no-permission"
+  onResult?: (result: string) => void
 }): React.ReactElement {
   const canManage = state !== "no-permission"
   return (
@@ -322,15 +331,31 @@ export function PersonCardParts({
       <CardAside
         actions={
           <>
-            <CardAction aria-label={`Email ${person.name}`}>
-              <HugeiconsIcon icon={Mail01Icon} size={16} strokeWidth={1.75} aria-hidden="true" />
-            </CardAction>
+            <ActionTooltip label={`Email ${person.name}`}>
+              <CardAction
+                aria-label={`Email ${person.name}`}
+                onClick={() => onResult?.(`Email to ${person.name} opened`)}
+              >
+                <HugeiconsIcon icon={Mail01Icon} size={16} strokeWidth={1.75} aria-hidden="true" />
+              </CardAction>
+            </ActionTooltip>
             {canManage ? (
               <CardMenu label={`More actions for ${person.name}`}>
-                <CardMenuItem>Reassign their records</CardMenuItem>
-                <CardMenuItem>Copy email address</CardMenuItem>
+                <CardMenuItem
+                  onClick={() => onResult?.(`${open} records reassigned from ${person.name}`)}
+                >
+                  Reassign their records
+                </CardMenuItem>
+                <CardMenuItem onClick={() => onResult?.(`${person.name}'s email address copied`)}>
+                  Copy email address
+                </CardMenuItem>
                 <CardMenuSeparator />
-                <CardMenuItem destructive>Remove from record</CardMenuItem>
+                <CardMenuItem
+                  destructive
+                  onClick={() => onResult?.(`${person.name} removed from the record`)}
+                >
+                  Remove from record
+                </CardMenuItem>
               </CardMenu>
             ) : null}
           </>
@@ -380,33 +405,51 @@ function PersonBullet({ person }: { person: SamplePerson }) {
 
 /** The people on a record's details panel; each name opens its popover card. */
 export function PopoverCardLockup({ state }: { state: FixtureState }): React.ReactElement {
+  const [result, setResult] = React.useState("")
   if (state === "error") {
     return <ErrorMessage subject="The record's people" />
   }
   return (
-    <dl className="grid w-full max-w-sm grid-cols-[6rem_minmax(0,1fr)] items-center gap-x-4 gap-y-2 text-sm">
-      {people.map(({ role, person, team, open }) => (
-        <React.Fragment key={role}>
-          <dt className="text-muted-foreground">{role}</dt>
-          <dd className="flex min-w-0">
-            {state === "loading" ? (
-              <span className="flex min-h-hit-min items-center gap-related">
-                <span className="size-6 rounded-full bg-muted" />
-                <Bar className="w-24" />
-              </span>
-            ) : (
-              <PopoverCard>
-                <Bullet size="lg" render={<PopoverCardTrigger />}>
-                  <PersonBullet person={person} />
-                </Bullet>
-                <PopoverCardContent>
-                  <PersonCardParts person={person} team={team} open={open} state={state} />
-                </PopoverCardContent>
-              </PopoverCard>
-            )}
-          </dd>
-        </React.Fragment>
-      ))}
-    </dl>
+    <div className="flex w-full max-w-sm flex-col gap-related">
+      <dl className="grid w-full grid-cols-[6rem_minmax(0,1fr)] items-center gap-x-related gap-y-run text-sm">
+        {people.map(({ role, person, team, open }) => (
+          <React.Fragment key={role}>
+            <dt className="text-muted-foreground">{role}</dt>
+            <dd className="flex min-w-0">
+              {state === "loading" ? (
+                <span className="flex min-h-hit-min items-center gap-related">
+                  <span className="size-6 rounded-full bg-muted" />
+                  <Bar className="w-24" />
+                </span>
+              ) : (
+                <PopoverCard
+                  onOpenChange={(open) => {
+                    if (open) {
+                      setResult("")
+                    }
+                  }}
+                >
+                  <Bullet size="lg" render={<PopoverCardTrigger />}>
+                    <PersonBullet person={person} />
+                  </Bullet>
+                  <PopoverCardContent>
+                    <PersonCardParts
+                      person={person}
+                      team={team}
+                      open={open}
+                      state={state}
+                      onResult={setResult}
+                    />
+                  </PopoverCardContent>
+                </PopoverCard>
+              )}
+            </dd>
+          </React.Fragment>
+        ))}
+      </dl>
+      <p role="status" className="min-h-hit-min text-muted-foreground text-xs">
+        {result}
+      </p>
+    </div>
   )
 }

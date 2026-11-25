@@ -48,6 +48,7 @@
           "spacing-hit-coarse-gap": "1.25rem",
           "spacing-hit-min": "1.5rem",
           "spacing-hit-outset": "0.625rem",
+          "spacing-page": "3rem",
           "spacing-related": "0.5rem",
           "spacing-row": "2.75rem",
           "spacing-row-inset": "0.5rem",
@@ -406,7 +407,7 @@
           "target": "@components/preview-card.tsx"
         }
       ],
-      "docs": "Compose PreviewCard, PreviewCardTrigger around the value, then PreviewCardContent holding the card item's parts: CardSubject with CardName and an optional CardDescription, CardFacts with layout bullets or labelled, and CardFooter. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable, so every field in the card must also appear in peek and on the item's page. It may hold links, and nothing else that acts: CardAction and CardExplain throw inside it. Its name and description are not truncated. The card renders into the body; pass PreviewCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/components/preview-card",
+      "docs": "Compose PreviewCard, PreviewCardTrigger around the value, then PreviewCardContent holding the card item's parts: CardSubject with CardName and an optional CardDescription, CardFacts with layout bullets or labelled, and CardFooter. It opens 300ms after the pointer enters and closes when it leaves; the trigger is not focusable by default, so every field in the card must also appear in peek and on the item's page; pass tabIndex={0} where neither reaches it, and focus opens the card. It may hold links, and nothing else that acts: CardAction and CardExplain throw inside it. Its name and description are not truncated. The card renders into the body; pass PreviewCardContent a container to render it inside a scaled or panned surface instead. Playground: https://design-system.wpei.me/playground/components/preview-card",
       "meta": {
         "status": "beta",
         "a11yReviewed": null,

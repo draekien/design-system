@@ -14,6 +14,7 @@ import { fixtureStates } from "@workspace/fixtures/state.ts"
 import * as React from "react"
 import { cn } from "@/lib/cn.ts"
 import type { ComponentDocs } from "../components/item-docs.ts"
+import { ActionTooltip } from "../lockups/action-tooltip.tsx"
 import type { Lockup } from "../lockups/lockups.ts"
 import { CanvasFrame, type CanvasMessageSearch, type CanvasRoute } from "./canvas-frame.tsx"
 import { CodeBlock } from "./code-block.tsx"
@@ -102,7 +103,7 @@ export function LockupPage({
         </p>
       </header>
 
-      <div className="flex min-w-0 flex-col gap-12 xl:col-start-1 xl:row-start-2">
+      <div className="flex min-w-0 flex-col gap-page xl:col-start-1 xl:row-start-2">
         <PageSection
           id={sectionId.story}
           title="Story"
@@ -464,22 +465,24 @@ function CanvasToolbar({
             Custom theme
           </Link>
         )}
-        <button
-          type="button"
-          onClick={() => savePlaygroundTheme({ ...theme, mode: nextMode })}
-          aria-label={`Switch the site to the ${nextMode} theme`}
-          className={cn(
-            "inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
-            focusRing
-          )}
-        >
-          <HugeiconsIcon
-            icon={theme.mode === "dark" ? Moon02Icon : Sun03Icon}
-            size={16}
-            strokeWidth={1.75}
-            aria-hidden="true"
-          />
-        </button>
+        <ActionTooltip label={`Switch the site to the ${nextMode} theme`}>
+          <button
+            type="button"
+            onClick={() => savePlaygroundTheme({ ...theme, mode: nextMode })}
+            aria-label={`Switch the site to the ${nextMode} theme`}
+            className={cn(
+              "inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+              focusRing
+            )}
+          >
+            <HugeiconsIcon
+              icon={theme.mode === "dark" ? Moon02Icon : Sun03Icon}
+              size={16}
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
+          </button>
+        </ActionTooltip>
       </div>
     </div>
   )

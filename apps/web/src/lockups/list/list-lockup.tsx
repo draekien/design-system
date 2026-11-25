@@ -256,12 +256,18 @@ export function ListFooter<TItem>({
           </button>
         </span>
       )}
-      {state !== "loading" && (
-        <span id={hintId} className="ml-auto pointer-coarse:hidden">
-          <Kbd>Space</Kbd> peek <Separator /> <Kbd>↑</Kbd> <Kbd>↓</Kbd> move <Separator />{" "}
-          <Kbd>X</Kbd> select <Separator /> <Kbd>Enter</Kbd> open
-        </span>
-      )}
+      <span
+        id={hintId}
+        className={cn("ml-auto pointer-coarse:hidden", state === "loading" && "invisible")}
+      >
+        <Kbd>Space</Kbd> peek <Separator /> <Kbd>↑</Kbd> <Kbd>↓</Kbd> move <Separator />{" "}
+        {isSelectable ? (
+          <>
+            <Kbd>X</Kbd> select <Separator />{" "}
+          </>
+        ) : null}
+        <Kbd>Enter</Kbd> open
+      </span>
     </div>
   )
 }
@@ -350,9 +356,11 @@ export function PeekContent<TItem>({
 }) {
   const value = dataset.value(item)
   return (
-    <>
-      <p className="text-muted-foreground text-xs tabular-nums">{dataset.key(item)}</p>
-      <h2 className="mt-1 text-balance font-semibold">{dataset.name(item)}</h2>
+    <div className="flex flex-col items-start gap-section">
+      <div className="flex flex-col gap-related">
+        <p className="text-muted-foreground text-xs tabular-nums">{dataset.key(item)}</p>
+        <h2 className="text-balance font-semibold">{dataset.name(item)}</h2>
+      </div>
       <ItemFields dataset={dataset} item={item} state={state} />
       <a
         href={`#${value}`}
@@ -360,11 +368,11 @@ export function PeekContent<TItem>({
           event.preventDefault()
           onOpen(value)
         }}
-        className={cn(textLink, "mt-4 text-xs")}
+        className={cn(textLink, "text-xs")}
       >
         Open {dataset.key(item)}
       </a>
-    </>
+    </div>
   )
 }
 
@@ -386,7 +394,7 @@ function ItemPage<TItem>({
   }, [])
 
   return (
-    <article className={cn(listSurface, "max-w-2xl text-sm")}>
+    <article className={cn(listSurface, "flex max-w-2xl flex-col items-start gap-section text-sm")}>
       <button
         type="button"
         onClick={onBack}
@@ -395,14 +403,16 @@ function ItemPage<TItem>({
         <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={1.75} aria-hidden="true" />
         Back to {dataset.noun}
       </button>
-      <p className="mt-5 text-muted-foreground text-xs tabular-nums">{dataset.key(item)}</p>
-      <h2
-        ref={headingRef}
-        tabIndex={-1}
-        className="mt-1 text-balance font-semibold text-xl tracking-tight outline-none"
-      >
-        {dataset.name(item)}
-      </h2>
+      <div className="flex flex-col gap-related">
+        <p className="text-muted-foreground text-xs tabular-nums">{dataset.key(item)}</p>
+        <h2
+          ref={headingRef}
+          tabIndex={-1}
+          className="text-balance font-semibold text-xl tracking-tight outline-none"
+        >
+          {dataset.name(item)}
+        </h2>
+      </div>
       <ItemFields dataset={dataset} item={item} state={state} />
     </article>
   )
@@ -418,11 +428,9 @@ function ItemFields<TItem>({
   state: RowState
 }) {
   return (
-    <>
-      <p className="mt-2 max-w-prose text-pretty text-sm leading-relaxed">
-        {dataset.summary(item)}
-      </p>
-      <dl className="mt-4 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-xs">
+    <div className="flex flex-col gap-section">
+      <p className="max-w-prose text-pretty text-sm leading-relaxed">{dataset.summary(item)}</p>
+      <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-related text-xs">
         {dataset.fields(item, state).map((field) => (
           <React.Fragment key={field.label}>
             <dt className="text-muted-foreground">{field.label}</dt>
@@ -430,7 +438,7 @@ function ItemFields<TItem>({
           </React.Fragment>
         ))}
       </dl>
-    </>
+    </div>
   )
 }
 

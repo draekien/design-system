@@ -15,8 +15,9 @@ export function PreviewCard(props: BasePreviewCard.Root.Props): React.ReactEleme
 }
 
 /**
- * The value that opens its `PreviewCard` on hover. It is not focusable; peek and the item's page are
- * the keyboard and touch routes to the same fields.
+ * The value that opens its `PreviewCard` on hover, and on keyboard focus when it is focusable. It is
+ * not focusable by default, so a row stays one tab stop; pass `tabIndex={0}` where no peek or link
+ * reaches the same fields, and the card then opens while the trigger has focus.
  */
 export function PreviewCardTrigger({
   className,
@@ -29,7 +30,7 @@ export function PreviewCardTrigger({
       closeDelay={0}
       render={<span />}
       className={cn(
-        "inline-flex min-h-6 min-w-6 max-w-full items-center justify-center",
+        "inline-flex min-h-6 min-w-6 max-w-full items-center justify-center [&[tabindex='0']]:pointer-coarse:min-h-hit-coarse [&[tabindex='0']]:pointer-coarse:min-w-hit-coarse",
         className
       )}
       {...props}
@@ -52,7 +53,7 @@ export type PreviewCardContentProps = BasePreviewCard.Popup.Props &
 export function PreviewCardContent({
   align = "start",
   side = "bottom",
-  sideOffset = 6,
+  sideOffset = 4,
   collisionAvoidance,
   container,
   className,

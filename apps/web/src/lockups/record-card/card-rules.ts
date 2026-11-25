@@ -57,7 +57,7 @@ const rules = {
       "Design rules: Clear principle; No-Colour-Alone Rule (a shape drawn alone discloses its word). The one-third limit, the coarse-pointer hit area and the menu placement are this design system's own decisions",
   },
   metricOrder: {
-    rule: "A metric card leads with its figure at the top left and its change against the previous period at the top right, both in tabular figures; the name and unit sit below them. The change shows its percentage alone; the period and both months' figures are in a hover card on it, and the period is in its accessible name. This departs from the Clear principle, which keeps a value's meaning on screen, and the card has no keyboard route to the hover card yet.",
+    rule: "A metric card leads with its figure at the top left and its change against the previous period at the top right, both in tabular figures; the name and unit sit below them. The change shows its percentage alone; the period and both months' figures are in a hover card on it, and the period is in its accessible name. This departs from the Clear principle, which keeps a value's meaning on screen; the change is a tab stop, and focus opens its hover card.",
     source:
       "Design rules: Clear principle (a figure names its unit); Tabular Figures Rule. The figure-first order is this design system's own decision",
   },
@@ -143,6 +143,7 @@ export const summaryCardRules: ReadonlyArray<Rule<StoryGoal<typeof summaryCardSt
   { ...rules.subject, serves: "Read the record's key facts down one edge" },
   { ...rules.media, serves: "Read the record's key facts down one edge" },
   { ...rules.labelledFacts, serves: "Read the record's key facts down one edge" },
+  { ...rules.link, serves: "Open the record" },
   { ...rules.surface, serves: "all" },
   { ...rules.missingFact, serves: "all" },
   { ...rules.hitArea, serves: "all" },
@@ -157,6 +158,7 @@ export const metricCardRules: ReadonlyArray<Rule<StoryGoal<typeof metricCardStor
   { ...rules.metricOrder, serves: "Read this month's figure" },
   { ...rules.metricDisplay, serves: "Read this month's figure" },
   { ...rules.compact, serves: "Read this month's figure" },
+  { ...rules.link, serves: "Open what the figure counts, such as the overdue invoices" },
   { ...rules.surface, serves: "all" },
   { ...rules.grid, serves: "all" },
   { ...rules.missingFact, serves: "all" },

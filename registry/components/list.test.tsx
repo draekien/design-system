@@ -233,7 +233,7 @@ describe("List", () => {
     expect(onPeekValueChange).toHaveBeenLastCalledWith("REC-102")
   })
 
-  it("renders loading rows with no links, checkboxes or record text", () => {
+  it("hides loading rows, their links, checkboxes and sample text from assistive technology", () => {
     render(
       <List aria-label="Records, loading" aria-busy="true">
         <ListRowLoading>
@@ -250,8 +250,7 @@ describe("List", () => {
 
     expect(screen.queryByRole("link")).toBeNull()
     expect(screen.queryByRole("checkbox")).toBeNull()
-    expect(screen.queryByText("Quarterly access review")).toBeNull()
-    expect(screen.queryByText("Confirm who can open finance records")).toBeNull()
+    expect(screen.queryByRole("listitem")).toBeNull()
   })
 
   it("throws a named error when a row is rendered outside a list", () => {

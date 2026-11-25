@@ -72,3 +72,6 @@ Thumbs.db
 # Playwright
 test-results
 playwright-report
+
+# Screenshots
+.shots/

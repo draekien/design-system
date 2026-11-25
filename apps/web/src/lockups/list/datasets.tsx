@@ -381,6 +381,11 @@ function invoiceDue(invoice: SampleInvoice): React.ReactElement {
   )
 }
 
+const invoicesByDue = [...sampleInvoices].sort(
+  (a, b) =>
+    Number(a.status === "paid") - Number(b.status === "paid") || a.dueIso.localeCompare(b.dueIso)
+)
+
 export const invoicesDataset: Dataset<SampleInvoice> = {
   id: "invoices",
   noun: "invoices",
@@ -388,7 +393,7 @@ export const invoicesDataset: Dataset<SampleInvoice> = {
   sampleHint: "Four fixed invoices from packages/fixtures.",
   keyNarrow: "hide",
   items: (options) =>
-    options.data === "random" ? randomInvoices(options.seed, options.count) : sampleInvoices,
+    options.data === "random" ? randomInvoices(options.seed, options.count) : invoicesByDue,
   value: (invoice) => invoice.id,
   key: (invoice) => invoice.id,
   name: (invoice) => invoice.customer,

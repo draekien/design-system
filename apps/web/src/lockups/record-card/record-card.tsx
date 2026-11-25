@@ -1,5 +1,4 @@
 import { Menu } from "@base-ui/react/menu"
-import { Tooltip } from "@base-ui/react/tooltip"
 import type { useRender } from "@base-ui/react/use-render"
 import {
   LockIcon,
@@ -31,6 +30,7 @@ import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "@/component
 import { RelativeTime } from "@/components/relative-time.tsx"
 import { cn } from "@/lib/cn.ts"
 import { Bar, ErrorMessage, RetryLink } from "../../experiments/wireframe-parts.tsx"
+import { ActionTooltip } from "../action-tooltip.tsx"
 import { ownerEntity, recordStatus } from "../list/datasets.tsx"
 import { menuDivider, menuItem, menuSurface } from "../table/table-styles.ts"
 import { belowTrigger, retryClass } from "./card-styles.ts"
@@ -176,17 +176,23 @@ export function RecordCardLoading({
   return (
     <Card render={render} aria-hidden="true">
       {media ? <span className={loadingMedia} /> : null}
-      <div className="flex flex-col gap-2 py-1">
-        <Bar className="w-14" />
-        <Bar className="w-40" />
-        <Bar className="w-20" />
+      <div className="flex flex-col">
+        <span className="flex h-4 items-center">
+          <Bar className="w-14" />
+        </span>
+        <span className="flex h-5 items-center">
+          <Bar className="w-40" />
+        </span>
+        <span className="flex h-4 items-center">
+          <Bar className="w-20" />
+        </span>
       </div>
-      <div className="flex min-h-6 items-center gap-3">
+      <div className="flex min-h-6 items-center gap-related">
         <Bar className="w-16" />
         <Bar className="w-20" />
         <Bar className="w-12" />
       </div>
-      <div className="flex min-h-6 items-center">
+      <div className="flex min-h-7 items-center">
         <Bar className="w-16" />
       </div>
     </Card>
@@ -291,9 +297,11 @@ export function RecordCardStates({ state }: { state: FixtureState }): React.Reac
     return <RecordCardLockup state={state} />
   }
   return (
-    <section className="flex flex-col gap-related">
-      <h2 className="font-medium text-sm">Worst case</h2>
-      <NarrowRecordCards state={state} />
+    <section className="flex flex-col gap-section">
+      <div className="flex flex-col gap-related">
+        <h2 className="font-medium text-sm">Worst case</h2>
+        <NarrowRecordCards state={state} />
+      </div>
       <Records state={state} records={worstRecords} label="Worst-case records" media />
       <Records state={state} records={[]} label="No records" media={false} />
       <AsideSpecimens media={false} />
@@ -304,27 +312,22 @@ export function RecordCardStates({ state }: { state: FixtureState }): React.Reac
 
 function IconAction({ label, icon }: { label: string; icon: typeof PinIcon }) {
   return (
-    <Tooltip.Root>
-      <Tooltip.Trigger delay={300} render={<CardAction aria-label={label} />}>
+    <ActionTooltip label={label}>
+      <CardAction aria-label={label}>
         <HugeiconsIcon icon={icon} size={16} strokeWidth={1.75} aria-hidden="true" />
-      </Tooltip.Trigger>
-      <Tooltip.Portal>
-        <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
-          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
-            {label}
-          </Tooltip.Popup>
-        </Tooltip.Positioner>
-      </Tooltip.Portal>
-    </Tooltip.Root>
+      </CardAction>
+    </ActionTooltip>
   )
 }
 
 function MoreActions({ actions }: { actions: ReadonlyArray<string> }) {
   return (
     <Menu.Root>
-      <Menu.Trigger aria-label="More actions" render={<CardAction />}>
-        <HugeiconsIcon icon={MoreVerticalIcon} size={16} strokeWidth={1.75} aria-hidden="true" />
-      </Menu.Trigger>
+      <ActionTooltip label="More actions">
+        <Menu.Trigger aria-label="More actions" render={<CardAction />}>
+          <HugeiconsIcon icon={MoreVerticalIcon} size={16} strokeWidth={1.75} aria-hidden="true" />
+        </Menu.Trigger>
+      </ActionTooltip>
       <Menu.Portal>
         <Menu.Positioner {...belowTrigger} className="z-popover">
           <Menu.Popup className={menuSurface}>
@@ -345,7 +348,7 @@ function MoreActions({ actions }: { actions: ReadonlyArray<string> }) {
 function AsideText({ children, detail }: { children: string; detail: string }) {
   return (
     <PreviewCard>
-      <PreviewCardTrigger className="min-w-0 justify-end">
+      <PreviewCardTrigger tabIndex={0} className="min-w-0 justify-end">
         <span dir="auto" className="truncate text-muted-foreground text-xs">
           {children}
         </span>
@@ -417,7 +420,7 @@ const asideSpecimens: ReadonlyArray<{
     aside: (
       <CardAside>
         <PreviewCard>
-          <PreviewCardTrigger className="text-muted-foreground">
+          <PreviewCardTrigger tabIndex={0} className="text-muted-foreground">
             <HugeiconsIcon icon={LockIcon} size={16} strokeWidth={1.75} aria-hidden="true" />
             <span className="sr-only">Restricted</span>
           </PreviewCardTrigger>

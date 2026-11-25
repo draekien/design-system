@@ -233,7 +233,7 @@ function MediaBox({
       data-slot="card-media"
       className={cn(
         mediaClass,
-        "flex flex-col items-center justify-center gap-1 text-muted-foreground text-xs",
+        "flex flex-col items-center justify-center gap-related text-muted-foreground text-xs",
         className
       )}
     >
@@ -346,9 +346,9 @@ export type CardFactsProps = React.ComponentProps<"dl"> & {
 }
 
 const factsLayoutClass = {
-  row: "flex min-w-0 items-center gap-x-3 text-xs",
+  row: "flex min-w-0 items-center gap-x-related text-xs",
   bullets: "flex min-w-0 flex-col",
-  labelled: "grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-1",
+  labelled: "grid grid-cols-[max-content_minmax(0,1fr)] gap-x-related gap-y-run",
 } as const
 
 /** Rank 2: the facts the surface compares, as `CardFact`s. */
@@ -454,7 +454,7 @@ export function CardExplain({
       className={cn("flex flex-col items-start", className)}
       {...props}
     >
-      <Collapsible.Trigger className="group/explain relative z-raised -ms-1 inline-flex min-h-hit-min cursor-pointer items-center gap-1 rounded-floor px-1 text-muted-foreground text-xs hover:bg-foreground/7 hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-hit-coarse">
+      <Collapsible.Trigger className="group/explain relative z-raised -ms-1 inline-flex min-h-hit-min cursor-pointer items-center gap-related rounded-floor px-1 text-muted-foreground text-xs hover:bg-foreground/7 hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-hit-coarse">
         <span
           aria-hidden="true"
           className={cn(

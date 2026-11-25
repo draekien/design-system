@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-25",
+    "description": "The card opens 4px below its trigger, from 6px, matching the card rules. PreviewCardTrigger opens the card on keyboard focus when you pass tabIndex={0}; pass it where no peek or link reaches the card's fields. A focusable trigger's hit area grows to 44px on a coarse pointer."
+  },
+  {
     "date": "2026-11-13",
     "description": "Draws as a card and installs the card item: compose PreviewCardContent from CardSubject, CardFacts and CardFooter in place of your own paragraphs. It takes the card radius and its inset hairline in place of the 10px radius and border. Its name and description are not truncated. CardAction and CardExplain throw inside it."
   },

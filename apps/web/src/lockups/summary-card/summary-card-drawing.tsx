@@ -83,7 +83,7 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
       n: 4,
       name: "CardName",
       depth: 2,
-      note: "At most two lines; no link, since the card sits on the record's own page",
+      note: "At most two lines; a CardLink to the record",
       specimen: <span className="font-medium text-sm">{summaryRecord.title}</span>,
     },
     {

@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-25",
+    "description": "Every column in a row is 8px apart, the related spacing token: the ID, the media, the description and each fact were 12px, 8px, 12px and 16px apart. ListRowPeek shows a tooltip, Peek · Space, that names it and its key. In a ListRowLoading, ListRowId, ListRowName and ListRowFact size their bar to the sample values you pass as children, so the columns keep their widths when the loaded rows replace the loading ones."
+  },
+  {
     "date": "2026-10-29",
     "description": "A focused or peeked row draws the same mark: the foreground at 4%, as on hover, and a 1px inset ring in the ring colour at 40%. The name no longer underlines on focus, and a peeked row no longer draws a 2px foreground ring at 15% or a 7% tint."
   },

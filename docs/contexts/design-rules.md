@@ -170,6 +170,7 @@ The container sets the gap between its children by how the two neighbours relate
 | `--spacing-run` (`gap-run`) | the same component in a run, such as row after row | 0 |
 | `--spacing-related` (`gap-related`) | parts of one record or one control, such as a status dot and its word | 0.5rem |
 | `--spacing-section` (`gap-section`) | separate sections, such as two stacked lists | 1.5rem |
+| `--spacing-page` (`gap-page`) | sections of a docs page, such as Story and Lockup | 3rem |
 
 ## Cards
 

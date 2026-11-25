@@ -27,7 +27,7 @@ export function RulesPage(): React.ReactElement {
   const listId = React.useId()
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-16 px-5 py-8 sm:px-8 lg:py-10">
+    <div className="mx-auto flex max-w-5xl flex-col gap-page px-5 py-8 sm:px-8 lg:py-10">
       <header className="max-w-2xl">
         <h1 className="font-semibold text-3xl tracking-[-0.03em] [font-stretch:108%]">Rules</h1>
         <p className="mt-2 text-pretty text-muted-foreground leading-relaxed">

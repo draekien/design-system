@@ -19,7 +19,7 @@ export function Meter({ locale = "en", className, ...props }: MeterProps): React
     <BaseMeter.Root
       data-slot="meter"
       locale={locale}
-      className={cn("inline-flex items-center gap-2", className)}
+      className={cn("inline-flex items-center gap-related", className)}
       {...props}
     >
       <BaseMeter.Track

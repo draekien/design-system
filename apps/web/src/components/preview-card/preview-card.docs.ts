@@ -35,7 +35,7 @@ import { CardDescription, CardName, CardSubject } from "@/components/card"`,
   </PreviewCardContent>
 </PreviewCard>`,
     description:
-      "The trigger is not focusable, so every field in the card must also appear in peek and on the item's page.",
+      "The trigger is not focusable by default, so every field in the card must also appear in peek and on the item's page; pass tabIndex={0} where neither reaches it, and focus opens the card.",
   },
   composition: {
     name: "PreviewCard",

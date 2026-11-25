@@ -20,7 +20,7 @@ export function PlaygroundIndex(): React.ReactElement {
   const registryId = React.useId()
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-14 px-5 py-8 sm:px-8 lg:py-10">
+    <div className="mx-auto flex max-w-6xl flex-col gap-page px-5 py-8 sm:px-8 lg:py-10">
       <header className="max-w-2xl">
         <h1 className="font-semibold text-3xl tracking-[-0.03em] [font-stretch:108%]">
           Playground
