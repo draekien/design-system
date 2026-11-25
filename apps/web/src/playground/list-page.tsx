@@ -1,6 +1,6 @@
 import { getRouteApi } from "@tanstack/react-router"
 import type * as React from "react"
-import { datasetParts, invoicesDataset, recordsDataset } from "../lockups/list/datasets.tsx"
+import { datasetParts, recordsDataset } from "../lockups/list/datasets.tsx"
 import { listLockupDocs } from "../lockups/list/list.docs.ts"
 import { listCode, listStatesCode } from "../lockups/list/list-code.ts"
 import { listRules } from "../lockups/list/list-rules.ts"
@@ -8,7 +8,7 @@ import { listLockup } from "../lockups/lockups.ts"
 import { DataSourceControls, PartsControls } from "./data-controls.tsx"
 import { ListConstellation } from "./list-canvas.tsx"
 import { LockupPage } from "./lockup-page.tsx"
-import { ControlGroup, Segmented } from "./playground-controls.tsx"
+import { ControlGroup } from "./playground-controls.tsx"
 import {
   hiddenParts,
   type ListPart,
@@ -16,13 +16,8 @@ import {
   type PlaygroundSearch,
   toggledParts,
 } from "./playground-search.ts"
-import { segmentItem } from "./playground-styles.ts"
 
 const route = getRouteApi("/playground/lockups/list")
-
-const datasets = { records: recordsDataset, invoices: invoicesDataset } as const
-
-const datasetLabel = { records: "Records", invoices: "Invoices" } as const
 
 function useSetSearch() {
   const navigate = route.useNavigate()
@@ -37,15 +32,8 @@ function useSetSearch() {
 export function ListPage({ search }: { search: PlaygroundSearch }): React.ReactElement {
   const setSearch = useSetSearch()
   const hidden = hiddenParts(search.hide, listParts)
-  const dataset = datasets[search.dataset]
-  const lockupCode =
-    search.dataset === "invoices"
-      ? listCode(invoicesDataset, hidden)
-      : listCode(recordsDataset, hidden)
-  const statesCode =
-    search.dataset === "invoices"
-      ? listStatesCode(invoicesDataset, hidden, search.state)
-      : listStatesCode(recordsDataset, hidden, search.state)
+  const lockupCode = listCode(recordsDataset, hidden)
+  const statesCode = listStatesCode(recordsDataset, hidden, search.state)
 
   return (
     <LockupPage
@@ -60,13 +48,13 @@ export function ListPage({ search }: { search: PlaygroundSearch }): React.ReactE
       noun="list"
       canvas="/canvas/lockups/list"
       search={search}
-      lockupCode={{ code: lockupCode, fileName: `${dataset.noun}.tsx` }}
+      lockupCode={{ code: lockupCode, fileName: `${recordsDataset.noun}.tsx` }}
       statesCode={{
         code: statesCode,
         fileName:
           search.state === "loading"
-            ? `${dataset.noun}-loading.tsx`
-            : `${dataset.item}-row-states.tsx`,
+            ? `${recordsDataset.noun}-loading.tsx`
+            : `${recordsDataset.item}-row-states.tsx`,
       }}
       constellation={<ListConstellation options={search} />}
       constellationDescription="How the row encodes the rules: each part sits with its information rank and connects to where it shows or is revealed in the row."
@@ -86,9 +74,7 @@ function CanvasControls({
   hidden: ReadonlySet<ListPart>
 }) {
   const setSearch = useSetSearch()
-  const dataset = datasets[search.dataset]
-  const parts =
-    search.dataset === "invoices" ? datasetParts(invoicesDataset) : datasetParts(recordsDataset)
+  const parts = datasetParts(recordsDataset)
 
   function handleTogglePart(part: ListPart) {
     setSearch({ hide: [...toggledParts(listParts, hidden, part)] })
@@ -100,23 +86,10 @@ function CanvasControls({
         label="Data"
         hint={
           search.data === "random"
-            ? `The same seed always generates the same ${dataset.noun}, so a copied link shows what you see.`
-            : dataset.sampleHint
+            ? `The same seed always generates the same ${recordsDataset.noun}, so a copied link shows what you see.`
+            : recordsDataset.sampleHint
         }
       >
-        <Segmented label="Dataset" className="self-start">
-          {(["records", "invoices"] as const).map((name) => (
-            <button
-              key={name}
-              type="button"
-              aria-pressed={search.dataset === name}
-              onClick={() => setSearch({ dataset: name })}
-              className={segmentItem}
-            >
-              {datasetLabel[name]}
-            </button>
-          ))}
-        </Segmented>
         <DataSourceControls search={search} onSearchChange={setSearch} />
       </ControlGroup>
 

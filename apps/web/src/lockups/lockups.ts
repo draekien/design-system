@@ -40,7 +40,7 @@ export const tableLockup: Lockup = {
     "Rows for comparing values down a column: group, sort, expand and select them, and the table decides which columns stay when it is narrow.",
   page: "/playground/lockups/table",
   story: tableStory,
-  components: ["table", "status", "card", "preview-card"].map(requireRegistryItem),
+  components: ["table", "status", "meter", "card", "preview-card"].map(requireRegistryItem),
 }
 
 export const avatarLockup: Lockup = {

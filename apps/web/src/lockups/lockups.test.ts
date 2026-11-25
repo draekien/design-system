@@ -8,8 +8,6 @@ describe("listLockup", () => {
       "list",
       "card",
       "entity",
-      "figure",
-      "meter",
       "preview-card",
       "relative-time",
       "status",

@@ -4,6 +4,7 @@ import {
   sampleInvoices,
 } from "@workspace/fixtures/invoices.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
+import { Meter } from "@workspace/registry/components/meter.tsx"
 import {
   Table,
   TableBody,
@@ -40,10 +41,10 @@ import {
 } from "../lockups/table/table-lockup.tsx"
 import {
   formatAmount,
-  formatPaid,
   groupSum,
   groupValue,
   linesOf,
+  paidFormat,
   type RowState,
   type Sort,
   type StatusGroup,
@@ -629,7 +630,7 @@ function partSpecs(state: RowState): ReadonlyArray<PartSpec> {
         <span className="flex gap-4 text-sm tabular-nums">
           <span>{lineCount}</span>
           <span>{formatAmount(invoice.amount)}</span>
-          <span>{formatPaid(invoice.paid)}</span>
+          <Meter value={invoice.paid} max={1} format={paidFormat} aria-label="Paid" />
           <DueText invoice={invoice} />
         </span>
       ),

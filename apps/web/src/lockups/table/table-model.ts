@@ -46,6 +46,8 @@ export function formatAmount(amount: number): string {
   return amountFormat.format(amount).replace("-", "−")
 }
 
+export const paidFormat: Intl.NumberFormatOptions = { style: "percent" }
+
 export function formatPaid(paid: number): string {
   return `${Math.round(paid * 100)}%`
 }

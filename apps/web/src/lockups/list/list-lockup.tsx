@@ -4,6 +4,13 @@ import { Link } from "@tanstack/react-router"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import {
   List,
+  ListGroup,
+  ListGroupAdd,
+  ListGroupCount,
+  ListGroupHeader,
+  ListGroupName,
+  ListGroupRows,
+  ListGroupTrigger,
   ListPeek,
   ListRow,
   ListRowDescription,
@@ -16,6 +23,7 @@ import {
   ListRowSelect,
   ListRowSubject,
 } from "@workspace/registry/components/list.tsx"
+import { Status, StatusMedia, StatusName } from "@workspace/registry/components/status.tsx"
 import * as React from "react"
 import { flushSync } from "react-dom"
 import { cn } from "@/lib/cn.ts"
@@ -25,8 +33,10 @@ import {
   capitalise,
   type Dataset,
   factProps,
+  groupItems,
   type Hidden,
   hasCard,
+  type ItemGroup,
   listSurface,
   type RowState,
   shownFacts,
@@ -48,22 +58,41 @@ export function ListLockup<TItem>({
   const [peekValue, setPeekValue] = React.useState<string | null>(null)
   const [selectedValues, setSelectedValues] = React.useState<ReadonlyArray<string>>([])
   const [openValue, setOpenValue] = React.useState<string | null>(null)
+  const [added, setAdded] = React.useState<ReadonlyArray<TItem>>([])
+  const [expandedValues, setExpandedValues] = React.useState<ReadonlyArray<string>>(() =>
+    dataset.groups.map((group) => group.value)
+  )
   const listRef = React.useRef<HTMLDivElement>(null)
   const hintId = React.useId()
   const peekId = React.useId()
-  const peeked = items.find((item) => dataset.value(item) === peekValue) ?? null
-  const opened = items.find((item) => dataset.value(item) === openValue) ?? null
+  const allItems = [...added, ...items]
+  const groups = groupItems(dataset, allItems)
+  const peeked = allItems.find((item) => dataset.value(item) === peekValue) ?? null
+  const opened = allItems.find((item) => dataset.value(item) === openValue) ?? null
 
   function handleOpen(value: string) {
     setPeekValue(null)
     setOpenValue(value)
   }
 
-  function handleBack(value: string) {
-    flushSync(() => setOpenValue(null))
+  function focusRow(value: string) {
     listRef.current
       ?.querySelector<HTMLElement>(`[data-slot="list-row-link"][data-value="${value}"]`)
       ?.focus()
+  }
+
+  function handleBack(value: string) {
+    flushSync(() => setOpenValue(null))
+    focusRow(value)
+  }
+
+  function handleAdd(group: string) {
+    const draft = dataset.draft(group, allItems)
+    flushSync(() => {
+      setAdded((previous) => [draft, ...previous])
+      setExpandedValues((previous) => (previous.includes(group) ? previous : [...previous, group]))
+    })
+    focusRow(dataset.value(draft))
   }
 
   return (
@@ -79,10 +108,20 @@ export function ListLockup<TItem>({
       <div ref={listRef} hidden={opened !== null}>
         {state === "loading" ? (
           <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
-            {items.map((item) => (
-              <ListRowLoading key={dataset.value(item)}>
-                <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
-              </ListRowLoading>
+            {groupItems(dataset, items).map((group) => (
+              <React.Fragment key={group.value}>
+                <ListRowLoading>
+                  {!hidden.has("select") && <ListRowSelect />}
+                  <ListRowLink>
+                    <ListRowName>{group.name}</ListRowName>
+                  </ListRowLink>
+                </ListRowLoading>
+                {group.items.map((item) => (
+                  <ListRowLoading key={dataset.value(item)}>
+                    <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
+                  </ListRowLoading>
+                ))}
+              </React.Fragment>
             ))}
           </List>
         ) : (
@@ -93,18 +132,31 @@ export function ListLockup<TItem>({
             onPeekValueChange={setPeekValue}
             selectedValues={selectedValues}
             onSelectedValuesChange={setSelectedValues}
+            expandedValues={expandedValues}
+            onExpandedValuesChange={setExpandedValues}
           >
-            {items.map((item) => (
-              <ListRow key={dataset.value(item)} value={dataset.value(item)}>
-                <RowParts
-                  dataset={dataset}
-                  item={item}
-                  state={state}
-                  hidden={hidden}
-                  peekId={dataset.value(item) === peekValue ? peekId : undefined}
-                  onOpen={handleOpen}
-                />
-              </ListRow>
+            {groups.map((group) => (
+              <ListGroup
+                key={group.value}
+                value={group.value}
+                values={group.items.map((item) => dataset.value(item))}
+              >
+                <GroupHeader group={group} hidden={hidden} onAdd={() => handleAdd(group.value)} />
+                <ListGroupRows>
+                  {group.items.map((item) => (
+                    <ListRow key={dataset.value(item)} value={dataset.value(item)}>
+                      <RowParts
+                        dataset={dataset}
+                        item={item}
+                        state={state}
+                        hidden={hidden}
+                        peekId={dataset.value(item) === peekValue ? peekId : undefined}
+                        onOpen={handleOpen}
+                      />
+                    </ListRow>
+                  ))}
+                </ListGroupRows>
+              </ListGroup>
             ))}
             <ListPeek id={peekId} aria-label="Peek">
               {peeked !== null && (
@@ -116,7 +168,7 @@ export function ListLockup<TItem>({
         <ListFooter
           dataset={dataset}
           state={state}
-          count={items.length}
+          count={allItems.length}
           hintId={hintId}
           selectedCount={selectedValues.length}
           isSelectable={!hidden.has("select")}
@@ -124,6 +176,46 @@ export function ListLockup<TItem>({
         />
       </div>
     </>
+  )
+}
+
+export function GroupHeader({
+  group,
+  hidden,
+  anchors,
+  className,
+  revealClassName,
+  onAdd,
+}: {
+  group: ItemGroup<unknown>
+  hidden: Hidden
+  anchors?: RowAnchors
+  className?: string
+  revealClassName?: string
+  onAdd?: () => void
+}) {
+  return (
+    <ListGroupHeader data-anchor={anchors?.get("group-header")} className={className}>
+      {!hidden.has("select") && (
+        <ListRowSelect className={revealClassName} data-anchor={anchors?.get("group-select")} />
+      )}
+      <ListGroupTrigger data-anchor={anchors?.get("group-trigger")}>
+        <ListGroupName data-anchor={anchors?.get("group-name")}>
+          <Status>
+            <StatusMedia fill={group.fill} />
+            <StatusName>{group.name}</StatusName>
+          </Status>
+        </ListGroupName>
+        <ListGroupCount data-anchor={anchors?.get("group-count")}>
+          {group.items.length}
+        </ListGroupCount>
+      </ListGroupTrigger>
+      <ListGroupAdd
+        className={revealClassName}
+        data-anchor={anchors?.get("group-add")}
+        onClick={onAdd}
+      />
+    </ListGroupHeader>
   )
 }
 

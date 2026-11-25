@@ -50,7 +50,7 @@ export function PlaygroundIndex(): React.ReactElement {
               <dt className="text-muted-foreground">States</dt>
               <dd>Loaded, loading, partial, error, no permission</dd>
               <dt className="text-muted-foreground">Data</dt>
-              <dd>Records, invoices, seeded random rows</dd>
+              <dd>Records, seeded random rows</dd>
             </dl>
             <Link
               to="/playground/lockups/list"

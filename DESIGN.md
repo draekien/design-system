@@ -83,6 +83,13 @@ components:
     rounded: "{rounded.floor}"
     padding: "0 {spacing.row-inset}"
     height: "{spacing.row}"
+  list-group-header:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.floor}"
+    padding: "0 {spacing.row-inset}"
+    height: "{spacing.row}"
   list-peek:
     backgroundColor: "{colors.sheet}"
     textColor: "{colors.ink}"
@@ -295,6 +302,12 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Revealed controls:** the selection checkbox and peek button are invisible at rest and appear on row hover, focus or selection; on a coarse pointer they are always visible and 44×44px.
 - **Layout:** the checkbox (24px), ID (`{spacing.list-id-min}` to `{spacing.list-id-max}`) and media (24px) line up down the list; the name (`{spacing.list-name-min}` to `{spacing.list-name-max}`) and description follow, the description filling the rest and truncating first; the facts sit at the end, right-aligned, each `{spacing.list-fact-min}` to `{spacing.list-fact-max}` wide and `{spacing.related}` apart, the fact the top goal looks for last on the right edge.
 
+### List group header
+- **Shape:** 44px high (`min-h-11`), `px-2`, tint at the floor radius (`{rounded.floor}`), pinned with `sticky top-0` on the raised layer (`z-raised`) and drawn on the page background; rows under it are not indented. A list header carries no sums; a table header keeps them.
+- **States:** hover tints the header with Ink at 4%; keyboard focus on its trigger takes Ink at 4% and a 1px inset Signal Ring at 40%, as a row does.
+- **Layout:** the group checkbox (24px, lined up with the rows' checkboxes), a chevron that rotates 90° when expanded, the group name in 14px medium weight with a status dot, a muted tabular count, then a 24px add (+) button as the last item.
+- **Revealed controls:** the checkbox is invisible at rest and appears on hover, focus, a coarse pointer or while mixed or checked; mixed draws a dash. The add button appears on hover, focus or a coarse pointer, is 44×44px on a coarse pointer, and its tooltip reads "Add".
+
 ### List peek
 - **Shape:** a floating card (a Base UI Popover rendered as Card) under the peeked row, aligned to its end, `{spacing.peek}` (22rem) wide and capped to the available width and height; `{colors.sheet}` fill, `--shadow-popover`, `{rounded.card}`, on the `--z-index-popover` layer.
 - **Behaviour:** focus stays on the row; nothing is drawn while peek is closed. A table keeps its own peek beside or under the table.
@@ -305,6 +318,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Group row:** 36px high on Quiet Grey at 40%, square, 44px on a coarse pointer; hover deepens the fill to 70%, and keyboard focus draws a 1px inset Signal Ring at 40%. Its name starts in the first data column, not under a column it does not belong to, and its sums stay in their columns.
 - **Row header:** a row header that holds the row's `TableRowLink` is the record's name: it takes the spare width and truncates. Any other row header, such as a label or a prop name, fits its content.
 - **Column header:** 36px high, 12px medium Muted Ink; a sortable header is a button with an arrow, drawn on hover and focus until the column is sorted, then always, turned over when descending, and the sorted header takes Ink; the sorted column carries `aria-sort`. The button is 24px high, 44px on a coarse pointer.
+- **Meter cell:** a column that holds a share, such as Paid %, draws a `Meter` with its percentage, not the figure alone.
 - **Caption:** above the table, 14px medium; it names the table for screen readers and may be hidden when a heading beside the table does.
 - **Footer:** Quiet Grey fill, its bottom corners at the floor radius, medium weight, no line above it.
 - **Revealed controls:** the selection checkbox and the expand chevron are 24×24px, 44×44px on a coarse pointer; the checkbox is invisible at rest and shows on row hover, focus or selection, and is always visible on a coarse pointer.

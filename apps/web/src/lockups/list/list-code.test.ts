@@ -1,15 +1,29 @@
 import { describe, expect, it } from "vitest"
-import { invoicesDataset, recordsDataset } from "./datasets.tsx"
+import { recordsDataset } from "./datasets.tsx"
 import { listCode, listStatesCode } from "./list-code.ts"
 
 describe("listCode", () => {
-  it("renders the peeked invoice in a ListPeek inside the list", () => {
-    const code = listCode(invoicesDataset, new Set())
+  it("renders the peeked record in a ListPeek inside the list", () => {
+    const code = listCode(recordsDataset, new Set())
 
     expect(code).toContain("  ListPeek,\n")
     expect(code).toContain(
-      '<Link to="/invoices/$id" params={{ id: peekValue }}>\n            Open {peekValue}'
+      '<Link to="/records/$id" params={{ id: peekValue }}>\n            Open {peekValue}'
     )
+  })
+
+  it("renders each group's header and rows inside a ListGroup", () => {
+    const code = listCode(recordsDataset, new Set())
+
+    expect(code).toContain("values={group.records.map((record) => record.id)}")
+    expect(code).toContain("<ListGroupCount>{group.records.length}</ListGroupCount>")
+    expect(code).toContain("<ListGroupAdd onClick={() => onAdd(group.value)} />")
+    expect(code).toContain("{group.records.map((record) => (")
+    expect(code).toContain('from "@/components/status"')
+  })
+
+  it("drops the header checkbox when selection is hidden", () => {
+    expect(listCode(recordsDataset, new Set(["select"]))).not.toContain("ListRowSelect")
   })
 })
 
@@ -36,10 +50,10 @@ describe("listStatesCode", () => {
   })
 
   it("renders selected and peeked rows through the uncontrolled list props", () => {
-    const code = listStatesCode(invoicesDataset, new Set(), "loaded")
+    const code = listStatesCode(recordsDataset, new Set(), "loaded")
 
-    expect(code).toContain("defaultSelectedValues={[invoice.id]}")
-    expect(code).toContain("defaultPeekValue={invoice.id}")
+    expect(code).toContain("defaultSelectedValues={[record.id]}")
+    expect(code).toContain("defaultPeekValue={record.id}")
     expect(code).toContain('<div className="w-[34rem]">')
   })
 

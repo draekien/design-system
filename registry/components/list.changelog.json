@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-11-25",
+    "description": "Adds groups. ListGroup holds a ListGroupHeader and a ListGroupRows; the header holds a ListRowSelect, a ListGroupTrigger with a chevron, ListGroupName and ListGroupCount, and a ListGroupAdd as its last item. The header is pinned to the top of the scroll area while its rows scroll. List adds expandedValues, defaultExpandedValues and onExpandedValuesChange; ← collapses a group and moves from a row to its header, → expands a group then moves to its first row, X on a header selects every row in the group and the header checkbox shows mixed while only some are, and Tab on a header moves to its add button."
+  },
+  {
+    "date": "2026-11-25",
     "description": "Rows no longer share columns. Only the checkbox, ID and media line up down the list: the ID is 4rem to 6rem wide, the name 6rem to 20rem, and the description fills what is left. The facts sit at the end of the row in the order given, each as wide as its value between 2rem and 12rem. Adds ListPeek, a floating card under the peeked row that previews the item read-only, keeps focus on the row, moves with peek, and closes on Space, Esc or a press outside the list. List's context gains onPeekValueChange and rootRef. The item now depends on card."
   },
   {

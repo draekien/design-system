@@ -2,6 +2,13 @@ import type { Checkbox } from "@base-ui/react/checkbox"
 import type { Popover } from "@base-ui/react/popover"
 import type {
   List,
+  ListGroup,
+  ListGroupAdd,
+  ListGroupCount,
+  ListGroupHeader,
+  ListGroupName,
+  ListGroupRows,
+  ListGroupTrigger,
   ListPeek,
   ListRow,
   ListRowDescription,
@@ -17,6 +24,7 @@ import type {
 } from "@/components/list.tsx"
 import { type ApiTable, type ComponentDocs, requireSource } from "../item-docs.ts"
 import { ListFigures } from "./list-figures.tsx"
+import { ListGroups } from "./list-groups.tsx"
 import { ListMissing } from "./list-missing.tsx"
 import { ListNarrow } from "./list-narrow.tsx"
 
@@ -28,6 +36,7 @@ const sources = import.meta.glob<string>("./*.tsx", {
 
 const li = { label: "<li>", href: null }
 const span = { label: "<span>", href: null }
+const button = { label: "<button>", href: null }
 
 const renderProp = {
   type: "React.ReactElement | ((props, state) => React.ReactElement)",
@@ -112,6 +121,37 @@ export const listDocs: ComponentDocs = {
           { name: "ListRowPeek", item: null, children: [] },
         ],
       },
+      {
+        name: "ListGroup",
+        item: null,
+        children: [
+          {
+            name: "ListGroupHeader",
+            item: null,
+            children: [
+              { name: "ListRowSelect", item: null, children: [] },
+              {
+                name: "ListGroupTrigger",
+                item: null,
+                children: [
+                  {
+                    name: "ListGroupName",
+                    item: null,
+                    children: [{ name: "Status", item: "status", children: [] }],
+                  },
+                  { name: "ListGroupCount", item: null, children: [] },
+                ],
+              },
+              { name: "ListGroupAdd", item: null, children: [] },
+            ],
+          },
+          {
+            name: "ListGroupRows",
+            item: null,
+            children: [{ name: "ListRow", item: null, children: [] }],
+          },
+        ],
+      },
       { name: "ListRowLoading", item: null, children: [] },
       { name: "ListPeek", item: "card", children: [] },
     ],
@@ -137,6 +177,14 @@ export const listDocs: ComponentDocs = {
       description: "missing draws a word in place of the value. Hover a row for its peek button.",
       Preview: ListMissing,
       source: requireSource(sources, "./list-missing.tsx"),
+    },
+    {
+      name: "list-groups",
+      title: "Groups",
+      description:
+        "Rows grouped by status under headers that collapse with ← and expand with →, each with a count.",
+      Preview: ListGroups,
+      source: requireSource(sources, "./list-groups.tsx"),
     },
   ],
   api: [
@@ -186,6 +234,26 @@ export const listDocs: ComponentDocs = {
           default: null,
           description:
             "Called when Space or a ListRowPeek toggles peek, Esc closes it, or peek follows focus to another row.",
+        },
+        expandedValues: {
+          type: "ReadonlyArray<string>",
+          required: false,
+          default: null,
+          description:
+            "The values of the expanded ListGroups. Pass with onExpandedValuesChange to control expansion.",
+        },
+        defaultExpandedValues: {
+          type: "ReadonlyArray<string>",
+          required: false,
+          default: "[]",
+          description: "The groups expanded on first render when expansion is uncontrolled.",
+        },
+        onExpandedValuesChange: {
+          type: "(values: ReadonlyArray<string>) => void",
+          required: false,
+          default: null,
+          description:
+            "Called with the next expanded groups when → ← Enter Space or a ListGroupTrigger changes them.",
         },
       } satisfies ApiTable<typeof List, "ul">,
     },
@@ -327,6 +395,75 @@ export const listDocs: ComponentDocs = {
         "A placeholder row for loading items; each part inside draws a bar at the width of the value that replaces it.",
       spreads: li,
       props: { render: renderProp } satisfies ApiTable<typeof ListRowLoading, "li">,
+    },
+    {
+      kind: "part",
+      name: "ListGroup",
+      description:
+        "The rows that share one value: a ListGroupHeader, then a ListGroupRows. Hide a group with no rows.",
+      spreads: li,
+      props: {
+        render: renderProp,
+        value: {
+          type: "string",
+          required: true,
+          default: null,
+          description:
+            "The group's unique value; it is expanded while this value is in the List's expandedValues.",
+        },
+        values: {
+          type: "ReadonlyArray<string>",
+          required: false,
+          default: "[]",
+          description:
+            "The values of the group's rows, which the header's ListRowSelect selects together.",
+        },
+      } satisfies ApiTable<typeof ListGroup, "li">,
+    },
+    {
+      kind: "part",
+      name: "ListGroupHeader",
+      description:
+        "The group's header row, pinned to the top of the scroll area while its rows scroll under it.",
+      spreads: { label: "<div>", href: null },
+      props: { render: renderProp } satisfies ApiTable<typeof ListGroupHeader, "div">,
+    },
+    {
+      kind: "part",
+      name: "ListGroupTrigger",
+      description:
+        "The button that shows or hides the group's rows, drawing a chevron before the name and count. It is the header's one focus target.",
+      spreads: button,
+      props: {} satisfies ApiTable<typeof ListGroupTrigger, "button">,
+    },
+    {
+      kind: "part",
+      name: "ListGroupName",
+      description: "The group's name, such as the status its rows share, in medium weight.",
+      spreads: span,
+      props: { render: renderProp } satisfies ApiTable<typeof ListGroupName, "span">,
+    },
+    {
+      kind: "part",
+      name: "ListGroupCount",
+      description: "The number of rows in the group, kept while the group is collapsed.",
+      spreads: span,
+      props: { render: renderProp } satisfies ApiTable<typeof ListGroupCount, "span">,
+    },
+    {
+      kind: "part",
+      name: "ListGroupAdd",
+      description:
+        "A button at the header's end that adds a row to the group, drawn on a hovered or focused header; Tab on the header reaches it.",
+      spreads: button,
+      props: {} satisfies ApiTable<typeof ListGroupAdd, "button">,
+    },
+    {
+      kind: "part",
+      name: "ListGroupRows",
+      description: "The group's rows, drawn only while the group is expanded.",
+      spreads: { label: "<ul>", href: null },
+      props: { render: renderProp } satisfies ApiTable<typeof ListGroupRows, "ul">,
     },
   ],
 }
