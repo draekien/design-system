@@ -4,7 +4,9 @@ Read before designing, building or changing a component, its composition or its 
 
 ## Scope
 
-A rule here governs disclosure (what shows, what hides, how hidden data is revealed, how actions are ranked) or composition (assembling records into rows, cards, hover cards and rails; laying out list, detail and side-panel surfaces; grouping and ordering; permission-shaped data; loading, partial and error states; progressive disclosure).
+A rule here governs disclosure (what shows, what hides, how hidden data is revealed, how actions are ranked) or composition (assembling records into rows, cards, hover cards and rails; laying out list, detail and side-panel surfaces; grouping and ordering; permission-shaped data; loading, partial and error states; progressive disclosure; the feedback and result of an action; a record's progress toward done; a surface's default order; help at the point of use).
+
+A rule applies at a single surface and the components inside it, never to a journey across several surfaces.
 
 ## Encoding a rule
 
@@ -83,7 +85,7 @@ A value may draw its media alone, such as a status dot or an entity's initials, 
 
 A narrow surface truncates rank 1 and 2 values first, then abbreviates them, then hides the ones the caller marks hideable; a hidden value stays reachable at rank 3 or 5. Stories: list, table, record-card.
 
-Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks. Stories: list, table.
+Peek previews a read-only part of rank 5 beside the list, under the row or in a drawer, so the caller gets context without leaving the surface; it holds nothing rank 5 lacks. Keeping the list in view follows Working Memory. Stories: list, table.
 
 Peek opens with Space on the focused row, so a click on the row opens rank 5. Stories: list, table.
 
@@ -125,7 +127,11 @@ Use a table when the caller compares values down a column, and a list when the c
 
 Every table column has a header naming it; a sortable header is a button, and one column is sorted at a time. Stories: table.
 
-Numeric columns right-align in tabular figures. Stories: list, table.
+A fact draws in the same type, weight and alignment in every row, so the caller reads its column as one group; numeric columns right-align in tabular figures. Drawing a fact alike follows the Law of Similarity. Stories: list, table.
+
+A list or table opens with the sort, grouping and filter its story's top goal needs, so the caller changes no setting to reach it, as an invoice list opens with the earliest due date first. This follows Tesler's Law; the default for each surface is this design system's own decision. Stories: list, table.
+
+A record with work left shows its progress as a figure with its unit in a rank 2 slot, such as Paid 60%, never as a bar alone. This follows the Goal-Gradient Effect and the Zeigarnik Effect. Stories: table.
 
 A narrow table hides a column together with its header. Stories: table.
 
@@ -167,6 +173,8 @@ The container sets the gap between its children by how the two neighbours relate
 
 ## Cards
 
+A card draws all its parts, `CardAside` included, inside one border, so the caller reads them as one record. This follows the Law of Common Region. Stories: record-card, summary-card, metric-card, popover-card.
+
 A card draws facts about one entity, such as a person's team and open records, as bullets: an icon, then a value that names itself, such as 4 open records, with the property's name read by screen readers. It draws facts whose label is the information, such as two months' figures, labelled. This is this design system's own decision. Stories: popover-card, summary-card, metric-card.
 
 A record card shows a picture only when its callers recognise records by their pictures. The picture goes in `CardMedia`, the first part of `CardSubject`. A summary card and a metric card have no picture. This is this design system's own decision. Stories: record-card.
@@ -193,6 +201,14 @@ A metric figure longer than 12 characters switches to compact notation, such as 
 
 When the previous figure is zero, the change has no percentage. Its slot draws a muted dash. The dash's hover card shows both periods' figures and says that a change from zero has no percentage. The dash is this design system's own decision. Stories: metric-card.
 
+## Loading, results and help
+
+While data loads, every rank 1 and 2 slot draws a placeholder at its loaded size, so no part moves when the data arrives; a control shows its pending state from the moment it is pressed. This follows the Doherty Threshold. Stories: list, table, record-card, metric-card.
+
+An action ends by stating its result on the surface it started from, naming what changed and how many, such as Reminder sent for 3 invoices; a failed action states its error as the error rule under Rules adopted without a component yet says. This follows the Peak-End Rule. Stories: table, bullet, popover-card.
+
+Help sits on the control it explains: an icon-only control's tooltip names its action, and its key when it has one, and no surface depends on a separate guide to reach its primary action. This follows the Paradox of the Active User. Stories: list, table, bullet, record-card, popover-card.
+
 ## Rules adopted without a component yet
 
 Every error or refusal states what went wrong, then how the caller fixes it; apologise only when the product itself failed. Stories: every story.
@@ -202,3 +218,28 @@ Draw surfaces monochrome plus one accent colour; the accent marks only what can 
 Syntax highlighting in a code block is the one exception to monochrome. Stories: none; it governs the docs site's Code views, the one rule kept without a story.
 
 Every mouse interaction has a keyboard route; every hit area is at least 24×24px. The minimum follows Fitts's Law; the 24px figure is from the Primer designer checklist. Stories: every story.
+
+## Laws of UX tests
+
+Stories: every story.
+
+Each row checks one law from Laws of UX against the rule it backs: the micro test on a component's own parts, the macro test on the lockup or page that shows it. A row whose rule the surface has no part for passes as not applicable.
+
+| Law | Rule it backs | Micro test | Macro test |
+| --- | --- | --- | --- |
+| Pareto Principle | Goals | Every part that serves the story's goal with `visits: "most"` is rank 1 or 2. | That goal is answered by reading the rank 1 edge and one rank 2 slot, opening nothing. |
+| Cognitive Load, Selective Attention | Principles: Quiet | Remove each part drawn at rest: if the story loses nothing, the part fails. | At rest the page draws nothing the story's `neverNeeds` names. |
+| Jakob's Law | Sources | Every key, hover and menu behaviour cites a source row, Linear before the others, or is marked as this design system's own decision. | Every key the page answers to matches the cited row, such as Space for peek and X for selection. |
+| Law of Proximity | Spacing between components | Every gap between the component's parts is `gap-run` or `gap-related`, as the spacing table assigns. | Separate sections are `gap-section` apart, and every part of a record sits inside that record's row or card. |
+| Chunking | Grouping and nesting: the group header | A group header holds the group's name, record count and column sums. | Collapse every group: each still shows its name, count and sums. |
+| Hick's Law | Selecting records: the selection bar | A bar or `CardAside` shows at most two actions, then a menu. | No bar, row or card on the page shows more than two actions outside a menu. |
+| Fitts's Law | Rules adopted without a component yet: hit areas | Every control's hit area is at least 24×24px. | At the narrowest width with a coarse pointer, no two hit areas overlap. |
+| Von Restorff Effect | Rules adopted without a component yet: one accent colour | Signal Orange appears only on a part that can be acted on, or on the focus ring. | Every orange element in a screenshot of the page can be acted on. |
+| Doherty Threshold | Loading, results and help: loading | Render the component in its `loading` fixture state: every rank 1 and 2 slot has a placeholder, and a pressed control shows its pending state. | Switch the lockup from `loading` to `loaded`: no part moves. |
+| Peak-End Rule | Loading, results and help: results | Run each action: success names what changed and how many; failure follows the error rule. | After each action its result shows on the surface it started from. |
+| Paradox of the Active User | Loading, results and help: help | Every icon-only control has a tooltip naming its action, and its key when it has one. | The story's primary action completes with no link to a separate guide. |
+| Tesler's Law | Tables: default order | With no sort, grouping or filter set, the component orders records as the story's top goal needs. | Open the lockup with no search params: the records the top goal needs come first. |
+| Goal-Gradient Effect, Zeigarnik Effect | Tables: progress | A progress part draws a figure with its unit, never a bar alone. | Every record with work left shows its progress in its own column, or at rank 3 or 5 where a narrow table hides that column. |
+| Law of Similarity | Tables: a fact draws the same in every row | A fact part draws every value in the same type, weight and alignment. | Down each column, values share one edge: the left for text, the right for numbers. |
+| Law of Common Region | Cards: one border | Every part of the card, `CardAside` included, sits inside its border. | In a grid, no part of one card sits outside its own border. |
+| Working Memory | Ranking information: peek | Peek opens without removing the list from view, or in a drawer that returns focus to its row. | With peek open at the page's widest width, the row that opened it stays visible. |
