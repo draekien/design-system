@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-11-25",
+    "description": "ListGroupAdd is hidden with opacity in place of visibility, so Tab on a header focuses it. A row scrolled into view by the keyboard stops below the pinned header. In a ListRowLoading, ListGroupTrigger draws a muted chevron and ListGroupName and ListGroupCount draw bars sized to their children, so the header keeps its layout when the loaded rows replace the loading ones. ListRowSelect shows a tooltip, Select · X, and ListGroupTrigger lists Tab in aria-keyshortcuts."
+  },
+  {
+    "date": "2026-11-25",
     "description": "Adds groups. ListGroup holds a ListGroupHeader and a ListGroupRows; the header holds a ListRowSelect, a ListGroupTrigger with a chevron, ListGroupName and ListGroupCount, and a ListGroupAdd as its last item. The header is pinned to the top of the scroll area while its rows scroll. List adds expandedValues, defaultExpandedValues and onExpandedValuesChange; ← collapses a group and moves from a row to its header, → expands a group then moves to its first row, X on a header selects every row in the group and the header checkbox shows mixed while only some are, and Tab on a header moves to its add button."
   },
   {

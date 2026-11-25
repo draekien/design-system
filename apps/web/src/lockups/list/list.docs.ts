@@ -97,6 +97,29 @@ import { Status, StatusMedia, StatusName } from "@/components/status"`,
     item: "list",
     children: [
       {
+        name: "ListGroup",
+        item: null,
+        children: [
+          {
+            name: "ListGroupHeader",
+            item: null,
+            children: [
+              { name: "ListRowSelect", item: null, children: [] },
+              {
+                name: "ListGroupTrigger",
+                item: null,
+                children: [
+                  { name: "ListGroupName", item: null, children: [status] },
+                  { name: "ListGroupCount", item: null, children: [] },
+                ],
+              },
+              { name: "ListGroupAdd", item: null, children: [] },
+            ],
+          },
+          { name: "ListGroupRows", item: null, children: [] },
+        ],
+      },
+      {
         name: "ListRow",
         item: null,
         children: [
