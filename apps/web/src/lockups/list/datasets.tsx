@@ -1,5 +1,3 @@
-import type { SampleInvoice } from "@workspace/fixtures/invoices.ts"
-import { sampleInvoices } from "@workspace/fixtures/invoices.ts"
 import {
   fixtureNow,
   type RecordStatus,
@@ -15,9 +13,7 @@ import {
   CardSubject,
 } from "@workspace/registry/components/card.tsx"
 import { Entity, EntityMedia, EntityName } from "@workspace/registry/components/entity.tsx"
-import { Figure } from "@workspace/registry/components/figure.tsx"
 import type { ListRowFactProps, ListRowNarrow } from "@workspace/registry/components/list.tsx"
-import { Meter } from "@workspace/registry/components/meter.tsx"
 import {
   PreviewCard,
   PreviewCardContent,
@@ -31,9 +27,8 @@ import {
   StatusName,
 } from "@workspace/registry/components/status.tsx"
 import type * as React from "react"
-import type { CanvasDataset, CanvasOptions, ListPart } from "../../playground/playground-search.ts"
-import { dueClass, readDue } from "../table/table-model.ts"
-import { randomInvoices, randomRecords } from "./random-records.ts"
+import type { CanvasOptions, ListPart } from "../../playground/playground-search.ts"
+import { absoluteTime, randomRecords } from "./random-records.ts"
 
 export type RowState = Exclude<FixtureState, "error" | "loading">
 
@@ -65,8 +60,13 @@ export type FactDefinition<TItem> = {
 
 export type Field = { label: string; value: React.ReactNode }
 
+export type DatasetGroup = {
+  value: string
+  name: string
+  fill: StatusMediaProps["fill"]
+}
+
 export type Dataset<TItem> = {
-  id: CanvasDataset
   noun: string
   item: string
   sampleHint: string
@@ -81,9 +81,26 @@ export type Dataset<TItem> = {
   media?: FactDefinition<TItem>
   facts: ReadonlyArray<FactDefinition<TItem>>
   fields: (item: TItem, state: RowState) => ReadonlyArray<Field>
+  groups: ReadonlyArray<DatasetGroup>
+  groupOf: (item: TItem) => string
+  draft: (group: string, items: ReadonlyArray<TItem>) => TItem
   partialMessage: string
   partialRetry: string
   noPermissionMessage: string
+}
+
+export type ItemGroup<TItem> = DatasetGroup & { items: ReadonlyArray<TItem> }
+
+export function groupItems<TItem>(
+  dataset: Dataset<TItem>,
+  items: ReadonlyArray<TItem>
+): ReadonlyArray<ItemGroup<TItem>> {
+  return dataset.groups
+    .map((group) => ({
+      ...group,
+      items: items.filter((item) => dataset.groupOf(item) === group.value),
+    }))
+    .filter((group) => group.items.length > 0)
 }
 
 export type DatasetPart = { part: ListPart; label: string; parent?: ListPart }
@@ -127,8 +144,6 @@ function fieldValue(missing: Missing | undefined, value: React.ReactNode) {
 }
 
 const missingWhenUnloaded: MissingByState = { partial: "unavailable", "no-permission": "hidden" }
-
-const missingWithoutPermission: MissingByState = { "no-permission": "hidden" }
 
 function initialsOf(name: string) {
   const parts = name.trim().split(/\s+/)
@@ -232,8 +247,33 @@ export function hasCard<TItem>(fact: FactDefinition<TItem>, hidden: Hidden) {
   return fact.card !== undefined && isPartShown(hidden, fact.card, fact.part)
 }
 
+const recordStatuses: ReadonlyArray<RecordStatus> = ["in-review", "draft", "approved"]
+
+const draftIso = new Date(Date.parse(fixtureNow) - 60_000).toISOString()
+
+const draftTime = absoluteTime.format(Date.parse(draftIso))
+
+function draftRecord(group: string, records: ReadonlyArray<SampleRecord>): SampleRecord {
+  const status = recordStatuses.find((value) => value === group)
+  if (status === undefined) {
+    throw new Error(`${group} is not a record status.`)
+  }
+  const next = Math.max(100, ...records.map((record) => Number(record.id.slice(4)))) + 1
+  return {
+    id: `REC-${next}`,
+    title: "Untitled record",
+    status,
+    statusAge: "1 minute",
+    owner: "Mira Okafor",
+    team: "Security",
+    updated: "1 minute ago",
+    updatedAt: draftTime,
+    updatedIso: draftIso,
+    summary: "Added from the list; open it to fill in the details.",
+  }
+}
+
 export const recordsDataset: Dataset<SampleRecord> = {
-  id: "records",
   noun: "records",
   item: "record",
   sampleHint: "Four fixed records from packages/fixtures.",
@@ -347,140 +387,15 @@ export const recordsDataset: Dataset<SampleRecord> = {
     { label: "Updated", value: `${record.updated} (${record.updatedAt})` },
     { label: "Team", value: record.team },
   ],
+  groups: recordStatuses.map((status) => ({
+    value: status,
+    name: recordStatusLabel[status],
+    fill: recordStatusFill[status],
+  })),
+  groupOf: (record) => record.status,
+  draft: draftRecord,
   partialMessage: "Owners could not load: the directory service did not respond.",
   partialRetry: "Retry owners",
   noPermissionMessage:
     "Owner is visible to the Compliance viewer role. Ask a workspace admin for access.",
-}
-
-const invoiceStatusLabel = { draft: "Draft", sent: "Sent", paid: "Paid" } as const
-
-const invoiceStatusFill = { draft: "none", sent: "half", paid: "full" } as const
-
-const amountFormat: Intl.NumberFormatOptions = { style: "currency", currency: "AUD" }
-
-const paidFormat: Intl.NumberFormatOptions = { style: "percent" }
-
-function invoiceDue(invoice: SampleInvoice): React.ReactElement {
-  const due = readDue(invoice)
-  return (
-    <span className={dueClass[due.kind]}>
-      {due.kind === "overdue" ? (
-        <>
-          <span data-abbreviation="long">{due.text}</span>
-          <span data-abbreviation="short" aria-hidden="true" className="hidden">
-            Overdue {due.days}d
-          </span>
-        </>
-      ) : (
-        <>
-          Due <RelativeTime dateTime={invoice.dueIso} now={fixtureNow} />
-        </>
-      )}
-    </span>
-  )
-}
-
-const invoicesByDue = [...sampleInvoices].sort(
-  (a, b) =>
-    Number(a.status === "paid") - Number(b.status === "paid") || a.dueIso.localeCompare(b.dueIso)
-)
-
-export const invoicesDataset: Dataset<SampleInvoice> = {
-  id: "invoices",
-  noun: "invoices",
-  item: "invoice",
-  sampleHint: "Four fixed invoices from packages/fixtures.",
-  keyNarrow: "hide",
-  items: (options) =>
-    options.data === "random" ? randomInvoices(options.seed, options.count) : invoicesByDue,
-  value: (invoice) => invoice.id,
-  key: (invoice) => invoice.id,
-  name: (invoice) => invoice.customer,
-  nameField: "customer",
-  summary: (invoice) => invoice.summary,
-  summaryField: "summary",
-  media: {
-    part: "status",
-    label: "Status",
-    narrow: "keep",
-    content: "Status",
-    render: (invoice) => (
-      <Status>
-        <StatusMedia fill={invoiceStatusFill[invoice.status]} />
-        <StatusName>{invoiceStatusLabel[invoice.status]}</StatusName>
-      </Status>
-    ),
-    code: () => [
-      "<Status>",
-      "  <StatusMedia fill={statusFill[invoice.status]} />",
-      "  <StatusName>{statusLabel[invoice.status]}</StatusName>",
-      "</Status>",
-    ],
-    components: () => ["Status", "StatusMedia", "StatusName"],
-  },
-  facts: [
-    {
-      part: "amount",
-      label: "Amount",
-      narrow: "abbreviate",
-      content: "Figure",
-      missing: missingWithoutPermission,
-      render: (invoice) => <Figure value={invoice.amount} format={amountFormat} locale="en-AU" />,
-      code: () => [
-        '<Figure value={invoice.amount} format={{ style: "currency", currency: "AUD" }} />',
-      ],
-      components: () => ["Figure"],
-    },
-    {
-      part: "paid",
-      label: "Paid",
-      narrow: "abbreviate",
-      content: "Meter",
-      missing: missingWhenUnloaded,
-      render: (invoice) => (
-        <Meter value={invoice.paid} max={1} format={paidFormat} aria-label="Paid" />
-      ),
-      code: () => [
-        '<Meter value={invoice.paid} max={1} format={{ style: "percent" }} aria-label="Paid" />',
-      ],
-      components: () => ["Meter"],
-    },
-    {
-      part: "due",
-      label: "Due",
-      narrow: "abbreviate",
-      content: "RelativeTime",
-      render: invoiceDue,
-      code: () => [
-        "<span className={dueClass[due.kind]}>",
-        '  {due.kind === "overdue" ? due.text : <>Due <RelativeTime dateTime={invoice.dueAt} now={now} /></>}',
-        "</span>",
-      ],
-      components: () => ["RelativeTime"],
-    },
-  ],
-  fields: (invoice, state) => [
-    { label: "Status", value: invoiceStatusLabel[invoice.status] },
-    {
-      label: "Amount",
-      value: fieldValue(
-        missingWithoutPermission[state],
-        new Intl.NumberFormat("en-AU", amountFormat).format(invoice.amount)
-      ),
-    },
-    {
-      label: "Paid",
-      value: fieldValue(
-        missingWhenUnloaded[state],
-        new Intl.NumberFormat("en", paidFormat).format(invoice.paid)
-      ),
-    },
-    { label: "Due", value: invoice.dueAt },
-    { label: "Contact", value: invoice.contact },
-  ],
-  partialMessage: "Payments could not load: the payments service did not respond.",
-  partialRetry: "Retry payments",
-  noPermissionMessage:
-    "Amounts are visible to the Finance viewer role. Ask a workspace admin for access.",
 }

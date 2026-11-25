@@ -10,7 +10,7 @@ const referenceTime = Date.parse(fixtureNow)
 
 const statuses: ReadonlyArray<RecordStatus> = ["draft", "in-review", "approved"]
 
-const absoluteTime = new Intl.DateTimeFormat("en-GB", {
+export const absoluteTime = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
   month: "short",
   year: "numeric",

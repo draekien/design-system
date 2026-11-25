@@ -1,7 +1,7 @@
 import { readdirSync } from "node:fs"
 import { fixtureStates } from "@workspace/fixtures/state.ts"
 import { experimentViews } from "../src/experiments/experiment-search.ts"
-import { canvasDatasets, canvasViews, canvasWidths } from "../src/playground/playground-search.ts"
+import { canvasViews, canvasWidths } from "../src/playground/playground-search.ts"
 
 export const viewportWidths = {
   fill: 1440,
@@ -43,9 +43,7 @@ function routeSearches(route: string): ReadonlyArray<Record<string, string>> {
   if (route.startsWith("/canvas/experiments/")) {
     return experimentViews.map((view) => ({ view }))
   }
-  return canvasViews.flatMap((view) =>
-    canvasDatasets.map((dataset) => ({ view, dataset, data: "sample" }))
-  )
+  return canvasViews.map((view) => ({ view, data: "sample" }))
 }
 
 export const canvasCases: ReadonlyArray<CanvasCase> = canvasRoutes().flatMap((route) =>

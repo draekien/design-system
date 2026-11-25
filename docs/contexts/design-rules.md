@@ -75,7 +75,7 @@ Information takes one of five ranks, decided by what the caller came to the surf
 
 A surface shows ranks 1 and 2 for every item before it shows rank 3 for any. Stories: list, table, record-card.
 
-A collapsed group, section or row keeps its rank 1 and 2 on screen, as a collapsed catalogue group keeps its counts. Stories: table.
+A collapsed group, section or row keeps its rank 1 and 2 on screen, as a collapsed catalogue group keeps its counts. Stories: list, table.
 
 Rank 3 never holds content the caller reads on most visits: collapsing that costs a click every visit. Stories: list, table, record-card.
 
@@ -97,9 +97,11 @@ A row is selectable only when it draws a selection checkbox. Stories: list, tabl
 
 ## Grouping and nesting
 
-Stories: table.
+Stories: list, table.
 
-A group header holds the group's name, its record count and its column sums; a collapsed group keeps all three on screen. This follows Chunking.
+A group header holds the group's name and its record count, and in a table its column sums; a collapsed group keeps them on screen. This follows Chunking.
+
+A group header stays pinned to the top of the scroll area while its group's rows scroll under it.
 
 An empty group is hidden.
 
@@ -113,7 +115,7 @@ Sorting orders records within their group and child records within their parent;
 
 ## Selecting records
 
-A group's checkbox selects every selectable record in the group, and shows mixed while only some are. Stories: table.
+A group's checkbox selects every selectable record in the group, and shows mixed while only some are. Stories: list, table.
 
 A parent's checkbox selects the parent only. Stories: table.
 
@@ -232,7 +234,7 @@ Each row checks one law from Laws of UX against the rule it backs: the micro tes
 | Cognitive Load, Selective Attention | Principles: Quiet | Remove each part drawn at rest: if the story loses nothing, the part fails. | At rest the page draws nothing the story's `neverNeeds` names. |
 | Jakob's Law | Sources | Every key, hover and menu behaviour cites a source row, Linear before the others, or is marked as this design system's own decision. | Every key the page answers to matches the cited row, such as Space for peek and X for selection. |
 | Law of Proximity | Spacing between components | Every gap between the component's parts is `gap-run` or `gap-related`, as the spacing table assigns. | Separate sections are `gap-section` apart, and every part of a record sits inside that record's row or card. |
-| Chunking | Grouping and nesting: the group header | A group header holds the group's name, record count and column sums. | Collapse every group: each still shows its name, count and sums. |
+| Chunking | Grouping and nesting: the group header | A group header holds the group's name and record count, and in a table its column sums. | Collapse every group: each still shows its name and count, and in a table its sums. |
 | Hick's Law | Selecting records: the selection bar | A bar or `CardAside` shows at most two actions, then a menu. | No bar, row or card on the page shows more than two actions outside a menu; a segmented group or select that picks one value counts as one control. |
 | Fitts's Law | Rules adopted without a component yet: hit areas | Every control's hit area is at least 24×24px. | At the narrowest width with a coarse pointer, no two hit areas overlap. |
 | Von Restorff Effect | Rules adopted without a component yet: one accent colour | Signal Orange appears only on a part that can be acted on, or on the focus ring. | Every orange element in a screenshot of the page can be acted on. |

@@ -4,6 +4,13 @@ import type * as React from "react"
 import { describe, expect, it, vi } from "vitest"
 import {
   List,
+  ListGroup,
+  ListGroupAdd,
+  ListGroupCount,
+  ListGroupHeader,
+  ListGroupName,
+  ListGroupRows,
+  ListGroupTrigger,
   ListPeek,
   ListRow,
   ListRowDescription,
@@ -476,5 +483,194 @@ describe("ListRow", () => {
     expect(() => render(<ListRowName>Quarterly access review</ListRowName>)).toThrow(
       "ListRowName must be rendered inside a ListRow or ListRowLoading."
     )
+  })
+})
+
+const groups = [
+  { value: "in-review", name: "In review", records: [records[0]] },
+  { value: "approved", name: "Approved", records: [records[1], records[2]] },
+]
+
+function renderGroupedList(
+  defaultExpandedValues: ReadonlyArray<string> = ["in-review", "approved"]
+) {
+  const onAdd = vi.fn()
+  const onSelectedValuesChange = vi.fn()
+  const onPeekValueChange = vi.fn()
+  render(
+    <>
+      <List
+        aria-label="Records"
+        defaultExpandedValues={defaultExpandedValues}
+        onSelectedValuesChange={onSelectedValuesChange}
+        onPeekValueChange={onPeekValueChange}
+      >
+        {groups.map((group) => (
+          <ListGroup
+            key={group.value}
+            value={group.value}
+            values={group.records.flatMap((record) => (record === undefined ? [] : [record.id]))}
+          >
+            <ListGroupHeader>
+              <ListRowSelect />
+              <ListGroupTrigger>
+                <ListGroupName>{group.name}</ListGroupName>
+                <ListGroupCount>{group.records.length}</ListGroupCount>
+              </ListGroupTrigger>
+              <ListGroupAdd onClick={() => onAdd(group.value)} />
+            </ListGroupHeader>
+            <ListGroupRows>
+              {group.records.flatMap((record) =>
+                record === undefined
+                  ? []
+                  : [
+                      <ListRow key={record.id} value={record.id}>
+                        <ListRowSelect />
+                        <ListRowLink href={`/records/${record.id}`}>
+                          <ListRowSubject>
+                            <ListRowName>{record.title}</ListRowName>
+                          </ListRowSubject>
+                        </ListRowLink>
+                      </ListRow>,
+                    ]
+              )}
+            </ListGroupRows>
+          </ListGroup>
+        ))}
+        <ListPeek aria-label="Peek">
+          <PeekedTitle />
+        </ListPeek>
+      </List>
+      <button type="button">After the list</button>
+    </>
+  )
+  return { onAdd, onSelectedValuesChange, onPeekValueChange }
+}
+
+function groupButton(name: string) {
+  return screen.getByRole("button", { name: (label) => label.startsWith(name) })
+}
+
+describe("ListGroup", () => {
+  it("moves through group headers and rows as one tab stop", async () => {
+    const user = userEvent.setup()
+    renderGroupedList()
+
+    await user.tab()
+    expect(document.activeElement).toBe(groupButton("In review"))
+
+    await user.keyboard("{ArrowDown}")
+    expect(document.activeElement).toBe(
+      screen.getByRole("link", { name: "Quarterly access review" })
+    )
+
+    await user.keyboard("{ArrowDown}")
+    expect(document.activeElement).toBe(groupButton("Approved"))
+
+    await user.tab()
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "After the list" }))
+  })
+
+  it("collapses with ← and Enter, keeps its name and count, and expands with →", async () => {
+    const user = userEvent.setup()
+    renderGroupedList()
+
+    groupButton("Approved").focus()
+    await user.keyboard("{ArrowLeft}")
+
+    expect(groupButton("Approved").getAttribute("aria-expanded")).toBe("false")
+    expect(screen.queryByRole("link", { name: "Retention policy update" })).toBeNull()
+    expect(groupButton("Approved").textContent).toContain("2")
+
+    await user.keyboard("{ArrowRight}")
+    expect(screen.getByRole("link", { name: "Retention policy update" })).toBeTruthy()
+
+    await user.keyboard("{ArrowRight}")
+    expect(document.activeElement).toBe(
+      screen.getByRole("link", { name: "Retention policy update" })
+    )
+
+    groupButton("Approved").focus()
+    await user.keyboard("{Enter}")
+    expect(screen.queryByRole("link", { name: "Retention policy update" })).toBeNull()
+  })
+
+  it("toggles on a click anywhere on its trigger", async () => {
+    const user = userEvent.setup()
+    renderGroupedList([])
+
+    expect(screen.queryByRole("link", { name: "Quarterly access review" })).toBeNull()
+
+    await user.click(screen.getByText("In review"))
+
+    expect(screen.getByRole("link", { name: "Quarterly access review" })).toBeTruthy()
+  })
+
+  it("moves focus from a row to its group header with ←", async () => {
+    const user = userEvent.setup()
+    renderGroupedList()
+
+    screen.getByRole("link", { name: "Vendor contract renewal" }).focus()
+    await user.keyboard("{ArrowLeft}")
+
+    expect(document.activeElement).toBe(groupButton("Approved"))
+    expect(screen.getByRole("link", { name: "Vendor contract renewal" })).toBeTruthy()
+  })
+
+  it("selects every row in the group with X and shows mixed while only some are", async () => {
+    const user = userEvent.setup()
+    const { onSelectedValuesChange } = renderGroupedList()
+
+    screen.getByRole("link", { name: "Retention policy update" }).focus()
+    await user.keyboard("x")
+    expect(onSelectedValuesChange).toHaveBeenLastCalledWith(["REC-103"])
+    expect(
+      screen.getByRole("checkbox", { name: "Select Approved" }).getAttribute("aria-checked")
+    ).toBe("mixed")
+
+    groupButton("Approved").focus()
+    await user.keyboard("x")
+    expect(onSelectedValuesChange).toHaveBeenLastCalledWith(["REC-103", "REC-102"])
+
+    await user.keyboard("x")
+    expect(onSelectedValuesChange).toHaveBeenLastCalledWith([])
+  })
+
+  it("moves to the add button with Tab and adds to the group", async () => {
+    const user = userEvent.setup()
+    const { onAdd } = renderGroupedList()
+
+    groupButton("Approved").focus()
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Add to Approved" }))
+
+    await user.keyboard("{Enter}")
+    expect(onAdd).toHaveBeenCalledWith("approved")
+  })
+
+  it("closes peek when the peeked row's group collapses", async () => {
+    const user = userEvent.setup()
+    const { onPeekValueChange } = renderGroupedList()
+
+    screen.getByRole("link", { name: "Quarterly access review" }).focus()
+    await user.keyboard(" ")
+    expect(onPeekValueChange).toHaveBeenLastCalledWith("REC-104")
+
+    await user.keyboard("{ArrowLeft}{ArrowLeft}")
+    expect(groupButton("In review").getAttribute("aria-expanded")).toBe("false")
+    expect(onPeekValueChange).toHaveBeenLastCalledWith(null)
+  })
+
+  it("moves Tab from a header to its add button while peek is open", async () => {
+    const user = userEvent.setup()
+    renderGroupedList()
+
+    screen.getByRole("link", { name: "Quarterly access review" }).focus()
+    await user.keyboard(" {ArrowDown}")
+    expect(document.activeElement).toBe(groupButton("Approved"))
+
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Add to Approved" }))
   })
 })

@@ -1,14 +1,14 @@
 import type { Story } from "../../playground/rule-notes.tsx"
 
 export const listStory = {
-  who: "Anyone scanning a list of records, such as an accounts receivable clerk with unpaid invoices",
+  who: "Anyone scanning a list of records, such as a compliance lead with policy records to review",
   situation:
-    "Opened a list of records, such as this month's invoices, to find the ones that need action",
+    "Opened a list of records, such as this quarter's policy records, to find the ones that need action",
   goals: [
     {
-      goal: "Find the records that need action, such as overdue invoices to chase",
+      goal: "Find the records that need action, such as records waiting for review",
       visits: "most",
-      basis: "list-rules.ts rule 5; design-rules.md Tables",
+      basis: "list-rules.ts rules 5, 12 and 25; design-rules.md Grouping and nesting",
     },
     {
       goal: "Check a record's details without leaving the list",
@@ -18,7 +18,12 @@ export const listStory = {
     {
       goal: "Act on several records at once",
       visits: "few",
-      basis: "list-rules.ts rules 12 and 13",
+      basis: "list-rules.ts rules 13, 14 and 26",
+    },
+    {
+      goal: "Add a record to a group",
+      visits: "few",
+      basis: "list-rules.ts rule 27",
     },
   ],
   primaryAction: { action: "Open the record", basis: "list-rules.ts rule 6" },

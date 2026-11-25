@@ -6,28 +6,28 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     rule: "Every value takes one of five ranks, decided by what the caller came to decide: 1 Subject (ID, media, name, a one-line description) at the start of the row; 2 Fact (a state, a person or a figure the caller compares) at the end of the row; 4 Enrich in a hover card on a rank 1 or 2 value; 5 Elsewhere on the item's own page, which peek previews read-only.",
     source:
       "This design system's own decision (Geist Entity leads with the identifier; Saga Lists of objects ranks fields by typography)",
-    serves: "Find the records that need action, such as overdue invoices to chase",
+    serves: "Find the records that need action, such as records waiting for review",
   },
   {
     rule: "A list shows ranks 1 and 2 for every item before it shows rank 3 for any; rank 3 never holds what the caller reads on most visits.",
     source: "This design system's own decision",
-    serves: "Find the records that need action, such as overdue invoices to chase",
+    serves: "Find the records that need action, such as records waiting for review",
   },
   {
     rule: "A description is one muted line after the name; it truncates before the name and hides below 640px.",
     source: "This design system's own decision",
-    serves: "Find the records that need action, such as overdue invoices to chase",
+    serves: "Find the records that need action, such as records waiting for review",
   },
   {
-    rule: "Only the checkbox, ID and media line up down the list. The name and description follow them, and the facts sit at the end of the row, each as wide as its value between 2rem and 12rem, with Due last on the row's right edge; a figure uses tabular figures.",
+    rule: "Only the checkbox, ID and media line up down the list. The name and description follow them, and the facts sit at the end of the row, each as wide as its value between 2rem and 12rem, with Updated last on the row's right edge; a figure uses tabular figures.",
     source:
       "Linear issue list (screenshots, 2026-10-08); Primer DataTable (tabular-num for numbers); the widths are this design system's own decision",
-    serves: "Find the records that need action, such as overdue invoices to chase",
+    serves: "Find the records that need action, such as records waiting for review",
   },
   {
-    rule: "An invoice's Due reads Due and the time to its date; past its date while unpaid it reads Overdue in medium weight, and once paid it is muted. Due abbreviates and stays when the list narrows, because the caller's most common goal is finding the invoices to chase.",
-    source: "This design system's own decision (design rules: Goals)",
-    serves: "Find the records that need action, such as overdue invoices to chase",
+    rule: "Records are grouped by status, In review first, then Draft, then Approved, so the records waiting for review lead the list; within a group the most recently updated record comes first. An empty group is hidden.",
+    source: "Design rules: Grouping and nesting, and Tables, default order, following Tesler's Law",
+    serves: "Find the records that need action, such as records waiting for review",
   },
   {
     rule: "The row is a link to the item's page; Enter or a click opens it. The item's page shows every field peek shows.",
@@ -46,7 +46,7 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     serves: "Check a record's details without leaving the list",
   },
   {
-    rule: "Peek and the item's page list rank 2 fields before rank 4 ones, so Due comes before Contact and Updated before Team.",
+    rule: "Peek and the item's page list rank 2 fields before rank 4 ones, so Owner and Updated come before Team.",
     source: "This design system's own decision (design rules: Goals)",
     serves: "Check a record's details without leaving the list",
   },
@@ -61,9 +61,10 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     serves: "Check a record's details without leaving the list",
   },
   {
-    rule: "The invoice list opens with unpaid invoices first, earliest due date first, so the invoices to chase lead the list.",
-    source: "Design rules: Tables, default order, following Tesler's Law",
-    serves: "Find the records that need action, such as overdue invoices to chase",
+    rule: "A group header holds the status and its record count, and keeps both while the group is collapsed. A click on the header, Enter or Space toggles the group; → expands it, then moves to its first row; ← collapses it, and ← on a row moves to its header. The header's checkbox lines up with the rows' checkboxes; the rows are not indented.",
+    source:
+      "Design rules: Grouping and nesting, following Chunking; Linear issue list (observed by the developer, 2026-11-25)",
+    serves: "Find the records that need action, such as records waiting for review",
   },
   {
     rule: "A row is selectable only when it has a checkbox; the checkbox is drawn on a hovered, focused or selected row, and always on a coarse pointer.",
@@ -91,13 +92,13 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     serves: "all",
   },
   {
-    rule: "When the list narrows, the description truncates first, then the name; below 768px a part marked abbreviate switches to its short form (a dot without its word, initials, $13K, 2h ago); below 640px the description and every part marked hide drop out. A hidden value stays in peek and on the item's page.",
+    rule: "When the list narrows, the description truncates first, then the name; below 768px a part marked abbreviate switches to its short form (a dot without its word, initials, 2h ago); below 640px the description and every part marked hide drop out. A hidden value stays in peek and on the item's page.",
     source:
       "Primer DataTable (remove less important columns); the order and widths are this design system's own decision",
-    serves: "Find the records that need action, such as overdue invoices to chase",
+    serves: "Find the records that need action, such as records waiting for review",
   },
   {
-    rule: "Loading rows compose the same parts as the rows they replace, so they keep the row height and every part's width.",
+    rule: "Loading rows compose the same parts as the rows they replace, and a loading header stands in for each group header, so they keep the row height and every part's width.",
     source: "This design system's own decision",
     serves: "all",
   },
@@ -126,5 +127,21 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
     rule: "The footer starts past the checkbox, so its text shares a left edge with the IDs.",
     source: "This design system's own decision (Precise principle)",
     serves: "all",
+  },
+  {
+    rule: "A group header stays pinned to the top of the scroll area while its group's rows scroll under it, and scrolls away with the group's last row.",
+    source: "Linear issue list (observed by the developer, 2026-11-25)",
+    serves: "Find the records that need action, such as records waiting for review",
+  },
+  {
+    rule: "A group header's checkbox selects every record in the group and shows mixed while only some are; X on the focused header toggles it.",
+    source: "Design rules: Selecting records",
+    serves: "Act on several records at once",
+  },
+  {
+    rule: "The add button is the header's last item, drawn on a hovered or focused header and always on a coarse pointer; Tab on the focused header moves to it. It adds a draft record at the top of the group and moves focus to it.",
+    source:
+      "Linear issue list (observed by the developer, 2026-11-25); design rules: Loading, results and help",
+    serves: "Add a record to a group",
   },
 ]

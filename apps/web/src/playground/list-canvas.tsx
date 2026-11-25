@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import {
   List,
+  ListGroup,
   ListRow,
   ListRowDescription,
   ListRowFact,
@@ -19,15 +20,17 @@ import {
   type Dataset,
   type FactDefinition,
   factProps,
+  groupItems,
   type Hidden,
   hasCard,
-  invoicesDataset,
+  type ItemGroup,
   type RowState,
   recordsDataset,
   shownFacts,
 } from "../lockups/list/datasets.tsx"
 import {
   ErrorMessage,
+  GroupHeader,
   ListFooter,
   ListLockup,
   PeekContent,
@@ -50,11 +53,7 @@ export function ListConstellation({
   options: Omit<CanvasOptions, "view">
 }): React.ReactElement {
   const hidden = React.useMemo(() => hiddenParts(options.hide, listParts), [options.hide])
-  return options.dataset === "invoices" ? (
-    <DatasetConstellation dataset={invoicesDataset} options={options} hidden={hidden} />
-  ) : (
-    <DatasetConstellation dataset={recordsDataset} options={options} hidden={hidden} />
-  )
+  return <DatasetConstellation dataset={recordsDataset} options={options} hidden={hidden} />
 }
 
 function DatasetConstellation<TItem>({
@@ -70,7 +69,7 @@ function DatasetConstellation<TItem>({
   const items = React.useMemo(() => load(options), [load, options])
   return (
     <ConstellationView
-      key={`${dataset.id}-${options.state}`}
+      key={options.state}
       dataset={dataset}
       state={options.state}
       items={items}
@@ -84,11 +83,7 @@ export function ListCanvas({ options }: { options: CanvasOptions }): React.React
   return (
     <main className="p-4 sm:p-6">
       <h1 className="sr-only">List</h1>
-      {options.dataset === "invoices" ? (
-        <DatasetCanvas dataset={invoicesDataset} options={options} hidden={hidden} />
-      ) : (
-        <DatasetCanvas dataset={recordsDataset} options={options} hidden={hidden} />
-      )}
+      <DatasetCanvas dataset={recordsDataset} options={options} hidden={hidden} />
     </main>
   )
 }
@@ -113,7 +108,7 @@ function DatasetCanvas<TItem>({
         <ErrorMessage dataset={dataset} />
       ) : (
         <ListLockup
-          key={`${dataset.id}-${options.state}`}
+          key={[options.state, options.data, options.seed, options.count].join("-")}
           dataset={dataset}
           state={options.state}
           items={items}
@@ -143,6 +138,33 @@ const rowSpecimens: ReadonlyArray<{
   },
   { label: "Selected", isSelected: true, isPeeked: false },
   { label: "Peeked", isSelected: false, isPeeked: true },
+]
+
+const groupSpecimens: ReadonlyArray<{
+  label: string
+  className?: string
+  isRevealed: boolean
+  isExpanded: boolean
+  selected: "none" | "some" | "all"
+}> = [
+  { label: "At rest", isRevealed: false, isExpanded: true, selected: "none" },
+  {
+    label: "Hovered",
+    className: "before:bg-foreground/4",
+    isRevealed: true,
+    isExpanded: true,
+    selected: "none",
+  },
+  {
+    label: "Focused",
+    className: "before:bg-foreground/4 before:inset-ring before:inset-ring-ring/40",
+    isRevealed: true,
+    isExpanded: true,
+    selected: "none",
+  },
+  { label: "Collapsed", isRevealed: false, isExpanded: false, selected: "none" },
+  { label: "Some rows selected", isRevealed: false, isExpanded: false, selected: "some" },
+  { label: "Every row selected", isRevealed: false, isExpanded: false, selected: "all" },
 ]
 
 const narrowSpecimens = [
@@ -641,6 +663,7 @@ function StatesView<TItem>({
   if (item === undefined) {
     throw new Error(`The ${dataset.item} set is empty; the states view needs one ${dataset.item}.`)
   }
+  const group = largestGroup(dataset, items)
   switch (state) {
     case "error":
       return <ErrorMessage dataset={dataset} />
@@ -681,6 +704,22 @@ function StatesView<TItem>({
               ))}
             </div>
           </StatesSection>
+          <StatesSection
+            title="Group header states"
+            description="One group header at rest and in each state the list draws on it"
+          >
+            <div className="grid gap-4">
+              {groupSpecimens.map((specimen) => (
+                <GroupSpecimen
+                  key={specimen.label}
+                  dataset={dataset}
+                  group={group}
+                  hidden={hidden}
+                  specimen={specimen}
+                />
+              ))}
+            </div>
+          </StatesSection>
           <StatesSection title="Narrow widths" description="Truncate, then abbreviate, then hide">
             <div className="grid gap-4 overflow-x-auto pb-1">
               {narrowSpecimens.map((specimen) => (
@@ -703,6 +742,59 @@ function StatesView<TItem>({
         </div>
       )
   }
+}
+
+function largestGroup<TItem>(
+  dataset: Dataset<TItem>,
+  items: ReadonlyArray<TItem>
+): ItemGroup<TItem> {
+  const group = groupItems(dataset, items).reduce<ItemGroup<TItem> | undefined>(
+    (largest, next) =>
+      largest === undefined || next.items.length > largest.items.length ? next : largest,
+    undefined
+  )
+  if (group === undefined) {
+    throw new Error(`The ${dataset.item} set has no group; the states view needs one.`)
+  }
+  return group
+}
+
+function GroupSpecimen<TItem>({
+  dataset,
+  group,
+  hidden,
+  specimen,
+}: {
+  dataset: Dataset<TItem>
+  group: ItemGroup<TItem>
+  hidden: Hidden
+  specimen: (typeof groupSpecimens)[number]
+}) {
+  const values = group.items.map((item) => dataset.value(item))
+  const selectedValues = { none: [], some: values.slice(0, 1), all: values }[specimen.selected]
+  return (
+    <div className="flex flex-col gap-1.5">
+      <p className="text-muted-foreground text-xs">{specimen.label}</p>
+      <div>
+        <List
+          aria-label={`${group.name} group, ${specimen.label.toLowerCase()}`}
+          selectedValues={selectedValues}
+          onSelectedValuesChange={handleSpecimenChange}
+          expandedValues={specimen.isExpanded ? [group.value] : []}
+          onExpandedValuesChange={handleSpecimenChange}
+        >
+          <ListGroup value={group.value} values={values}>
+            <GroupHeader
+              group={group}
+              hidden={hidden}
+              className={specimen.className}
+              revealClassName={specimen.isRevealed ? "visible" : undefined}
+            />
+          </ListGroup>
+        </List>
+      </div>
+    </div>
+  )
 }
 
 function Specimen<TItem>({

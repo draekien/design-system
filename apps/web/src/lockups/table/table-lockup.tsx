@@ -12,6 +12,7 @@ import {
 } from "@workspace/fixtures/invoices.ts"
 import type { FixtureState } from "@workspace/fixtures/state.ts"
 import { CardDescription, CardName, CardSubject } from "@workspace/registry/components/card.tsx"
+import { Meter } from "@workspace/registry/components/meter.tsx"
 import {
   PreviewCard,
   PreviewCardContent,
@@ -56,6 +57,7 @@ import {
   invoiceCount,
   isColumn,
   linesOf,
+  paidFormat,
   type RowState,
   readDue,
   type Sort,
@@ -554,7 +556,7 @@ export function InvoiceRow({
       <TableCell align="end">{formatAmount(invoice.amount)}</TableCell>
       {shown("paid") ? (
         <TableCell align="end" narrow="hide">
-          {formatPaid(invoice.paid)}
+          <Meter value={invoice.paid} max={1} format={paidFormat} aria-label="Paid" />
         </TableCell>
       ) : null}
       {shown("due") ? (

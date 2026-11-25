@@ -13,7 +13,7 @@ export const tableRules: ReadonlyArray<Rule<StoryGoal<typeof tableStory>>> = [
     serves: "Compare values across records down a column",
   },
   {
-    rule: "Amount and Paid % right-align in tabular figures; a negative amount uses the minus sign.",
+    rule: "Amount right-aligns in tabular figures, and Paid % is a meter whose value right-aligns in tabular figures; a negative amount uses the minus sign.",
     source: "Primer DataTable",
     serves: "Compare values across records down a column",
   },

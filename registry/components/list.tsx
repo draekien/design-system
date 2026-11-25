@@ -13,22 +13,42 @@ type ListContextValue = {
   activeValue: string | null
   peekValue: string | null
   selectedValues: ReadonlyArray<string>
+  expandedValues: ReadonlyArray<string>
   onLinkFocus: (value: string) => void
   onLinkKeyDown: (event: React.KeyboardEvent<HTMLElement>, value: string) => void
+  onGroupKeyDown: (
+    event: React.KeyboardEvent<HTMLElement>,
+    value: string,
+    values: ReadonlyArray<string>
+  ) => void
   onToggleSelected: (value: string) => void
+  onToggleGroupSelected: (values: ReadonlyArray<string>) => void
+  onToggleExpanded: (value: string) => void
   onTogglePeek: (value: string) => void
   onPeekValueChange: (value: string | null) => void
   rootRef: React.RefObject<HTMLUListElement | null>
   peekRef: React.RefObject<HTMLDivElement | null>
 }
 
+type ListTarget =
+  | { kind: "record"; value: string }
+  | { kind: "group"; value: string; values: ReadonlyArray<string> }
+
 const ListContext = React.createContext<ListContextValue | null>(null)
 
 const linkSelector = '[data-slot="list-row-link"]'
 
+const triggerSelector = '[data-slot="list-group-trigger"]'
+
+const focusSelector = `${linkSelector}, ${triggerSelector}`
+
 const rowSelector = '[data-slot="list-row"]'
 
+const headerSelector = '[data-slot="list-group-header"]'
+
 const selectSelector = '[data-slot="list-row-select"]'
+
+const addSelector = '[data-slot="list-group-add"]'
 
 const peekFocusSelector = "a[href], button:not([disabled]), input:not([disabled]), [tabindex='0']"
 
@@ -46,6 +66,12 @@ export type ListProps = Omit<useRender.ComponentProps<"ul">, "defaultValue"> & {
   defaultPeekValue?: string | null
   /** Called when Space or a `ListRowPeek` toggles peek, Esc closes it, or peek follows focus to another row. */
   onPeekValueChange?: (value: string | null) => void
+  /** The values of the expanded `ListGroup`s. Pass with `onExpandedValuesChange` to control expansion. */
+  expandedValues?: ReadonlyArray<string>
+  /** The groups expanded on first render when expansion is uncontrolled. */
+  defaultExpandedValues?: ReadonlyArray<string>
+  /** Called with the next expanded groups when → ← Enter Space or a `ListGroupTrigger` changes them. */
+  onExpandedValuesChange?: (values: ReadonlyArray<string>) => void
 }
 
 function useControllable<TValue>(
@@ -65,16 +91,26 @@ function useControllable<TValue>(
   return [value, setValue] as const
 }
 
-function rowLinks(root: HTMLElement | null): ReadonlyArray<HTMLElement> {
-  return root === null ? [] : Array.from(root.querySelectorAll<HTMLElement>(linkSelector))
+function groupOf(element: Element | null | undefined): Element | null {
+  return element?.closest('[data-slot="list-group"]') ?? null
+}
+
+function focusTargets(
+  root: HTMLElement | null,
+  selector = focusSelector
+): ReadonlyArray<HTMLElement> {
+  return root === null ? [] : Array.from(root.querySelectorAll<HTMLElement>(selector))
 }
 
 /**
- * A list of records, one `ListRow` per record. Owns the row keyboard model: the list is one
- * tab stop; ↑ ↓ Home End move focus between rows; Space toggles peek on the focused row and an
- * open peek follows focus; X toggles selection on a row that has a `ListRowSelect`; Esc closes
- * peek, then clears the selection. A `ListRowPeek` toggles peek by pointer. Render a `ListPeek`
- * inside it to draw the peeked row's preview in a floating card.
+ * A list of records, one `ListRow` per record, optionally in `ListGroup`s. Owns the keyboard
+ * model: the list is one tab stop; ↑ ↓ Home End move focus between rows and group headers; Space
+ * toggles peek on the focused row and an open peek follows focus; X toggles selection on a row or
+ * group that has a `ListRowSelect`; Esc closes peek, then clears the selection. On a group header,
+ * Enter and Space toggle the group, → expands it and then moves to its first row, ← collapses it,
+ * and Tab moves to its `ListGroupAdd`; ← on a row in a group moves to the group's header. A
+ * `ListRowPeek` toggles peek by pointer. Render a `ListPeek` inside it to draw the peeked row's
+ * preview in a floating card.
  * Each row lays out on its own: the checkbox, ID and media line up down the list, and the facts
  * sit at the row's end, each as wide as its value.
  */
@@ -85,6 +121,9 @@ export function List({
   peekValue: peekValueProp,
   defaultPeekValue = null,
   onPeekValueChange,
+  expandedValues: expandedValuesProp,
+  defaultExpandedValues = [],
+  onExpandedValuesChange,
   render,
   className,
   ref,
@@ -103,81 +142,144 @@ export function List({
     defaultPeekValue,
     onPeekValueChange
   )
+  const [expandedValues, setExpandedValues] = useControllable(
+    expandedValuesProp,
+    defaultExpandedValues,
+    onExpandedValuesChange
+  )
 
   React.useEffect(() => {
-    const links = rowLinks(rootRef.current)
-    const first = links[0]?.dataset.value
+    const targets = focusTargets(rootRef.current)
+    const first = targets[0]?.dataset.value
     if (first === undefined) {
       return
     }
-    if (!links.some((link) => link.dataset.value === activeValue)) {
+    if (!targets.some((target) => target.dataset.value === activeValue)) {
       setActiveValue(first)
     }
   })
 
-  function toggleSelected(value: string) {
+  function toggleSelected(values: ReadonlyArray<string>) {
+    const isAllSelected = values.every((value) => selectedValues.includes(value))
     setSelectedValues(
-      selectedValues.includes(value)
-        ? selectedValues.filter((selected) => selected !== value)
-        : [...selectedValues, value]
+      isAllSelected
+        ? selectedValues.filter((selected) => !values.includes(selected))
+        : [...selectedValues, ...values.filter((value) => !selectedValues.includes(value))]
     )
   }
 
-  function focusLink(link: HTMLElement | undefined) {
-    const value = link?.dataset.value
-    if (link === undefined || value === undefined) {
+  function setExpanded(value: string, isExpanded: boolean) {
+    if (expandedValues.includes(value) === isExpanded) {
       return
     }
-    link.focus()
-    if (peekValue !== null && peekValue !== value) {
+    if (!isExpanded) {
+      const group = groupOf(
+        rootRef.current?.querySelector(`${triggerSelector}[data-value="${CSS.escape(value)}"]`)
+      )
+      const holds = (rowValue: string | null) =>
+        rowValue !== null &&
+        group?.querySelector(`${linkSelector}[data-value="${CSS.escape(rowValue)}"]`) != null
+      if (holds(peekValue)) {
+        setPeekValue(null)
+      }
+      if (holds(activeValue)) {
+        setActiveValue(value)
+      }
+    }
+    setExpandedValues(
+      isExpanded
+        ? [...expandedValues, value]
+        : expandedValues.filter((expanded) => expanded !== value)
+    )
+  }
+
+  function focusTarget(target: Element | null | undefined) {
+    if (!(target instanceof HTMLElement)) {
+      return
+    }
+    target.focus()
+    const value = target.dataset.value
+    if (
+      target.matches(linkSelector) &&
+      value !== undefined &&
+      peekValue !== null &&
+      peekValue !== value
+    ) {
       setPeekValue(value)
     }
   }
 
-  function handleLinkKeyDown(event: React.KeyboardEvent<HTMLElement>, value: string) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLElement>, target: ListTarget) {
     if (event.altKey || event.ctrlKey || event.metaKey) {
       return
     }
-    const links = rowLinks(rootRef.current)
-    const index = links.indexOf(event.currentTarget)
+    const targets = focusTargets(rootRef.current)
+    const index = targets.indexOf(event.currentTarget)
+    const line = event.currentTarget.closest(`${rowSelector}, ${headerSelector}`)
+    const isExpanded = target.kind === "group" && expandedValues.includes(target.value)
     switch (event.key) {
       case " ":
-        event.preventDefault()
-        setPeekValue(peekValue === value ? null : value)
-        return
-      case "x":
-      case "X":
-        if (
-          (event.currentTarget.closest(rowSelector)?.querySelector(selectSelector) ?? null) === null
-        ) {
+        if (target.kind === "group") {
           return
         }
         event.preventDefault()
-        toggleSelected(value)
+        setPeekValue(peekValue === target.value ? null : target.value)
+        return
+      case "x":
+      case "X":
+        if ((line?.querySelector(selectSelector) ?? null) === null) {
+          return
+        }
+        event.preventDefault()
+        toggleSelected(target.kind === "group" ? target.values : [target.value])
+        return
+      case "ArrowRight":
+        if (target.kind === "record") {
+          return
+        }
+        event.preventDefault()
+        if (isExpanded) {
+          const next = targets[index + 1]
+          if (groupOf(next) === groupOf(event.currentTarget)) {
+            focusTarget(next)
+          }
+        } else {
+          setExpanded(target.value, true)
+        }
+        return
+      case "ArrowLeft":
+        event.preventDefault()
+        if (target.kind === "group") {
+          setExpanded(target.value, false)
+        } else {
+          focusTarget(groupOf(event.currentTarget)?.querySelector(triggerSelector))
+        }
         return
       case "ArrowDown":
         event.preventDefault()
-        focusLink(links[index + 1])
+        focusTarget(targets[index + 1])
         return
       case "ArrowUp":
         event.preventDefault()
-        focusLink(links[index - 1])
+        focusTarget(targets[index - 1])
         return
       case "Home":
         event.preventDefault()
-        focusLink(links[0])
+        focusTarget(targets[0])
         return
       case "End":
         event.preventDefault()
-        focusLink(links.at(-1))
+        focusTarget(targets.at(-1))
         return
       case "Tab": {
-        const target = event.shiftKey
+        const next = event.shiftKey
           ? null
-          : peekRef.current?.querySelector<HTMLElement>(peekFocusSelector)
-        if (target !== null && target !== undefined) {
+          : target.kind === "group"
+            ? line?.querySelector<HTMLElement>(addSelector)
+            : peekRef.current?.querySelector<HTMLElement>(peekFocusSelector)
+        if (next !== null && next !== undefined) {
           event.preventDefault()
-          target.focus()
+          next.focus()
         }
         return
       }
@@ -194,7 +296,7 @@ export function List({
   }
 
   function togglePeek(value: string) {
-    rowLinks(rootRef.current)
+    focusTargets(rootRef.current, linkSelector)
       .find((link) => link.dataset.value === value)
       ?.focus()
     setPeekValue(peekValue === value ? null : value)
@@ -204,9 +306,14 @@ export function List({
     activeValue,
     peekValue,
     selectedValues,
+    expandedValues,
     onLinkFocus: setActiveValue,
-    onLinkKeyDown: handleLinkKeyDown,
-    onToggleSelected: toggleSelected,
+    onLinkKeyDown: (event, value) => handleKeyDown(event, { kind: "record", value }),
+    onGroupKeyDown: (event, value, values) =>
+      handleKeyDown(event, { kind: "group", value, values }),
+    onToggleSelected: (value) => toggleSelected([value]),
+    onToggleGroupSelected: toggleSelected,
+    onToggleExpanded: (value) => setExpanded(value, !expandedValues.includes(value)),
     onTogglePeek: togglePeek,
     onPeekValueChange: setPeekValue,
     rootRef,
@@ -247,6 +354,7 @@ type ListRowContextValue =
       isSelected: boolean
       isPeeked: boolean
     }
+  | ({ kind: "group" } & ListGroupContextValue)
   | { kind: "loading" }
 
 const ListRowContext = React.createContext<ListRowContextValue | null>(null)
@@ -352,9 +460,10 @@ export type ListRowSelectProps = Omit<
 const selectClass = "flex size-6 shrink-0 items-center justify-center pointer-coarse:size-11"
 
 /**
- * The row's selection checkbox. It is 24×24px, 44×44px on a coarse pointer, and is drawn only on
- * a hovered, focused or selected row, and always on a coarse pointer. It is not a tab stop: X on
- * the focused row toggles it. Its accessible name is "Select" followed by the row's name.
+ * The row's selection checkbox. In a `ListGroupHeader` it selects every row in the group and
+ * shows mixed while only some are. It is 24×24px, 44×44px on a coarse pointer, and is drawn only
+ * on a hovered, focused or selected row, and always on a coarse pointer. It is not a tab stop: X
+ * on the focused row toggles it. Its accessible name is "Select" followed by the row's name.
  */
 export function ListRowSelect({ className, ...props }: ListRowSelectProps): React.ReactElement {
   const row = useListRow("ListRowSelect")
@@ -365,28 +474,37 @@ export function ListRowSelect({ className, ...props }: ListRowSelectProps): Reac
     return <span data-slot="list-row-select" className={selectClass} />
   }
 
+  const values = row.kind === "group" ? row.values : [row.value]
+  const selectedCount = values.filter((value) => list.selectedValues.includes(value)).length
+  const isMixed = selectedCount > 0 && selectedCount < values.length
+
   return (
     <Checkbox.Root
       data-slot="list-row-select"
       tabIndex={-1}
-      checked={row.isSelected}
-      onCheckedChange={() => list.onToggleSelected(row.value)}
+      checked={values.length > 0 && selectedCount === values.length}
+      onCheckedChange={() =>
+        row.kind === "group"
+          ? list.onToggleGroupSelected(row.values)
+          : list.onToggleSelected(row.value)
+      }
       aria-labelledby={`${labelId} ${row.nameId}`}
       className={cn(
         selectClass,
-        "group/select invisible cursor-pointer rounded-floor outline-none data-checked:visible pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible",
+        "group/select invisible cursor-pointer rounded-floor outline-none data-checked:visible data-indeterminate:visible pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible group-has-[[data-slot=list-group-trigger]:focus-visible]/list-row:visible",
         className
       )}
       {...props}
+      indeterminate={isMixed}
     >
       <span id={labelId} className="sr-only">
         Select
       </span>
-      <span className="flex size-4 items-center justify-center rounded-checkbox border border-input bg-background text-primary-foreground shadow-xs transition-colors group-hover/select:border-muted-foreground group-data-checked/select:border-primary group-data-checked/select:bg-primary">
+      <span className="flex size-4 items-center justify-center rounded-checkbox border border-input bg-background text-primary-foreground shadow-xs transition-colors group-hover/select:border-muted-foreground group-data-checked/select:border-primary group-data-checked/select:bg-primary group-data-indeterminate/select:border-primary group-data-indeterminate/select:bg-primary">
         <Checkbox.Indicator>
           <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3">
             <path
-              d="M3.5 8.5 6.5 11.5 12.5 4.5"
+              d={isMixed ? "M4 8h8" : "M3.5 8.5 6.5 11.5 12.5 4.5"}
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
@@ -421,7 +539,7 @@ export function ListRowPeek({ className, ...props }: ListRowPeekProps): React.Re
   const list = useList()
   const labelId = React.useId()
 
-  if (row.kind === "loading") {
+  if (row.kind !== "record") {
     return <span data-slot="list-row-peek" className={peekClass} />
   }
 
@@ -739,6 +857,277 @@ export function ListRowFact({ narrow = "keep", ...props }: ListRowFactProps): Re
     partProps,
     true
   )
+}
+
+type ListGroupContextValue = {
+  value: string
+  values: ReadonlyArray<string>
+  nameId: string
+  isExpanded: boolean
+}
+
+const ListGroupContext = React.createContext<ListGroupContextValue | null>(null)
+
+function useListGroup(part: string): ListGroupContextValue {
+  const context = React.useContext(ListGroupContext)
+  if (context === null) {
+    throw new Error(`${part} must be rendered inside a ListGroup.`)
+  }
+  return context
+}
+
+/** Props for {@link ListGroup}. */
+export type ListGroupProps = useRender.ComponentProps<"li"> & {
+  /**
+   * The group's unique value; it is expanded while this value is in the `List`'s `expandedValues`.
+   * It must differ from every row's value.
+   */
+  value: string
+  /** The values of the group's selectable rows, which its `ListRowSelect` selects together. */
+  values?: ReadonlyArray<string>
+}
+
+/**
+ * The rows that share one value, such as every record with one status: a `ListGroupHeader`, then
+ * a `ListGroupRows` holding the rows. Render groups inside `List` in the order the list's story
+ * needs, and hide a group with no rows. Groups do not nest.
+ */
+export function ListGroup({
+  value,
+  values = [],
+  render,
+  className,
+  ...props
+}: ListGroupProps): React.ReactElement {
+  const list = useList()
+  const nameId = React.useId()
+  const isExpanded = list.expandedValues.includes(value)
+
+  const element = useRender({
+    defaultTagName: "li",
+    render,
+    state: { slot: "list-group", expanded: isExpanded },
+    props: mergeProps<"li">({ className: cn("flex flex-col", className) }, props),
+  })
+
+  return (
+    <ListGroupContext.Provider value={{ value, values, nameId, isExpanded }}>
+      {element}
+    </ListGroupContext.Provider>
+  )
+}
+
+/**
+ * The group's header row: a `ListRowSelect`, a `ListGroupTrigger` and a `ListGroupAdd`, in that
+ * order, lined up with the rows' checkboxes. It stays pinned to the top of the scroll area while
+ * its group's rows scroll under it, drawn on the page background; pass the surface's background
+ * in `className` when the list sits on another surface.
+ */
+export function ListGroupHeader({
+  render,
+  className,
+  ...props
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const group = useListGroup("ListGroupHeader")
+
+  const element = useRender({
+    defaultTagName: "div",
+    render,
+    state: { slot: "list-group-header" },
+    props: mergeProps<"div">(
+      {
+        className: cn(
+          rowClass,
+          "sticky top-0 z-raised bg-background before:pointer-events-none before:absolute before:inset-0 before:rounded-floor hover:before:bg-foreground/4 has-[[data-slot=list-group-trigger]:focus-visible]:before:bg-foreground/4 has-[[data-slot=list-group-trigger]:focus-visible]:before:inset-ring has-[[data-slot=list-group-trigger]:focus-visible]:before:inset-ring-ring/40",
+          className
+        ),
+      },
+      props
+    ),
+  })
+
+  return (
+    <ListRowContext.Provider value={{ kind: "group", ...group }}>{element}</ListRowContext.Provider>
+  )
+}
+
+/** Props for {@link ListGroupTrigger}. */
+export type ListGroupTriggerProps = Omit<React.ComponentProps<"button">, "type">
+
+/**
+ * The button that shows or hides the group's rows. It draws a chevron, then holds the group's
+ * `ListGroupName` and `ListGroupCount`. It fills the header, so a click anywhere on the header
+ * toggles the group, and it is the header's one focus target and handles the `List` keys.
+ */
+export function ListGroupTrigger({
+  className,
+  children,
+  ...props
+}: ListGroupTriggerProps): React.ReactElement {
+  const group = useListGroup("ListGroupTrigger")
+  const list = useList()
+
+  return (
+    <button
+      {...mergeProps<"button">(
+        {
+          type: "button",
+          tabIndex: list.activeValue === group.value ? 0 : -1,
+          "aria-expanded": group.isExpanded,
+          "aria-keyshortcuts":
+            "Enter Space X ArrowLeft ArrowRight ArrowUp ArrowDown Home End Escape",
+          onFocus: () => list.onLinkFocus(group.value),
+          onKeyDown: (event) => list.onGroupKeyDown(event, group.value, group.values),
+          onClick: () => list.onToggleExpanded(group.value),
+          className: cn(
+            linkClass,
+            "cursor-pointer text-start outline-none [&>svg]:text-muted-foreground",
+            className
+          ),
+        },
+        props
+      )}
+      data-slot="list-group-trigger"
+      data-value={group.value}
+    >
+      <svg
+        viewBox="0 0 16 16"
+        aria-hidden="true"
+        className={cn(
+          "size-4 shrink-0 motion-safe:transition-transform",
+          group.isExpanded && "rotate-90"
+        )}
+      >
+        <path
+          d="M6 3.5 10.5 8 6 12.5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      {children}
+    </button>
+  )
+}
+
+/** The group's name, such as a `status` naming the value its rows share, in medium weight. */
+export function ListGroupName({
+  render,
+  className,
+  ...props
+}: ListRowPartProps): React.ReactElement {
+  const group = useListGroup("ListGroupName")
+  return useRender({
+    defaultTagName: "span",
+    render,
+    state: { slot: "list-group-name" },
+    props: mergeProps<"span">(
+      {
+        id: group.nameId,
+        className: cn("flex min-w-0 items-center font-medium text-sm", className),
+      },
+      props
+    ),
+  })
+}
+
+/** The number of rows in the group, in muted tabular figures; it stays while the group is collapsed. */
+export function ListGroupCount({
+  render,
+  className,
+  ...props
+}: ListRowPartProps): React.ReactElement {
+  useListGroup("ListGroupCount")
+  return useRender({
+    defaultTagName: "span",
+    render,
+    state: { slot: "list-group-count" },
+    props: mergeProps<"span">(
+      { className: cn("shrink-0 text-muted-foreground text-sm tabular-nums", className) },
+      props
+    ),
+  })
+}
+
+/** Props for {@link ListGroupAdd}. */
+export type ListGroupAddProps = Omit<React.ComponentProps<"button">, "children" | "type">
+
+/**
+ * A button at the end of the header that adds a row to the group; handle `onClick`. It is
+ * 24×24px, 44×44px on a coarse pointer, and is drawn only on a hovered or focused header, and
+ * always on a coarse pointer. It is not a tab stop: Tab on the focused header moves to it. Its
+ * accessible name is "Add to" followed by the group's name, and its tooltip reads "Add".
+ */
+export function ListGroupAdd({ className, ...props }: ListGroupAddProps): React.ReactElement {
+  const group = useListGroup("ListGroupAdd")
+  const labelId = React.useId()
+
+  return (
+    <Tooltip.Root>
+      <Tooltip.Trigger
+        delay={300}
+        render={
+          <button
+            {...mergeProps<"button">(
+              {
+                type: "button",
+                tabIndex: -1,
+                "aria-labelledby": `${labelId} ${group.nameId}`,
+                className: cn(
+                  peekClass,
+                  "invisible cursor-pointer text-muted-foreground outline-none transition-colors hover:bg-foreground/7 hover:text-foreground focus-visible:visible focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-group-trigger]:focus-visible]/list-row:visible",
+                  className
+                ),
+              },
+              props
+            )}
+            data-slot="list-group-add"
+          />
+        }
+      >
+        <span id={labelId} className="sr-only">
+          Add to
+        </span>
+        <svg viewBox="0 0 16 16" aria-hidden="true" className="size-4">
+          <path
+            d="M8 3.5v9M3.5 8h9"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
+          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+            Add
+          </Tooltip.Popup>
+        </Tooltip.Positioner>
+      </Tooltip.Portal>
+    </Tooltip.Root>
+  )
+}
+
+/** The group's rows, drawn only while the group is expanded. Hold one `ListRow` per row. */
+export function ListGroupRows({
+  render,
+  className,
+  ...props
+}: useRender.ComponentProps<"ul">): React.ReactElement | null {
+  const group = useListGroup("ListGroupRows")
+  const element = useRender({
+    defaultTagName: "ul",
+    render,
+    state: { slot: "list-group-rows" },
+    props: mergeProps<"ul">(
+      { "aria-labelledby": group.nameId, className: cn("flex flex-col", className) },
+      props
+    ),
+  })
+  return group.isExpanded ? element : null
 }
 
 /** Props for {@link ListPeek}. */

@@ -1,19 +1,16 @@
 import { entityDocs } from "../../components/entity/entity.docs.ts"
-import { figureDocs } from "../../components/figure/figure.docs.ts"
 import {
   type ComponentDocs,
   type CompositionNode,
   requireSource,
 } from "../../components/item-docs.ts"
 import { listDocs } from "../../components/list/list.docs.ts"
-import { meterDocs } from "../../components/meter/meter.docs.ts"
 import { previewCardDocs } from "../../components/preview-card/preview-card.docs.ts"
 import { relativeTimeDocs } from "../../components/relative-time/relative-time.docs.ts"
 import { statusDocs } from "../../components/status/status.docs.ts"
-import { ListInvoices } from "./list-invoices.tsx"
 import { ListRecords } from "./list-records.tsx"
 
-const sources = import.meta.glob<string>("./list-{records,invoices}.tsx", {
+const sources = import.meta.glob<string>("./list-records.tsx", {
   query: "?raw",
   import: "default",
   eager: true,
@@ -123,8 +120,6 @@ import { Status, StatusMedia, StatusName } from "@/components/status"`,
                 item: null,
                 children: [
                   previewCard([entity]),
-                  { name: "Figure", item: "figure", children: [] },
-                  { name: "Meter", item: "meter", children: [] },
                   { name: "RelativeTime", item: "relative-time", children: [] },
                 ],
               },
@@ -142,20 +137,11 @@ import { Status, StatusMedia, StatusName } from "@/components/status"`,
       Preview: ListRecords,
       source: requireSource(sources, "./list-records.tsx"),
     },
-    {
-      name: "list-invoices",
-      title: "Invoices",
-      description: "The customer, then the total, the amount paid and the due date.",
-      Preview: ListInvoices,
-      source: requireSource(sources, "./list-invoices.tsx"),
-    },
   ],
   api: [
     ...listDocs.api,
     ...statusDocs.api,
     ...entityDocs.api,
-    ...figureDocs.api,
-    ...meterDocs.api,
     ...relativeTimeDocs.api,
     ...previewCardDocs.api,
   ],
