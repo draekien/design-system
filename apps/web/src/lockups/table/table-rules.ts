@@ -25,7 +25,7 @@ export const tableRules: ReadonlyArray<Rule<StoryGoal<typeof tableStory>>> = [
   {
     rule: "Invoices group by status in the order Sent, Draft, Paid, so the invoices waiting on payment come first. Each group header shows the status, the invoice count, the line count sum and the amount sum, and keeps all four when collapsed. An empty group is hidden.",
     source:
-      "Linear Display options; design rules: a collapsed group keeps its counts; the order is this design system's own decision (design rules: Goals)",
+      "Linear Display options; design rules: a collapsed group keeps its counts, following Chunking; the order is this design system's own decision (design rules: Goals)",
     serves: "See where each group stands, such as how much is waiting on payment",
   },
   {
@@ -67,7 +67,8 @@ export const tableRules: ReadonlyArray<Rule<StoryGoal<typeof tableStory>>> = [
   },
   {
     rule: "While any invoice is selected, the selection bar fixed to the bottom shows the count, Send reminder and Export, a ⋯ menu with Mark as paid and then Void after a divider, and Clear. Below sm, Export moves into the menu. Void asks to confirm, with Cancel focused.",
-    source: "Linear select issues; Geist Menu; Stripe Accordion; Carbon menu buttons",
+    source:
+      "Linear select issues; Geist Menu; Stripe Accordion; Carbon menu buttons; limiting the actions follows Hick's Law",
     serves: "Act on several records at once, such as sending reminders",
   },
   {
@@ -102,7 +103,7 @@ export const tableRules: ReadonlyArray<Rule<StoryGoal<typeof tableStory>>> = [
   },
   {
     rule: "Every hit area is at least 24×24px; checkboxes and the expand control grow to 44×44px on a coarse pointer.",
-    source: "Primer designer checklist; 44px is this design system's own decision",
+    source: "Primer designer checklist; Fitts's Law; 44px is this design system's own decision",
     serves: "all",
   },
   {

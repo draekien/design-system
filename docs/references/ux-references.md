@@ -1,5 +1,5 @@
 Source: prior research by the repository owner, from the sites linked in each table
-Captured: 2026-10-06 (interaction patterns), 2026-10-08 (disclosure and actions) and 2026-10-16 (row anatomy)
+Captured: 2026-10-06 (interaction patterns), 2026-10-08 (disclosure and actions), 2026-10-16 (row anatomy) and 2026-11-25 (Laws of UX)
 
 # UX references
 
@@ -118,3 +118,22 @@ Every refusal answers two questions, in this order: what went wrong, and how the
 | [sorry](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/s/sorry) (Microsoft Style Guide) | apologies | Apologise only when the product itself failed |
 
 [IBM's accessibility content guidance](https://www.ibm.com/able/toolkit/design/content), linked from Carbon for errors, could not be read when this was captured; its contents are unverified.
+
+## Laws of UX
+
+[Laws of UX](https://lawsofux.com/) by Jon Yablonski is licensed [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) ([licence statement](https://lawsofux.com/info/)). Each law below is linked, and every summary is written for this repository; none is copied from the site.
+
+The Sources section of `docs/contexts/design-rules.md` states how a law may be cited.
+
+| Law | Summary | Design rule it backs |
+| --- | --- | --- |
+| [Fitts's Law](https://lawsofux.com/fittss-law/) | A larger, nearer target takes less time to reach | Rules adopted without a component yet: hit areas |
+| [Hick's Law](https://lawsofux.com/hicks-law/) | More choices take longer to decide between | Selecting records: the selection bar |
+| [Jakob's Law](https://lawsofux.com/jakobs-law/) | Callers expect a product to work like the products they already use | Sources: Linear first |
+| [Law of Proximity](https://lawsofux.com/law-of-proximity/) | Parts placed close together read as one group | Spacing between components |
+| [Chunking](https://lawsofux.com/chunking/) | Information split into named groups is easier to take in | Grouping and nesting: the group header |
+| [Von Restorff Effect](https://lawsofux.com/von-restorff-effect/) | The one part that differs from the rest is the one noticed | Rules adopted without a component yet: one accent colour |
+| [Pareto Principle](https://lawsofux.com/pareto-principle/) | A small share of causes produces most of the effects | Goals |
+| [Cognitive Load](https://lawsofux.com/cognitive-load/), [Selective Attention](https://lawsofux.com/selective-attention/) | Every part on screen costs the caller effort, and callers attend only to what serves their goal | Principles: Quiet |
+
+Before citing a law this table lacks, read [the Laws of UX exploration](../explorations/2026-11-25-laws-of-ux.md), which records a verdict for the other 21.

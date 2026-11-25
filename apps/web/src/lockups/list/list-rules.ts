@@ -82,7 +82,7 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
   },
   {
     rule: "Every hit area is at least 24×24px; the checkbox grows to 44×44px on a coarse pointer.",
-    source: "Primer designer checklist; 44px is this design system's own decision",
+    source: "Primer designer checklist; Fitts's Law; 44px is this design system's own decision",
     serves: "all",
   },
   {
@@ -113,7 +113,8 @@ export const listRules: ReadonlyArray<Rule<StoryGoal<typeof listStory>>> = [
   },
   {
     rule: "The accent colour marks only what can be acted on: the checked checkbox and the ring around a focused or peeked row.",
-    source: "This design system's own decision",
+    source:
+      "Design rules: the accent marks only what can be acted on, following the Von Restorff Effect; the accented parts are this design system's own decision",
     serves: "all",
   },
   {

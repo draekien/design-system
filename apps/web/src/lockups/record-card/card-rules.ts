@@ -49,7 +49,7 @@ const rules = {
   asideActions: {
     rule: "CardAside holds at most two actions, then a ⋮ menu holding the rest with destructive actions last after a divider; its actions show on card hover, focus or open menu and always on a coarse pointer; as they appear the always-shown items slide toward the card's middle over 150ms and slide back as they hide, with no motion under reduced motion, and the slot keeps the width of both so the part beside it never reflows.",
     source:
-      "Design rules: the selection bar holds at most two actions, then a ⋯ menu; DESIGN.md: revealed controls. Applying them to the card, and the vertical ⋮ in place of the selection bar's ⋯, is this design system's own decision",
+      "Design rules: the selection bar holds at most two actions, then a ⋯ menu, following Hick's Law; DESIGN.md: revealed controls. Applying them to the card, and the vertical ⋮ in place of the selection bar's ⋯, is this design system's own decision",
   },
   asideFit: {
     rule: "CardAside's always-shown items take at most a third of the card's content width, the part beside it keeps at least half, and its actions are never cut off in a card at least 18rem wide; on a coarse pointer each 24px action keeps its size and position and its hit area grows to 44px around it, with 20px between actions so hit areas do not overlap; 8px separates its always-shown items from its actions; its text truncates to one line and shows in full in a hover card, an icon names its meaning to screen readers and in a hover card, an icon button names its action in a tooltip, and its menus and hover cards open 4px below their trigger with their start edges aligned, or their end edges aligned when the viewport has no room.",
@@ -91,7 +91,8 @@ const rules = {
   },
   grid: {
     rule: "cards in a grid are 8px apart (gap-related), since bordered cards with no gap would draw doubled borders.",
-    source: "This design system's own decision",
+    source:
+      "Design rules: spacing between components, following the Law of Proximity; the 8px grid gap is this design system's own decision",
   },
   missingFact: {
     rule: "A fact the caller cannot see shows Unavailable or Hidden in its slot, after its property's name in a row of facts, such as Owner unavailable, and the reason is stated once above the cards.",
@@ -109,7 +110,7 @@ const rules = {
   },
   hitArea: {
     rule: "Every control's hit area is at least 24×24px, and 44px high on a coarse pointer.",
-    source: "Primer designer checklist; 44px is this design system's own decision",
+    source: "Primer designer checklist; Fitts's Law; 44px is this design system's own decision",
   },
 } satisfies Record<string, Omit<Rule<string>, "serves">>
 

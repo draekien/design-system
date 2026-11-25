@@ -63,12 +63,13 @@ export const avatarRules: ReadonlyArray<Rule<StoryGoal<typeof avatarStory>>> = [
   },
   {
     rule: "The panel draws no border or fill of its own; it fills the rail it sits in, and names truncate before they wrap.",
-    source: "Design rules: Quiet; a list draws no surface of its own",
+    source:
+      "Design rules: Quiet, following Cognitive Load and Selective Attention; a list draws no surface of its own",
     serves: "all",
   },
   {
     rule: "Every link and trigger has a hit area at least 24px high, and 44px on a coarse pointer.",
-    source: "Primer designer checklist; 44px is this design system's own decision",
+    source: "Primer designer checklist; Fitts's Law; 44px is this design system's own decision",
     serves: "all",
   },
 ]
