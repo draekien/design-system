@@ -110,12 +110,7 @@ export function ListLockup<TItem>({
           <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
             {groupItems(dataset, items).map((group) => (
               <React.Fragment key={group.value}>
-                <ListRowLoading>
-                  {!hidden.has("select") && <ListRowSelect />}
-                  <ListRowLink>
-                    <ListRowName>{group.name}</ListRowName>
-                  </ListRowLink>
-                </ListRowLoading>
+                <LoadingGroupHeader group={group} hidden={hidden} />
                 {group.items.map((item) => (
                   <ListRowLoading key={dataset.value(item)}>
                     <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
@@ -200,12 +195,7 @@ export function GroupHeader({
         <ListRowSelect className={revealClassName} data-anchor={anchors?.get("group-select")} />
       )}
       <ListGroupTrigger data-anchor={anchors?.get("group-trigger")}>
-        <ListGroupName data-anchor={anchors?.get("group-name")}>
-          <Status>
-            <StatusMedia fill={group.fill} />
-            <StatusName>{group.name}</StatusName>
-          </Status>
-        </ListGroupName>
+        <GroupName group={group} anchor={anchors?.get("group-name")} />
         <ListGroupCount data-anchor={anchors?.get("group-count")}>
           {group.items.length}
         </ListGroupCount>
@@ -216,6 +206,37 @@ export function GroupHeader({
         onClick={onAdd}
       />
     </ListGroupHeader>
+  )
+}
+
+export function LoadingGroupHeader({
+  group,
+  hidden,
+  anchor,
+}: {
+  group: ItemGroup<unknown>
+  hidden: Hidden
+  anchor?: number
+}) {
+  return (
+    <ListRowLoading data-anchor={anchor}>
+      {!hidden.has("select") && <ListRowSelect />}
+      <ListGroupTrigger>
+        <GroupName group={group} />
+        <ListGroupCount>{group.items.length}</ListGroupCount>
+      </ListGroupTrigger>
+    </ListRowLoading>
+  )
+}
+
+function GroupName({ group, anchor }: { group: ItemGroup<unknown>; anchor?: number }) {
+  return (
+    <ListGroupName data-anchor={anchor}>
+      <Status>
+        <StatusMedia fill={group.fill} />
+        <StatusName>{group.name}</StatusName>
+      </Status>
+    </ListGroupName>
   )
 }
 
@@ -335,6 +356,7 @@ export function ListFooter<TItem>({
         className={cn("ml-auto pointer-coarse:hidden", state === "loading" && "invisible")}
       >
         <Kbd>Space</Kbd> peek <Separator /> <Kbd>↑</Kbd> <Kbd>↓</Kbd> move <Separator />{" "}
+        <Kbd>←</Kbd> <Kbd>→</Kbd> group <Separator />{" "}
         {isSelectable ? (
           <>
             <Kbd>X</Kbd> select <Separator />{" "}

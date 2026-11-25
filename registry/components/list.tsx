@@ -479,42 +479,56 @@ export function ListRowSelect({ className, ...props }: ListRowSelectProps): Reac
   const isMixed = selectedCount > 0 && selectedCount < values.length
 
   return (
-    <Checkbox.Root
-      data-slot="list-row-select"
-      tabIndex={-1}
-      checked={values.length > 0 && selectedCount === values.length}
-      onCheckedChange={() =>
-        row.kind === "group"
-          ? list.onToggleGroupSelected(row.values)
-          : list.onToggleSelected(row.value)
-      }
-      aria-labelledby={`${labelId} ${row.nameId}`}
-      className={cn(
-        selectClass,
-        "group/select invisible cursor-pointer rounded-floor outline-none data-checked:visible data-indeterminate:visible pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible group-has-[[data-slot=list-group-trigger]:focus-visible]/list-row:visible",
-        className
-      )}
-      {...props}
-      indeterminate={isMixed}
-    >
-      <span id={labelId} className="sr-only">
-        Select
-      </span>
-      <span className="flex size-4 items-center justify-center rounded-checkbox border border-input bg-background text-primary-foreground shadow-xs transition-colors group-hover/select:border-muted-foreground group-data-checked/select:border-primary group-data-checked/select:bg-primary group-data-indeterminate/select:border-primary group-data-indeterminate/select:bg-primary">
-        <Checkbox.Indicator>
-          <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3">
-            <path
-              d={isMixed ? "M4 8h8" : "M3.5 8.5 6.5 11.5 12.5 4.5"}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </Checkbox.Indicator>
-      </span>
-    </Checkbox.Root>
+    <Tooltip.Root>
+      <Tooltip.Trigger
+        delay={300}
+        render={
+          <Checkbox.Root
+            data-slot="list-row-select"
+            tabIndex={-1}
+            checked={values.length > 0 && selectedCount === values.length}
+            onCheckedChange={() =>
+              row.kind === "group"
+                ? list.onToggleGroupSelected(row.values)
+                : list.onToggleSelected(row.value)
+            }
+            aria-labelledby={`${labelId} ${row.nameId}`}
+            className={cn(
+              selectClass,
+              "group/select invisible cursor-pointer rounded-floor outline-none data-checked:visible data-indeterminate:visible pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible group-has-[[data-slot=list-group-trigger]:focus-visible]/list-row:visible",
+              className
+            )}
+            {...props}
+            indeterminate={isMixed}
+          />
+        }
+      >
+        <span id={labelId} className="sr-only">
+          Select
+        </span>
+        <span className="flex size-4 items-center justify-center rounded-checkbox border border-input bg-background text-primary-foreground shadow-xs transition-colors group-hover/select:border-muted-foreground group-data-checked/select:border-primary group-data-checked/select:bg-primary group-data-indeterminate/select:border-primary group-data-indeterminate/select:bg-primary">
+          <Checkbox.Indicator>
+            <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3">
+              <path
+                d={isMixed ? "M4 8h8" : "M3.5 8.5 6.5 11.5 12.5 4.5"}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Checkbox.Indicator>
+        </span>
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
+          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+            {row.kind === "group" ? "Select group · X" : "Select · X"}
+          </Tooltip.Popup>
+        </Tooltip.Positioner>
+      </Tooltip.Portal>
+    </Tooltip.Root>
   )
 }
 
@@ -652,6 +666,14 @@ function SizedBar({ children }: { children: React.ReactNode }) {
   )
 }
 
+function loadingContent(children: React.ReactNode, placeholder: React.ReactNode) {
+  return children !== undefined && children !== null && children !== false && children !== "" ? (
+    <SizedBar>{children}</SizedBar>
+  ) : (
+    placeholder
+  )
+}
+
 function usePart(
   part: string,
   slot: string,
@@ -662,16 +684,7 @@ function usePart(
 ) {
   const row = useListRow(part)
   const isRecord = row.kind === "record"
-  const loadingChildren =
-    sizeToChildren &&
-    children !== undefined &&
-    children !== null &&
-    children !== false &&
-    children !== "" ? (
-      <SizedBar>{children}</SizedBar>
-    ) : (
-      placeholder
-    )
+  const loadingChildren = sizeToChildren ? loadingContent(children, placeholder) : placeholder
   return useRender({
     defaultTagName: "span",
     render: isRecord ? render : <span />,
@@ -876,6 +889,18 @@ function useListGroup(part: string): ListGroupContextValue {
   return context
 }
 
+function useGroupPart(part: string): ListGroupContextValue | null {
+  const group = React.useContext(ListGroupContext)
+  const isLoading = React.useContext(ListRowContext)?.kind === "loading"
+  if (isLoading) {
+    return null
+  }
+  if (group === null) {
+    throw new Error(`${part} must be rendered inside a ListGroup.`)
+  }
+  return group
+}
+
 /** Props for {@link ListGroup}. */
 export type ListGroupProps = useRender.ComponentProps<"li"> & {
   /**
@@ -964,9 +989,17 @@ export function ListGroupTrigger({
   children,
   ...props
 }: ListGroupTriggerProps): React.ReactElement {
-  const group = useListGroup("ListGroupTrigger")
+  const group = useGroupPart("ListGroupTrigger")
   const list = useList()
 
+  if (group === null) {
+    return (
+      <span data-slot="list-group-trigger" className={cn(linkClass, className)}>
+        <Chevron isExpanded className="text-muted-foreground/40" />
+        {children}
+      </span>
+    )
+  }
   return (
     <button
       {...mergeProps<"button">(
@@ -975,7 +1008,7 @@ export function ListGroupTrigger({
           tabIndex: list.activeValue === group.value ? 0 : -1,
           "aria-expanded": group.isExpanded,
           "aria-keyshortcuts":
-            "Enter Space X ArrowLeft ArrowRight ArrowUp ArrowDown Home End Escape",
+            "Enter Space X ArrowLeft ArrowRight ArrowUp ArrowDown Home End Escape Tab",
           onFocus: () => list.onLinkFocus(group.value),
           onKeyDown: (event) => list.onGroupKeyDown(event, group.value, group.values),
           onClick: () => list.onToggleExpanded(group.value),
@@ -990,25 +1023,32 @@ export function ListGroupTrigger({
       data-slot="list-group-trigger"
       data-value={group.value}
     >
-      <svg
-        viewBox="0 0 16 16"
-        aria-hidden="true"
-        className={cn(
-          "size-4 shrink-0 motion-safe:transition-transform",
-          group.isExpanded && "rotate-90"
-        )}
-      >
-        <path
-          d="M6 3.5 10.5 8 6 12.5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <Chevron isExpanded={group.isExpanded} />
       {children}
     </button>
+  )
+}
+
+function Chevron({ isExpanded, className }: { isExpanded: boolean; className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      aria-hidden="true"
+      className={cn(
+        "size-4 shrink-0 motion-safe:transition-transform",
+        isExpanded && "rotate-90",
+        className
+      )}
+    >
+      <path
+        d="M6 3.5 10.5 8 6 12.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   )
 }
 
@@ -1016,19 +1056,23 @@ export function ListGroupTrigger({
 export function ListGroupName({
   render,
   className,
+  children,
   ...props
 }: ListRowPartProps): React.ReactElement {
-  const group = useListGroup("ListGroupName")
+  const group = useGroupPart("ListGroupName")
+  const isLoading = group === null
   return useRender({
     defaultTagName: "span",
-    render,
+    render: isLoading ? <span /> : render,
     state: { slot: "list-group-name" },
     props: mergeProps<"span">(
       {
-        id: group.nameId,
+        id: group?.nameId,
         className: cn("flex min-w-0 items-center font-medium text-sm", className),
       },
-      props
+      isLoading
+        ? { children: loadingContent(children, <Bar className="w-24" />) }
+        : { ...props, children }
     ),
   })
 }
@@ -1037,16 +1081,20 @@ export function ListGroupName({
 export function ListGroupCount({
   render,
   className,
+  children,
   ...props
 }: ListRowPartProps): React.ReactElement {
-  useListGroup("ListGroupCount")
+  const group = useGroupPart("ListGroupCount")
+  const isLoading = group === null
   return useRender({
     defaultTagName: "span",
-    render,
+    render: isLoading ? <span /> : render,
     state: { slot: "list-group-count" },
     props: mergeProps<"span">(
       { className: cn("shrink-0 text-muted-foreground text-sm tabular-nums", className) },
-      props
+      isLoading
+        ? { children: loadingContent(children, <Bar className="w-4" />) }
+        : { ...props, children }
     ),
   })
 }
@@ -1077,7 +1125,7 @@ export function ListGroupAdd({ className, ...props }: ListGroupAddProps): React.
                 "aria-labelledby": `${labelId} ${group.nameId}`,
                 className: cn(
                   peekClass,
-                  "invisible cursor-pointer text-muted-foreground outline-none transition-colors hover:bg-foreground/7 hover:text-foreground focus-visible:visible focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-group-trigger]:focus-visible]/list-row:visible",
+                  "cursor-pointer text-muted-foreground opacity-0 outline-none transition-colors hover:bg-foreground/7 hover:text-foreground focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:opacity-100 group-hover/list-row:opacity-100 group-has-[[data-slot=list-group-trigger]:focus-visible]/list-row:opacity-100",
                   className
                 ),
               },
@@ -1123,7 +1171,10 @@ export function ListGroupRows({
     render,
     state: { slot: "list-group-rows" },
     props: mergeProps<"ul">(
-      { "aria-labelledby": group.nameId, className: cn("flex flex-col", className) },
+      {
+        "aria-labelledby": group.nameId,
+        className: cn("flex flex-col **:data-[slot=list-row-link]:scroll-mt-11", className),
+      },
       props
     ),
   })

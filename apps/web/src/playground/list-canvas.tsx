@@ -33,6 +33,7 @@ import {
   GroupHeader,
   ListFooter,
   ListLockup,
+  LoadingGroupHeader,
   PeekContent,
   RowParts,
 } from "../lockups/list/list-lockup.tsx"
@@ -225,7 +226,14 @@ function ConstellationView<TItem>({
       case "error":
         return errorDrawing(dataset)
       case "loading":
-        return loadingDrawing({ dataset, item, count: items.length, hidden, hintId: centreHintId })
+        return loadingDrawing({
+          dataset,
+          item,
+          group: largestGroup(dataset, items),
+          count: items.length,
+          hidden,
+          hintId: centreHintId,
+        })
       case "loaded":
       case "partial":
       case "no-permission":
@@ -283,12 +291,14 @@ function errorDrawing<TItem>(dataset: Dataset<TItem>): Drawing {
 function loadingDrawing<TItem>({
   dataset,
   item,
+  group,
   count,
   hidden,
   hintId,
 }: {
   dataset: Dataset<TItem>
   item: TItem
+  group: ItemGroup<TItem>
   count: number
   hidden: Hidden
   hintId: string
@@ -298,6 +308,16 @@ function loadingDrawing<TItem>({
     name: "List",
     depth: 0,
     note: "aria-busy; one ListRowLoading per expected item",
+  })
+  add("header", {
+    name: "ListRowLoading",
+    depth: 1,
+    note: "Group header: a muted chevron, then bars sized to the group's name and count",
+    specimen: (
+      <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
+        <LoadingGroupHeader group={group} hidden={hidden} />
+      </List>
+    ),
   })
   add("row", {
     name: "ListRowLoading",
@@ -329,7 +349,7 @@ function loadingDrawing<TItem>({
         rank: null,
         reveal: "always",
         summary: `Each part draws a bar at its loaded width, so the row does not move when the ${dataset.noun} arrive`,
-        links: link("row"),
+        links: [...link("header"), ...link("row")],
       },
       {
         title: "Status",
@@ -342,6 +362,7 @@ function loadingDrawing<TItem>({
     centre: (
       <div data-anchor={slots.get("list")} className="w-[52rem]">
         <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
+          <LoadingGroupHeader group={group} hidden={hidden} anchor={slots.get("header")} />
           <ListRowLoading data-anchor={slots.get("row")}>
             <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
           </ListRowLoading>
@@ -675,6 +696,7 @@ function StatesView<TItem>({
         >
           <div>
             <List aria-label={`${capitalise(dataset.noun)}, loading`} aria-busy="true">
+              <LoadingGroupHeader group={group} hidden={hidden} />
               <ListRowLoading>
                 <RowParts dataset={dataset} item={item} state="loaded" hidden={hidden} />
               </ListRowLoading>
