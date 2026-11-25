@@ -135,5 +135,13 @@ The Sources section of `docs/contexts/design-rules.md` states how a law may be c
 | [Von Restorff Effect](https://lawsofux.com/von-restorff-effect/) | The one part that differs from the rest is the one noticed | Rules adopted without a component yet: one accent colour |
 | [Pareto Principle](https://lawsofux.com/pareto-principle/) | A small share of causes produces most of the effects | Goals |
 | [Cognitive Load](https://lawsofux.com/cognitive-load/), [Selective Attention](https://lawsofux.com/selective-attention/) | Every part on screen costs the caller effort, and callers attend only to what serves their goal | Principles: Quiet |
+| [Doherty Threshold](https://lawsofux.com/doherty-threshold/) | A caller stays engaged when the system responds faster than they can lose focus | Loading, results and help: loading |
+| [Peak-End Rule](https://lawsofux.com/peak-end-rule/) | Callers judge an experience mostly by its most intense moment and its end | Loading, results and help: results |
+| [Paradox of the Active User](https://lawsofux.com/paradox-of-the-active-user/) | Callers start using a product at once and do not read its guides | Loading, results and help: help |
+| [Tesler's Law](https://lawsofux.com/teslers-law/) | Every task holds complexity that someone must take on; the product should take it from the caller | Tables: default order |
+| [Goal-Gradient Effect](https://lawsofux.com/goal-gradient-effect/), [Zeigarnik Effect](https://lawsofux.com/zeigarnik-effect/) | Callers work harder the closer they are to done, and remember unfinished tasks | Tables: progress |
+| [Law of Similarity](https://lawsofux.com/law-of-similarity/) | Parts drawn alike read as one group | Tables: a fact draws the same in every row |
+| [Law of Common Region](https://lawsofux.com/law-of-common-region/) | Parts inside one boundary read as one group | Cards: one border |
+| [Working Memory](https://lawsofux.com/working-memory/) | Callers hold only a few things in mind while they work | Ranking information: peek |
 
-Before citing a law this table lacks, read [the Laws of UX exploration](../explorations/2026-11-25-laws-of-ux.md), which records a verdict for the other 21.
+Before citing a law this table lacks, read [the Laws of UX exploration](../explorations/2026-11-25-laws-of-ux.md), which records a verdict for the others.

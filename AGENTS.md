@@ -75,8 +75,8 @@ Before editing files for a substantial task:
 - A registry component serves the stories of the lockups built from it; a component no lockup lists fails `apps/web/src/lockups/lockups.test.ts`.
 - Run `/impeccable shape` before every design system change: a token, a rule in `docs/contexts/design-rules.md`, `DESIGN.md`, a new component or a new lockup.
 - Run `/impeccable document` to regenerate `DESIGN.md` and `.impeccable/design.json` in the same change that alters a token or a component's visual treatment.
-- Run the impeccable critique on every lockup after it is built, and fix every issue it reports before the lockup moves to `registry`.
-- Run the impeccable critique on every component after it is built or changed, and fix every issue it reports before its `meta.critiqued` is set.
+- Run the impeccable critique, including every row of the Laws of UX tests in `docs/contexts/design-rules.md`, on every lockup after it is built, and fix every issue it reports before the lockup moves to `registry`.
+- Run the impeccable critique, including every row of the Laws of UX tests in `docs/contexts/design-rules.md`, on every component after it is built or changed, and fix every issue it reports before its `meta.critiqued` is set.
 - Run `/simplify` and then `/code-review` on every change before committing it.
 - Show screenshots of every changed surface in a task's completion summary.
 - Every wireframe and lockup page shows its rules table, the interactive lockup and a constellation, following the `state` search param. On a playground page each part is the real `registry` export.
