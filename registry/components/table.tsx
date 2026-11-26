@@ -16,7 +16,8 @@ type RowTarget =
   | { kind: "record"; value: string }
   | { kind: "group"; value: string; values: ReadonlyArray<string> }
 
-type TableContextValue = {
+/** The state and actions `useTable` returns. */
+export type TableValue = {
   isInteractive: boolean
   isSortable: boolean
   isSelectable: boolean
@@ -32,12 +33,7 @@ type TableContextValue = {
   onToggleExpanded: (value: string) => void
 }
 
-type TableState = {
-  sort: TableSort | null
-  activeValue: string | null
-  peekValue: string | null
-  selectedValues: ReadonlyArray<string>
-  expandedValues: ReadonlyArray<string>
+type TableState = TableValue & {
   selected: ReadonlySet<string>
   expanded: ReadonlySet<string>
 }
@@ -49,7 +45,7 @@ type TableStore = {
 }
 
 type TableActions = Pick<
-  TableContextValue,
+  TableValue,
   "onSort" | "onRowFocus" | "onRowKeyDown" | "onToggleSelected" | "onToggleExpanded"
 >
 
@@ -58,7 +54,6 @@ type TableConfig = {
   isSortable: boolean
   isSelectable: boolean
   store: TableStore
-  actions: TableActions
   registerRow: (value: string) => () => void
 }
 
@@ -259,9 +254,50 @@ export function Table({
 
   const selected = React.useMemo(() => new Set(selectedValues), [selectedValues])
   const expanded = React.useMemo(() => new Set(expandedValues), [expandedValues])
+
+  const latest = React.useRef({ sortBy, handleRowKeyDown, toggleSelected, toggleExpanded })
+  useIsoLayoutEffect(() => {
+    latest.current = { sortBy, handleRowKeyDown, toggleSelected, toggleExpanded }
+  })
+
+  const actions = React.useMemo<TableActions>(
+    () => ({
+      onSort: (column) => latest.current.sortBy(column),
+      onRowFocus: setActiveValue,
+      onRowKeyDown: (event, row) => latest.current.handleRowKeyDown(event, row),
+      onToggleSelected: (values) => latest.current.toggleSelected(values),
+      onToggleExpanded: (value) => latest.current.toggleExpanded(value),
+    }),
+    []
+  )
+
   const state = React.useMemo<TableState>(
-    () => ({ sort, activeValue, peekValue, selectedValues, expandedValues, selected, expanded }),
-    [sort, activeValue, peekValue, selectedValues, expandedValues, selected, expanded]
+    () => ({
+      isInteractive,
+      isSortable,
+      isSelectable,
+      sort,
+      activeValue,
+      peekValue,
+      selectedValues,
+      expandedValues,
+      ...actions,
+      selected,
+      expanded,
+    }),
+    [
+      isInteractive,
+      isSortable,
+      isSelectable,
+      sort,
+      activeValue,
+      peekValue,
+      selectedValues,
+      expandedValues,
+      actions,
+      selected,
+      expanded,
+    ]
   )
   const [store] = React.useState(() => createTableStore(state))
 
@@ -296,6 +332,10 @@ export function Table({
         ? [...expandedValues, value]
         : expandedValues.filter((expanded) => expanded !== value)
     )
+  }
+
+  function toggleExpanded(value: string) {
+    setExpanded(value, !expanded.has(value))
   }
 
   function focusRow(
@@ -409,23 +449,6 @@ export function Table({
     toggleSelected(target.kind === "group" ? target.values : [target.value])
   }
 
-  const latest = React.useRef({ sortBy, handleRowKeyDown, toggleSelected, setExpanded })
-  useIsoLayoutEffect(() => {
-    latest.current = { sortBy, handleRowKeyDown, toggleSelected, setExpanded }
-  })
-
-  const actions = React.useMemo<TableActions>(
-    () => ({
-      onSort: (column) => latest.current.sortBy(column),
-      onRowFocus: setActiveValue,
-      onRowKeyDown: (event, row) => latest.current.handleRowKeyDown(event, row),
-      onToggleSelected: (values) => latest.current.toggleSelected(values),
-      onToggleExpanded: (value) =>
-        latest.current.setExpanded(value, !store.getState().expanded.has(value)),
-    }),
-    [store]
-  )
-
   const registerRow = React.useCallback((value: string) => {
     setActiveValue((active) => active ?? value)
     return () => {
@@ -435,8 +458,8 @@ export function Table({
   }, [])
 
   const config = React.useMemo<TableConfig>(
-    () => ({ isInteractive, isSortable, isSelectable, store, actions, registerRow }),
-    [isInteractive, isSortable, isSelectable, store, actions, registerRow]
+    () => ({ isInteractive, isSortable, isSelectable, store, registerRow }),
+    [isInteractive, isSortable, isSelectable, store, registerRow]
   )
 
   const element = useRender({
@@ -471,33 +494,31 @@ function useTableConfig(): TableConfig {
   return config
 }
 
-function useTableSelector<TSelected extends string | number | boolean | null>(
-  selector: (state: TableState) => TSelected
-): TSelected {
+function identity(table: TableValue): TableValue {
+  return table
+}
+
+function useTableSelector<TSelected>(selector: (state: TableState) => TSelected): TSelected {
   const { store } = useTableConfig()
   const getSnapshot = () => selector(store.getState())
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot)
 }
 
 /**
- * Reads the enclosing `Table`'s state. Throws when called outside a `Table`. A component calling
- * it re-renders on every change to the table's state, such as each arrow-key move.
+ * Reads the enclosing `Table`'s state and actions. Throws when called outside a `Table`. Without a
+ * selector, the component re-renders on every change to the table's state, such as each arrow-key
+ * move. With one, it re-renders only when the selector's result changes by `Object.is`: return a
+ * primitive or a value read from the table, such as `(table) => table.activeValue === value`,
+ * never a new object or array.
  */
+export function useTable(): TableValue
+export function useTable<TSelected>(selector: (table: TableValue) => TSelected): TSelected
 // biome-ignore lint/style/useComponentExportOnlyModules: custom row parts read the table state through this hook
-export function useTable(): TableContextValue {
-  const { isInteractive, isSortable, isSelectable, store, actions } = useTableConfig()
-  const state = React.useSyncExternalStore(store.subscribe, store.getState, store.getState)
-  return {
-    isInteractive,
-    isSortable,
-    isSelectable,
-    sort: state.sort,
-    activeValue: state.activeValue,
-    peekValue: state.peekValue,
-    selectedValues: state.selectedValues,
-    expandedValues: state.expandedValues,
-    ...actions,
-  }
+export function useTable<TSelected>(
+  selector?: (table: TableValue) => TSelected
+): TableValue | TSelected {
+  const select: (table: TableValue) => TableValue | TSelected = selector ?? identity
+  return useTableSelector(select)
 }
 
 /**
@@ -652,7 +673,8 @@ function useBodyRow(
   values: ReadonlyArray<string>,
   level: number
 ) {
-  const { isInteractive, isSelectable, actions, registerRow } = useTableConfig()
+  const { isInteractive, isSelectable, store, registerRow } = useTableConfig()
+  const section = React.useContext(SectionContext)
   const nameId = React.useId()
   const [hasSelect, setHasSelect] = React.useState(false)
   const [hasExpand, setHasExpand] = React.useState(false)
@@ -663,7 +685,10 @@ function useBodyRow(
   const isSelected = values.length > 0 && selectedCount === values.length
   const target: RowTarget = kind === "group" ? { kind, value, values } : { kind, value }
 
-  React.useEffect(() => registerRow(value), [registerRow, value])
+  React.useEffect(
+    () => (section === "body" ? registerRow(value) : undefined),
+    [section, registerRow, value]
+  )
 
   const context = React.useMemo<RowContextValue>(
     () => ({ kind, value, values, nameId, selectedCount, isExpanded, setHasSelect, setHasExpand }),
@@ -684,10 +709,10 @@ function useBodyRow(
         "aria-keyshortcuts": rowKeyShortcuts,
         onFocus: (event) => {
           if (event.target === event.currentTarget) {
-            actions.onRowFocus(value)
+            store.getState().onRowFocus(value)
           }
         },
-        onKeyDown: (event) => actions.onRowKeyDown(event, target),
+        onKeyDown: (event) => store.getState().onRowKeyDown(event, target),
       }
     : {}
   return { context, state, props }
@@ -864,23 +889,37 @@ export type TableHeadProps = Omit<useRender.ComponentProps<"th">, "align"> &
  * A header cell. In `TableHeader` it names a column; in a body or footer row it names the row,
  * holding the row's `TableRowLink` or the group's name. Screen readers read a row by its header.
  */
-export function TableHead({
-  column,
+export function TableHead(props: TableHeadProps): React.ReactElement {
+  const section = React.useContext(SectionContext)
+  const { isSortable } = useTableConfig()
+  return section === "head" && props.column !== undefined && isSortable ? (
+    <SortableHead {...props} column={props.column} />
+  ) : (
+    <HeadCell {...props} sortColumn={null} direction={null} />
+  )
+}
+
+function SortableHead(props: TableHeadProps & { column: string }) {
+  const direction = useTableSelector((state) =>
+    state.sort?.column === props.column ? state.sort.direction : null
+  )
+  return <HeadCell {...props} sortColumn={props.column} direction={direction} />
+}
+
+function HeadCell({
+  column: _column,
+  sortColumn,
+  direction,
   align,
   narrow,
   render,
   className,
   children,
   ...props
-}: TableHeadProps): React.ReactElement {
+}: TableHeadProps & { sortColumn: string | null; direction: TableSortDirection | null }) {
   const section = React.useContext(SectionContext)
-  const { isSortable } = useTableConfig()
   const row = React.useContext(RowContext)
   const isColumnHeader = section === "head"
-  const direction = useTableSelector((state) =>
-    column !== undefined && state.sort?.column === column ? state.sort.direction : null
-  )
-  const isSortButton = isColumnHeader && column !== undefined && isSortable
 
   return useRender({
     defaultTagName: "th",
@@ -890,7 +929,7 @@ export function TableHead({
       {
         scope: isColumnHeader ? "col" : "row",
         id: row.kind === "record" || row.kind === "group" ? row.nameId : undefined,
-        "aria-sort": isSortButton ? (direction ?? undefined) : undefined,
+        "aria-sort": direction ?? undefined,
         className: cn(
           "text-left",
           cellClass({ align, narrow }),
@@ -902,8 +941,8 @@ export function TableHead({
         children:
           row.kind === "loading" && children !== undefined && children !== null ? (
             <Bar className="w-32 max-w-full" />
-          ) : isSortButton ? (
-            <SortButton column={column} direction={direction} align={align ?? "start"}>
+          ) : sortColumn !== null ? (
+            <SortButton column={sortColumn} direction={direction} align={align ?? "start"}>
               {children}
             </SortButton>
           ) : (
@@ -950,13 +989,13 @@ function SortButton({
   align: "start" | "end"
   children: React.ReactNode
 }) {
-  const { actions } = useTableConfig()
+  const { store } = useTableConfig()
   const isTabStop = useTableSelector((state) => state.activeValue === null)
   return (
     <button
       type="button"
       tabIndex={isTabStop ? 0 : -1}
-      onClick={() => actions.onSort(column)}
+      onClick={() => store.getState().onSort(column)}
       onKeyDown={handleHeaderKeyDown}
       className={cn(
         "group/sort inline-flex min-h-6 cursor-pointer items-center gap-related rounded-sm font-medium outline-hidden hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11",
@@ -1081,7 +1120,7 @@ export type TableRowSelectProps = Omit<
  */
 export function TableRowSelect({ className, ...props }: TableRowSelectProps): React.ReactElement {
   const row = useBodyRowPart("TableRowSelect")
-  const { actions } = useTableConfig()
+  const { store } = useTableConfig()
   const labelId = React.useId()
   const setHasSelect = row.kind === "loading" ? null : row.setHasSelect
 
@@ -1101,7 +1140,7 @@ export function TableRowSelect({ className, ...props }: TableRowSelectProps): Re
       tabIndex={-1}
       checked={row.values.length > 0 && selectedCount === row.values.length}
       indeterminate={selectedCount > 0 && selectedCount < row.values.length}
-      onCheckedChange={() => actions.onToggleSelected(row.values)}
+      onCheckedChange={() => store.getState().onToggleSelected(row.values)}
       aria-labelledby={`${labelId} ${row.nameId}`}
       className={cn(
         controlClass,
@@ -1142,7 +1181,7 @@ export type TableRowExpandProps = Omit<React.ComponentProps<"button">, "children
  */
 export function TableRowExpand({ className, ...props }: TableRowExpandProps): React.ReactElement {
   const row = useBodyRowPart("TableRowExpand")
-  const { actions } = useTableConfig()
+  const { store } = useTableConfig()
   const setHasExpand = row.kind === "loading" ? null : row.setHasExpand
 
   React.useEffect(() => {
@@ -1166,7 +1205,7 @@ export function TableRowExpand({ className, ...props }: TableRowExpandProps): Re
                 tabIndex: -1,
                 "aria-label": row.isExpanded ? "Collapse" : "Expand",
                 "aria-describedby": row.nameId,
-                onClick: () => actions.onToggleExpanded(row.value),
+                onClick: () => store.getState().onToggleExpanded(row.value),
                 className: cn(
                   controlClass,
                   "cursor-pointer rounded-sm text-muted-foreground transition-colors hover:bg-foreground/7 hover:text-foreground",

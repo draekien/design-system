@@ -19,6 +19,7 @@ import {
   TableRowLoading,
   TableRowSelect,
   type TableSort,
+  useTable,
 } from "@/components/table.tsx"
 
 const invoices = [
@@ -350,6 +351,75 @@ describe("Table", () => {
     expect(document.activeElement).toBe(row("Acme"))
   })
 
+  it("keeps the header tab stop when only a footer row has a value", async () => {
+    const user = userEvent.setup()
+    render(
+      <Table defaultSort={{ column: "customer", direction: "ascending" }}>
+        <TableCaption>Invoices</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead column="customer">Customer</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody />
+        <TableFooter>
+          <TableRow value="total">
+            <TableHead>Total</TableHead>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    )
+
+    await user.tab()
+
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Customer" }))
+  })
+
+  it("re-renders a useTable selector's component only when its result changes", async () => {
+    const user = userEvent.setup()
+    const values = ["INV-0", "INV-1", "INV-2", "INV-3"]
+    const renders: Array<string> = []
+    function Marker({ value }: { value: string }) {
+      const isActive = useTable((table) => table.activeValue === value)
+      renders.push(value)
+      return <span>{isActive ? "Active" : ""}</span>
+    }
+    function Watcher() {
+      const table = useTable()
+      renders.push(`all:${table.activeValue}`)
+      return null
+    }
+    render(
+      <Table defaultSelectedValues={[]}>
+        <TableCaption>Invoices</TableCaption>
+        <TableBody>
+          {values.map((value) => (
+            <TableRow key={value} value={value}>
+              <TableHead>{value}</TableHead>
+              <TableCell>
+                <Marker value={value} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell>
+              <Watcher />
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    )
+    await user.tab()
+    renders.length = 0
+
+    await user.keyboard("{ArrowDown}")
+
+    expect(within(row("INV-1")).getByText("Active")).toBeDefined()
+    expect(renders.sort((a, b) => a.localeCompare(b))).toEqual(["all:INV-1", "INV-0", "INV-1"])
+  })
+
   it("re-renders only the two rows whose tab stop moves on ↓, and none of their cells", async () => {
     const user = userEvent.setup()
     const values = Array.from({ length: 200 }, (_, index) => `INV-${index}`)
@@ -392,7 +462,7 @@ describe("Table", () => {
     await user.keyboard("{ArrowDown}")
 
     expect(document.activeElement).toBe(screen.getByRole("row", { name: "INV-1" }))
-    expect([...rowRenders].sort()).toEqual(["INV-0", "INV-1"])
+    expect([...rowRenders].sort((a, b) => a.localeCompare(b))).toEqual(["INV-0", "INV-1"])
     expect(cellRenders).toBe(0)
   })
 
