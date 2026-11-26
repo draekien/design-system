@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-11-26",
+    "description": "A click on a child row without its own TableRowLink follows its parent record's link, as Enter does, and the row shows the pointer cursor. Before, the click did nothing."
+  },
+  {
+    "date": "2026-11-26",
     "description": "Takes its radius from rounded-sm and rounded-2xl in place of rounded-floor and rounded-card, which the tokens item removes. Every radius renders at the same size."
   },
   {

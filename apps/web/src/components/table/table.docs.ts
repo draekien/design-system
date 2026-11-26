@@ -456,7 +456,7 @@ export const tableDocs: ComponentDocs = {
       kind: "part",
       name: "TableRowLink",
       description:
-        "The link to the row's own page, holding its name. A click anywhere on the row follows it, and so does Enter.",
+        "The link to the row's own page, holding its name. A click anywhere on the row, or on one of its child rows, follows it, and so does Enter.",
       spreads: { label: "<a>", href: null },
       props: { render: renderProp } satisfies ApiTable<typeof TableRowLink, "a">,
     },
