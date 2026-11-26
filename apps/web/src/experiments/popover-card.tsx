@@ -188,7 +188,7 @@ export function CardMenuView({
       <button
         type="button"
         onClick={onBack}
-        className="-ms-1 inline-flex min-h-hit-min cursor-pointer items-center gap-1 justify-self-start rounded-floor px-1 font-medium text-xs hover:bg-foreground/7 focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-hit-coarse"
+        className="-ms-1 inline-flex min-h-hit-min cursor-pointer items-center gap-1 justify-self-start rounded-sm px-1 font-medium text-xs hover:bg-foreground/7 focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-hit-coarse"
       >
         <HugeiconsIcon
           icon={ArrowLeft01Icon}

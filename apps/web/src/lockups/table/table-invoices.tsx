@@ -65,7 +65,7 @@ export function TableInvoices(): React.ReactElement {
   const sign = sort.direction === "ascending" ? 1 : -1
 
   return (
-    <div className="w-full overflow-hidden rounded-card border bg-card text-card-foreground">
+    <div className="w-full overflow-hidden rounded-2xl border bg-card text-card-foreground">
       <Table
         sort={sort}
         onSortChange={setSort}

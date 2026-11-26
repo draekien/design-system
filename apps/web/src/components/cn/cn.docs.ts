@@ -12,14 +12,14 @@ export const cnDocs: LibDocs = {
   kind: "lib",
   usage: {
     imports: `import { cn } from "@/lib/cn"`,
-    code: `cn("rounded-floor", "rounded-card")`,
+    code: `cn("rounded-sm", "rounded-2xl")`,
     description: null,
   },
   examples: [
     {
       name: "cn-radius",
       title: "Radius",
-      description: "A later rounded-card replaces an earlier rounded-floor.",
+      description: "A later rounded-2xl replaces an earlier rounded-sm.",
       Preview: CnRadius,
       source: requireSource(sources, "./cn-radius.tsx"),
     },

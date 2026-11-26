@@ -53,7 +53,7 @@ export function PersonLink({ person }: { person: SamplePerson }): React.ReactEle
     <PreviewCard>
       <PreviewCardTrigger
         render={<a href={person.profileUrl} />}
-        className="focus-ring justify-start rounded-floor pointer-coarse:min-h-11 [&:hover_[data-slot=entity-name]]:underline"
+        className="focus-ring justify-start rounded-sm pointer-coarse:min-h-11 [&:hover_[data-slot=entity-name]]:underline"
       >
         <PersonEntity person={person} />
       </PreviewCardTrigger>
@@ -92,7 +92,7 @@ export function PeopleList({
         <li key={person.name} className="flex">
           <a
             href={person.profileUrl}
-            className="focus-ring flex min-h-7 min-w-0 grow items-center rounded-floor [&:hover_[data-slot=entity-name]]:underline pointer-coarse:min-h-11"
+            className="focus-ring flex min-h-7 min-w-0 grow items-center rounded-sm [&:hover_[data-slot=entity-name]]:underline pointer-coarse:min-h-11"
           >
             <Entity className="min-w-0 grow">
               <EntityMedia shape={shapeOf(person)}>{person.initials}</EntityMedia>

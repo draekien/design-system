@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn"
 
 const bulletClass = cn(
   "relative isolate inline-flex min-h-hit-min min-w-0 max-w-full items-center justify-start gap-related text-left text-xs outline-hidden data-[size=lg]:text-sm data-[size=lg]:**:data-[slot=avatar]:[--avatar-size:--spacing(6)] data-[size=lg]:**:data-[slot=bullet-media]:size-4",
-  "before:absolute before:inset-y-0 before:-inset-x-1 before:-z-10 before:rounded-floor",
+  "before:absolute before:inset-y-0 before:-inset-x-1 before:-z-10 before:rounded-sm",
   "[&:is(button,a):not([data-slot=preview-card-trigger])]:hover:before:bg-foreground/4 [&:is(button,a):not([data-slot=preview-card-trigger])]:data-popup-open:before:bg-foreground/7",
   "focus-visible:before:outline-2 focus-visible:before:outline-foreground focus-visible:before:outline-solid",
   "[&:is(button,a)]:pointer-coarse:min-h-hit-coarse"

@@ -535,7 +535,7 @@ export function ErrorMessage<TItem>({
         to="."
         search={(previous) => ({ ...previous, state: "loaded" })}
         data-anchor={anchors?.retry}
-        className="mt-5 inline-flex min-h-9 items-center rounded-floor border bg-background px-4 font-medium text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
+        className="mt-5 inline-flex min-h-9 items-center rounded-sm border bg-background px-4 font-medium text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
       >
         Retry
       </Link>

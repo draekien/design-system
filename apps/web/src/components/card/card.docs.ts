@@ -128,7 +128,8 @@ export const cardDocs: ComponentDocs = {
     {
       kind: "part",
       name: "Card",
-      description: "The container: 12px padding, the card radius and a hairline border.",
+      description:
+        "The container: 12px padding, an 18px radius (--radius-2xl) and a hairline border.",
       spreads: { label: "<div>", href: null },
       props: {
         render: {

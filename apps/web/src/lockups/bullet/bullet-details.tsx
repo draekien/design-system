@@ -16,7 +16,7 @@ export function BulletDetails(): React.ReactElement {
   return (
     <section
       aria-labelledby={titleId}
-      className="flex w-80 max-w-full flex-col gap-section rounded-card border bg-card p-3 text-card-foreground"
+      className="flex w-80 max-w-full flex-col gap-section rounded-2xl border bg-card p-3 text-card-foreground"
     >
       <h2 id={titleId} className="font-medium text-sm">
         Rotate audit log keys

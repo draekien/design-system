@@ -16,7 +16,7 @@ const controlCell = "w-0 px-1 first:pl-2"
 
 export function TableLoading(): React.ReactElement {
   return (
-    <div className="w-full overflow-hidden rounded-card border bg-card text-card-foreground">
+    <div className="w-full overflow-hidden rounded-2xl border bg-card text-card-foreground">
       <Table aria-busy="true">
         <TableCaption className="sr-only">Invoices, loading</TableCaption>
         <TableHeader>

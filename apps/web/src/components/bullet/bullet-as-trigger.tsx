@@ -33,7 +33,7 @@ export function BulletAsTrigger(): React.ReactElement {
                   key={option}
                   value={option}
                   closeOnClick
-                  className="flex min-h-8 w-full cursor-default items-center gap-related rounded-floor px-2 text-left text-sm outline-hidden data-highlighted:bg-muted pointer-coarse:min-h-hit-coarse"
+                  className="flex min-h-8 w-full cursor-default items-center gap-related rounded-sm px-2 text-left text-sm outline-hidden data-highlighted:bg-muted pointer-coarse:min-h-hit-coarse"
                 >
                   <span className="flex size-4 items-center justify-center">
                     <Menu.RadioItemIndicator>

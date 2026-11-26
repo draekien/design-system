@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-26",
+    "description": "Removes --radius-floor and --radius-card, second names for --radius-sm and --radius-2xl: use rounded-sm for rounded-floor and rounded-2xl for rounded-card."
+  },
+  {
     "date": "2026-11-25",
     "description": "Adds --spacing-list-id-min (4rem), --spacing-list-id-max (6rem), --spacing-list-name-min (6rem), --spacing-list-name-max (20rem), --spacing-list-fact-min (2rem) and --spacing-list-fact-max (12rem), the widths a list row part is held between, and --spacing-peek (22rem), the width of a list's peek card."
   },

@@ -76,7 +76,12 @@ function summaryDrawing(state: FixtureState): Drawing {
 function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
   const hasWorkspace = state !== "no-permission"
   const parts: ReadonlyArray<ConstellationPart> = [
-    { n: 1, name: "Card", depth: 0, note: "12px padding, the card radius, a hairline border" },
+    {
+      n: 1,
+      name: "Card",
+      depth: 0,
+      note: "12px padding, an 18px radius (--radius-2xl), a hairline border",
+    },
     { n: 2, name: "CardSubject", depth: 1, note: "Rank 1: ID and name; no picture" },
     { n: 3, name: "CardId", depth: 2, note: "Muted, tabular figures" },
     {

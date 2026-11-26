@@ -126,7 +126,7 @@ function PartReference({ part }: { part: ApiPart }): React.ReactElement {
       </h3>
       <p className="max-w-2xl text-pretty text-sm">{part.description}</p>
       {props.length === 0 ? null : (
-        <div className="overflow-hidden rounded-card border bg-card text-card-foreground">
+        <div className="overflow-hidden rounded-2xl border bg-card text-card-foreground">
           <Table className="min-w-2xl text-sm">
             <TableCaption className="sr-only">{part.name} props</TableCaption>
             <TableHeader>

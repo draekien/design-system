@@ -28,7 +28,7 @@ export function TableChildRows(): React.ReactElement {
   const [expanded, setExpanded] = React.useState<ReadonlyArray<string>>(["INV-2041"])
 
   return (
-    <div className="w-full max-w-lg overflow-hidden rounded-card border bg-card text-card-foreground">
+    <div className="w-full max-w-lg overflow-hidden rounded-2xl border bg-card text-card-foreground">
       <Table expandedValues={expanded} onExpandedValuesChange={setExpanded}>
         <TableCaption className="sr-only">Invoices</TableCaption>
         <TableHeader>

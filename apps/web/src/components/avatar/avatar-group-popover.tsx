@@ -26,7 +26,7 @@ export function AvatarGroupPopover(): React.ReactElement {
       </AvatarGroup>
       <Popover.Portal>
         <Popover.Positioner side="bottom" align="start" sideOffset={6} className="z-popover">
-          <Popover.Popup className="w-60 rounded-card border bg-popover p-3 text-popover-foreground text-xs shadow-popover outline-hidden">
+          <Popover.Popup className="w-60 rounded-2xl border bg-popover p-3 text-popover-foreground text-xs shadow-popover outline-hidden">
             <Popover.Title className="mb-2 font-semibold text-sm">Watchers</Popover.Title>
             <ul className="flex flex-col gap-1">
               {watchers.map((watcher) => (

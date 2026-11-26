@@ -5,7 +5,7 @@ import {
 
 /** The popup's outer surface: the card's radius and the popover shadow. */
 export const popoverCardSurface =
-  "w-64 rounded-card bg-popover text-popover-foreground shadow-popover outline-hidden"
+  "w-64 rounded-2xl bg-popover text-popover-foreground shadow-popover outline-hidden"
 
 /** The people the lockup's details panel names. */
 export const people: ReadonlyArray<{

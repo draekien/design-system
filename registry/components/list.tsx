@@ -381,7 +381,7 @@ const narrowClass: Readonly<Record<ListRowNarrow, string>> = {
   hide: "@max-abbreviate:**:data-[abbreviation=long]:sr-only @max-abbreviate:**:data-[abbreviation=short]:inline @max-hide:hidden",
 }
 
-const rowClass = "group/list-row flex min-h-11 items-center rounded-floor px-2"
+const rowClass = "group/list-row flex min-h-11 items-center rounded-sm px-2"
 
 function Bar({ className }: { className: string }) {
   return (
@@ -495,7 +495,7 @@ export function ListRowSelect({ className, ...props }: ListRowSelectProps): Reac
             aria-labelledby={`${labelId} ${row.nameId}`}
             className={cn(
               selectClass,
-              "group/select invisible cursor-pointer rounded-floor outline-none data-checked:visible data-indeterminate:visible pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible group-has-[[data-slot=list-group-trigger]:focus-visible]/list-row:visible",
+              "group/select invisible cursor-pointer rounded-sm outline-none data-checked:visible data-indeterminate:visible pointer-coarse:visible group-hover/list-row:visible group-has-[[data-slot=list-row-link]:focus-visible]/list-row:visible group-has-[[data-slot=list-group-trigger]:focus-visible]/list-row:visible",
               className
             )}
             {...props}
@@ -523,7 +523,7 @@ export function ListRowSelect({ className, ...props }: ListRowSelectProps): Reac
       </Tooltip.Trigger>
       <Tooltip.Portal>
         <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
-          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+          <Tooltip.Popup className="rounded-sm bg-foreground px-1.5 py-0.5 text-background text-xs">
             {row.kind === "group" ? "Select group · X" : "Select · X"}
           </Tooltip.Popup>
         </Tooltip.Positioner>
@@ -535,7 +535,7 @@ export function ListRowSelect({ className, ...props }: ListRowSelectProps): Reac
 const linkClass = "flex h-full min-h-11 min-w-0 flex-1 items-center gap-related pl-1"
 
 const peekClass =
-  "ml-1 flex size-6 shrink-0 items-center justify-center rounded-floor pointer-coarse:size-11"
+  "ml-1 flex size-6 shrink-0 items-center justify-center rounded-sm pointer-coarse:size-11"
 
 /** Props for {@link ListRowPeek}. */
 export type ListRowPeekProps = Omit<React.ComponentProps<"button">, "children" | "type">
@@ -598,7 +598,7 @@ export function ListRowPeek({ className, ...props }: ListRowPeekProps): React.Re
       </Tooltip.Trigger>
       <Tooltip.Portal>
         <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
-          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+          <Tooltip.Popup className="rounded-sm bg-foreground px-1.5 py-0.5 text-background text-xs">
             Peek · Space
           </Tooltip.Popup>
         </Tooltip.Positioner>
@@ -783,7 +783,7 @@ export function ListRowMedia(props: ListRowMediaProps): React.ReactElement {
       narrowClass[props.narrow ?? "keep"]
     ),
     props.variant === "icon" ? (
-      <span className="size-4 rounded-floor bg-muted" />
+      <span className="size-4 rounded-sm bg-muted" />
     ) : (
       <span className="size-2.5 rounded-full bg-muted" />
     ),
@@ -963,7 +963,7 @@ export function ListGroupHeader({
       {
         className: cn(
           rowClass,
-          "sticky top-0 z-raised bg-background before:pointer-events-none before:absolute before:inset-0 before:rounded-floor hover:before:bg-foreground/4 has-[[data-slot=list-group-trigger]:focus-visible]:before:bg-foreground/4 has-[[data-slot=list-group-trigger]:focus-visible]:before:inset-ring has-[[data-slot=list-group-trigger]:focus-visible]:before:inset-ring-ring/40",
+          "sticky top-0 z-raised bg-background before:pointer-events-none before:absolute before:inset-0 before:rounded-sm hover:before:bg-foreground/4 has-[[data-slot=list-group-trigger]:focus-visible]:before:bg-foreground/4 has-[[data-slot=list-group-trigger]:focus-visible]:before:inset-ring has-[[data-slot=list-group-trigger]:focus-visible]:before:inset-ring-ring/40",
           className
         ),
       },
@@ -1150,7 +1150,7 @@ export function ListGroupAdd({ className, ...props }: ListGroupAddProps): React.
       </Tooltip.Trigger>
       <Tooltip.Portal>
         <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
-          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+          <Tooltip.Popup className="rounded-sm bg-foreground px-1.5 py-0.5 text-background text-xs">
             Add
           </Tooltip.Popup>
         </Tooltip.Positioner>

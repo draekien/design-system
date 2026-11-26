@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-11-26",
+    "description": "Takes its radius from rounded-sm and rounded-2xl in place of rounded-floor and rounded-card, which the tokens item removes. Every radius renders at the same size."
+  },
+  {
     "date": "2026-11-25",
     "description": "ListGroupAdd is hidden with opacity in place of visibility, so Tab on a header focuses it. A row scrolled into view by the keyboard stops below the pinned header. In a ListRowLoading, ListGroupTrigger draws a muted chevron and ListGroupName and ListGroupCount draw bars sized to their children, so the header keeps its layout when the loaded rows replace the loading ones. ListRowSelect shows a tooltip, Select · X, and ListGroupTrigger lists Tab in aria-keyshortcuts."
   },

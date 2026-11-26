@@ -680,7 +680,7 @@ function partSpecs(state: RowState): ReadonlyArray<PartSpec> {
       depth: 0,
       note: "Beside the table at lg and wider; under the peeked row below lg",
       specimen: (
-        <div className="w-64 rounded-card border bg-card p-3 text-card-foreground text-sm">
+        <div className="w-64 rounded-2xl border bg-card p-3 text-card-foreground text-sm">
           <PeekContent invoice={invoice} onOpen={handleIgnore} onClose={handleIgnore} />
         </div>
       ),

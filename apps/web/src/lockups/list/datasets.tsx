@@ -233,7 +233,7 @@ export function recordStatus(record: SampleRecord): React.ReactElement {
   )
 }
 
-export const listSurface = "rounded-card border bg-card p-3 text-card-foreground"
+export const listSurface = "rounded-2xl border bg-card p-3 text-card-foreground"
 
 export function capitalise(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1)

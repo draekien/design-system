@@ -298,7 +298,7 @@ function Invoices({
           <aside
             id={panelPeekId}
             aria-label="Peek"
-            className="hidden rounded-card border bg-card p-3 text-card-foreground text-sm lg:sticky lg:top-section lg:block"
+            className="hidden rounded-2xl border bg-card p-3 text-card-foreground text-sm lg:sticky lg:top-section lg:block"
           >
             <PeekContent invoice={peeked} onOpen={handleOpen} onClose={handleClosePeek} />
           </aside>
@@ -818,7 +818,7 @@ export function PeekContent({
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex min-h-6 items-center rounded-floor text-muted-foreground text-xs hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11"
+            className="inline-flex min-h-6 items-center rounded-sm text-muted-foreground text-xs hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11"
           >
             Close<span className="sr-only"> peek</span>
           </button>
@@ -882,7 +882,7 @@ function InvoicePage({
       <button
         type="button"
         onClick={onBack}
-        className="inline-flex min-h-6 items-center gap-related rounded-floor font-medium text-muted-foreground text-xs hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11"
+        className="inline-flex min-h-6 items-center gap-related rounded-sm font-medium text-muted-foreground text-xs hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11"
       >
         <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={1.75} aria-hidden="true" />
         Back to invoices
@@ -918,7 +918,7 @@ function InvoiceLines({ invoice, state }: { invoice: SampleInvoice; state: RowSt
   }
   return (
     <Collapsible.Root className="flex w-full max-w-lg flex-col items-start gap-related">
-      <Collapsible.Trigger className="group -ml-1 inline-flex min-h-6 cursor-pointer items-center gap-related rounded-floor px-1 font-medium text-sm hover:bg-foreground/7 focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11">
+      <Collapsible.Trigger className="group -ml-1 inline-flex min-h-6 cursor-pointer items-center gap-related rounded-sm px-1 font-medium text-sm hover:bg-foreground/7 focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11">
         <HugeiconsIcon
           icon={ArrowRight01Icon}
           size={16}
@@ -968,7 +968,7 @@ function TableError() {
       <Link
         to="."
         search={(previous) => ({ ...previous, state: "loaded" })}
-        className="inline-flex min-h-9 items-center rounded-floor border bg-background px-4 font-medium text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2 pointer-coarse:min-h-11"
+        className="inline-flex min-h-9 items-center rounded-sm border bg-background px-4 font-medium text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2 pointer-coarse:min-h-11"
       >
         Retry
       </Link>
@@ -1033,7 +1033,7 @@ function SelectionBar({
 }
 
 const barButton =
-  "inline-flex min-h-8 shrink-0 cursor-pointer items-center gap-related rounded-floor px-2.5 font-medium text-sm hover:bg-muted pointer-coarse:min-h-11"
+  "inline-flex min-h-8 shrink-0 cursor-pointer items-center gap-related rounded-sm px-2.5 font-medium text-sm hover:bg-muted pointer-coarse:min-h-11"
 
 const moreButton = cn(barButton, "w-8 justify-center px-0 pointer-coarse:w-11")
 
@@ -1207,7 +1207,7 @@ function VoidDialog({
         <AlertDialog.Backdrop className="fixed inset-0 z-popover bg-foreground/20" />
         <AlertDialog.Popup
           initialFocus={cancelRef}
-          className="fixed top-1/2 left-1/2 z-popover flex w-80 max-w-full -translate-x-1/2 -translate-y-1/2 flex-col gap-related rounded-card border bg-background p-3 shadow-popover outline-hidden"
+          className="fixed top-1/2 left-1/2 z-popover flex w-80 max-w-full -translate-x-1/2 -translate-y-1/2 flex-col gap-related rounded-2xl border bg-background p-3 shadow-popover outline-hidden"
         >
           <AlertDialog.Title className="font-semibold text-sm">
             Void {invoiceCount(count)}?

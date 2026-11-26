@@ -91,7 +91,12 @@ function restDrawing(state: "loaded" | "partial" | "no-permission"): Drawing {
   const hasOwner = state === "loaded"
   const explain = hasOwner ? 10 : 9
   const parts: ReadonlyArray<ConstellationPart> = [
-    { n: 1, name: "Card", depth: 0, note: "12px padding, the card radius, a hairline border" },
+    {
+      n: 1,
+      name: "Card",
+      depth: 0,
+      note: "12px padding, an 18px radius (--radius-2xl), a hairline border",
+    },
     {
       n: 2,
       name: "CardSubject",
