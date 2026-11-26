@@ -8,18 +8,18 @@ import { Bullet, BulletLabel, BulletMedia } from "@/components/bullet"
 import { cn } from "@/lib/cn"
 
 const cardClass = cn(
-  "group/card @container relative isolate grid min-w-0 grid-cols-1 content-start gap-related rounded-card bg-card p-3 inset-ring inset-ring-border text-card-foreground text-sm",
+  "group/card @container relative isolate grid min-w-0 grid-cols-1 content-start gap-related rounded-2xl bg-card p-3 inset-ring inset-ring-border text-card-foreground text-sm",
   "*:col-span-full has-data-[slot=card-aside]:grid-cols-[minmax(50%,1fr)_auto]",
   "*:data-[slot=card-aside]:col-[2] *:data-[slot=card-aside]:row-[1]",
   "has-data-[slot=card-media]:*:data-[slot=card-aside]:mt-(--card-media-height) has-data-[slot=card-media]:*:data-[slot=card-aside]:pt-related",
   "has-data-[slot=card-aside]:*:not-data-[slot=card-aside]:first:col-[1] [&>[data-slot=card-aside]:first-child+*]:col-[1]",
-  "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-card",
+  "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-2xl",
   "has-data-[slot=card-link]:hover:before:bg-foreground/4",
   "has-[[data-slot=card-link]:focus-visible]:before:bg-foreground/4 has-[[data-slot=card-link]:focus-visible]:inset-ring has-[[data-slot=card-link]:focus-visible]:inset-ring-ring/40"
 )
 
 /**
- * One record or one figure in a container: 12px padding, the card radius, a hairline border and no
+ * One record or one figure in a container: 12px padding, an 18px radius (--radius-2xl), a hairline border and no
  * shadow. Its parts take ranks: `CardSubject` (rank 1), `CardFacts` (rank 2), `CardExplain` (rank 3),
  * and `CardLink` to the record's page (rank 5). A `CardAside` placed anywhere among the children takes
  * the top right; without one, every part spans the card.
@@ -104,7 +104,7 @@ export function CardAside({
     <div
       className={cn(
         "flex min-h-hit-min min-w-0 max-w-(--card-aside-max) items-center justify-end",
-        "[&>a]:inline-flex [&>a]:min-h-hit-min [&>a]:whitespace-nowrap [&>a]:text-xs [&>a]:items-center [&>a]:rounded-floor [&>a]:font-medium [&>a]:hover:underline [&>a]:hover:underline-offset-2 [&>a]:focus-visible:outline-2 [&>a]:focus-visible:outline-ring"
+        "[&>a]:inline-flex [&>a]:min-h-hit-min [&>a]:whitespace-nowrap [&>a]:text-xs [&>a]:items-center [&>a]:rounded-sm [&>a]:font-medium [&>a]:hover:underline [&>a]:hover:underline-offset-2 [&>a]:focus-visible:outline-2 [&>a]:focus-visible:outline-ring"
       )}
     >
       {children}
@@ -166,7 +166,7 @@ export function CardAction({
       data-slot="card-action"
       type={type}
       className={cn(
-        "relative inline-flex h-hit-min min-w-hit-min shrink-0 cursor-pointer items-center justify-center rounded-floor px-1.5 font-medium text-muted-foreground text-xs hover:bg-foreground/7 hover:text-foreground has-[>svg:only-child]:px-0 [&>svg]:size-4",
+        "relative inline-flex h-hit-min min-w-hit-min shrink-0 cursor-pointer items-center justify-center rounded-sm px-1.5 font-medium text-muted-foreground text-xs hover:bg-foreground/7 hover:text-foreground has-[>svg:only-child]:px-0 [&>svg]:size-4",
         "focus-visible:outline-2 focus-visible:outline-ring focus-visible:-outline-offset-2",
         "pointer-coarse:after:absolute pointer-coarse:after:-inset-hit-outset",
         className
@@ -196,7 +196,7 @@ function ChevronIcon() {
   )
 }
 
-const mediaClass = "aspect-video w-(--card-media-width) max-w-none shrink-0 rounded-floor bg-muted"
+const mediaClass = "aspect-video w-(--card-media-width) max-w-none shrink-0 rounded-sm bg-muted"
 
 /** Props for {@link CardMedia}. */
 export type CardMediaProps = Omit<React.HTMLAttributes<HTMLElement>, "children"> & {
@@ -245,7 +245,7 @@ function MediaBox({
 
 /**
  * The picture a caller recognises the record by, first in `CardSubject`: the card's full width at
- * 16:9, cropped to fill, with the floor radius. A record with no picture, a picture the caller may not
+ * 16:9, cropped to fill, with `--radius-sm`. A record with no picture, a picture the caller may not
  * see and a picture that fails to load each draw an empty 16:9 box naming why, so every card in a run
  * starts its ID at the same height.
  */
@@ -323,7 +323,7 @@ export function CardLink({ className, ...props }: React.ComponentProps<"a">): Re
     <a
       data-slot="card-link"
       className={cn(
-        "outline-hidden after:absolute after:inset-0 after:rounded-card hover:underline hover:underline-offset-2",
+        "outline-hidden after:absolute after:inset-0 after:rounded-2xl hover:underline hover:underline-offset-2",
         className
       )}
       {...props}
@@ -454,7 +454,7 @@ export function CardExplain({
       className={cn("flex flex-col items-start", className)}
       {...props}
     >
-      <Collapsible.Trigger className="group/explain relative z-raised -ms-1 inline-flex min-h-hit-min cursor-pointer items-center gap-related rounded-floor px-1 text-muted-foreground text-xs hover:bg-foreground/7 hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-hit-coarse">
+      <Collapsible.Trigger className="group/explain relative z-raised -ms-1 inline-flex min-h-hit-min cursor-pointer items-center gap-related rounded-sm px-1 text-muted-foreground text-xs hover:bg-foreground/7 hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-hit-coarse">
         <span
           aria-hidden="true"
           className={cn(

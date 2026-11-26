@@ -43,7 +43,7 @@ const listClass =
   "grid grid-cols-[max-content_minmax(0,1fr)] items-center gap-x-related gap-y-run [&_dd]:flex [&_dd]:min-h-8 [&_dd]:min-w-0 [&_dd]:items-center [&_dt]:font-medium [&_dt]:text-muted-foreground [&_dt]:text-xs"
 
 const retryClass =
-  "focus-ring inline-flex min-h-6 items-center rounded-floor font-medium text-foreground underline underline-offset-4 pointer-coarse:min-h-11"
+  "focus-ring inline-flex min-h-6 items-center rounded-sm font-medium text-foreground underline underline-offset-4 pointer-coarse:min-h-11"
 
 function PanelSection({ busy, children }: { busy?: boolean; children: React.ReactNode }) {
   const titleId = React.useId()
@@ -109,7 +109,7 @@ function PeopleLoading() {
             <dt>{name}</dt>
             <dd className="gap-related">
               <span className="size-6 shrink-0 rounded-full bg-foreground/8 motion-safe:animate-pulse" />
-              <span className="h-2 w-24 rounded-floor bg-foreground/8 motion-safe:animate-pulse" />
+              <span className="h-2 w-24 rounded-sm bg-foreground/8 motion-safe:animate-pulse" />
             </dd>
           </React.Fragment>
         ))}

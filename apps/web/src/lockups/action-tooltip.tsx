@@ -14,7 +14,7 @@ export function ActionTooltip({
       <Tooltip.Trigger delay={300} render={children} />
       <Tooltip.Portal>
         <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
-          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+          <Tooltip.Popup className="rounded-sm bg-foreground px-1.5 py-0.5 text-background text-xs">
             {label}
           </Tooltip.Popup>
         </Tooltip.Positioner>

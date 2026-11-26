@@ -36,8 +36,7 @@ import { menuDivider, menuItem, menuSurface } from "../table/table-styles.ts"
 import { belowTrigger, retryClass } from "./card-styles.ts"
 import { worstRecords } from "./card-worst-cases.ts"
 
-const loadingMedia =
-  "aspect-video w-(--card-media-width) max-w-none shrink-0 rounded-floor bg-muted"
+const loadingMedia = "aspect-video w-(--card-media-width) max-w-none shrink-0 rounded-sm bg-muted"
 
 /** A muted line above or inside the cards that states what is missing and why. */
 export function Note({ children }: { children: React.ReactNode }) {

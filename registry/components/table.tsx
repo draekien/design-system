@@ -515,9 +515,9 @@ const edgeRowClass =
   "relative isolate *:first:before:pointer-events-none *:first:before:absolute *:first:before:inset-0 *:first:before:-z-1 *:first:before:bg-muted"
 
 const staticRowClass: Record<Section, string> = {
-  head: cn(edgeRowClass, "*:first:before:rounded-t-floor"),
+  head: cn(edgeRowClass, "*:first:before:rounded-t-sm"),
   body: rowClass,
-  foot: cn(edgeRowClass, "*:first:before:rounded-b-floor"),
+  foot: cn(edgeRowClass, "*:first:before:rounded-b-sm"),
 }
 
 function handleRowClick(event: React.MouseEvent<HTMLTableRowElement>) {
@@ -723,7 +723,7 @@ type CellOptions = {
 function Bar({ className }: { className: string }) {
   return (
     <span
-      className={cn("block h-2 rounded-floor bg-foreground/8 motion-safe:animate-pulse", className)}
+      className={cn("block h-2 rounded-sm bg-foreground/8 motion-safe:animate-pulse", className)}
     />
   )
 }
@@ -843,7 +843,7 @@ function SortButton({
       onClick={() => table.onSort(column)}
       onKeyDown={handleHeaderKeyDown}
       className={cn(
-        "group/sort inline-flex min-h-6 cursor-pointer items-center gap-related rounded-floor font-medium outline-hidden hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11",
+        "group/sort inline-flex min-h-6 cursor-pointer items-center gap-related rounded-sm font-medium outline-hidden hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11",
         align === "end" && "flex-row-reverse",
         direction !== null && "text-foreground"
       )}
@@ -989,7 +989,7 @@ export function TableRowSelect({ className, ...props }: TableRowSelectProps): Re
       aria-labelledby={`${labelId} ${row.nameId}`}
       className={cn(
         controlClass,
-        "group/select invisible cursor-pointer rounded-floor outline-none data-checked:visible data-indeterminate:visible pointer-coarse:visible group-hover/table-row:visible group-focus-visible/table-row:visible",
+        "group/select invisible cursor-pointer rounded-sm outline-none data-checked:visible data-indeterminate:visible pointer-coarse:visible group-hover/table-row:visible group-focus-visible/table-row:visible",
         className
       )}
       {...props}
@@ -1053,7 +1053,7 @@ export function TableRowExpand({ className, ...props }: TableRowExpandProps): Re
                 onClick: () => table.onToggleExpanded(row.value),
                 className: cn(
                   controlClass,
-                  "cursor-pointer rounded-floor text-muted-foreground transition-colors hover:bg-foreground/7 hover:text-foreground",
+                  "cursor-pointer rounded-sm text-muted-foreground transition-colors hover:bg-foreground/7 hover:text-foreground",
                   className
                 ),
               },
@@ -1080,7 +1080,7 @@ export function TableRowExpand({ className, ...props }: TableRowExpandProps): Re
       </Tooltip.Trigger>
       <Tooltip.Portal>
         <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
-          <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+          <Tooltip.Popup className="rounded-sm bg-foreground px-1.5 py-0.5 text-background text-xs">
             {row.isExpanded ? "Collapse · ←" : "Expand · →"}
           </Tooltip.Popup>
         </Tooltip.Positioner>

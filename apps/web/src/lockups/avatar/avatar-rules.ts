@@ -19,7 +19,7 @@ export const avatarRules: ReadonlyArray<Rule<StoryGoal<typeof avatarStory>>> = [
     serves: "See who is responsible for the record at a glance",
   },
   {
-    rule: "A person is round; a team or organisation is a square with the floor radius.",
+    rule: "A person is round; a team or organisation is a square with --radius-sm.",
     source: "Primer Avatar (square avatars represent non-human entities)",
     serves: "See who is responsible for the record at a glance",
   },

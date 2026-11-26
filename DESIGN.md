@@ -40,9 +40,9 @@ typography:
     lineHeight: 1.4
 rounded:
   checkbox: "5px"
-  floor: "6px"
+  sm: "6px"
   lg: "10px"
-  card: "18px"
+  2xl: "18px"
   panel: "34px"
   full: "9999px"
 spacing:
@@ -67,34 +67,34 @@ components:
   button-primary:
     backgroundColor: "{colors.signal-orange}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.floor}"
+    rounded: "{rounded.sm}"
     padding: "0 8px"
     height: "28px"
   button-ghost:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
-    rounded: "{rounded.floor}"
+    rounded: "{rounded.sm}"
     padding: "0 8px"
     height: "28px"
   list-row:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
     typography: "{typography.body}"
-    rounded: "{rounded.floor}"
+    rounded: "{rounded.sm}"
     padding: "0 {spacing.row-inset}"
     height: "{spacing.row}"
   list-group-header:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
     typography: "{typography.body}"
-    rounded: "{rounded.floor}"
+    rounded: "{rounded.sm}"
     padding: "0 {spacing.row-inset}"
     height: "{spacing.row}"
   list-peek:
     backgroundColor: "{colors.sheet}"
     textColor: "{colors.ink}"
     typography: "{typography.body}"
-    rounded: "{rounded.card}"
+    rounded: "{rounded.2xl}"
     padding: "12px"
     width: "{spacing.peek}"
   table-row:
@@ -109,14 +109,14 @@ components:
     height: "36px"
   table-head:
     backgroundColor: "{colors.quiet-grey}"
-    rounded: "{rounded.floor}"
+    rounded: "{rounded.sm}"
     textColor: "{colors.muted-ink}"
     typography: "{typography.label}"
     height: "36px"
   preview-card:
     backgroundColor: "{colors.sheet}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.card}"
+    rounded: "{rounded.2xl}"
     padding: "12px"
     width: "240px"
   avatar:
@@ -135,7 +135,7 @@ components:
     backgroundColor: "{colors.quiet-grey}"
     textColor: "{colors.muted-ink}"
     typography: "{typography.micro}"
-    rounded: "{rounded.floor}"
+    rounded: "{rounded.sm}"
     size: "20px"
   entity-media:
     backgroundColor: "{colors.quiet-grey}"
@@ -150,17 +150,17 @@ components:
     backgroundColor: "{colors.sheet}"
     textColor: "{colors.ink}"
     typography: "{typography.body}"
-    rounded: "{rounded.card}"
+    rounded: "{rounded.2xl}"
     padding: "12px"
   card-media:
     backgroundColor: "{colors.quiet-grey}"
     textColor: "{colors.muted-ink}"
-    rounded: "{rounded.floor}"
+    rounded: "{rounded.sm}"
   card-action:
     backgroundColor: "transparent"
     textColor: "{colors.muted-ink}"
     typography: "{typography.label}"
-    rounded: "{rounded.floor}"
+    rounded: "{rounded.sm}"
     size: "{spacing.hit-min}"
   card-metric-figure:
     textColor: "{colors.ink}"
@@ -184,7 +184,7 @@ The system is defined by the relationships between components, not by the compon
 | Nesting | Groups do not nest; records nest one level deep | `docs/contexts/design-rules.md`, `List` |
 | Adjacency | A selection bar holds at most two actions, then a ⋯ menu | `docs/contexts/design-rules.md` |
 | Spacing between types | Row after row 0, a dot and its word 8px, two stacked lists 24px, the sections of a docs page 48px | `docs/contexts/design-rules.md`; the `--spacing-run`, `--spacing-related`, `--spacing-section` and `--spacing-page` tokens |
-| Nested radius | A container's radius is its content's radius plus its padding, from a 6px floor | `docs/contexts/design-rules.md`; the `--radius-floor`, `--radius-lg`, `--radius-card` and `--radius-panel` tokens; list rows, table header and footer fills, and the card around a table use the floor and card radii |
+| Nested radius | A container's radius is its content's radius plus its padding, starting from a 6px leaf control | `docs/contexts/design-rules.md`; the `--radius-sm`, `--radius-lg`, `--radius-2xl` and `--radius-panel` tokens; list rows, table header and footer fills, and the card around a table use `--radius-sm` and `--radius-2xl` |
 
 Every surface is fast to scan: a caller finds the value its top goal needs by reading down the rank 1 edge and across to one rank 2 slot, and opens nothing.
 
@@ -271,72 +271,72 @@ Surfaces are flat and separated by Hairline borders and Paper/Sheet contrast. Sh
 
 ## Shapes
 
-A radius builds outward from a floor. A leaf control (button, input) takes the floor, `{rounded.floor}` (`--radius-floor`, 6px). The selection checkbox is the one exception: at 16px square it takes `{rounded.checkbox}` (`--radius-checkbox`, 5px). A container's radius is its content's radius plus its padding:
+A radius builds outward from the leaf control. A leaf control (button, input) takes `{rounded.sm}` (`--radius-sm`, 6px). The selection checkbox is the one exception: at 16px square it takes `{rounded.checkbox}` (`--radius-checkbox`, 5px). A container's radius is its content's radius plus its padding:
 
 | Container holds | Padding | Radius |
 | --- | --- | --- |
 | only controls: a selection bar, a menu | 4px | `{rounded.lg}` (10px) |
-| content: a peek card or panel, a hover card, a dialog | 12px | `{rounded.card}` (18px) |
+| content: a peek card or panel, a hover card, a dialog | 12px | `{rounded.2xl}` (18px) |
 | cards | 16px | `{rounded.panel}` (34px) |
 
-A divider between controls in a bar is 16px tall with 4px on each side; a divider in a menu runs its full width with 4px above and below. A list row's tint is a leaf shape and takes the floor. A table row is square; the header fill's top corners and the footer fill's bottom corners take the floor. A card that holds a table has no padding, takes `{rounded.card}` and clips the header and footer fills to its corners.
+A divider between controls in a bar is 16px tall with 4px on each side; a divider in a menu runs its full width with 4px above and below. A list row's tint is a leaf shape and takes `{rounded.sm}`. A table row is square; the header fill's top corners and the footer fill's bottom corners take `{rounded.sm}`. A card that holds a table has no padding, takes `{rounded.2xl}` and clips the header and footer fills to its corners.
 
 Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and turns off nesting. Circles are reserved for status dots and initials.
 
 ### Named Rules
 **The Outward Radius Rule.** A container's radius is its content's radius plus its padding, so a container never picks a radius on its own.
 
-**Not yet in code.** The default, sm, lg and icon buttons are still `rounded-md` (8px), and the selection checkbox casts a `shadow-xs` at rest; moving them to the floor and the outward rule is a follow-up lockup change.
+**Not yet in code.** The default, sm, lg and icon buttons are still `rounded-md` (8px), and the selection checkbox casts a `shadow-xs` at rest; moving them to `{rounded.sm}` and the outward rule is a follow-up lockup change.
 
 ## Components
 
 ### Buttons
-- **Shape:** the floor radius (`{rounded.floor}`) at the xs sizes; the other sizes are still `rounded-md` (see Shapes). 28px high by default; 20, 24 and 32px sizes exist.
+- **Shape:** `{rounded.sm}` at the xs sizes; the other sizes are still `rounded-md` (see Shapes). 28px high by default; 20, 24 and 32px sizes exist.
 - **Primary:** Signal Orange fill with Ink text, 12px medium label.
 - **Ghost / Outline:** transparent with Ink text; outline adds a Hairline border.
 - **Hover / Focus:** primary fades to 80%; focus draws a 2px Signal Ring at 30% and a ring-coloured border. Pressed buttons move down 1px.
 
 ### List row
-- **Shape:** 44px high with no line under it; its tint takes the floor radius (`{rounded.floor}`).
+- **Shape:** 44px high with no line under it; its tint takes `{rounded.sm}`.
 - **States:** hover and selection tint the row with Ink at 4%, a selected row under the pointer at 7%; a row with keyboard focus or open peek takes Ink at 4% and a 1px inset Signal Ring at 40%.
 - **Revealed controls:** the selection checkbox and peek button are invisible at rest and appear on row hover, focus or selection; on a coarse pointer they are always visible and 44×44px.
 - **Layout:** the checkbox (24px), ID (`{spacing.list-id-min}` to `{spacing.list-id-max}`) and media (24px) line up down the list; the name (`{spacing.list-name-min}` to `{spacing.list-name-max}`) and description follow, the description filling the rest and truncating first; the facts sit at the end, right-aligned, each `{spacing.list-fact-min}` to `{spacing.list-fact-max}` wide and `{spacing.related}` apart, the fact the top goal looks for last on the right edge.
 
 ### List group header
-- **Shape:** 44px high (`min-h-11`), `px-2`, tint at the floor radius (`{rounded.floor}`), pinned with `sticky top-0` on the raised layer (`z-raised`) and drawn on the page background; rows under it are not indented. A list header carries no sums; a table header keeps them.
+- **Shape:** 44px high (`min-h-11`), `px-2`, tint at `{rounded.sm}`, pinned with `sticky top-0` on the raised layer (`z-raised`) and drawn on the page background; rows under it are not indented. A list header carries no sums; a table header keeps them.
 - **States:** hover tints the header with Ink at 4%; keyboard focus on its trigger takes Ink at 4% and a 1px inset Signal Ring at 40%, as a row does.
 - **Layout:** the group checkbox (24px, lined up with the rows' checkboxes), a chevron that rotates 90° when expanded, the group name in 14px medium weight with a status dot, a muted tabular count, then a 24px add (+) button as the last item.
 - **Revealed controls:** the checkbox is invisible at rest and appears on hover, focus, a coarse pointer or while mixed or checked; mixed draws a dash. The add button appears on hover, focus or a coarse pointer, is 44×44px on a coarse pointer, and its tooltip reads "Add".
 
 ### List peek
-- **Shape:** a floating card (a Base UI Popover rendered as Card) under the peeked row, aligned to its end, `{spacing.peek}` (22rem) wide and capped to the available width and height; `{colors.sheet}` fill, `--shadow-popover`, `{rounded.card}`, on the `--z-index-popover` layer.
+- **Shape:** a floating card (a Base UI Popover rendered as Card) under the peeked row, aligned to its end, `{spacing.peek}` (22rem) wide and capped to the available width and height; `{colors.sheet}` fill, `--shadow-popover`, `{rounded.2xl}`, on the `--z-index-popover` layer.
 - **Behaviour:** focus stays on the row; nothing is drawn while peek is closed. A table keeps its own peek beside or under the table.
 
 ### Table
-- **Shape:** no line under the header or between rows, and no surface of its own. A body row's tint is square; the header row draws a Quiet Grey fill rounded at its top corners with the floor radius (`{rounded.floor}`), and the footer row one rounded at its bottom corners. Each fill is drawn on the row's first cell's `::before` across the row, below the cell content, so it draws in every engine and when the last column hides. The table fills its container, which scrolls sideways when the columns do not fit.
+- **Shape:** no line under the header or between rows, and no surface of its own. A body row's tint is square; the header row draws a Quiet Grey fill rounded at its top corners with `{rounded.sm}`, and the footer row one rounded at its bottom corners. Each fill is drawn on the row's first cell's `::before` across the row, below the cell content, so it draws in every engine and when the last column hides. The table fills its container, which scrolls sideways when the columns do not fit.
 - **Record row:** 44px high, hover and selection tint it with Ink at 4%, a selected row under the pointer at 7%, a row with keyboard focus or open peek takes Ink at 4% and a 1px inset Signal Ring at 40%. A click anywhere on the row follows its `TableRowLink`, except on its checkbox, chevron or other controls and while text is selected; Enter on the focused row does too.
 - **Group row:** 36px high on Quiet Grey at 40%, square, 44px on a coarse pointer; hover deepens the fill to 70%, and keyboard focus draws a 1px inset Signal Ring at 40%. Its name starts in the first data column, not under a column it does not belong to, and its sums stay in their columns.
 - **Row header:** a row header that holds the row's `TableRowLink` is the record's name: it takes the spare width and truncates. Any other row header, such as a label or a prop name, fits its content.
 - **Column header:** 36px high, 12px medium Muted Ink; a sortable header is a button with an arrow, drawn on hover and focus until the column is sorted, then always, turned over when descending, and the sorted header takes Ink; the sorted column carries `aria-sort`. The button is 24px high, 44px on a coarse pointer.
 - **Meter cell:** a column that holds a share, such as Paid %, draws a `Meter` with its percentage, not the figure alone.
 - **Caption:** above the table, 14px medium; it names the table for screen readers and may be hidden when a heading beside the table does.
-- **Footer:** Quiet Grey fill, its bottom corners at the floor radius, medium weight, no line above it.
+- **Footer:** Quiet Grey fill, its bottom corners at `{rounded.sm}`, medium weight, no line above it.
 - **Revealed controls:** the selection checkbox and the expand chevron are 24×24px, 44×44px on a coarse pointer; the checkbox is invisible at rest and shows on row hover, focus or selection, and is always visible on a coarse pointer.
 - **Narrow:** below the `abbreviate` container width (48rem) a column marked `abbreviate` or `hide` shows its short form; below the `hide` container width (40rem) a column marked `hide` disappears and the `TableCellDetail` line, 12px Muted Ink, appears under the cell's value to carry it.
 - **Loading:** a loading row is 44px and draws a pulsing Quiet Grey bar in place of each cell's content; no pulse under reduced motion.
 
 ### List and table surface
 - **List:** no surface; its rows sit on the page.
-- **Table in a card:** Sheet with one Hairline border, no padding and `{rounded.card}` (18px), clipping the header and footer fills to its corners; no shadow.
+- **Table in a card:** Sheet with one Hairline border, no padding and `{rounded.2xl}` (18px), clipping the header and footer fills to its corners; no shadow.
 
 ### Selection bar
 - **Shape:** Sheet with one Hairline border, 4px padding around its controls and `{rounded.lg}` (10px); the popover shadow, since it floats.
 - **Size:** 32px controls, so the bar is 42px high; 44px controls on a coarse pointer.
 - **Contents:** the count, at most two actions, a ⋯ menu, then Clear with its Esc key, with a 16px divider after the count and before Clear.
-- **Menu:** the ⋯ menu takes the same 4px padding and `{rounded.lg}`; its items are 32px high with the floor radius.
+- **Menu:** the ⋯ menu takes the same 4px padding and `{rounded.lg}`; its items are 32px high with `{rounded.sm}`.
 
 ### Preview card (hover card)
-- **Corner Style:** its content's radius plus its 12px padding (`{rounded.card}`).
+- **Corner Style:** its content's radius plus its 12px padding (`{rounded.2xl}`).
 - **Background:** a Card (Sheet, the 1px inset Hairline ring, 12px padding) with the popover shadow.
 - **Content:** the card's own parts: `CardSubject` (the name and description, which do not truncate here), `CardFacts` as bullets or labelled, and `CardFooter`; links are the only thing in it that acts.
 - **Size:** 240px wide.
@@ -351,19 +351,19 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 
 ### Avatar
 - **Size:** 20px by default; 24px at size `lg`.
-- **Shape:** a circle for a person; a square with the floor radius (`{rounded.floor}`) for a team.
+- **Shape:** a circle for a person; a square with `{rounded.sm}` for a team.
 - **Fallback:** initials in the micro type (10px medium, uppercase) in Muted Ink on Quiet Grey, shown until the picture loads; a picture fills the avatar.
 - **Screen readers:** the avatar is hidden from them; the name beside it or the control around it names who it is.
 - **Group:** `AvatarGroup` draws 3 avatars, then a +N avatar counting the rest, never +1; each overlaps the one before by half its width (`--avatar-overlap`, 0.5).
 - **Ring:** each avatar in a group has a 2px ring in the background colour.
 - **Spread:** on hover, focus or open, the group's avatars after the first move 4px apart, animating `margin-inline-start` over `--transition-duration-quick` (150ms) with `--ease-out`; no animation under reduced motion.
-- **Trigger:** a group is the trigger of a popover that reaches the names it hides; as a button or link it takes the floor radius and a focus ring, and is 44px high on a coarse pointer.
+- **Trigger:** a group is the trigger of a popover that reaches the names it hides; as a button or link it takes `{rounded.sm}` and a focus ring, and is 44px high on a coarse pointer.
 
 ### Bullet
 - **Size:** default draws a 12px label, 14px icons and 20px avatars, for metadata under a title; `lg` draws a 14px label, 16px icons and 24px avatars, for a details list.
 - **Order:** icons, an avatar group and the label are drawn in the order they are written; every icon is Muted Ink, the label inherits its colour and truncates before any icon.
 - **Height:** at least 24px (`--spacing-hit-min`); 44px (`--spacing-hit-coarse`) on a coarse pointer when it is a button or link.
-- **Tint:** a button or link tints Ink at 4% on hover and 7% while its popup is open, on a floor-radius layer that extends 4px past each side, so its first icon lines up with a bullet that opens nothing; a hover card trigger draws no tint.
+- **Tint:** a button or link tints Ink at 4% on hover and 7% while its popup is open, on a `{rounded.sm}` layer that extends 4px past each side, so its first icon lines up with a bullet that opens nothing; a hover card trigger draws no tint.
 - **Focus:** a 2px Ink outline on the same extended layer.
 - **Screen readers:** an icon that adds meaning, such as restricted or opens in a new tab, carries that word through `BulletMedia`'s `label`; every other icon is hidden from them.
 
@@ -371,11 +371,11 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 - **Style:** an Avatar at size `lg` (24px), initials or a picture, then the name, then an optional one-line description in Muted Ink that truncates before the name; media alone at narrow widths.
 
 ### Card
-- **Style:** Sheet with one Hairline border, 12px padding and `{rounded.card}` (18px); no shadow. The hairline is a 1px inset ring, not a border, so it takes no width: the picture sits exactly 12px in and its `{rounded.floor}` (6px) is concentric with the card's corner. When it holds a `CardLink`, hover tints it with Ink at 4% and the link's hit area covers the card.
+- **Style:** Sheet with one Hairline border, 12px padding and `{rounded.2xl}` (18px); no shadow. The hairline is a 1px inset ring, not a border, so it takes no width: the picture sits exactly 12px in and its `{rounded.sm}` (6px) is concentric with the card's corner. When it holds a `CardLink`, hover tints it with Ink at 4% and the link's hit area covers the card.
 - **Parts and ranks:** `CardSubject` (rank 1: an optional picture, the ID, the name in at most two lines, a one-line description), `CardFacts` (rank 2: in a row in the same order on every card; as lg bullets one per line, a 16px Muted Ink icon then a value that names itself; or labelled one per 24px line when the label is the information), `CardExplain` (rank 3: a trigger that stays on screen and opens its panel in place), a hover card on a fact (rank 4), `CardLink` (rank 5) and `CardFooter` last (one muted 12px line, 24px high, no divider). Every action, a button or a link, goes in `CardAside`, never the footer.
-- **Picture:** `CardMedia` sits inside the padding with `{rounded.floor}` (6px), cropped to 16:9. With no picture, a hidden one or one that fails to load, the 16:9 box is Quiet Grey with an icon and "No picture", "Hidden" or "Unavailable" in Muted Ink. Summary and metric cards have no picture.
+- **Picture:** `CardMedia` sits inside the padding with `{rounded.sm}` (6px), cropped to 16:9. With no picture, a hidden one or one that fails to load, the 16:9 box is Quiet Grey with an icon and "No picture", "Hidden" or "Unavailable" in Muted Ink. Summary and metric cards have no picture.
 - **Aside:** `CardAside` takes the top right beside the card's first part, or beside the ID under a picture. Its always-shown items take at most a third of the content width (`--card-aside-max`, 33cqw); the part beside it keeps at least half. Its actions slide in over `--transition-duration-quick` (150ms) with `--ease-out` on hover, focus or while a menu is open, and show always on a coarse pointer; the aside reserves their width, so nothing reflows.
-- **Action:** `CardAction` is 24px in the label type, Muted Ink, `{rounded.floor}`; hover tints it with Ink at 7%. At most two, then a ⋮ menu; menus and hover cards open 4px below their trigger, start-aligned.
+- **Action:** `CardAction` is 24px in the label type, Muted Ink, `{rounded.sm}`; hover tints it with Ink at 7%. At most two, then a ⋮ menu; menus and hover cards open 4px below their trigger, start-aligned.
 - **Metric:** the figure leads at the top left in the display type (24px, 600) with tabular figures, its change in `CardAside`; a figure longer than 12 characters switches to compact notation, and a change from zero shows a muted dash.
 - **Icons:** `CardMedia` and `CardExplain` take an `icon` from any icon library; inline SVG is the default.
 
@@ -387,7 +387,7 @@ Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and 
 ### Do:
 - **Do** take every colour, radius, spacing, type, shadow, motion, layer and breakpoint value from a token; tokens are authored in `registry/tokens` and generated into `registry/styles/tokens.gen.css` and `theme.gen.css`.
 - **Do** derive a container's radius from its content's radius plus its padding.
-- **Do** pad a container of controls by 4px with `{rounded.lg}`, and a container of content by 12px with `{rounded.card}`.
+- **Do** pad a container of controls by 4px with `{rounded.lg}`, and a container of content by 12px with `{rounded.2xl}`.
 - **Do** name a figure's unit in its column header, such as Amount (AUD).
 - **Do** let the container set the gap between its children from `--spacing-run`, `--spacing-related`, `--spacing-section` or `--spacing-page`.
 - **Do** keep row actions hidden until hover, focus or selection, and always visible on a coarse pointer.

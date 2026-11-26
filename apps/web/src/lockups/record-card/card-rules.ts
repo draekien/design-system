@@ -18,7 +18,7 @@ const rules = {
       "Design rules: the rank 1 Subject holds media; Goals. Passing it only for that goal is this design system's own decision",
   },
   mediaCrop: {
-    rule: "CardMedia sits inside the card's 12px padding with the floor radius, 6px, so the card's 18px follows from it, and is cropped to 16:9, so every card in a grid row starts its ID on the same line.",
+    rule: "CardMedia sits inside the card's 12px padding with --radius-sm, 6px, so the card's 18px follows from it, and is cropped to 16:9, so every card in a grid row starts its ID on the same line.",
     source:
       "Design rules: Outward Radius Rule; Precise principle. The 16:9 ratio is this design system's own decision",
   },
@@ -85,9 +85,9 @@ const rules = {
       "Design rules: rank 5 (link); the tint and ring match the list row, this design system's own decision",
   },
   surface: {
-    rule: "A card is Sheet with one hairline border, 12px padding and the card radius, and casts no shadow; hover tints it with Ink at 4% only when it holds a CardLink.",
+    rule: "A card is Sheet with one hairline border, 12px padding and an 18px radius (--radius-2xl), and casts no shadow; hover tints it with Ink at 4% only when it holds a CardLink.",
     source:
-      "Design rules: Radius (a container of content takes 12px and --radius-card); Flat-At-Rest Rule",
+      "Design rules: Radius (a container of content takes 12px and --radius-2xl); Flat-At-Rest Rule",
   },
   grid: {
     rule: "cards in a grid are 8px apart (gap-related), since bordered cards with no gap would draw doubled borders.",

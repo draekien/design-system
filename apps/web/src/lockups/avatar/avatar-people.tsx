@@ -31,7 +31,7 @@ export function AvatarPeople(): React.ReactElement {
           <PreviewCard>
             <PreviewCardTrigger
               render={<a href="#jonas-lindqvist" />}
-              className="focus-ring justify-start rounded-floor"
+              className="focus-ring justify-start rounded-sm"
             >
               <Entity>
                 <EntityMedia>{assignee.initials}</EntityMedia>
@@ -62,7 +62,7 @@ export function AvatarPeople(): React.ReactElement {
             </AvatarGroup>
             <Popover.Portal>
               <Popover.Positioner side="bottom" align="start" sideOffset={6} className="z-popover">
-                <Popover.Popup className="flex max-h-(--available-height) w-60 flex-col gap-related overflow-y-auto rounded-card border bg-popover p-3 text-popover-foreground text-xs shadow-popover outline-hidden">
+                <Popover.Popup className="flex max-h-(--available-height) w-60 flex-col gap-related overflow-y-auto rounded-2xl border bg-popover p-3 text-popover-foreground text-xs shadow-popover outline-hidden">
                   <Popover.Title className="font-semibold text-sm">
                     Watchers · {watchers.length}
                   </Popover.Title>

@@ -46,7 +46,7 @@ function detailsRecord() {
 const properties = ["Priority", "Reviewers", "Workspace", "Policy", "Due"] as const
 
 const panelClass =
-  "flex w-80 max-w-full flex-col gap-section rounded-card border bg-card p-3 text-card-foreground"
+  "flex w-80 max-w-full flex-col gap-section rounded-2xl border bg-card p-3 text-card-foreground"
 
 const listClass =
   "grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-x-related gap-y-run [&_dd]:flex [&_dd]:min-w-0 pointer-coarse:[&_dd]:min-h-hit-coarse [&_dt]:text-muted-foreground [&_dt]:text-xs"

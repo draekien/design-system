@@ -16,7 +16,7 @@ import {
 } from "@/components/card.tsx"
 
 const menuItem =
-  "flex min-h-8 w-full cursor-default items-center rounded-floor px-2 text-left text-sm outline-hidden data-highlighted:bg-muted pointer-coarse:min-h-11"
+  "flex min-h-8 w-full cursor-default items-center rounded-sm px-2 text-left text-sm outline-hidden data-highlighted:bg-muted pointer-coarse:min-h-11"
 
 export function CardAsideActions(): React.ReactElement {
   return (
@@ -37,7 +37,7 @@ export function CardAsideActions(): React.ReactElement {
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
                   <Tooltip.Positioner side="top" sideOffset={4} className="z-popover">
-                    <Tooltip.Popup className="rounded-floor bg-foreground px-1.5 py-0.5 text-background text-xs">
+                    <Tooltip.Popup className="rounded-sm bg-foreground px-1.5 py-0.5 text-background text-xs">
                       Pin
                     </Tooltip.Popup>
                   </Tooltip.Positioner>

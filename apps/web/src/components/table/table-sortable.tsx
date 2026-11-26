@@ -30,7 +30,7 @@ export function TableSortable(): React.ReactElement {
   )
 
   return (
-    <div className="w-full max-w-lg overflow-hidden rounded-card border bg-card text-card-foreground">
+    <div className="w-full max-w-lg overflow-hidden rounded-2xl border bg-card text-card-foreground">
       <Table sort={sort} onSortChange={setSort} defaultSelectedValues={[]}>
         <TableCaption className="sr-only">Invoices</TableCaption>
         <TableHeader>

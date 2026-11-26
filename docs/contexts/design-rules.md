@@ -141,11 +141,11 @@ A narrow table hides a column together with its header. Stories: table.
 
 Stories: every story.
 
-A radius builds outward from the floor: a leaf control (button, input) takes the floor, `--radius-floor` (6px), and a container's radius is its content's radius plus its padding. This is this design system's own decision.
+A radius builds outward from the leaf control: a leaf control (button, input) takes `--radius-sm` (6px), and a container's radius is its content's radius plus its padding. This is this design system's own decision.
 
-The selection checkbox is the one leaf control below the floor: it takes `--radius-checkbox` (5px). This is this design system's own decision.
+The selection checkbox is the one leaf control below `--radius-sm`: it takes `--radius-checkbox` (5px). This is this design system's own decision.
 
-A table row is square. A list row's tint is a leaf shape and takes the floor. A card that clips a table with no padding is the one container whose corners its content follows.
+A table row is square. A list row's tint is a leaf shape and takes `--radius-sm`. A card that clips a table with no padding is the one container whose corners its content follows.
 
 Every radius derives from `--radius`, so `--radius: 0` makes every radius 0 and turns off nesting.
 
@@ -156,7 +156,7 @@ A container's radius is a token:
 | Container holds | Padding | Radius |
 | --- | --- | --- |
 | only controls, such as a selection bar or a menu | 4px | `--radius-lg` (10px) |
-| content, such as a peek panel, hover card or dialog | 12px | `--radius-card` (18px) |
+| content, such as a peek panel, hover card or dialog | 12px | `--radius-2xl` (18px) |
 | cards | 16px | `--radius-panel` (34px) |
 
 A divider between controls in a bar is 16px tall with 4px on each side; a divider between items in a menu runs the menu's full width with 4px above and below.
@@ -182,7 +182,7 @@ A card draws facts about one entity, such as a person's team and open records, a
 
 A record card shows a picture only when its callers recognise records by their pictures. The picture goes in `CardMedia`, the first part of `CardSubject`. A summary card and a metric card have no picture. This is this design system's own decision. Stories: record-card.
 
-`CardMedia` sits inside the card's 12px padding and has the 6px floor radius. It is cropped to 16:9. Every card in a grid row then starts its ID at the same height. The 16:9 ratio is this design system's own decision. Stories: record-card.
+`CardMedia` sits inside the card's 12px padding and has `--radius-sm` (6px). It is cropped to 16:9. Every card in a grid row then starts its ID at the same height. The 16:9 ratio is this design system's own decision. Stories: record-card.
 
 A card in a run of cards with pictures draws an empty 16:9 box when it has no picture to show. The box shows an image icon and one word: No picture when the record has none, Hidden when the caller may not see it, and Unavailable when it fails to load. A picture's alt text is empty unless the picture shows something the name does not. The empty box is this design system's own decision. Stories: record-card.
 
