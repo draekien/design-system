@@ -1,6 +1,14 @@
 [
   {
     "date": "2026-11-26",
+    "description": "useTable takes an optional selector, such as useTable((table) => table.activeValue === value), and re-renders its component only when the selector's result changes. The TableValue type names what useTable returns."
+  },
+  {
+    "date": "2026-11-26",
+    "description": "Moving between rows with the arrow keys re-renders only the row losing the tab stop and the row gaining it, and none of their cells; before, every row and cell re-rendered on each key press. Selection, expansion and peek held by the table (the default props) re-render only the rows whose state changes. Controlled props re-render the rows you render, as before. When the row holding the tab stop is removed, the first row takes it. useTable() returns the same values, and a component calling it re-renders on every change."
+  },
+  {
+    "date": "2026-11-26",
     "description": "A click on a child row without its own TableRowLink follows its parent record's link, as Enter does, and the row shows the pointer cursor. Before, the click did nothing."
   },
   {
