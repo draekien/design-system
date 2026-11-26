@@ -118,6 +118,13 @@ function recordRow(
   return row.querySelector(linkSelector) === null ? recordRow(rows, parentRow(rows, row)) : row
 }
 
+function recordLink(
+  rows: ReadonlyArray<HTMLTableRowElement>,
+  row: HTMLTableRowElement
+): HTMLElement | undefined {
+  return recordRow(rows, row)?.querySelector<HTMLElement>(linkSelector) ?? undefined
+}
+
 function headerButtons(element: HTMLElement): ReadonlyArray<HTMLButtonElement> {
   const head = element.closest("table")?.tHead
   if (head === null || head === undefined) {
@@ -287,7 +294,7 @@ export function Table({
         if (target.kind === "group") {
           setExpanded(target.value, !isExpanded)
         } else {
-          recordRow(rows, row)?.querySelector<HTMLElement>(linkSelector)?.click()
+          recordLink(rows, row)?.click()
         }
         return
       case "ArrowRight":
@@ -527,7 +534,13 @@ function handleRowClick(event: React.MouseEvent<HTMLTableRowElement>) {
   if (isControl || window.getSelection()?.isCollapsed === false) {
     return
   }
-  event.currentTarget.querySelector<HTMLElement>(linkSelector)?.click()
+  const row = event.currentTarget
+  recordLink(bodyRows(row.closest("table")), row)?.click()
+}
+
+function handleRowPointerEnter(event: React.PointerEvent<HTMLTableRowElement>) {
+  const row = event.currentTarget
+  row.toggleAttribute("data-opens", recordLink(bodyRows(row.closest("table")), row) !== undefined)
 }
 
 function useBodyRow(
@@ -637,9 +650,10 @@ function BodyRow({
       row.props,
       {
         onClick: handleRowClick,
+        onPointerEnter: handleRowPointerEnter,
         className: cn(
           rowClass,
-          "has-data-[slot=table-row-link]:cursor-pointer outline-none focus-visible:*:first:before:inset-ring focus-visible:*:first:before:inset-ring-ring/40 data-peeked:*:first:before:inset-ring data-peeked:*:first:before:inset-ring-ring/40",
+          "has-data-[slot=table-row-link]:cursor-pointer data-opens:cursor-pointer outline-none focus-visible:*:first:before:inset-ring focus-visible:*:first:before:inset-ring-ring/40 data-peeked:*:first:before:inset-ring data-peeked:*:first:before:inset-ring-ring/40",
           kind === "group"
             ? "h-9 *:first:before:bg-muted/40 hover:*:first:before:bg-muted/70 pointer-coarse:h-11"
             : "h-11 hover:*:first:before:bg-foreground/4 focus-visible:*:first:before:bg-foreground/4 data-peeked:*:first:before:bg-foreground/4 aria-selected:*:first:before:bg-foreground/4 aria-selected:hover:*:first:before:bg-foreground/7",

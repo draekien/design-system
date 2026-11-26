@@ -214,6 +214,18 @@ describe("Table", () => {
     expect(onOpen).toHaveBeenCalledTimes(1)
   })
 
+  it("opens the parent's link from a click on a child row without its own link", async () => {
+    const user = userEvent.setup()
+    const onOpen = vi.fn()
+    render(<InvoiceTable onOpen={onOpen} />)
+
+    await user.tab()
+    await user.keyboard("{ArrowDown}{ArrowRight}")
+    await user.click(within(row("Design")).getByText("Design"))
+    expect(onOpen).toHaveBeenCalledTimes(1)
+    expect(onOpen).toHaveBeenLastCalledWith("INV-104")
+  })
+
   it("peeks with Space, follows focus while peek is open, and closes peek before clearing selection on Esc", async () => {
     const user = userEvent.setup()
     const onPeekValueChange = vi.fn()
