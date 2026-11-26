@@ -311,7 +311,7 @@ describe("Table", () => {
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Amount" }))
   })
 
-  it("moves the tab stop to the headers when every row is removed, and ignores Space without peek", async () => {
+  it("moves the tab stop to the headers when every row is removed, back to a row when one is replaced, and ignores Space without peek", async () => {
     const user = userEvent.setup()
     function Invoices({ rows }: { rows: ReadonlyArray<string> }) {
       return (
@@ -340,6 +340,60 @@ describe("Table", () => {
     rerender(<Invoices rows={[]} />)
     await user.tab()
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Customer" }))
+
+    rerender(<Invoices rows={["Acme", "Birch"]} />)
+    await user.tab()
+    await user.keyboard("{ArrowDown}")
+    expect(document.activeElement).toBe(row("Birch"))
+    rerender(<Invoices rows={["Acme", "Cobalt"]} />)
+    await user.tab()
+    expect(document.activeElement).toBe(row("Acme"))
+  })
+
+  it("re-renders only the two rows whose tab stop moves on ↓, and none of their cells", async () => {
+    const user = userEvent.setup()
+    const values = Array.from({ length: 200 }, (_, index) => `INV-${index}`)
+    const rowRenders = new Set<string>()
+    let cellRenders = 0
+    render(
+      <Table defaultSelectedValues={[]}>
+        <TableCaption>Invoices</TableCaption>
+        <TableBody>
+          {values.map((value) => (
+            <TableRow
+              key={value}
+              value={value}
+              render={(props) => {
+                rowRenders.add(value)
+                return <tr {...props} />
+              }}
+            >
+              <TableHead>{value}</TableHead>
+              {["Customer", "Issued", "Due", "Status", "Amount"].map((column) => (
+                <TableCell
+                  key={column}
+                  render={(props) => {
+                    cellRenders += 1
+                    return <td {...props} />
+                  }}
+                >
+                  {column}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    )
+    await user.tab()
+    rowRenders.clear()
+    cellRenders = 0
+
+    await user.keyboard("{ArrowDown}")
+
+    expect(document.activeElement).toBe(screen.getByRole("row", { name: "INV-1" }))
+    expect([...rowRenders].sort()).toEqual(["INV-0", "INV-1"])
+    expect(cellRenders).toBe(0)
   })
 
   it("hides a loading row from screen readers and draws no values in it", () => {
